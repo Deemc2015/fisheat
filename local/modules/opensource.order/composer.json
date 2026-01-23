@@ -1,0 +1,33 @@
+{
+  "name": "alorian/bxorder",
+  "description": "Opensource bitrix order component",
+  "keywords": [
+    "bitrix",
+    "components",
+    "module"
+  ],
+  "homepage": "https://github.com/Alorian/bxorder",
+  "type": "bitrix-module",
+  "license": "MIT",
+  "support": {
+    "telegram": "https://t.me/bxmeetup",
+    "email": "verstaem.com@gmail.com",
+    "skype": "alorian_22",
+    "issues": "https://github.com/Alorian/bxorder/issues",
+    "source": "https://github.com/Alorian/bxorder"
+  },
+  "authors": [
+    {
+      "name": "Alexander Shubin",
+      "homepage": "https://verstaem.com",
+      "email": "admin@verstaem.com"
+    }
+  ],
+  "extra": {
+    "installer-name": "opensource.order"
+  },
+  "require": {
+    "php": "^7.0",
+    "composer/installers": "~1"
+  }
+}

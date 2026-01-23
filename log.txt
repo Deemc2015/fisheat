@@ -1,0 +1,5397 @@
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:24:28
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b56745ab-fbfd-44c4-843f-69b7e557fcfa',
+    'polygonName' => 'Пушкина Дёма',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 0.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7465e13b-c5ae-07ef-4d7b-754f7c958324',
+      'name' => 'Доставка 429',
+      'price' => 429.0,
+      'externalId' => '1002054',
+      'externalCode' => '489',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:24:28
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:24:28
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:24:38
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b8e2e229-3204-4d8c-8483-79f5ab737fc7',
+    'polygonName' => 'Пушкина Проспект центральная часть',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:26:49
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b8e2e229-3204-4d8c-8483-79f5ab737fc7',
+    'polygonName' => 'Пушкина Проспект центральная часть',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:26:49
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:26:49
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:27:54
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:27:54
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:29:43
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:29:43
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:31:24
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:31:24
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:34:46
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b56745ab-fbfd-44c4-843f-69b7e557fcfa',
+    'polygonName' => 'Пушкина Дёма',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 0.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7465e13b-c5ae-07ef-4d7b-754f7c958324',
+      'name' => 'Доставка 429',
+      'price' => 429.0,
+      'externalId' => '1002054',
+      'externalCode' => '489',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:34:46
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:34:46
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:34:52
+array (
+  'result' => 
+  array (
+    'restaurantId' => '073d2362-a433-41f5-a3b9-75c12b627329',
+    'restaurantName' => 'Рыба закусывала на Донского',
+    'polygonId' => 'cf562a13-6c39-49b2-b430-32df0a185b44',
+    'polygonName' => 'Донского Шота Руставели',
+    'legalAddress' => 'ул Дмитрия Донского, 5/8',
+    'objectId' => 476990002,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:35:35
+array (
+  'result' => 
+  array (
+    'restaurantId' => '073d2362-a433-41f5-a3b9-75c12b627329',
+    'restaurantName' => 'Рыба закусывала на Донского',
+    'polygonId' => '991ce92f-a29e-479a-8949-95fcae371170',
+    'polygonName' => 'Донского Трамвайная',
+    'legalAddress' => 'ул Дмитрия Донского, 5/8',
+    'objectId' => 476990002,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '11c34215-619d-24bf-2d22-44b2aa555c8e',
+      'name' => 'Доставка 189',
+      'price' => 189.0,
+      'externalId' => '1001918',
+      'externalCode' => '454',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 4800,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:36:13
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:36:13
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:36:58
+array (
+  'result' => 
+  array (
+    'restaurantId' => '073d2362-a433-41f5-a3b9-75c12b627329',
+    'restaurantName' => 'Рыба закусывала на Донского',
+    'polygonId' => '7544a522-fb7e-4b60-be47-bcd1bff55cfa',
+    'polygonName' => 'Донского Старое Сипайлово',
+    'legalAddress' => 'ул Дмитрия Донского, 5/8',
+    'objectId' => 476990002,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:43:27
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:43:27
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:45:25
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:45:25
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:46:36
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:46:36
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:04
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => 0.0,
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => 2496,
+      'XML_ID' => 'bx_6973196806fcc',
+      'LID' => 's1',
+      'SORT' => 100,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NAME' => 'Вок Соба с тигровыми креветками',
+      'QUANTITY' => 1.0,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+      'PRODUCT_PROVIDER_CLASS' => true,
+      'NAME' => true,
+      'QUANTITY' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => NULL,
+      'NAME' => NULL,
+      'QUANTITY' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => 'SaleBasketItem',
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => true,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => 
+  Bitrix\Sale\BasketPropertiesCollection::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketPropertyItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'XML_ID' => 'bx_6973196807a2e',
+            'NAME' => 'Product XML_ID',
+            'CODE' => 'PRODUCT.XML_ID',
+            'VALUE' => '2496',
+          ),
+           'changedValues' => 
+          array (
+            'XML_ID' => true,
+            'NAME' => true,
+            'CODE' => true,
+            'VALUE' => true,
+          ),
+           'originalValues' => 
+          array (
+            'XML_ID' => NULL,
+            'NAME' => NULL,
+            'CODE' => NULL,
+            'VALUE' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketPropertyItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+      )),
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'basketItem' => NULL,
+  )),
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n1',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:11
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '499.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2496',
+      'XML_ID' => 'bx_6973196806fcc',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '200',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '484',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Вок Соба с тигровыми креветками',
+      'PRICE' => '499.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2496',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n1',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:11
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => 0.0,
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => 2520,
+      'XML_ID' => 'bx_6973196fabbf0',
+      'LID' => 's1',
+      'SORT' => 100,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NAME' => 'Запеканка с курицей',
+      'QUANTITY' => 1.0,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+      'PRODUCT_PROVIDER_CLASS' => true,
+      'NAME' => true,
+      'QUANTITY' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => NULL,
+      'NAME' => NULL,
+      'QUANTITY' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => 'SaleBasketItem',
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'ID' => '200',
+            'LID' => 's1',
+            'MODULE' => 'catalog',
+            'PRODUCT_ID' => '2496',
+            'QUANTITY' => '1.0000',
+            'WEIGHT' => '0.00',
+            'DELAY' => 'N',
+            'CAN_BUY' => 'Y',
+            'PRICE' => 499.0,
+            'CUSTOM_PRICE' => 'N',
+            'BASE_PRICE' => 499.0,
+            'PRODUCT_PRICE_ID' => '484',
+            'PRICE_TYPE_ID' => '1',
+            'CURRENCY' => 'RUB',
+            'BARCODE_MULTI' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'NAME' => 'Вок Соба с тигровыми креветками',
+            'CATALOG_XML_ID' => NULL,
+            'VAT_RATE' => NULL,
+            'NOTES' => 'Розничная цена',
+            'DISCOUNT_PRICE' => 0.0,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+            'FUSER_ID' => '52',
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'ORDER_ID' => NULL,
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'PRODUCT_XML_ID' => '2496',
+            'SUBSCRIBE' => 'N',
+            'RECOMMENDATION' => NULL,
+            'VAT_INCLUDED' => 'N',
+            'SORT' => '100',
+            'DATE_REFRESH' => NULL,
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'XML_ID' => 'bx_6973196806fcc',
+            'MARKING_CODE_GROUP' => NULL,
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 200,
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => NULL,
+      )),
+      1 => NULL,
+    ),
+     'index' => 1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      200 => 0,
+      'n2' => 1,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => true,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 1,
+   'isClone' => false,
+   'propertyCollection' => 
+  Bitrix\Sale\BasketPropertiesCollection::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketPropertyItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'XML_ID' => 'bx_6973196fabc20',
+            'NAME' => 'Product XML_ID',
+            'CODE' => 'PRODUCT.XML_ID',
+            'VALUE' => '2520',
+          ),
+           'changedValues' => 
+          array (
+            'XML_ID' => true,
+            'NAME' => true,
+            'CODE' => true,
+            'VALUE' => true,
+          ),
+           'originalValues' => 
+          array (
+            'XML_ID' => NULL,
+            'NAME' => NULL,
+            'CODE' => NULL,
+            'VALUE' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketPropertyItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+      )),
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'basketItem' => NULL,
+  )),
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n2',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:19
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '499.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2496',
+      'XML_ID' => 'bx_6973196806fcc',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '200',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '484',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Вок Соба с тигровыми креветками',
+      'PRICE' => '499.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:11.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2496',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '299.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2520',
+            'XML_ID' => 'bx_6973196fabbf0',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '201',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '508',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Запеканка с курицей',
+            'PRICE' => '299.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2520',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n2',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+    ),
+     'index' => 1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+    ),
+     'maxItemSort' => 200,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n1',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:19
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '299.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2520',
+      'XML_ID' => 'bx_6973196fabbf0',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '201',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '508',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Запеканка с курицей',
+      'PRICE' => '299.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:11.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:11.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2520',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '499.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2496',
+            'XML_ID' => 'bx_6973196806fcc',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '200',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '484',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Вок Соба с тигровыми креветками',
+            'PRICE' => '499.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2496',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n1',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      1 => NULL,
+    ),
+     'index' => 1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+    ),
+     'maxItemSort' => 200,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 1,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n2',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:19
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => 0.0,
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => 2500,
+      'XML_ID' => 'bx_697319777e83b',
+      'LID' => 's1',
+      'SORT' => 100,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NAME' => 'Вок Удон с овощами',
+      'QUANTITY' => 1.0,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+      'PRODUCT_PROVIDER_CLASS' => true,
+      'NAME' => true,
+      'QUANTITY' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => NULL,
+      'NAME' => NULL,
+      'QUANTITY' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => 'SaleBasketItem',
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'ID' => '200',
+            'LID' => 's1',
+            'MODULE' => 'catalog',
+            'PRODUCT_ID' => '2496',
+            'QUANTITY' => '1.0000',
+            'WEIGHT' => '0.00',
+            'DELAY' => 'N',
+            'CAN_BUY' => 'Y',
+            'PRICE' => 499.0,
+            'CUSTOM_PRICE' => 'N',
+            'BASE_PRICE' => 499.0,
+            'PRODUCT_PRICE_ID' => '484',
+            'PRICE_TYPE_ID' => '1',
+            'CURRENCY' => 'RUB',
+            'BARCODE_MULTI' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'NAME' => 'Вок Соба с тигровыми креветками',
+            'CATALOG_XML_ID' => NULL,
+            'VAT_RATE' => NULL,
+            'NOTES' => 'Розничная цена',
+            'DISCOUNT_PRICE' => 0.0,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+            'FUSER_ID' => '52',
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'ORDER_ID' => NULL,
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'PRODUCT_XML_ID' => '2496',
+            'SUBSCRIBE' => 'N',
+            'RECOMMENDATION' => NULL,
+            'VAT_INCLUDED' => 'N',
+            'SORT' => '100',
+            'DATE_REFRESH' => NULL,
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'XML_ID' => 'bx_6973196806fcc',
+            'MARKING_CODE_GROUP' => NULL,
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 200,
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => NULL,
+      )),
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'ID' => '201',
+            'LID' => 's1',
+            'MODULE' => 'catalog',
+            'PRODUCT_ID' => '2520',
+            'QUANTITY' => '1.0000',
+            'WEIGHT' => '0.00',
+            'DELAY' => 'N',
+            'CAN_BUY' => 'Y',
+            'PRICE' => 299.0,
+            'CUSTOM_PRICE' => 'N',
+            'BASE_PRICE' => 299.0,
+            'PRODUCT_PRICE_ID' => '508',
+            'PRICE_TYPE_ID' => '1',
+            'CURRENCY' => 'RUB',
+            'BARCODE_MULTI' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'NAME' => 'Запеканка с курицей',
+            'CATALOG_XML_ID' => NULL,
+            'VAT_RATE' => NULL,
+            'NOTES' => 'Розничная цена',
+            'DISCOUNT_PRICE' => 0.0,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+            'FUSER_ID' => '52',
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'ORDER_ID' => NULL,
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'PRODUCT_XML_ID' => '2520',
+            'SUBSCRIBE' => 'N',
+            'RECOMMENDATION' => NULL,
+            'VAT_INCLUDED' => 'N',
+            'SORT' => '100',
+            'DATE_REFRESH' => NULL,
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'XML_ID' => 'bx_6973196fabbf0',
+            'MARKING_CODE_GROUP' => NULL,
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 201,
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => NULL,
+      )),
+      2 => NULL,
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      200 => 0,
+      201 => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => true,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 2,
+   'isClone' => false,
+   'propertyCollection' => 
+  Bitrix\Sale\BasketPropertiesCollection::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketPropertyItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'XML_ID' => 'bx_697319777e864',
+            'NAME' => 'Product XML_ID',
+            'CODE' => 'PRODUCT.XML_ID',
+            'VALUE' => '2500',
+          ),
+           'changedValues' => 
+          array (
+            'XML_ID' => true,
+            'NAME' => true,
+            'CODE' => true,
+            'VALUE' => true,
+          ),
+           'originalValues' => 
+          array (
+            'XML_ID' => NULL,
+            'NAME' => NULL,
+            'CODE' => NULL,
+            'VALUE' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketPropertyItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+      )),
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'basketItem' => NULL,
+  )),
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n3',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:25
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '499.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2496',
+      'XML_ID' => 'bx_6973196806fcc',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '200',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '484',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Вок Соба с тигровыми креветками',
+      'PRICE' => '499.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:19.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2496',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '299.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2520',
+            'XML_ID' => 'bx_6973196fabbf0',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '201',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '508',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Запеканка с курицей',
+            'PRICE' => '299.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2520',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n2',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      2 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '329.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2500',
+            'XML_ID' => 'bx_697319777e83b',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '202',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '488',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Вок Удон с овощами',
+            'PRICE' => '329.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-udon-s-ovoshchami/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2500',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 2,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n3',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n1',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:25
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '299.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2520',
+      'XML_ID' => 'bx_6973196fabbf0',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '201',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '508',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Запеканка с курицей',
+      'PRICE' => '299.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:11.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:19.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2520',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '499.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2496',
+            'XML_ID' => 'bx_6973196806fcc',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '200',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '484',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Вок Соба с тигровыми креветками',
+            'PRICE' => '499.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2496',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n1',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      1 => NULL,
+      2 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '329.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2500',
+            'XML_ID' => 'bx_697319777e83b',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '202',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '488',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Вок Удон с овощами',
+            'PRICE' => '329.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-udon-s-ovoshchami/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2500',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 2,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n3',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 1,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n2',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:47:25
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '329.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2500',
+      'XML_ID' => 'bx_697319777e83b',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '202',
+      'FUSER_ID' => '52',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '488',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Вок Удон с овощами',
+      'PRICE' => '329.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:19.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-23 09:47:19.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-udon-s-ovoshchami/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2500',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '499.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2496',
+            'XML_ID' => 'bx_6973196806fcc',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '200',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '484',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Вок Соба с тигровыми креветками',
+            'PRICE' => '499.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:04.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/vok-soba-s-tigrovymi-krevetkami/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2496',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n1',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '299.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2520',
+            'XML_ID' => 'bx_6973196fabbf0',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '201',
+            'FUSER_ID' => '52',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '508',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Запеканка с курицей',
+            'PRICE' => '299.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:11.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-23 09:47:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/vok-i-goriachee/zapekanka-s-kuritsey/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2520',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n2',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      2 => NULL,
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 52,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 2,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n3',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:48:17
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:48:17
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:51:31
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:51:31
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:51:52
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '189.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2614',
+      'XML_ID' => 'bx_696a5e77a08e8',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '197',
+      'FUSER_ID' => '1',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '602',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Мини пончики с сахарной пудрой',
+      'PRICE' => '189.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:19.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:25.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/deserti/mini-ponchiki-s-sakharnoy-pudroy/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2614',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '169.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2713',
+            'XML_ID' => 'bx_696a5e7a62028',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '198',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '701',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Пончик с вареной сгущенкой',
+            'PRICE' => '169.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:22.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/ponchik-s-varenoy-sgushchenkoy/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2713',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n2',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      2 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '289.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2878',
+            'XML_ID' => 'bx_696a5e7d265d7',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '199',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '866',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Сладкий ролл Тропики',
+            'PRICE' => '289.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/sladkiy-roll-tropiki/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2878',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 2,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n3',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n1',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:51:52
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '169.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2713',
+      'XML_ID' => 'bx_696a5e7a62028',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '198',
+      'FUSER_ID' => '1',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '701',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Пончик с вареной сгущенкой',
+      'PRICE' => '169.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:22.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:25.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/deserti/ponchik-s-varenoy-sgushchenkoy/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2713',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '189.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2614',
+            'XML_ID' => 'bx_696a5e77a08e8',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '197',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '602',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Мини пончики с сахарной пудрой',
+            'PRICE' => '189.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/mini-ponchiki-s-sakharnoy-pudroy/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2614',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n1',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      1 => NULL,
+      2 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '289.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2878',
+            'XML_ID' => 'bx_696a5e7d265d7',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '199',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '866',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Сладкий ролл Тропики',
+            'PRICE' => '289.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/sladkiy-roll-tropiki/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2878',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => NULL,
+         'collection' => NULL,
+         'internalIndex' => 2,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+          ),
+           'changedValues' => 
+          array (
+          ),
+           'originalValues' => 
+          array (
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n3',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 1,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n2',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:51:52
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'MODULE' => 'catalog',
+      'BASE_PRICE' => '289.0000',
+      'CAN_BUY' => 'Y',
+      'VAT_RATE' => NULL,
+      'CUSTOM_PRICE' => 'N',
+      'PRODUCT_ID' => '2878',
+      'XML_ID' => 'bx_696a5e7d265d7',
+      'LID' => 's1',
+      'SORT' => '100',
+      'ID' => '199',
+      'FUSER_ID' => '1',
+      'ORDER_ID' => NULL,
+      'PRODUCT_PRICE_ID' => '866',
+      'PRICE_TYPE_ID' => '1',
+      'NAME' => 'Сладкий ролл Тропики',
+      'PRICE' => '289.0000',
+      'CURRENCY' => 'RUB',
+      'VAT_INCLUDED' => 'N',
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:25.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-01-16 18:51:25.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_REFRESH' => NULL,
+      'WEIGHT' => '0.00',
+      'QUANTITY' => '1.0000',
+      'DELAY' => 'N',
+      'MARKING_CODE_GROUP' => NULL,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'NOTES' => 'Розничная цена',
+      'DETAIL_PAGE_URL' => '/catalog/deserti/sladkiy-roll-tropiki/',
+      'DISCOUNT_PRICE' => '0.0000',
+      'CATALOG_XML_ID' => NULL,
+      'PRODUCT_XML_ID' => '2878',
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'SUBSCRIBE' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'BARCODE_MULTI' => 'N',
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'RECOMMENDATION' => NULL,
+    ),
+     'changedValues' => 
+    array (
+      'SORT' => true,
+    ),
+     'originalValues' => 
+    array (
+      'SORT' => NULL,
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '189.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2614',
+            'XML_ID' => 'bx_696a5e77a08e8',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '197',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '602',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Мини пончики с сахарной пудрой',
+            'PRICE' => '189.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:19.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/mini-ponchiki-s-sakharnoy-pudroy/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2614',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 0,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n1',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      1 => 
+      Bitrix\Sale\BasketItem::__set_state(array(
+         'fields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'MODULE' => 'catalog',
+            'BASE_PRICE' => '169.0000',
+            'CAN_BUY' => 'Y',
+            'VAT_RATE' => NULL,
+            'CUSTOM_PRICE' => 'N',
+            'PRODUCT_ID' => '2713',
+            'XML_ID' => 'bx_696a5e7a62028',
+            'LID' => 's1',
+            'SORT' => '100',
+            'ID' => '198',
+            'FUSER_ID' => '1',
+            'ORDER_ID' => NULL,
+            'PRODUCT_PRICE_ID' => '701',
+            'PRICE_TYPE_ID' => '1',
+            'NAME' => 'Пончик с вареной сгущенкой',
+            'PRICE' => '169.0000',
+            'CURRENCY' => 'RUB',
+            'VAT_INCLUDED' => 'N',
+            'DATE_INSERT' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:22.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_UPDATE' => 
+            Bitrix\Main\Type\DateTime::__set_state(array(
+               'value' => 
+              DateTime::__set_state(array(
+                 'date' => '2026-01-16 18:51:25.000000',
+                 'timezone_type' => 3,
+                 'timezone' => 'Europe/Moscow',
+              )),
+               'userTimeEnabled' => true,
+            )),
+            'DATE_REFRESH' => NULL,
+            'WEIGHT' => '0.00',
+            'QUANTITY' => '1.0000',
+            'DELAY' => 'N',
+            'MARKING_CODE_GROUP' => NULL,
+            'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+            'NOTES' => 'Розничная цена',
+            'DETAIL_PAGE_URL' => '/catalog/deserti/ponchik-s-varenoy-sgushchenkoy/',
+            'DISCOUNT_PRICE' => '0.0000',
+            'CATALOG_XML_ID' => NULL,
+            'PRODUCT_XML_ID' => '2713',
+            'DISCOUNT_NAME' => NULL,
+            'DISCOUNT_VALUE' => NULL,
+            'DISCOUNT_COUPON' => NULL,
+            'SUBSCRIBE' => 'N',
+            'RESERVED' => 'N',
+            'RESERVE_QUANTITY' => NULL,
+            'BARCODE_MULTI' => 'N',
+            'DIMENSIONS' => 'a:3:{s:5:"WIDTH";N;s:6:"HEIGHT";N;s:6:"LENGTH";N;}',
+            'TYPE' => NULL,
+            'SET_PARENT_ID' => NULL,
+            'MEASURE_CODE' => '796',
+            'MEASURE_NAME' => 'шт',
+            'CALLBACK_FUNC' => NULL,
+            'ORDER_CALLBACK_FUNC' => NULL,
+            'CANCEL_CALLBACK_FUNC' => NULL,
+            'PAY_CALLBACK_FUNC' => NULL,
+            'RECOMMENDATION' => NULL,
+          ),
+           'changedValues' => 
+          array (
+            'SORT' => true,
+            'DIMENSIONS' => true,
+          ),
+           'originalValues' => 
+          array (
+            'SORT' => NULL,
+            'DIMENSIONS' => 
+            array (
+              'WIDTH' => NULL,
+              'HEIGHT' => NULL,
+              'LENGTH' => NULL,
+            ),
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'eventName' => 'SaleBasketItem',
+         'collection' => NULL,
+         'internalIndex' => 1,
+         'isClone' => false,
+         'propertyCollection' => NULL,
+         'calculatedFields' => 
+        Bitrix\Sale\Internals\Fields::__set_state(array(
+           'values' => 
+          array (
+            'DISCOUNT_LIST' => 
+            array (
+            ),
+          ),
+           'changedValues' => 
+          array (
+            'DISCOUNT_LIST' => true,
+          ),
+           'originalValues' => 
+          array (
+            'DISCOUNT_LIST' => NULL,
+          ),
+           'customFields' => 
+          array (
+          ),
+           'isClone' => false,
+        )),
+         'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+         'internalId' => 'n2',
+         'bundleCollection' => NULL,
+         'reserveQuantityCollection' => 
+        Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+           'collection' => 
+          array (
+          ),
+           'index' => -1,
+           'isClone' => false,
+           'anyItemDeleted' => false,
+           'anyItemAdded' => false,
+           'basketItem' => NULL,
+        )),
+      )),
+      2 => NULL,
+    ),
+     'index' => 2,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => NULL,
+     'basketItemIndexMap' => 
+    array (
+      'n1' => 0,
+      'n2' => 1,
+      'n3' => 2,
+    ),
+     'maxItemSort' => 300,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 2,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 'n3',
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/php_interface/init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/event.php:142
+#5: Bitrix\Main\Event->send
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/sale/lib/basket/baserefreshstrategy.php:177
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:53:01
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 09:53:01
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:20:30
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:20:30
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:22:02
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:22:02
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:22:59
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b56745ab-fbfd-44c4-843f-69b7e557fcfa',
+    'polygonName' => 'Пушкина Дёма',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 0.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7465e13b-c5ae-07ef-4d7b-754f7c958324',
+      'name' => 'Доставка 429',
+      'price' => 429.0,
+      'externalId' => '1002054',
+      'externalCode' => '489',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:23:07
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b56745ab-fbfd-44c4-843f-69b7e557fcfa',
+    'polygonName' => 'Пушкина Дёма',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 0.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7465e13b-c5ae-07ef-4d7b-754f7c958324',
+      'name' => 'Доставка 429',
+      'price' => 429.0,
+      'externalId' => '1002054',
+      'externalCode' => '489',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:23:07
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:23:07
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:23:10
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b56745ab-fbfd-44c4-843f-69b7e557fcfa',
+    'polygonName' => 'Пушкина Дёма',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 0.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7465e13b-c5ae-07ef-4d7b-754f7c958324',
+      'name' => 'Доставка 429',
+      'price' => 429.0,
+      'externalId' => '1002054',
+      'externalCode' => '489',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:23:16
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'b8e2e229-3204-4d8c-8483-79f5ab737fc7',
+    'polygonName' => 'Пушкина Проспект центральная часть',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:34:52
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:34:52
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:35:14
+array (
+  'result' => 
+  array (
+    'restaurantId' => '99b0ebfc-b9ec-4c33-b40a-8b86a15a529c',
+    'restaurantName' => 'Рыба закусывала на Пушкина',
+    'polygonId' => 'ebfefcd7-f669-4f8a-9b01-a8b226dc8a6a',
+    'polygonName' => 'Пушкина Проспект южная часть',
+    'legalAddress' => 'ул Пушкина, 54',
+    'objectId' => 476990001,
+    'corporationId' => 'f994e826-0e9c-4b66-bce8-249e276becc5',
+    'minOrderAmountDelivery' => 100.0,
+    'minOrderAmountFreeDelivery' => 3000.0,
+    'amountDelivery' => 
+    array (
+      'id' => '7c670992-9df9-28fd-a2f1-7a242e0e8fa3',
+      'name' => 'Доставка 199',
+      'price' => 199.0,
+      'externalId' => '1001919',
+      'externalCode' => '455',
+      'isActive' => true,
+      'attentionText' => NULL,
+    ),
+    'deliveryTime' => 5400,
+    'priority' => 0,
+    'typeOfTransportIds' => 
+    array (
+      0 => 'ownCar',
+    ),
+    'courierServices' => NULL,
+    'isActive' => true,
+  ),
+)
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/delivery.php:29
+#1: Ldo\Rkeeper\Delivery->getPrice
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/components/ldo/map.delivery/class.php:46
+#2: CDeliveryMap->sendFormAction
+	
+#3: ReflectionMethod->invokeArgs
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/autowire/binder.php:210
+#4: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/action.php:117
+#5: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/engine/component/inlineaction.php:60
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:35:55
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:35:55
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:37:45
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:37:45
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:38:47
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:38:47
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:41:03
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:41:03
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:42:04
+updateCategory
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: arlusyzm.beget.tech
+Date: 2026-01-23 10:42:04
+updateProducts
+#0: AddMessage2Log
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/local/modules/ldo.rkeeper/lib/agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php(508) : eval()'d code:1
+#2: eval
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:508
+#3: CAllAgent::ExecuteAgents
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/classes/general/agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	/home/a/arlusyzm/arlusyzm.beget.tech/public_html/bitrix/modules/main/lib/application.php:845
+----------
+Host: riba
+Date: 2026-01-23 11:17:01
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-01-23 11:17:01
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------

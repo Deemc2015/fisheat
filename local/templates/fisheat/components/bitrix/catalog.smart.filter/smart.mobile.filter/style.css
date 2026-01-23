@@ -1,0 +1,184 @@
+:root {
+  --c0: #4F4959;
+  --c1: #FBC500;
+  --c2: #04B957;
+  --c3: #E9F1F4;
+  --c4: #4285F4;
+  --c5: #D23113;
+  --animation1: all .25s ease-out; }
+
+.smart-filter {}
+  @media (max-width: 768px) {
+    .smart-filter {
+      padding: 15px 15px 0px 15px; } }
+  .smart-filter_title {
+    font-weight: bold;
+    margin: 0px 0px 10px 0px;
+    font-size: 16px;
+    color: var(--c0); }
+
+    .smart-filter-parameters-box .bx_filter_block_expanded {
+      display: none; }
+    .smart-filter-parameters-box.bx-active .bx_filter_block_expanded {
+      display: block; }
+  .smart-filter-digits {
+    display: flex;
+    justify-content: space-between; }
+    .smart-filter-digits input {
+      width: 48%;
+      text-align: center;
+      background: #fff;
+      border: none;
+      height: 40px; }
+  .smart-filter_radio input {
+    display: none;
+    position: absolute;
+    left: -9999999999px; }
+  .smart-filter_radio label {
+    height: 30px;
+    line-height: 30px;
+    margin: 0ex 3px 3px 0px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0px 12px;
+    background: #fff;
+    color: var(--c0); }
+  .smart-filter_radio input:checked + label {
+    background: var(--c0);
+    color: #ffffff; }
+  .smart-filter_checkbox input {
+    display: none;
+    position: absolute;
+    left: -9999999999px; }
+  .smart-filter_checkbox label {
+    display: flex;
+    color: var(--c0); }
+    .smart-filter_checkbox label span {}
+      .smart-filter_checkbox label span:first-letter {
+        text-transform: uppercase; }
+    .smart-filter_checkbox label i {
+      width: 17px;
+      position: relative;
+      bottom: -4px;
+      height: 17px;
+      background: url("images/checkbox2.svg") no-repeat;
+      background-position: bottom; }
+  .smart-filter_checkbox input:checked + label i {
+    background-position: top; }
+  .smart-filter_bottons {
+    margin: 10px 0px 30px 0px;}
+    @media (max-width: 768px) {
+      .smart-filter_bottons {
+        margin: 0px 15px 15px 15px; } }
+
+
+  .smart-filter-container-modef {
+    position: relative;
+    width: 100%;
+    display: block;
+    clear: both; }
+  .smart-filter-popup-result {
+    position: absolute;
+    right: -90%;
+    z-index: 1000;
+    width: 170px;
+    height: 57px;
+    line-height: 22px;
+    padding: 6px 0px 0px 20px;
+    box-shadow: 0px 0px 10px #999;
+    background: #fff1b2; }
+    @media (max-width: 768px) {
+      .smart-filter-popup-result {
+        display: none !important; } }
+    .smart-filter-popup-result a {
+      color: var(--c4);
+      text-decoration: underline;
+      display: block; }
+
+.smart-filter-slider-track-container {
+  overflow: hidden;
+  padding: 20px 10px 10px 10px; }
+.smart-filter-slider-track {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: #E1E1E1; }
+.smart-filter-slider-ruler {
+  position: absolute;
+  top: -6px;
+  width: 1px;
+  height: 17px;
+  background: #a2bfc7; }
+.smart-filter-slider-ruler span {}
+.smart-filter-slider-range {
+  z-index: 50; }
+.smart-filter-slider-range, .smart-filter-slider-price-bar, .smart-filter-slider-price-bar-vd, .smart-filter-slider-price-bar-vn, .smart-filter-slider-price-bar-v {
+  position: absolute;
+  top: 0;
+  bottom: 0; }
+.smart-filter-slider-price-bar-v {
+  background: var(--c0); }
+.smart-filter-slider-handle {
+  position: absolute;
+  top: 100%;
+  margin-top: -9px;
+  width: 15px;
+  z-index: 100;
+  height: 15px;
+  background: #F28F00;
+  border-radius: 100%; }
+.smart-filter-slider-handle:hover {
+  cursor: grab;
+  z-index: 110; }
+.smart-filter-slider-handle:active {
+  cursor: grabbing;
+  z-index: 110; }
+.smart-filter-slider-handle.left {
+  left: 0;
+  margin-left: -5px; }
+.smart-filter-slider-handle.right {
+  right: 0;
+  margin-right: -5px; }
+
+.mobile_filter_button {
+  display: none; }
+  @media (max-width: 768px) {
+    .mobile_filter_button {
+      display: block;
+      width: 100%;
+      top: 10px;
+      background: var(--c0);
+      border-radius: 2px;
+      color: #ffffff;
+      border: none;
+      height: 45px;
+      margin-bottom: 20px; } }
+@media (max-width: 768px) {
+  .mobile_filter_panel {
+    position: fixed;
+    overflow-y: scroll;
+    width: 270px;
+    height: 100vh;
+    background: var(--c3);
+    top: 0;
+    left: -270px;
+    z-index: 1000;
+    transition: var(--animation1); } }
+.mobile_filter_panel_show {
+  left: 0; }
+@media (max-width: 768px) {
+  .mobile_filter_panel_over {
+    position: fixed;
+    transition: var(--animation1);
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    display: none;
+    z-index: 900;
+    background: rgba(0, 0, 0, 0.7); }
+    .mobile_filter_panel_over_show {
+      display: block; } }
+
+/*# sourceMappingURL=style.css.map */

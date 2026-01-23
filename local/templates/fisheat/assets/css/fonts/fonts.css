@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'Blogger Sans';
+    src: url('Blogger Sans.ttf');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Inter-Bold';
+    src: url('Inter-Bold.otf');
+}
+
+@font-face {
+    font-family: 'MyriadPro-Light';
+    src: url('MyriadPro-Light.otf');
+}
+
+@font-face {
+	font-family: 'Inter Light';
+	src: url('inter_light.eot'); /* IE 9 Compatibility Mode */
+	src: url('inter_light.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('inter_light.woff2') format('woff2'), /* Super Modern Browsers */
+		url('inter_light.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('inter_light.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('inter_light.svg#inter_light') format('svg'); /* Chrome < 4, Legacy iOS */
+}

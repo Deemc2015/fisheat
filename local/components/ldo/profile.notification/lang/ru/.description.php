@@ -1,0 +1,4 @@
+<?
+$MESS ['LDO_NOTIFICATION_NAME'] = "Уведомления";
+$MESS ['LDO_NOTIFICATION_DESC'] = "Настройка уведомлений";
+$MESS ['LDO_NOTIFICATION_SECTION_COMPONENTS'] = "LDO";

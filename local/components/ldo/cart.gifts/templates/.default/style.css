@@ -1,0 +1,29 @@
+.gifts-block{
+    position:fixed;
+    right: 12px;
+    width: 34px;
+    top:150px;
+}
+.progress-block{
+    height: 328px;
+    width: 22px;
+    border:1px solid #969696;
+    border-radius:3px;
+    overflow: hidden;
+}
+.progress-line{
+    background: url('img/progress-line.png') no-repeat;
+    height: 100%;
+    margin: 3px 4px;
+    position: relative;
+}
+.progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: #1b1818;
+    transition: width 0.8s ease-in-out;
+    border-radius: 0;
+}

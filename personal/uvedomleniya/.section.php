@@ -1,0 +1,6 @@
+<?
+$sSectionName = "Уведомления";
+$arDirProperties = Array(
+
+);
+?>
