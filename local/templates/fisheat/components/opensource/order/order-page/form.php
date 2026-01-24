@@ -81,18 +81,53 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     <div class="right-order-page">
         <div class="delivery-block">
             <?if($arResult['DELIVERY_LIST']):?>
-            <?foreach($arResult['DELIVERY_LIST'] as $itemDelivery):?>
+                <div class="delivery-block__butons">
+            <?
+            $i == 1;
+            foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
+                $i++;
+                ?>
 
                     <label for="code-<?=$itemDelivery['ID']?>">
-                        <input type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
+                        <input <?if($i == 1){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
                         <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
                     </label>
 
             <?endforeach;?>
+                </div>
             <?endif?>
+            <?if(1==1):?>
+
+            <?endif;?>
+            <div class="adress-user-list">
+                <div class="adress-user-list__item">
+                    <label for="adress-user-list__item-name-1">
+                        <input name="address_id" type="radio" id="adress-user-list__item-name-1" value="1">
+                        <span></span>
+                        Максима Горького ул, д. 44, кв. 90
+                    </label>
+                    <div class="adress-user-list__item-btn">
+                        <div class="adress-user-list__item-btn-edit"></div>
+                        <div class="adress-user-list__item-btn-delete"></div>
+                    </div>
+                </div>
+                <div class="adress-user-list__item">
+                    <label for="adress-user-list__item-name-2">
+                        <input name="address_id" type="radio" id="adress-user-list__item-name-2" value="2">
+                        <span></span>
+                        Максима Горького ул, д. 44, кв. 90
+                    </label>
+                    <div class="adress-user-list__item-btn">
+                        <div class="adress-user-list__item-btn-edit"></div>
+                        <div class="adress-user-list__item-btn-delete"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="addAdress-user">Добавить адрес</div>
         </div>
     </div>
 </div>
+
 
 
     <input type="hidden" name="person_type_id" value="<?=$arParams['PERSON_TYPE_ID']?>">
