@@ -1867,4 +1867,6 @@ footer .copyright{
 .right-order-page .addAdress-user:hover{
     opacity:0.7;
 }
-
+.hidden-pk{
+    display: none;
+}

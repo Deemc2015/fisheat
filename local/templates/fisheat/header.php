@@ -45,8 +45,13 @@ $left_menu = $APPLICATION->GetProperty("left_menu");
 <header>
     <div class="container">
         <div class="header">
-            <div class="top-header">
-                <div class="top-menu">
+            <div class="mobile-head hidden-pk">
+                <div class="burger"></div>
+                <a href="/" class="logo-mobile"></a>
+                <div class="mobile-menu"></div>
+            </div>
+            <div class="top-header hidden-mobile">
+                <div class="top-menu ">
                     <?$APPLICATION->IncludeComponent("bitrix:menu", "top-menu", Array(
                     	"ALLOW_MULTI_SELECT" => "N",	// Разрешить несколько активных пунктов одновременно
                     		"CHILD_MENU_TYPE" => "left",	// Тип меню для остальных уровней
@@ -65,13 +70,13 @@ $left_menu = $APPLICATION->GetProperty("left_menu");
                     );?>
                    
                 </div>
-                <div class="location">Уфа</div>
-                <div class="top-header__right">
+                <div class="location hidden-mobile">Уфа</div>
+                <div class="top-header__right hidden-mobile">
                     <a href="tel:" class="phone">8 (917) 041 29 29</a>
                     <div class="time-work">12:00 - 22:30</div>
                 </div>
             </div>
-            <div class="bottom-header">
+            <div class="bottom-header hidden-mobile">
                 <a href="/" class="logo"></a>
                 <div class="search-block">
                     <?$APPLICATION->IncludeComponent(

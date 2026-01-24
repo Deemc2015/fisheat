@@ -20,16 +20,51 @@
 
 @media (max-width:1440px) {
     .container {
-        max-width: 1320px;
+        max-width: 1200px;
+    }
+    .search-block #title-search-input{
+        width: 530px;
     }
 }
 
-@media (max-width:1340px) {
-    .container {
-        max-width: 1160px;
-    }
-}
 
 @media (max-width:1200px) {
+    .container {
+        max-width: 960px;
+    }
+}
 
+@media (max-width:768px) {
+    .hidden-mobile{
+        display: none;
+    }
+    .hidden-pk{
+        display: block;
+    }
+    .header{
+        border-radius:0;
+        padding: 0;
+    }
+    .mobile-head .burger{
+        background: url('../images/burger-icon.svg') no-repeat;
+        width: 25px;
+        height: 19px;
+    }
+    .mobile-head .logo-mobile{
+        background: url('../images/logo-mobile.svg') no-repeat;
+        width: 140px;
+        display: block;
+        height: 38px;
+    }
+    .mobile-head .mobile-menu{
+        width: 25px;
+        height: 23px;
+        background: url('../images/menu-icon.svg') no-repeat;
+    }
+    .mobile-head{
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        align-items:center;
+    }
 }
