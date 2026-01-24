@@ -12,6 +12,11 @@ Thumbs.db
 ._.DS_Store
 /robots.txt
 .ssh
+.lesshst
+.gitconfig
+.bash_history
+log.txt
+.cache
 /bitrix/.settings.php
 /bitrix/activities/
 /bitrix/admin/
