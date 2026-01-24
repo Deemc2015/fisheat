@@ -67,7 +67,6 @@ $APPLICATION->SetTitle("Главная");
 	),
 	false
 );?>
-
 <section >
     <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.section", 
