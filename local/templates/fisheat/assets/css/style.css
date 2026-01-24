@@ -1766,3 +1766,8 @@ footer .copyright{
 .link-aplication .appstore{
     background: url('../images/appstore.png') no-repeat;
 }
+/*Оформление заказа*/
+.right-order-page .delivery-block{
+    background: #2B2D2F;
+    color:#ffffff;
+}

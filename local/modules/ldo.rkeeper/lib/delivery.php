@@ -26,8 +26,6 @@ class Delivery
                 return $resultData;
             }
 
-            addMessage2Log($result);
-
             $resultData = [
                 'restaurant_id' => $result['result']['restaurantId'],
                 'restaurant_name' => $result['result']['restaurantName'],
