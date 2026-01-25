@@ -39,33 +39,15 @@ use \Ldo\Develop\Pages;
     /*Определение мобильного устройства*/
     $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
 
-    /*Определение детальной карточки товара*/
-
-    /*$currentPage = $APPLICATION->GetCurPage(true);
-    $productPage = false;
-    if(CModule::IncludeModule("iblock")) {
-        if (CSite::InDir('/catalog/')) { // проверяем, что мы в каталоге
-            $currentPath = str_replace('/index.php', '', $currentPage);
-            $pathParts   = explode('/', trim($currentPath, '/'));
-            if (!empty($pathParts)) {
-                $productCode = end($pathParts);
-                $productPage = CIBlockElement::GetList(array(), array("IBLOCK_ID" => 4, "CODE" => $productCode), false, array("nPageSize" => 1), array('ID'))->SelectedRowsCount();
-            }
-        }
-    }*/
-    if(Loader::IncludeModule('ldo.develop')){
-        $isproductPage = Pages::isDetailProduct(4);
-    }
-
-
 ?>
 </head>
 
 <?$APPLICATION->ShowPanel()?>
 <body>
 
-<header class="<?if($isMobile && $isproductPage){echo 'detail-page-product-header';}?>">
+<header>
     <div class="container">
+
         <div class="header">
             <?if($isMobile):?>
             <div class="mobile-head hidden-pk">

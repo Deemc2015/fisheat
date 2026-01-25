@@ -60,6 +60,7 @@
     }
     .container-detail-page{
         margin: 0 -24px;
+        margin-top: -48px;
     }
     .product-item-detail-slider-container{
         width: 100%;
@@ -250,8 +251,14 @@
     .detail-page-product-header{
         display: none;
     }
-    .container-detail-page{
-        margin-top: -48px;
+    a.return-btn-detail{
+        background: url('../images/return-detail.png') no-repeat;
+        width: 42px;
+        height: 42px;
+        display: block;
+        position:absolute;
+        top:24px;
+        left: 12px;
     }
 }
 @media (max-width:576px) {

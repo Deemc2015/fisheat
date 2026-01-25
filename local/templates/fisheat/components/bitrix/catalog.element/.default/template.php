@@ -215,7 +215,10 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 	}
 }
 
-print_r($arResult['QQ']);
+
+?>
+<?
+$isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
 ?>
 
 <div class="bx-catalog-element bx-<?=$arParams['TEMPLATE_THEME']?>" id="<?=$itemIds['ID']?>"
@@ -227,6 +230,14 @@ print_r($arResult['QQ']);
 					<div class="product-item-detail-slider-block
 						<?=($arParams['IMAGE_RESOLUTION'] === '1by1' ? 'product-item-detail-slider-block-square' : '')?>"
 						data-entity="images-slider-block">
+
+                        <?if($isMobile):?>
+
+                            <?if($_SERVER["HTTP_REFERER"]):?>
+                                <a href="javascript::void()"  onclick="window.history.back();" class="return-btn-detail"></a>
+                            <?endif?>
+                        <?endif?>
+
                         <div class="tag-detail-list">
                             <?if($new):?>
                                 <span title="Новинка" class="new"></span>
@@ -281,9 +292,7 @@ print_r($arResult['QQ']);
                                     ?>
 									<div class="product-item-detail-slider-image<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=$photoNew['ID']?>">
 										<img src="<?=$photoNew['src']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
-                                        <?
-                                        print_r($isMobile);
-                                        ?>
+
 									</div>
 									<?php
 								}
@@ -321,6 +330,9 @@ print_r($arResult['QQ']);
 
                     </div>
                 </div>
+                <?endif?>
+                <?if($isMobile):?>
+                    <h1 class="title-product"><?=$arResult['NAME'];?></h1>
                 <?endif?>
 			    <?if($arResult['DETAIL_TEXT']):?>
 			    <div class="description-block">
