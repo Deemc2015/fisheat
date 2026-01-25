@@ -165,7 +165,7 @@ $left_menu = $APPLICATION->GetProperty("left_menu");
 <div class="container">
     <div class="wrapper">
         <?if($left_menu == 'Y'):?>
-        <aside>
+        <aside class="hidden-mobile">
             <div data-mcs-theme="minimal" class="block-menu mycustom-scroll">
                 <?$APPLICATION->IncludeComponent(
         "bitrix:catalog.section.list",

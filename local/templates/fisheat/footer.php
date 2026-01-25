@@ -78,7 +78,47 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 );?>
 <?endif;?>
 <footer>
-    <div class="top-line">
+
+    <div class="mobile-footer">
+        <div class="mobile-footer__left">
+            <a href="/" class="home-icon"></a>
+            <div class="search-footer-link"></div>
+        </div>
+        <div class="mobile-footer__right">
+            <a href="/personal/" class="personal-link-footer"></a>
+            <a href="/izbrannye-tovary/" class="wish-link-footer">4</a>
+        </div>
+    </div>
+
+    <?$APPLICATION->IncludeComponent(
+        "bitrix:sale.basket.basket.line",
+        "header-mobile",
+        array(
+            "HIDE_ON_BASKET_PAGES" => "Y",
+            "PATH_TO_AUTHORIZE" => "",
+            "PATH_TO_BASKET" => "/oformlenie-zakaza/",
+            "PATH_TO_ORDER" => "/oformlenie-zakaza/",
+            "PATH_TO_PERSONAL" => SITE_DIR."personal/",
+            "PATH_TO_PROFILE" => SITE_DIR."personal/",
+            "PATH_TO_REGISTER" => SITE_DIR."login/",
+            "POSITION_FIXED" => "N",
+            "SHOW_AUTHOR" => "N",
+            "SHOW_EMPTY_VALUES" => "Y",
+            "SHOW_NUM_PRODUCTS" => "Y",
+            "SHOW_PERSONAL_LINK" => "Y",
+            "SHOW_PRODUCTS" => "N",
+            "SHOW_REGISTRATION" => "Y",
+            "SHOW_TOTAL_PRICE" => "Y",
+            "COMPONENT_TEMPLATE" => "header-cart"
+        ),
+        false
+    );?>
+
+
+
+
+
+    <div class="top-line hidden-mobile">
         <div class="left-footer">
             <a href="/" class="footer-logo"></a>
         </div>
@@ -109,7 +149,7 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
             </div>
         </div>
     </div>
-    <div class="bottom-line">
+    <div class="bottom-line hidden-mobile">
         <a href="" class="politika">Политика конфиденциальности</a>
         <span class="copyright">© 2010 - <?=Date('Y');?> Рыба закусывала</span>
         <a href="" class="politika-two">Политика cookie</a>

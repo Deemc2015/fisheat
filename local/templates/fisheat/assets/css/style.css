@@ -1868,5 +1868,5 @@ footer .copyright{
     opacity:0.7;
 }
 .hidden-pk{
-    display: none;
+    display: none !important;
 }

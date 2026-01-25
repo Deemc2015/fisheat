@@ -36,10 +36,10 @@
 
 @media (max-width:768px) {
     .hidden-mobile{
-        display: none;
+        display: none !important;
     }
     .hidden-pk{
-        display: block;
+        display: block !important;
     }
     .header{
         border-radius:0;
@@ -61,10 +61,85 @@
         height: 23px;
         background: url('../images/menu-icon.svg') no-repeat;
     }
-    .mobile-head{
-        display: flex;
+    .mobile-head.hidden-pk{
+        display: flex !important;
         justify-content: space-between;
         padding: 12px;
         align-items:center;
+    }
+    section#slider-index{
+        margin: 0 12px;
+    }
+    section{
+        background: transparent;
+    }
+    .product-item-container{
+        background: #2B2D2F;
+    }
+    footer{
+        background: url('../images/footer-bg.png') transparent;
+        background-position:  center bottom;
+        background-repeat:no-repeat;
+        border-radius:0;
+        position:fixed;
+        bottom:0px;
+        width: 100%;
+
+    }
+    body{
+        margin-bottom: 0;
+    }
+    footer a.cart-page{
+        display: inline-block;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 21px;
+        margin: 0 auto;
+        width: 87px;
+    }
+    footer .cart-page span{
+        width: 12px;
+        height: 12px;
+        font-size:11px;
+        top: 25px;
+        right: 20px;
+    }
+    .mobile-footer{
+        display: flex;
+        justify-content: space-between;
+    }
+    footer .home-icon{
+        background: url('../images/home-icon.svg') no-repeat;
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin-right: 48px;
+    }
+    footer .search-footer-link{
+        background: url('../images/search-icon-footer.svg') no-repeat;
+        width: 26px;
+        height: 26px;
+    }
+    footer .personal-link-footer{
+        background: url('../images/user-icon.svg') no-repeat;
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin-right: 48px;
+    }
+    footer .wish-link-footer{
+        background: url('../images/heart-icon-footer.svg') no-repeat;
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+    footer .mobile-footer__left,footer .mobile-footer__right{
+        display: flex;
+    }
+    footer{
+        padding-right: 24px;
+        padding-left: 24px;
+        padding-bottom: 34px;
     }
 }
