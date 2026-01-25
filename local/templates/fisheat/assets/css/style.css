@@ -23,7 +23,7 @@ asside .block-menu::-webkit-scrollbar {
     opacity: 0;
 }
 body{
-    font-family: 'Blogger Sans';
+    font-family: 'Blogger Sans','Roboto';
     background: var(--bg-black);
     color:var(--bg-white);
     font-size: 16px;

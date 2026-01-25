@@ -23,3 +23,8 @@
 		url('inter_light.ttf') format('truetype'), /* Safari, Android, iOS */
 		url('inter_light.svg#inter_light') format('svg'); /* Chrome < 4, Legacy iOS */
 }
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto.ttf');
+}
