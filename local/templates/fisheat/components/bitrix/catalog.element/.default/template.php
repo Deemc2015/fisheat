@@ -281,6 +281,9 @@ print_r($arResult['QQ']);
                                     ?>
 									<div class="product-item-detail-slider-image<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=$photoNew['ID']?>">
 										<img src="<?=$photoNew['src']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                                        <?
+                                        print_r($isMobile);
+                                        ?>
 									</div>
 									<?php
 								}

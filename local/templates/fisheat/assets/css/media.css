@@ -59,7 +59,7 @@
         display: block;
     }
     .container-detail-page{
-        margin: 0 -12px;
+        margin: 0 -24px;
     }
     .product-item-detail-slider-container{
         width: 100%;
@@ -247,8 +247,17 @@
         left: 20px;
         top: 20px;
     }
+    .detail-page-product-header{
+        display: none;
+    }
+    .container-detail-page{
+        margin-top: -48px;
+    }
 }
 @media (max-width:576px) {
+    .container-detail-page{
+        margin: 0 -12px;
+    }
     .search-mobile{
         padding: 0 12px;
     }
@@ -257,6 +266,7 @@
     }
     section{
         padding: 0 12px;
+        margin-top: 0;
     }
     .slider-index-product .slick-slide {
         padding: 0 6px;
