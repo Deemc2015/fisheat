@@ -33,7 +33,7 @@ $CONTAINER_ID = CUtil::JSEscape($CONTAINER_ID);
 if ($arParams['SHOW_INPUT'] !== 'N'):?>
 	<div id="<?php echo $CONTAINER_ID?>">
 	<form action="<?php echo $arResult['FORM_ACTION']?>">
-		<input id="<?php echo $INPUT_ID?>" type="text" name="q" value="" size="40" maxlength="50" autocomplete="off" placeholder="Поиск по сайту" />
+		<input id="<?php echo $INPUT_ID?>" type="text" name="q" value="" size="40" maxlength="50" autocomplete="off" placeholder="Что будем искать?" />
        <!-- <button name="s" type="submit" > </button> -->
 	</form>
 	</div>

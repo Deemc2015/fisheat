@@ -50,33 +50,7 @@ $left_menu = $APPLICATION->GetProperty("left_menu");
                 <a href="/" class="logo-mobile"></a>
                 <div class="mobile-menu"></div>
             </div>
-            <div class="search-mobile hidden-pk">
-                <?$APPLICATION->IncludeComponent(
-                    "bitrix:search.title",
-                    "top-search-mobile",
-                    array(
-                        "COMPONENT_TEMPLATE" => "top-search",
-                        "NUM_CATEGORIES" => "1",
-                        "TOP_COUNT" => "10",
-                        "ORDER" => "date",
-                        "USE_LANGUAGE_GUESS" => "Y",
-                        "CHECK_DATES" => "N",
-                        "SHOW_OTHERS" => "N",
-                        "PAGE" => "#SITE_DIR#search/index.php",
-                        "SHOW_INPUT" => "Y",
-                        "INPUT_ID" => "title-search-input",
-                        "CONTAINER_ID" => "title-search",
-                        "CATEGORY_0_TITLE" => "",
-                        "CATEGORY_0" => array(
-                            0 => "iblock_catalog",
-                        ),
-                        "CATEGORY_0_iblock_catalog" => array(
-                            0 => "4",
-                        )
-                    ),
-                    false
-                );?>
-            </div>
+
             <div class="top-header hidden-mobile">
                 <div class="top-menu ">
                     <?$APPLICATION->IncludeComponent("bitrix:menu", "top-menu", Array(
