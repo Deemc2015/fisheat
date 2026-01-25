@@ -170,46 +170,47 @@ use \Ldo\Favorites\Favorites;
 <div class="container">
     <div class="wrapper">
         <?if($left_menu == 'Y'):?>
-
-        <aside class="hidden-mobile">
-            <div data-mcs-theme="minimal" class="block-menu mycustom-scroll">
-                <?$APPLICATION->IncludeComponent(
-        "bitrix:catalog.section.list",
-        "product-menu",
-        array(
-            "ADDITIONAL_COUNT_ELEMENTS_FILTER" => "additionalCountFilter",
-            "ADD_SECTIONS_CHAIN" => "N",
-            "CACHE_FILTER" => "N",
-            "CACHE_GROUPS" => "Y",
-            "CACHE_TIME" => "36000000",
-            "CACHE_TYPE" => "A",
-            "COUNT_ELEMENTS" => "N",
-            "COUNT_ELEMENTS_FILTER" => "CNT_ACTIVE",
-            "FILTER_NAME" => "sectionsFilter",
-            "HIDE_SECTIONS_WITH_ZERO_COUNT_ELEMENTS" => "N",
-            "IBLOCK_ID" => "4",
-            "IBLOCK_TYPE" => "catalog",
-            "SECTION_CODE" => "",
-            "SECTION_FIELDS" => array(
-                0 => "NAME",
-                1 => "PICTURE",
-                2 => "",
+        <?if(!$isMobile):?>
+            <aside class="hidden-mobile">
+                <div data-mcs-theme="minimal" class="block-menu mycustom-scroll">
+                    <?$APPLICATION->IncludeComponent(
+            "bitrix:catalog.section.list",
+            "product-menu",
+            array(
+                "ADDITIONAL_COUNT_ELEMENTS_FILTER" => "additionalCountFilter",
+                "ADD_SECTIONS_CHAIN" => "N",
+                "CACHE_FILTER" => "N",
+                "CACHE_GROUPS" => "Y",
+                "CACHE_TIME" => "36000000",
+                "CACHE_TYPE" => "A",
+                "COUNT_ELEMENTS" => "N",
+                "COUNT_ELEMENTS_FILTER" => "CNT_ACTIVE",
+                "FILTER_NAME" => "sectionsFilter",
+                "HIDE_SECTIONS_WITH_ZERO_COUNT_ELEMENTS" => "N",
+                "IBLOCK_ID" => "4",
+                "IBLOCK_TYPE" => "catalog",
+                "SECTION_CODE" => "",
+                "SECTION_FIELDS" => array(
+                    0 => "NAME",
+                    1 => "PICTURE",
+                    2 => "",
+                ),
+                "SECTION_ID" => '',
+                "SECTION_URL" => "",
+                "SECTION_USER_FIELDS" => array(
+                    0 => "",
+                    1 => "",
+                ),
+                "SHOW_PARENT_NAME" => "Y",
+                "TOP_DEPTH" => "1",
+                "VIEW_MODE" => "LINE",
+                "COMPONENT_TEMPLATE" => "product-menu"
             ),
-            "SECTION_ID" => '',
-            "SECTION_URL" => "",
-            "SECTION_USER_FIELDS" => array(
-                0 => "",
-                1 => "",
-            ),
-            "SHOW_PARENT_NAME" => "Y",
-            "TOP_DEPTH" => "1",
-            "VIEW_MODE" => "LINE",
-            "COMPONENT_TEMPLATE" => "product-menu"
-        ),
-        false
-    );?>
-            </div>
-        </aside>
+            false
+        );?>
+                </div>
+            </aside>
+            <?endif;?>
         <?endif;?>
         
         <?if($left_menu == 'P'):?>
@@ -240,6 +241,10 @@ use \Ldo\Favorites\Favorites;
     <div class="content <?if($APPLICATION->GetCurPage(false) == '/personal/'){ echo 'privilegies-block' ;}?>">
 <? if ($APPLICATION->GetCurPage(false) !== '/'): ?>
 <section id="page" class="<?if($APPLICATION->GetCurPage(false) == '/personal/'){ echo 'personal-first' ;}?>">
+
+
+    <?if(!$isMobile):?>
+
     <div class="top-page">
         <h1 class="title-page"><?$APPLICATION->ShowTitle()?></h1>
         <div class="bread-link"><div class="bread-toggle"></div>   <?$APPLICATION->IncludeComponent(
@@ -255,6 +260,11 @@ use \Ldo\Favorites\Favorites;
 );?>
         </div>
     </div>
+
+    <?endif?>
+
+
+
 <? endif; ?>
 
     <? endif; ?>

@@ -2,6 +2,7 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Главная");
 ?>
+<?if($isMobile):?>
     <div class="search-mobile hidden-pk">
         <?$APPLICATION->IncludeComponent(
             "bitrix:search.title",
@@ -29,6 +30,7 @@ $APPLICATION->SetTitle("Главная");
             false
         );?>
     </div>
+<?endif?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list", 
 	"slider-index", 
