@@ -11,7 +11,6 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
 <?if($viewed_product == 'Y'):?>
 
-
     <?
     $APPLICATION->IncludeComponent(
 	"bitrix:catalog.products.viewed", 
@@ -79,6 +78,7 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 <?endif;?>
 <footer>
 
+<?if($isMobile):?>
     <div class="mobile-footer">
         <div class="mobile-footer__left">
             <a  href="/" class="home-icon <?if($APPLICATION->GetCurPage(false) == '/'){echo 'active';}?>"></a>
@@ -116,8 +116,7 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
 
 
-
-
+    <?else:?>
     <div class="top-line hidden-mobile">
         <div class="left-footer">
             <a href="/" class="footer-logo"></a>
@@ -154,6 +153,10 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         <span class="copyright">© 2010 - <?=Date('Y');?> Рыба закусывала</span>
         <a href="" class="politika-two">Политика cookie</a>
     </div>
+
+    <?endif?>
+
+
 
 </footer>
 </div>

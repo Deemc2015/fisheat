@@ -94,11 +94,11 @@
     }
     footer a.cart-page{
         display: inline-block;
-        position: fixed;
+        position: fixed !important;
         left: 0;
         right: 0;
         bottom: 21px;
-        margin: 0 auto;
+        margin: 0 auto !important;
         width: 87px;
     }
     footer .cart-page span{
@@ -198,6 +198,19 @@
         font-family: 'Blogger Sans', 'Roboto';
         font-size: 18px;
         padding: 20px 0;
+        padding-left: 47px;
+    }
+    .search-mobile form{
+        position:relative;
+    }
+    .search-mobile form:before{
+        content:'';
+        background: url('../images/search-icon-mobile.svg') no-repeat;
+        width: 18px;
+        height: 17px;
+        position: absolute;
+        left: 20px;
+        top: 20px;
     }
 }
 @media (max-width:576px) {
