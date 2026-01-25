@@ -358,7 +358,7 @@ print_r($arResult['QQ']);
 										?>
 										<div class="product-item-detail-info-container">
 										    <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
-										    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?> г.</div>
+										    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
 										    <?endif;?>
 											<?php
 											if ($arParams['SHOW_OLD_PRICE'] === 'Y')

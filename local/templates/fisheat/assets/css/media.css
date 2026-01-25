@@ -16,6 +16,20 @@
     .container {
         max-width: 1416px;
     }
+    .product-item-detail-slider-container {
+        width: 500px;
+        height: 500px;
+        overflow: hidden;
+        border-radius: 12px;
+        position: relative;
+    }
+    .container-detail-page .product-item-detail-pay-block{
+        margin-top: 24px;
+    }
+    .container-detail-page .title-block-desc {
+        font-size: 36px;
+        margin-bottom: 18px;
+    }
 }
 
 @media (max-width:1440px) {
@@ -24,6 +38,12 @@
     }
     .search-block #title-search-input{
         width: 530px;
+    }
+    .top-page{
+        display: block;
+    }
+    .bread-link{
+        margin-top: 12px;
     }
 }
 
@@ -35,6 +55,16 @@
 }
 
 @media (max-width:768px) {
+    .container-detail-page .row {
+        display: block;
+    }
+    .container-detail-page{
+        margin: 0 -12px;
+    }
+    .product-item-detail-slider-container{
+        width: 100%;
+        border-radius:0;
+    }
     div.title-search-result{
         border:none;
         height: 300px;
