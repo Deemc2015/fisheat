@@ -35,6 +35,9 @@
 }
 
 @media (max-width:768px) {
+    #slider-index .slick-slide{
+        height: 177px;
+    }
     .hidden-mobile{
         display: none !important;
     }
@@ -180,5 +183,16 @@
         position: absolute;
         left: 10px;
         bottom: -12px;
+    }
+}
+@media (max-width:576px) {
+    .product-item-container .desc-product{
+        display: none;
+    }
+    section{
+        padding: 0 12px;
+    }
+    .slider-index-product .slick-slide {
+        padding: 0 6px;
     }
 }
