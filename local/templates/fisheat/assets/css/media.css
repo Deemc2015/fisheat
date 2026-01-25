@@ -112,26 +112,30 @@
     footer .home-icon{
         background: url('../images/home-icon.svg') no-repeat;
         width: 24px;
-        height: 24px;
+        min-width: 24px;
+        height: 26px;
         display: block;
         margin-right: 48px;
     }
     footer .search-footer-link{
         background: url('../images/search-icon-footer.svg') no-repeat;
         width: 26px;
+        min-width: 26px;
         height: 26px;
     }
     footer .personal-link-footer{
         background: url('../images/user-icon.svg') no-repeat;
         width: 24px;
-        height: 24px;
+        min-width: 24px;
+        height: 26px;
         display: block;
         margin-right: 48px;
     }
     footer .wish-link-footer{
         background: url('../images/heart-icon-footer.svg') no-repeat;
         width: 24px;
-        height: 24px;
+        min-width: 24px;
+        height: 26px;
         display: block;
     }
     footer .mobile-footer__left,footer .mobile-footer__right{
@@ -141,5 +145,40 @@
         padding-right: 24px;
         padding-left: 24px;
         padding-bottom: 34px;
+    }
+    footer:before{
+        content: '';
+        height: 84px;
+        background: #2B2D2F;
+        display: block;
+        width: 26%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: -1
+    }
+    footer:after{
+        content: '';
+        height: 84px;
+        background: #2B2D2F;
+        display: block;
+        width: 26%;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: -1
+    }
+    .mobile-footer a{
+        position:relative;
+    }
+    .mobile-footer a.active:after{
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: #FF1616;
+        border-radius: 50%;
+        position: absolute;
+        left: 10px;
+        bottom: -12px;
     }
 }
