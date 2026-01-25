@@ -334,9 +334,18 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                 <?if($isMobile):?>
                     <h1 class="title-product"><?=$arResult['NAME'];?></h1>
                 <?endif?>
+
+                <div class="after-title-product">
+                    <div class="after-title-product__price"><?=$price['PRINT_RATIO_PRICE']?></div>
+                    <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
+                        <div class="after-title-product__weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
+                    <?endif;?>
+
+                </div>
+
 			    <?if($arResult['DETAIL_TEXT']):?>
 			    <div class="description-block">
-    			    <div class="title-block-desc">Описание<span></span></div>
+    			    <?if(!$isMobile):?><div class="title-block-desc">Описание<span></span></div><?endif?>
     			    <div class="text-block-desc"><p><?=$arResult['DETAIL_TEXT'];?></p></div>
 			    <?endif;?>
 			    
@@ -469,31 +478,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 												}
 												?>
 											</div>
-											<?php
-											if ($showSubscribe)
-											{
-												?>
-												<div class="product-item-detail-info-container">
-													<?php
-													$APPLICATION->IncludeComponent(
-														'bitrix:catalog.product.subscribe',
-														'',
-														array(
-															'CUSTOM_SITE_ID' => $arParams['CUSTOM_SITE_ID'] ?? null,
-															'PRODUCT_ID' => $arResult['ID'],
-															'BUTTON_ID' => $itemIds['SUBSCRIBE_LINK'],
-															'BUTTON_CLASS' => 'btn btn-default product-item-detail-buy-button',
-															'DEFAULT_DISPLAY' => !$actualItem['CAN_BUY'],
-															'MESS_BTN_SUBSCRIBE' => $arParams['~MESS_BTN_SUBSCRIBE'],
-														),
-														$component,
-														array('HIDE_ICONS' => 'Y')
-													);
-													?>
-												</div>
-												<?php
-											}
-											?>
 											<div class="product-item-detail-info-container">
 												<a class="btn btn-link product-item-detail-buy-button" id="<?=$itemIds['NOT_AVAILABLE_MESS']?>"
 													href="javascript:void(0)"

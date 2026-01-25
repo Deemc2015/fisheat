@@ -163,6 +163,8 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 </div>
 </div>
 
+<?if(!$isMobile):?>
+
 <?$APPLICATION->IncludeComponent(
     "ldo:cart.gifts",
     "",
@@ -173,6 +175,8 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         "IBLOCK_TYPE" => "catalog"
     )
 );?>
+
+<?endif;?>
 
 </body>
 </html>
