@@ -35,6 +35,11 @@
 }
 
 @media (max-width:768px) {
+    div.title-search-result{
+        border:none;
+        height: 300px;
+        overflow: scroll;
+    }
     #slider-index .slick-slide{
         height: 177px;
     }
