@@ -186,7 +186,9 @@ $(document).ready(function(){
         ],
     })
 
-
-
-
+    window.LDOInitBasket = function(options) {
+        BX.ready(function() {
+            BX.LDO.CustomBasket.init(options);
+        });
+    };
 })

@@ -67,6 +67,6 @@ $arComponentParameters = [
             'MULTIPLE' => 'N',
             'DEFAULT' => '/personal/cart/',
             'PARENT' => 'ADDITIONAL_SETTINGS',
-        ]
+        ],
     ]
 ];

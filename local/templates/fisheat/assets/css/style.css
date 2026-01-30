@@ -1346,6 +1346,10 @@ section#viewed{
     width: 63px;
     text-align: center;
     display: inline-block;
+    user-select:none;
+}
+.amount-product-block{
+    user-select:none;
 }
 input#property_COUNT_PERSON{
     border:none;
@@ -1869,4 +1873,212 @@ footer .copyright{
 }
 .hidden-pk{
     display: none !important;
+}
+.right-order-page .total-order-block{
+    background: #2B2D2F;
+    color: #ffffff;
+    border-radius: 20px;
+    font-family: 'Inter Light';
+    margin-top: 24px;
+    padding-top: 2px;
+
+}
+.right-order-page .total-order-block__line{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 24px;
+}
+.right-order-page .total-order-block__line span:first-child{
+    font-size:14px;
+}
+.right-order-page .total-order-block__line span:last-child{
+    font-size:16px;
+}
+.right-order-page .total-order-block h2{
+    font-size:28px;
+    font-family: 'Blogger Sans', 'Roboto';
+    font-weight:normal;
+    padding: 0 24px;
+}
+.right-order-page .total-order-block__bottom{
+    display: flex;
+    font-family: 'Inter-Bold';
+    font-size:16px;
+    padding: 0 24px;
+    border-top:1px solid #ffffff5e;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 22px;
+}
+
+.right-order-page .total-order-block button{
+    color:#ffffff;
+    text-align: center;
+    background: #F44336;
+    width: 180px;
+    font-family: 'Inter Light';
+    font-size:18px;
+    display: block;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    transition:all .3s;
+    padding: 16px 0;
+    margin-top: 22px;
+
+}
+.right-order-page .politika-link{
+    font-size: 11px;
+    line-height: 1.2;
+}
+.right-order-page .politika-link a{
+    text-decoration: none;
+    color:#F44336;
+}
+.right-order-page .total-order-block button:hover{
+    opacity:0.7;
+}
+.right-order-page .total-order-block-btn{
+    padding: 0 24px;
+    margin-top: 27px;
+    padding-bottom: 24px;
+}
+.right-order-page .total-order-block-btn span{
+    display: block;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border:1px solid #ffffff2b;
+    border-radius:6px;
+    background: transparent;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    margin-right: 10px;
+}
+.right-order-page .total-order-block-btn input:checked + span:before{
+    content:'';
+    background: url('../images/galka.svg') #F44336;
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.right-order-page .total-order-block-btn label{
+    position:relative;
+}
+.right-order-page .total-order-block-btn label>input{
+    position:absolute;
+    left: 0;
+    top: 0;
+    opacity:0;
+}
+.right-order-page .total-order-block-btn label{
+    display: flex;
+}
+.left-order-page .payment-block{
+    background: #2B2D2F;
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 24px;
+    width: 50%;
+}
+.left-order-page .payment-block h2{
+    font-size:28px;
+    font-family: 'Blogger Sans', 'Roboto';
+    font-weight:normal;
+    margin-top: 0;
+}
+.left-order-page .payment-block span{
+    width: 20px;
+    height: 20px;
+    display: block;
+    border: 1px solid #969696;
+    border-radius: 50%;
+    position: relative;
+    font-size: 18px;
+    margin-right: 13px;
+    cursor:pointer;
+}
+.left-order-page .payment-block input:checked + span:before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: block;
+    position: absolute;
+    background: #F44336;
+    border-radius: 50%;
+    left: 4px;
+    top: 4px;
+}
+.left-order-page .payment-block input{
+    position:absolute;
+    top:0;
+    opacity:0;
+}
+.left-order-page .payment-block label{
+    position:relative;
+    display: flex;
+    align-items:center;
+    margin-bottom: 12px;
+    font-family: 'Inter Light';
+    cursor:pointer;
+}
+.left-order-page .block-line-two{
+    display: flex;
+    gap:24px;
+}
+.left-order-page .time-delivery {
+    background: #2B2D2F;
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 24px;
+    width: 50%;
+}
+.left-order-page .time-delivery h2{
+    font-size:28px;
+    font-family: 'Blogger Sans', 'Roboto';
+    font-weight:normal;
+    margin-top: 0;
+}
+.left-order-page .time-delivery span {
+    width: 20px;
+    height: 20px;
+    display: block;
+    border: 1px solid #969696;
+    border-radius: 50%;
+    position: relative;
+    font-size: 18px;
+    margin-right: 13px;
+    cursor: pointer;
+}
+.left-order-page .time-delivery input:checked + span:before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: block;
+    position: absolute;
+    background: #F44336;
+    border-radius: 50%;
+    left: 4px;
+    top: 4px;
+}
+.left-order-page .hidden-input{
+    opacity:0;
+    position:absolute;
+}
+.left-order-page .time-delivery label{
+    position:relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-family: 'Inter Light';
+    cursor: pointer;
+}
+.left-order-page .time-delivery label input{
+    position:absolute;
+    top:0;
+    opacity:0;
 }

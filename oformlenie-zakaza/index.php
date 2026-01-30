@@ -36,8 +36,8 @@ AcritBonusInOrderOpensourceIntegration::init();
 	array(
 		"COMPONENT_TEMPLATE" => "order-page",
 		"DEFAULT_PERSON_TYPE_ID" => "1",
-		"DEFAULT_DELIVERY_ID" => "0",
-		"DEFAULT_PAY_SYSTEM_ID" => "0",
+		"DEFAULT_DELIVERY_ID" => "2",
+		"DEFAULT_PAY_SYSTEM_ID" => "3",
 		"PATH_TO_BASKET" => "/personal/cart/"
 	),
 	false

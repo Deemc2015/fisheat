@@ -38,7 +38,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="price-product">
                         <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
                         <?if($arBasketItem['VES']):?>
-                            <div class="weight"><?=$arBasketItem['VES']?> г.</div>
+                            <div class="weight"><?=$arBasketItem['VES']?></div>
                         <?endif;?>
                     </div>
 
@@ -47,11 +47,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <span class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
                         <span class="plus"></span>
                     </div>
-                    <?
-                   /* echo "<pre>";
-                    print_r($arBasketItem);
-                    echo "</pre>";*/
-                    ?>
                 </div>
             <?endforeach?>
 
@@ -77,19 +72,142 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
             <??>
         </div>
+
+        <div class="block-line-two">
+        <?if($arResult['PAY_SYSTEM_LIST']):?>
+        <div class="payment-block">
+            <h2>Способ оплаты</h2>
+            <? foreach ($arResult['PAY_SYSTEM_ERRORS'] as $error):
+                /** @var Error $error */
+                ?>
+                <div class="error"><?=$error->getMessage()?></div>
+            <? endforeach;
+            foreach ($arResult['PAY_SYSTEM_LIST'] as $arPaySystem):
+                // region /1 Убираем отображение служебной платежной системы оплаты бонусами
+                if (\Bitrix\Main\Loader::includeModule('acrit.bonus') && $arPaySystem['ID'] == \Acrit\Bonus\Pay::getBonusPaySystemId()) {
+                    continue;
+                }
+                // endregion
+                ?>
+                <label for="pay-<?=$arPaySystem['ID']?>"  class="payment-block__item">
+                    <input <?if($arParams['DEFAULT_PAY_SYSTEM_ID'] == $arPaySystem['ID']){echo 'checked';}?> id="pay-<?=$arPaySystem['ID']?>" type="radio" name="pay_system_id"
+                           value="<?=$arPaySystem['ID']?>"
+                        <?=$arPaySystem['CHECKED'] ? 'checked' : ''?>
+                    >
+                    <span></span>
+                    <div><?=$arPaySystem['NAME']?></div>
+                </label>
+
+            <? endforeach; ?>
+        </div>
+        <?endif?>
+        <?
+            /*Группа полей времени и даты доставки*/
+
+            $arrTimeDelivery = ['DATE_TIME_DELIVERY','DEFAULT_TIME','TIME_DELIVERY'];
+
+            $fieldsTimeDelivery = [];
+
+            foreach ($arResult['PROPERTIES'] as $key => $fields){
+                if(in_array($key,$arrTimeDelivery)){
+                    $fieldsTimeDelivery[] = $fields;
+                }
+            }
+
+        ?>
+            <?if($fieldsTimeDelivery):
+                ?>
+                <div class="time-delivery">
+                    <h2>Время доставки</h2>
+                    <div class="time-delivery__item">
+                        <label for="default_time">
+
+                            <input id="default_time" type="radio"
+                                   name="time_delivery"
+                                   value="Y">
+                            <span></span>
+                            Как можно скорее
+                        </label>
+                        <label for="date_time">
+
+                            <input id="date_time" type="radio"
+                                   name="time_delivery"
+                                   value="Y">
+                            <span></span>
+                            Выбрать дату и время
+                        </label>
+                    </div>
+
+                    <?foreach($fieldsTimeDelivery as $itemTime):?>
+                        <?if($itemTime['TYPE'] == 'Y/N'):?>
+                            <input class="hidden-input default_time" id="<?=$itemTime['FORM_LABEL']?>" type="checkbox"
+                                   name="<?=$itemTime['FORM_NAME']?>"
+                                   value="Y">
+                        <?else:?>
+                            <input class="hidden-input date_time" id="<?=$itemTime['FORM_LABEL']?>" type="text"
+                                   name="<?=$itemTime['FORM_NAME']?>"
+                                   value="<?=$itemTime['NAME']?>">
+                        <?endif?>
+
+                    <?endforeach;?>
+                </div>
+            <?endif;?>
+        </div>
+
     </div>
+    <? // region?>
+    <?
+    if (\Bitrix\Main\Loader::includeModule('acrit.bonus')) {
+
+        $arResultEx = [
+                'ORDER_PRICE' => $arResult['PRICE'] - $arResult['DELIVERY_PRICE'],
+                'DELIVERY_PRICE' => $arResult['DELIVERY_PRICE'],
+                'BASKET' => $arResult['BASKET'],
+            ] + $component->order->getFieldValues();
+        $resultBonus = \Acrit\Bonus\Profile::runPayProfiles($arResultEx);
+        echo "<pre>";
+        print_r($resultBonus);
+        echo "</pre>";
+        ?>
+    <?
+
+    echo \Acrit\Bonus\Core::getPayOrderBlock($arResultEx['BONUSPAY'], /** @lang JavaScript */ 'AcritBonusPayBonusBtn();');
+    ?>
+    <script>
+        function AcritBonusPayBonusBtn() {
+            // не отправляем заказ на сохранение, а перегружаем страницу
+            $(".send_open_source_order_flag").val('n');
+            // эмулируем отправку формы заказа, чтобы бонусы подхватились
+            $(".send_open_source_order_submit").click();
+            // отключаем кнопку "оплатить бонусами" от использования
+            $(this).css('pointer-events', 'none');
+        }
+    </script>
+    <?
+        // распечатайте $arResultEx['BONUSPAY'] - его можно использовать в дальнейшем для вывода данных,
+        // в частности: $arResultEx['BONUSPAY']['USER_VALUE_CURRENCY'] - это сколько бонусов человек решил использовать в оплату заказа
+        // \Bitrix\Main\Diag\Debug::dump($arResultEx);
+
+        // 4/ Получение бонусов за этот заказ (с учетом фильтров в профиле начисления бонусов за заказ)
+        $arResultEx['BONUS']['ORDER'] = \Acrit\Bonus\Core::getCartOrderBonus('ORDER', $arResultEx);
+        //d($arResultEx);
+    }
+    ?>
+    <? // endregion?>
+
+
     <div class="right-order-page">
         <div class="delivery-block">
+
             <?if($arResult['DELIVERY_LIST']):?>
                 <div class="delivery-block__butons">
             <?
             $i == 1;
             foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
-                $i++;
                 ?>
 
                     <label for="code-<?=$itemDelivery['ID']?>">
-                        <input <?if($i == 1){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
+                        <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
                         <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
                     </label>
 
@@ -125,14 +243,53 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
             <div class="addAdress-user">Добавить адрес</div>
         </div>
+        <div class="total-order-block">
+            <h2>Стоимость заказа</h2>
+            <div class="total-order-block__line">
+                <span>Адрес доставки</span><span>Максима Горького ул, д. 44, кв. 90</span>
+            </div>
+            <div class="total-order-block__line">
+                <span>Сумма доставки</span><span><?=$arResult['DELIVERY_PRICE_DISPLAY']?></span>
+            </div>
+            <div class="total-order-block__line">
+                <span>Сумма заказа</span><span><?=$arResult['SUM_BASE_DISPLAY']?></span>
+            </div>
+            <div class="total-order-block__line">
+                <span>Скидка</span><span><?=$arResult['DISCOUNT_VALUE_DISPLAY']?></span>
+            </div>
+            <div class="total-order-block__line">
+                <span>Начислено бонусов</span><span><?=$arResultEx['BONUS']['ORDER']['VALUE_FORMAT']?></span>
+            </div>
+
+            <div class="total-order-block__bottom">
+                <div class="total-title">Итого</div>
+                <div class="total-value"><?=$arResult['SUM_DISPLAY']?></div>
+            </div>
+
+            <div class="total-order-block-btn">
+                <label for="politika-order">
+                    <input type="checkbox" id="politika-order" required>
+                    <span></span>
+                    <div class="politika-link" >Я даю <a href="#">согласие</a> на обработку моих персональных данных, в соответствии с Федеральным законом от 27.07.2006 г. №152-ФЗ "О персональных данных", на условиях, определенных политикой в области обработки и обеспечения безопасности персональных данных</div>
+                </label>
+                <input type="hidden" name="person_type_id" value="<?=$arParams['PERSON_TYPE_ID']?>">
+                <button type="submit" class="send_open_source_order_submit"><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_MAKE_ORDER_BUTTON')?></button>
+            </div>
+
+
+        </div>
     </div>
 </div>
 
 
 
-    <input type="hidden" name="person_type_id" value="<?=$arParams['PERSON_TYPE_ID']?>">
 
-    <h2><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PROPERTIES_TITLE')?>:</h2>
+
+    <?
+    echo "<pre>";
+    print_r($arResult['PROPERTIES']);
+    echo "</pre>";
+    ?>
     <table>
         <?php
         unset($arResult['PROPERTIES']['COUNT_PERSON']);
@@ -208,50 +365,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     </table>
 
 
-
-
-    <h2><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PAY_SYSTEMS_TITLE')?>:</h2>
-    <? foreach ($arResult['PAY_SYSTEM_ERRORS'] as $error):
-        /** @var Error $error */
-        ?>
-        <div class="error"><?=$error->getMessage()?></div>
-    <? endforeach;
-    foreach ($arResult['PAY_SYSTEM_LIST'] as $arPaySystem):
-        // region /1 Убираем отображение служебной платежной системы оплаты бонусами
-        if (\Bitrix\Main\Loader::includeModule('acrit.bonus') && $arPaySystem['ID'] == \Acrit\Bonus\Pay::getBonusPaySystemId()) {
-            continue;
-        }
-        // endregion
-        ?>
-        <label>
-            <input type="radio" name="pay_system_id"
-                   value="<?=$arPaySystem['ID']?>"
-                <?=$arPaySystem['CHECKED'] ? 'checked' : ''?>
-            >
-            <?=$arPaySystem['NAME']?>
-        </label>
-        <br>
-    <? endforeach; ?>
-
-    <? // region?>
-    <?
-    if (\Bitrix\Main\Loader::includeModule('acrit.bonus')) {
-
-        $arResultEx = [
-                'ORDER_PRICE' => $arResult['PRICE'] - $arResult['DELIVERY_PRICE'],
-                'DELIVERY_PRICE' => $arResult['DELIVERY_PRICE'],
-                'BASKET' => $arResult['BASKET'],
-            ] + $component->order->getFieldValues();
-        $resultBonus = \Acrit\Bonus\Profile::runPayProfiles($arResultEx);
-        echo "<pre>";
-        print_r($resultBonus);
-        echo "</pre>";
-        ?>
-
-
-
-
-
         <div id="acrit-bonus-paysystem" class="bx-soa-section">
             <div class="bx-soa-section-title-container">
                 <h2 class="bx-soa-section-title col-sm-9">
@@ -287,65 +400,13 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 </div>
             </div>
         </div>
-        <?
 
-        echo \Acrit\Bonus\Core::getPayOrderBlock($arResultEx['BONUSPAY'], /** @lang JavaScript */ 'AcritBonusPayBonusBtn();');
-        ?>
-        <script>
-            function AcritBonusPayBonusBtn() {
-                // не отправляем заказ на сохранение, а перегружаем страницу
-                $(".send_open_source_order_flag").val('n');
-                // эмулируем отправку формы заказа, чтобы бонусы подхватились
-                $(".send_open_source_order_submit").click();
-                // отключаем кнопку "оплатить бонусами" от использования
-                $(this).css('pointer-events', 'none');
-            }
-        </script>
-        <?
-        // распечатайте $arResultEx['BONUSPAY'] - его можно использовать в дальнейшем для вывода данных,
-        // в частности: $arResultEx['BONUSPAY']['USER_VALUE_CURRENCY'] - это сколько бонусов человек решил использовать в оплату заказа
-        // \Bitrix\Main\Diag\Debug::dump($arResultEx);
 
-        // 4/ Получение бонусов за этот заказ (с учетом фильтров в профиле начисления бонусов за заказ)
-        $arResultEx['BONUS']['ORDER'] = \Acrit\Bonus\Core::getCartOrderBonus('ORDER', $arResultEx);
-        //d($arResultEx);
-    }
-    ?>
-    <? // endregion?>
 
-    <h2><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_TITLE')?></h2>
-    <table>
-        <tr>
-            <th><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_NAME_COLUMN')?></th>
-            <th><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_COUNT_COLUMN')?></th>
-            <th><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_UNIT_PRICE_COLUMN')?></th>
-            <th><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_DISCOUNT_COLUMN')?></th>
-            <th><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_BASKET_TOTAL_COLUMN')?></th>
-        </tr>
-        <? foreach ($arResult['BASKET'] as $arBasketItem): ?>
-            <tr>
-                <td>
-                    <?=$arBasketItem['NAME']?>
-                    <? if (!empty($arBasketItem['PROPERTIES'])): ?>
-                        <div class="basket-properties">
-                            <? foreach ($arBasketItem['PROPERTIES'] as $arProp): ?>
-                                <?=$arProp['NAME']?>
-                                <?=$arProp['VALUE']?>
-                                <br>
-                            <? endforeach; ?>
-                        </div>
-                    <? endif; ?>
-                </td>
-                <td><?=$arBasketItem['QUANTITY_DISPLAY']?></td>
-                <td><?=$arBasketItem['BASE_PRICE_DISPLAY']?></td>
-                <td><?=$arBasketItem['PRICE_DISPLAY']?></td>
-                <td><?=$arBasketItem['SUM_DISPLAY']?></td>
-            </tr>
-        <? endforeach; ?>
-    </table>
 
     <h2><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_ORDER_TOTAL_TITLE')?></h2>
     <h3><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_PRICES_TITLE')?>:</h3>
+    555
     <table>
         <tr>
             <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_BASE_PRICE')?></td>
@@ -362,6 +423,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     </table>
 
     <h3><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_PRICES_TITLE')?>:</h3>
+    432
     <table>
         <tr>
             <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_BASE_PRICE')?></td>
@@ -422,7 +484,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     <? // region 7/ проставили классы у флага и кнопки-отправки ?>
     <input type="hidden" name="save" value="y" class="send_open_source_order_flag">
     <br>
-    <button type="submit" class="send_open_source_order_submit"><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_MAKE_ORDER_BUTTON')?></button>
+
     <br>
     <br>
     <? // endregion?>

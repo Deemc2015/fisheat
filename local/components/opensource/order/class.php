@@ -369,6 +369,14 @@ class OpenSourceOrderComponent extends CBitrixComponent
         return $result;
     }
 
+    public function getPersonUserAddress(){
+        global $USER;
+
+        $userId = $USER->GetID();
+        /*тут данные по адресам доставки*/
+        return $userId;
+    }
+
     public function executeComponent()
     {
         try {
