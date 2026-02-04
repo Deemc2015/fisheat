@@ -147,9 +147,13 @@ $(document).ready(function(){
             }
         });
 
+    })
 
-
-
+    $('.burger').click(function(){
+        $('.mobile-main-menu ').toggleClass('open');
+    })
+    $('.mobile-main-menu .close-menu').click(function(){
+        $('.mobile-main-menu').removeClass('open');
     })
 
 

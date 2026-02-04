@@ -381,6 +381,7 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 
 									case 'price':
 										?>
+
 										<div class="product-item-detail-info-container">
 										    <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
 										    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
@@ -416,6 +417,8 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 											}
 											?>
 										</div>
+
+
 										<?php
 										break;
 
@@ -492,8 +495,9 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 								}
 							}
 
-						
+
 							?>
+
 						</div>
 					</div>
 				</div>

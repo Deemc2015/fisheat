@@ -2118,3 +2118,6 @@ footer .copyright{
     background: red;
     margin-right: 6px;
 }
+.mobile-main-menu{
+    display: none;
+}
