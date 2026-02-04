@@ -333,15 +333,16 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                 <?endif?>
                 <?if($isMobile):?>
                     <h1 class="title-product"><?=$arResult['NAME'];?></h1>
+                    <div class="after-title-product">
+                        <div class="after-title-product__price"><?=$price['PRINT_RATIO_PRICE']?></div>
+                        <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
+                            <div class="after-title-product__weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
+                        <?endif;?>
+
+                    </div>
                 <?endif?>
 
-                <div class="after-title-product">
-                    <div class="after-title-product__price"><?=$price['PRINT_RATIO_PRICE']?></div>
-                    <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
-                        <div class="after-title-product__weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
-                    <?endif;?>
 
-                </div>
 
 			    <?if($arResult['DETAIL_TEXT']):?>
 			    <div class="description-block">
@@ -500,8 +501,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 		</div>
 
 	</div>
-
-
 
 	<meta itemprop="name" content="<?=$name?>" />
 	<meta itemprop="category" content="<?=$arResult['CATEGORY_PATH']?>" />
@@ -831,6 +830,10 @@ $jsParams["IS_FACEBOOK_CONVERSION_CUSTOMIZE_PRODUCT_EVENT_ENABLED"] =
 ;
 
 ?>
+
+    <div class="bottom-product-detail">
+        <?=$arResult['PREVIEW_TEXT']?>
+    </div>
 <script>
 	BX.message({
 		ECONOMY_INFO_MESSAGE: '<?=GetMessageJS('CT_BCE_CATALOG_ECONOMY_INFO2')?>',

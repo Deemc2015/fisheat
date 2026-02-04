@@ -2082,3 +2082,37 @@ footer .copyright{
     top:0;
     opacity:0;
 }
+.bottom-product-detail{
+    margin-top: 24px;
+}
+.bottom-product-detail h2{
+    margin-top: 0;
+    font-weight: normal;
+    font-size: 42px;
+    margin-bottom: 24px;
+}
+.bottom-product-detail h3{
+    font-weight: normal;
+    font-size: 28px;
+    margin: 0;
+}
+.bottom-product-detail ul{
+    padding-left: 0;
+    list-style-type:none;
+}
+.bottom-product-detail ul li{
+    display: flex;
+    align-items:center;
+    position:relative;
+    font-size:18px;
+    margin-bottom: 12px;
+}
+.bottom-product-detail ul > li:before{
+    content:'';
+    width: 8px;
+    min-width: 8px;
+    height: 8px;
+    border-radius:50%;
+    background: red;
+    margin-right: 6px;
+}

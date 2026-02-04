@@ -245,10 +245,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         </div>
         <div class="total-order-block">
             <h2>Стоимость заказа</h2>
-            <div class="total-order-block__line">
+            <div class="total-order-block__line delivery-text">
                 <span>Адрес доставки</span><span>Максима Горького ул, д. 44, кв. 90</span>
             </div>
-            <div class="total-order-block__line">
+            <div class="total-order-block__line delivery-text">
                 <span>Сумма доставки</span><span><?=$arResult['DELIVERY_PRICE_DISPLAY']?></span>
             </div>
             <div class="total-order-block__line">

@@ -81,14 +81,16 @@
 
         // ФУНКЦИЯ ДЕЙСТВИЯ ПРИ ВЫБОРЕ ДОСТАВКИ
         onDeliverySelected: function(deliveryId, deliveryName) {
-            console.log('Delivery action:', deliveryId, deliveryName);
-
             /*Усли выбрана доставка, показываем блок с выбором времени доставки*/
+
+
             if (deliveryId == 3){
                 this.toggleTimeDeliveryBlock();
+                this.toggleDeliveryElements('show');
             }
             else{
                 this.toggleTimeDeliveryBlock('show');
+                this.toggleDeliveryElements();
             }
 
         },
@@ -101,17 +103,27 @@
                 if (show) {
                     // Показываем блок
                     timeBlock.style.display = 'block';
-                    console.log('Time delivery block shown');
                 } else {
                     // Скрываем блок
                     timeBlock.style.display = 'none';
-                    console.log('Time delivery block hidden (pickup selected)');
-
                     // Дополнительно: сбрасываем выбранные значения времени
                     this.resetTimeDeliveryValues();
                 }
             } else {
                 console.log('Time delivery block not found');
+            }
+        },
+
+        /*Удаляем информацию о доставке, если выбран Самовывоз*/
+        toggleDeliveryElements: function(view) {
+            // Находим ВСЕ блоки с классом delivery-text
+            var deliveryBlocks = document.querySelectorAll('.delivery-text');
+
+            if(deliveryBlocks.length > 0) {
+                // Используем forEach для перебора
+                deliveryBlocks.forEach(function(block) {
+                    block.style.display = view ? 'flex' : 'none';
+                });
             }
         },
 
