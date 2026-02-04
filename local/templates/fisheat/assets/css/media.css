@@ -346,12 +346,27 @@
     .product-item-detail-slider-container{
         height: 330px;
     }
+    #slider-index .slick-slide {
+        height: 198px;
+    }
+    #slider-index{
+        margin-bottom: 24px;
+    }
 }
 @media (max-width:400px) {
     .product-item-detail-slider-container{
         height: 325px;
     }
+    #slider-index .slick-slide {
+        height: 188px;
+    }
 }
+@media (max-width:390px) {
+    #slider-index .slick-slide {
+        height: 183px;
+    }
+}
+
 @media (max-width:380px) {
     .product-item-detail-slider-container{
         height: 300px;

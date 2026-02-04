@@ -885,10 +885,11 @@ h1.title-page{
     margin-bottom: 7px;
 }
 .product-item-detail-info-container .weight{
-    font-size:16px;
-    color:#827C7C;
+    font-size:18px;
+    color:#fff;
     min-width: 117px;
     font-family: 'Inter Light';
+    font-weight:bold;
 }
 .product-item-detail-info-container .product-item-detail-price-current{
     font-size:20px;
