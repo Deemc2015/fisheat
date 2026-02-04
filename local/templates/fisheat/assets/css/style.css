@@ -2121,3 +2121,124 @@ footer .copyright{
 .mobile-main-menu{
     display: none;
 }
+.left-order-page .gifts-block,.left-order-page .promo-block{
+    background: #2B2D2F;
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 24px;
+}
+.left-order-page .promo-block h2 {
+    font-size: 28px;
+    font-family: 'Blogger Sans', 'Roboto';
+    font-weight: normal;
+    margin-top: 0;
+}
+.left-order-page  .promo-block__line{
+    display: flex;
+}
+.left-order-page .promo-block label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-family: 'Inter Light';
+    cursor: pointer;
+}
+.left-order-page .promo-block span {
+    width: 20px;
+    height: 20px;
+    display: block;
+    border: 1px solid #969696;
+    border-radius: 50%;
+    position: relative;
+    font-size: 18px;
+    margin-right: 13px;
+    cursor: pointer;
+}
+.left-order-page .promo-block input:checked + span:before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: block;
+    position: absolute;
+    background: #F44336;
+    border-radius: 50%;
+    left: 4px;
+    top: 4px;
+}
+.left-order-page .promo-block input {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+
+}
+.left-order-page .promo-block input#promocode{
+    display: block;
+    border:none;
+    outline:none;
+    background: #F1F4F9;
+    border-radius:6px;
+    position:relative;
+    opacity:1;
+    font-size:16px;
+    font-family: 'Blogger Sans';
+    padding: 0 12px;
+    width: 188px;
+}
+.left-order-page .promo-block__left-promokod{
+    display: flex;
+    margin-top: 10px;
+}
+.left-order-page .promo-block__left-promokod button{
+    cursor:pointer;
+    outline:none;
+    border:none;
+    border-radius:6px;
+    background: #F44336;
+    width: 98px;
+    text-align: center;
+    color:#fff;
+    font-family: 'Blogger Sans';
+    font-size:16px;
+    padding: 11px 0;
+    line-height:1;
+    margin-left: 12px;
+    transition:all .3s;
+}
+.left-order-page .promo-block__left{
+    width: 296px;
+}
+.left-order-page .promo-block__left-promokod button:hover{
+    opacity:0.7;
+}
+.left-order-page div{
+    user-select:none;
+}
+.gifts-block__top{
+    display: flex;
+    align-items: center;
+}
+.gifts-block__top i{
+    width: 40px;
+    height: 40px;
+    margin-top: 12px;
+    background: #F44336;
+    position:relative;
+    border-radius:6px;
+    margin-right: 12px;
+}
+.gifts-block__top span{
+    color:#F44336;
+}
+.gifts-block__top i:before{
+    content:'';
+    width: 40px;
+    height: 40px;
+    background: url('../images/gift-icon.svg') no-repeat;
+    background-position: center;
+    display: block;
+
+}
+.gifts-block__top p{
+    margin-bottom: 0;
+}

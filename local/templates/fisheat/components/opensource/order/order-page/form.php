@@ -73,6 +73,42 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
             <??>
         </div>
+        <div class="gifts-block">
+            <div class="gifts-block__top">
+                <i></i>
+                <p>До подарка 1 уровня осталось еще <span>184 ₽</span></p>
+            </div>
+            <div class="gifts-block__items"></div>
+        </div>
+        <div class="promo-block">
+            <h2>Применение скидок</h2>
+            <div class="promo-block__line">
+                <div class="promo-block__left">
+                    <label for="code-1">
+                        <input  type="radio" id="code-1" name="promo_id" value="promokod" >
+                        <span></span>
+                        Промокод
+                    </label>
+                    <label for="code-2">
+                        <input  type="radio" id="code-2" name="promo_id" value="bonus" >
+                        <span></span>
+                        Оплата бонусами
+                    </label>
+                </div>
+                <div class="promo-block__right">
+                    <div class="promo-block__left-promokod">
+                        <form action="#" class="promoChange">
+                            <input type="text" name="promokod" id="promocode" required />
+                            <button type="submit">Применить</button>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
         <?if($isMobile):?>
             <div class="delivery-block">
                 <?if($arResult['DELIVERY_LIST']):?>
@@ -84,6 +120,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                             <label for="code-<?=$itemDelivery['ID']?>">
                                 <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
+
                                 <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
                             </label>
 
@@ -252,7 +289,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 $i == 1;
                 foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
                     ?>
-
                         <label for="code-<?=$itemDelivery['ID']?>">
                             <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
                             <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
@@ -328,90 +364,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     </div>
 </div>
 
-
-
-
-
-    <?
-    echo "<pre>";
-    print_r($arResult['PROPERTIES']);
-    echo "</pre>";
-    ?>
-    <table>
-        <?php
-        unset($arResult['PROPERTIES']['COUNT_PERSON']);
-
-        foreach ($arResult['PROPERTIES'] as $propCode => $arProp): ?>
-            <tr>
-                <td>
-                    <label for="<?=$arProp['FORM_LABEL']?>"><?=$arProp['NAME']?></label>
-                    <? foreach ($arProp['ERRORS'] as $error):
-                        /** @var Error $error */
-                        ?>
-                        <div class="error"><?=$error->getMessage()?></div>
-                    <? endforeach; ?>
-                </td>
-                <td>
-                    <?php
-                    switch ($arProp['TYPE']):
-                        case 'LOCATION':
-                            ?>
-                            <div class="location">
-                                <select class="location-search" name="<?=$arProp['FORM_NAME']?>"
-                                        id="<?=$arProp['FORM_LABEL']?>">
-                                    <option
-                                            data-data='<? echo Json::encode($arProp['LOCATION_DATA']) ?>'
-                                            value="<?=$arProp['VALUE']?>"><?=$arProp['LOCATION_DATA']['label']?></option>
-                                </select>
-                            </div>
-                            <?
-                            break;
-
-                        case 'ENUM':
-                            foreach ($arProp['OPTIONS'] as $code => $name):?>
-                                <label class="enum-option">
-                                    <input type="radio" name="<?=$arProp['FORM_NAME']?>" value="<?=$code?>">
-                                    <?=$name?>
-                                </label>
-                            <?endforeach;
-                            break;
-
-                        case 'DATE':
-                            $APPLICATION->IncludeComponent(
-                                'bitrix:main.calendar',
-                                '',
-                                [
-                                    'SHOW_INPUT' => 'Y',
-                                    'FORM_NAME' => 'os-order-form',
-                                    'INPUT_NAME' => $arProp['FORM_NAME'],
-                                    'INPUT_VALUE' => $arProp['VALUE'],
-                                    'SHOW_TIME' => 'Y',
-                                    //'HIDE_TIMEBAR' => 'Y',
-                                    'INPUT_ADDITIONAL_ATTR' => 'placeholder="выберите дату"'
-                                ]
-                            );
-                            break;
-
-                        case 'Y/N':
-                            ?>
-                            <input id="<?=$arProp['FORM_LABEL']?>" type="checkbox"
-                                   name="<?=$arProp['FORM_NAME']?>"
-                                   value="Y">
-                            <?
-                            break;
-
-                        default:
-                            ?>
-                            <input id="<?=$arProp['FORM_LABEL']?>" type="text"
-                                   name="<?=$arProp['FORM_NAME']?>"
-                                   value="<?=$arProp['VALUE']?>">
-                        <? endswitch; ?>
-                </td>
-            </tr>
-        <? endforeach; ?>
-    </table>
-
-
         <div id="acrit-bonus-paysystem" class="bx-soa-section">
             <div class="bx-soa-section-title-container">
                 <h2 class="bx-soa-section-title col-sm-9">
@@ -448,85 +400,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
         </div>
 
-
-
-
-    <h2><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_ORDER_TOTAL_TITLE')?></h2>
-    <h3><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_PRICES_TITLE')?>:</h3>
-    555
-    <table>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_BASE_PRICE')?></td>
-            <td><?=$arResult['PRODUCTS_BASE_PRICE_DISPLAY']?></td>
-        </tr>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_PRICE')?></td>
-            <td><?=$arResult['PRODUCTS_PRICE_DISPLAY']?></td>
-        </tr>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_PRODUCTS_DISCOUNT')?></td>
-            <td><?=$arResult['PRODUCTS_DISCOUNT_DISPLAY']?></td>
-        </tr>
-    </table>
-
-    <h3><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_PRICES_TITLE')?>:</h3>
-    432
-    <table>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_BASE_PRICE')?></td>
-            <td><?=$arResult['DELIVERY_BASE_PRICE_DISPLAY']?></td>
-        </tr>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_PRICE')?></td>
-            <td><?=$arResult['DELIVERY_PRICE_DISPLAY']?></td>
-        </tr>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_DELIVERY_DISCOUNT')?></td>
-            <td><?=$arResult['DELIVERY_DISCOUNT_DISPLAY']?></td>
-        </tr>
-    </table>
-
-    <h3><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_SUM_TITLE')?>:</h3>
-    <table>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_TOTAL_BASE_PRICE')?></td>
-            <td><?=$arResult['SUM_BASE_DISPLAY']?></td>
-        </tr>
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_TOTAL_DISCOUNT')?></td>
-            <td><?=$arResult['DISCOUNT_VALUE_DISPLAY']?></td>
-        </tr>
-
-        <? // region 5/ бонус за заказ?>
-        <? if ($arResultEx['BONUS']['ORDER']['VALUE']) { ?>
-            <tr style="font-weight:bold">
-                <td>Бонус за заказ:</td>
-                <td><?=$arResultEx['BONUS']['ORDER']['VALUE_FORMAT']?></td>
-            </tr>
-        <? } ?>
-        <? //endregion?>
-
-        <? // region 6/ вывели кол-во оплаченных и пересчитали сумму?>
-        <? if ($arResultEx['BONUSPAY']['USER_VALUE']) { ?>
-            <tr style="font-weight:bold">
-                <td>Оплачено бонусами:</td>
-                <td><?=SaleFormatCurrency($arResultEx['BONUSPAY']['USER_VALUE_CURRENCY'], $arResult['CURRENCY'])?></td>
-            </tr>
-            <?
-            // отнимаем от суммы уже оплаченную часть
-            $arResult['SUM_DISPLAY'] = SaleFormatCurrency(
-                $arResult['SUM'] - $arResultEx['BONUSPAY']['USER_VALUE_CURRENCY'],
-                $arResult['CURRENCY']
-            );
-            ?>
-        <? } ?>
-        <? // endregion?>
-
-        <tr>
-            <td><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_TOTAL_PRICE')?></td>
-            <td><?=$arResult['SUM_DISPLAY']?></td>
-        </tr>
-    </table>
 
     <? // region 7/ проставили классы у флага и кнопки-отправки ?>
     <input type="hidden" name="save" value="y" class="send_open_source_order_flag">
