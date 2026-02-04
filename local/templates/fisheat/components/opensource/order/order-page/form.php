@@ -18,6 +18,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var string $templateFolder */
 /** @var string $componentPath */
 /** @var OpenSourceOrderComponent $component */
+
 ?>
 <form action="" method="post" name="os-order-form" id="os-order-form">
 <div class="order-page">
@@ -25,7 +26,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         <div class="product-list">
             <div class="product-list__title">
                 <div class="order-cart-title">Ваш заказ</div>
-                <div class="delete-order">Очистить корзину</div>
+                <div class="delete-order"><?if(!$isMobile):?>Очистить корзину<?endif;?></div>
             </div>
             <?foreach ($arResult['BASKET'] as $arBasketItem):?>
                 <div class="product-list__item" data-id="<?=$arBasketItem['PRODUCT_ID']?>">
@@ -34,6 +35,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <img src="<?=Product::getImageById($arBasketItem['PRODUCT_ID'])?>" alt="<?=$arBasketItem['NAME']?>">
                     </div>
                     <?endif?>
+                    <?if($isMobile):?><div class="mobile-name"><?endif?>
                     <div class="name-product"><?=$arBasketItem['NAME']?></div>
                     <div class="price-product">
                         <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
@@ -41,27 +43,26 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             <div class="weight"><?=$arBasketItem['VES']?></div>
                         <?endif;?>
                     </div>
+                    <?if($isMobile):?></div><?endif?>
 
                     <div class="amount-product-block">
-                        <span class="minus"></span>
-                        <span class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
+                            <span class="minus"></span>
+                            <span class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
                         <span class="plus"></span>
                     </div>
                 </div>
             <?endforeach?>
 
             <div class="count-people-block">
+                <?if($isMobile):?><div class="mobile-field-count"><?endif?>
                 <div class="count-people-block__title">Указать кол-во персон</div>
                 <div class="checked-button"></div>
+                    <?if($isMobile):?></div><?endif?>
                 <div class="count-people-block__count">
                     <span class="minus"></span>
                     <input readonly name="<?=$arResult['PROPERTIES']['COUNT_PERSON']['FORM_NAME']?>" id="<?=$arResult['PROPERTIES']['COUNT_PERSON']['FORM_LABEL']?>" type="<?=$arResult['PROPERTIES']['COUNT_PERSON']['TYPE']?>" class="count-people-block__count-num" value="<?=$arResult['PROPERTIES']['COUNT_PERSON']['VALUE']?>">
                     <span class="plus"></span>
                 </div>
-
-                <?
-                //print_r($arResult['PROPERTIES']['COUNT_PERSON']);
-                ?>
             </div>
 
         </div>
@@ -72,6 +73,52 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
             <??>
         </div>
+        <?if($isMobile):?>
+            <div class="delivery-block">
+                <?if($arResult['DELIVERY_LIST']):?>
+                    <div class="delivery-block__butons">
+                        <?
+                        $i == 1;
+                        foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
+                            ?>
+
+                            <label for="code-<?=$itemDelivery['ID']?>">
+                                <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
+                                <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
+                            </label>
+
+                        <?endforeach;?>
+                    </div>
+                <?endif?>
+
+
+                <div class="adress-user-list">
+                    <div class="adress-user-list__item">
+                        <label for="adress-user-list__item-name-1">
+                            <input name="address_id" type="radio" id="adress-user-list__item-name-1" value="1">
+                            <span></span>
+                            Максима Горького ул, д. 44, кв. 90
+                        </label>
+                        <div class="adress-user-list__item-btn">
+                            <div class="adress-user-list__item-btn-edit"></div>
+                            <div class="adress-user-list__item-btn-delete"></div>
+                        </div>
+                    </div>
+                    <div class="adress-user-list__item">
+                        <label for="adress-user-list__item-name-2">
+                            <input name="address_id" type="radio" id="adress-user-list__item-name-2" value="2">
+                            <span></span>
+                            Максима Горького ул, д. 44, кв. 90
+                        </label>
+                        <div class="adress-user-list__item-btn">
+                            <div class="adress-user-list__item-btn-edit"></div>
+                            <div class="adress-user-list__item-btn-delete"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="addAdress-user">Добавить адрес</div>
+            </div>
+        <?endif?>
 
         <div class="block-line-two">
         <?if($arResult['PAY_SYSTEM_LIST']):?>
@@ -197,26 +244,25 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
     <div class="right-order-page">
+        <?if(!$isMobile):?>
         <div class="delivery-block">
+                <?if($arResult['DELIVERY_LIST']):?>
+                    <div class="delivery-block__butons">
+                <?
+                $i == 1;
+                foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
+                    ?>
 
-            <?if($arResult['DELIVERY_LIST']):?>
-                <div class="delivery-block__butons">
-            <?
-            $i == 1;
-            foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
-                ?>
+                        <label for="code-<?=$itemDelivery['ID']?>">
+                            <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
+                            <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
+                        </label>
 
-                    <label for="code-<?=$itemDelivery['ID']?>">
-                        <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
-                        <div class="delivery-name"><?=$itemDelivery['NAME']?></div>
-                    </label>
+                <?endforeach;?>
+                    </div>
+                <?endif?>
 
-            <?endforeach;?>
-                </div>
-            <?endif?>
-            <?if(1==1):?>
 
-            <?endif;?>
             <div class="adress-user-list">
                 <div class="adress-user-list__item">
                     <label for="adress-user-list__item-name-1">
@@ -243,6 +289,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
             <div class="addAdress-user">Добавить адрес</div>
         </div>
+        <?endif?>
         <div class="total-order-block">
             <h2>Стоимость заказа</h2>
             <div class="total-order-block__line delivery-text">

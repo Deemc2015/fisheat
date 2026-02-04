@@ -21,6 +21,9 @@ CJSCore::Init(['jquery']);
 $this->addExternalJs($templateFolder . '/selectize/selectize.js');
 $this->addExternalCss($templateFolder . '/selectize/selectize.default.css');
 $this->addExternalCss($templateFolder . '/selectize/selectize.dropdown.css');
+/*Определение мобильного устройства*/
+$isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
+
 ?>
 
     <?php if (count($component->errorCollection) > 0): ?>

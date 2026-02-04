@@ -55,6 +55,42 @@
 }
 
 @media (max-width:768px) {
+    .order-page{
+        display: block;
+        margin-left: 24px;
+        margin-right: 24px;
+    }
+    .left-order-page .delete-order{
+        background: url('../images/delete-cart-icon.svg') no-repeat;
+        width: 23px;
+        height: 28px;
+    }
+    .order-cart-title {
+        font-size: 28px;
+    }
+    .mobile-name .price-product{
+        margin-left: 12px;
+        display: flex;
+        align-items:center;
+        margin-top: 6px;
+    }
+    .price-product__sum {
+        margin-right: 9px;
+    }
+    .wrapper{
+        display: block;
+    }
+    .left-order-page .image-product{
+        width: 70px;
+        min-width: 70px;
+        height: 59px;
+    }
+    .left-order-page .name-product{
+        font-size:16px;
+    }
+    .left-order-page{
+        width: 100%;
+    }
     .container-detail-page .row {
         display: block;
     }
@@ -285,11 +321,70 @@
     .container-detail-page .after-title-product__weight{
         color:#827C7C;
     }
+    .count-people-block{
+        display: block;
+    }
+    .mobile-field-count{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .count-people-block__count.active{
+        display: block;
+    }
+    .count-people-block__count{
+        margin-left: 0;
+        margin-top: 24px;
+    }
+    .left-order-page .product-list{
+        border-radius:6px;
+    }
+    .left-order-page .comments-block{
+        border-radius:6px;
+    }
+
+    .order-page .delivery-block{
+        border-radius:6px;
+        margin-top: 24px;
+    }
+    .left-order-page .block-line-two{
+        display: block;
+    }
+    .left-order-page .payment-block,.left-order-page .time-delivery{
+        border-radius:6px;
+        width: 100%;
+    }
+    .right-order-page{
+        width: 100%;
+    }
+    .right-order-page .total-order-block{
+        border-radius:6px;
+    }
 }
 @media (max-width:576px) {
+    .order-page .delivery-block,.left-order-page .payment-block, .left-order-page .time-delivery{
+        padding: 24px 12px;
+    }
+    .left-order-page .comments-block{
+        border-radius:6px;
+        padding: 24px 12px;
+    }
+    .right-order-page .total-order-block h2,.right-order-page .total-order-block__line{
+        padding: 0 12px;
+    }
     .container-detail-page .right-detail-block{
         margin-left: 12px;
         margin-right: 12px;
+    }
+    .left-order-page .name-product{
+        min-width:180px;
+        width: 180px;
+    }
+    .left-order-page .price-product__sum{
+        margin-bottom: 0;
+    }
+    .mobile-name .price-product{
+        margin-top: 3px;
     }
     .container-detail-page{
         margin: 0 -12px;
@@ -329,10 +424,32 @@
     #slider-index .slick-slide {
         height: 277px;
     }
+    .order-page{
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    .left-order-page .product-list{
+        padding: 24px 12px;
+    }
+    .right-order-page .total-order-block__bottom{
+        padding: 0 12px;
+        padding-top: 24px;
+    }
+    .right-order-page .total-order-block-btn{
+        padding: 0 12px;
+        padding-bottom: 24px;
+
+    }
 }
 @media (max-width:480px) {
     .product-item-detail-slider-container{
         height: 390px;
+    }
+    .amount-product-block {
+        width: 82px;
+    }
+    .amount-product-block .quantity-product{
+        width: 40px;
     }
 }
 
@@ -360,6 +477,10 @@
     #slider-index .slick-slide {
         height: 188px;
     }
+    .left-order-page .name-product {
+        min-width: 145px;
+        width: 145px;
+    }
 }
 @media (max-width:390px) {
     #slider-index .slick-slide {
@@ -373,13 +494,40 @@
     }
 }
 @media (max-width:360px) {
+    .count-people-block__count{
+        margin-top: 12px;
+    }
     .product-item-detail-slider-container{
         height: 290px;
+    }
+    .left-order-page .name-product {
+        min-width: 130px;
+        width: 130px;
+    }
+    .amount-product-block .quantity-product{
+        font-size:18px;
+        width: 30px;
+    }
+    .count-people-block{
+        justify-content: space-between;
+    }
+    .count-people-block__title{
+        font-size:20px;
     }
 }
 
 @media (max-width:340px) {
     .product-item-detail-slider-container{
         height: 270px;
+    }
+    .left-order-page .name-product,.mobile-name .price-product{
+        margin-left: 6px;
+    }
+}
+
+@media (max-width:330px) {
+    .amount-product-block .quantity-product {
+        font-size: 16px;
+        width: 24px;
     }
 }

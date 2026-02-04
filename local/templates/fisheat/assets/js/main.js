@@ -60,6 +60,7 @@ $(document).ready(function(){
 
     $('.checked-button').click(function(){
         $(this).toggleClass('active');
+        $('.count-people-block__count').addClass('active');
     })
 
     $('.bread-link .bread-toggle').click(function(){

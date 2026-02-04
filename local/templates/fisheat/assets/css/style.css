@@ -1362,14 +1362,14 @@ input#property_COUNT_PERSON{
     text-align: center;
 }
 .order-page .plus{
-    background: url('../images/plus.png') no-repeat;
+    background: url('../images/plus.svg') no-repeat;
     width: 16px;
     height: 16px;
     display: inline-block;
     cursor: pointer;
 }
 .order-page .minus{
-    background: url('../images/minus.png') no-repeat;
+    background: url('../images/minus.svg') no-repeat;
     width: 16px;
     height: 16px;
     display: inline-block;
@@ -1775,14 +1775,14 @@ footer .copyright{
 .price-product{
     margin-left: 100px;
 }
-.right-order-page .delivery-block{
+ .delivery-block{
     background: #2B2D2F;
     color:#ffffff;
     border-radius:20px;
     padding: 24px;
     font-family: 'Inter Light';
 }
-.right-order-page .delivery-block label div{
+.delivery-block label div{
     width: 138px;
     background: #494C4F;
     border-radius:6px;
@@ -1793,24 +1793,25 @@ footer .copyright{
     line-height: 1;
     transition:all .3s;
 }
-.right-order-page .delivery-block label div:hover{
+.delivery-block label div:hover{
     background: #F44336;
 }
-.right-order-page .delivery-block label input:checked + div{
+.delivery-block label input:checked + div{
     background: #F44336;
 }
-.right-order-page .delivery-block label input{
+.delivery-block label input{
     position:absolute;
     opacity:0;
 }
-.right-order-page .delivery-block .delivery-block__butons{
+.delivery-block .delivery-block__butons{
     display: flex;
 }
-.right-order-page .delivery-block__butons label:first-child div{
+ .delivery-block__butons label:first-child div{
     margin-right: 12px;
 }
-.right-order-page .adress-user-list__item span{
+ .adress-user-list__item span{
     width: 20px;
+    min-width: 20px;
     height: 20px;
     display: block;
     border: 1px solid #969696;
@@ -1820,7 +1821,7 @@ footer .copyright{
     margin-right: 13px;
 }
 
-.right-order-page .adress-user-list__item input:checked + span:before{
+ .adress-user-list__item input:checked + span:before{
     content:'';
     width: 10px;
     height: 10px;
@@ -1831,33 +1832,33 @@ footer .copyright{
     left: 4px;
     top:4px;
 }
-.right-order-page .adress-user-list__item,.adress-user-list__item label{
+.adress-user-list__item,.adress-user-list__item label{
     display: flex;
     cursor:pointer;
     font-size:18px;
 }
-.right-order-page .adress-user-list__item-btn{
+ .adress-user-list__item-btn{
     display: flex;
     margin-left: 74px;
 }
-.right-order-page .adress-user-list__item-btn div{
+ .adress-user-list__item-btn div{
     width: 18px;
     height: 18px;
 }
-.right-order-page .adress-user-list__item-btn-edit{
+ .adress-user-list__item-btn-edit{
     background: url('../images/edit-icon.svg') no-repeat;
     margin-right: 18px;
 }
-.right-order-page .adress-user-list__item-btn-delete{
+ .adress-user-list__item-btn-delete{
     background: url('../images/delete-icon.svg') no-repeat;
 }
-.right-order-page .adress-user-list{
+.adress-user-list{
     margin-top: 36px;
 }
-.right-order-page .adress-user-list__item{
+.adress-user-list__item{
     margin-bottom: 20px;
 }
-.right-order-page .addAdress-user{
+ .addAdress-user{
     color: #ffffff;
     background: #F44336;
     width: 169px;
@@ -1869,7 +1870,7 @@ footer .copyright{
     transition:all .3s;
     margin-top: 23px;
 }
-.right-order-page .addAdress-user:hover{
+ .addAdress-user:hover{
     opacity:0.7;
 }
 .hidden-pk{
