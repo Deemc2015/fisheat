@@ -1883,6 +1883,8 @@ footer .copyright{
     font-family: 'Inter Light';
     margin-top: 24px;
     padding-top: 2px;
+    position:sticky;
+    top:24px;
 
 }
 .right-order-page .total-order-block__line{

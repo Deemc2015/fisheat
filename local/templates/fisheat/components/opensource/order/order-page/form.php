@@ -364,7 +364,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     </div>
 </div>
 
-        <div id="acrit-bonus-paysystem" class="bx-soa-section">
+       <!-- <div id="acrit-bonus-paysystem" class="bx-soa-section">
             <div class="bx-soa-section-title-container">
                 <h2 class="bx-soa-section-title col-sm-9">
                     <span class="bx-soa-section-title-count"></span><?=$arResultEx['BONUSPAY']['NAME']?>
@@ -382,7 +382,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="col-sm-9 bx-soa-pp-item-container">
                         <div class="bonus_comment">
                             <?
-                            print_r($arResultEx );
+                            //print_r($arResultEx );
 
                             ?>
                             <strong>Ваш баланс <?=$bonusPay['CURRENT_BONUS_BUDGET_FORMATED']?></strong>
@@ -398,7 +398,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
     <? // region 7/ проставили классы у флага и кнопки-отправки ?>
