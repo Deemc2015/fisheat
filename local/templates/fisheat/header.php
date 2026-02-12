@@ -189,7 +189,46 @@ use \Ldo\Develop\Pages;
         </div>
     </div>
 </header>
-
+<?if($isMobile):?>
+    <div class="menu-view-mobile">
+        <span class="menu-view-mobile__close"></span>
+        <?$APPLICATION->IncludeComponent(
+            "bitrix:catalog.section.list",
+            "product-menu-modal",
+            array(
+                "ADDITIONAL_COUNT_ELEMENTS_FILTER" => "additionalCountFilter",
+                "ADD_SECTIONS_CHAIN" => "N",
+                "CACHE_FILTER" => "N",
+                "CACHE_GROUPS" => "Y",
+                "CACHE_TIME" => "36000000",
+                "CACHE_TYPE" => "A",
+                "COUNT_ELEMENTS" => "N",
+                "COUNT_ELEMENTS_FILTER" => "CNT_ACTIVE",
+                "FILTER_NAME" => "sectionsFilter",
+                "HIDE_SECTIONS_WITH_ZERO_COUNT_ELEMENTS" => "N",
+                "IBLOCK_ID" => "4",
+                "IBLOCK_TYPE" => "catalog",
+                "SECTION_CODE" => "",
+                "SECTION_FIELDS" => array(
+                    0 => "NAME",
+                    1 => "PICTURE",
+                    2 => "",
+                ),
+                "SECTION_ID" => '',
+                "SECTION_URL" => "",
+                "SECTION_USER_FIELDS" => array(
+                    0 => "",
+                    1 => "",
+                ),
+                "SHOW_PARENT_NAME" => "Y",
+                "TOP_DEPTH" => "1",
+                "VIEW_MODE" => "LINE",
+                "COMPONENT_TEMPLATE" => "product-menu"
+            ),
+            false
+        );?>
+    </div>
+<?endif?>
 <div class="container">
     <div class="wrapper">
         <?if($left_menu == 'Y'):?>

@@ -148,6 +148,14 @@ $(document).ready(function(){
         });
 
     })
+    $('.mobile-menu').click(function(){
+        $('.menu-view-mobile').toggleClass('open');
+    })
+
+    $('.menu-view-mobile__close').click(function(){
+        $('.menu-view-mobile').removeClass('open');
+    })
+
 
     $('.burger').click(function(){
         $('.mobile-main-menu ').toggleClass('open');

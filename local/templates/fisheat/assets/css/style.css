@@ -2146,6 +2146,7 @@ footer .copyright{
 }
 .left-order-page .promo-block span {
     width: 20px;
+    min-width: 20px;
     height: 20px;
     display: block;
     border: 1px solid #969696;

@@ -96,6 +96,54 @@ $APPLICATION->SetTitle("Главная");
 	),
 	false
 );?>
+
+
+<?if($isMobile):?>
+    <div class="mobile-product-menu">
+        <div class="mobile-product-menu__title">Наше меню</div>
+        <?$APPLICATION->IncludeComponent(
+            "bitrix:catalog.section.list",
+            "product-menu-line",
+            array(
+                "ADDITIONAL_COUNT_ELEMENTS_FILTER" => "additionalCountFilter",
+                "ADD_SECTIONS_CHAIN" => "N",
+                "CACHE_FILTER" => "N",
+                "CACHE_GROUPS" => "Y",
+                "CACHE_TIME" => "36000000",
+                "CACHE_TYPE" => "A",
+                "COUNT_ELEMENTS" => "N",
+                "COUNT_ELEMENTS_FILTER" => "CNT_ACTIVE",
+                "FILTER_NAME" => "sectionsFilter",
+                "HIDE_SECTIONS_WITH_ZERO_COUNT_ELEMENTS" => "N",
+                "IBLOCK_ID" => "4",
+                "IBLOCK_TYPE" => "catalog",
+                "SECTION_CODE" => "",
+                "SECTION_FIELDS" => array(
+                    0 => "NAME",
+                    1 => "PICTURE",
+                    2 => "",
+                ),
+                "SECTION_ID" => '',
+                "SECTION_URL" => "",
+                "SECTION_USER_FIELDS" => array(
+                    0 => "",
+                    1 => "",
+                ),
+                "SHOW_PARENT_NAME" => "Y",
+                "TOP_DEPTH" => "1",
+                "VIEW_MODE" => "LINE",
+                "COMPONENT_TEMPLATE" => "product-menu"
+            ),
+            false
+        );?>
+    </div>
+
+<?endif;?>
+
+
+
+
+
 <section >
     <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.section", 
