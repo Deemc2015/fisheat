@@ -452,6 +452,12 @@
     }
 }
 @media (max-width:576px) {
+    .left-order-page .promo-block__line{
+        display: block;
+    }
+    .left-order-page .promo-block__left-promokod{
+        margin-top: 24px;
+    }
     .menu-view-mobile .product-menu .menu_img{
         margin-left: 12px;
     }
@@ -582,6 +588,9 @@
 }
 
 @media (max-width:420px) {
+    .slider-index-product {
+        height: 275px;
+    }
     .product-item-detail-slider-container{
         height: 330px;
     }
