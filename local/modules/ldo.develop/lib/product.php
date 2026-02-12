@@ -20,8 +20,37 @@ class Product
                 }
             }
         }
-
     }
+
+    public static function getLinkById($id):string
+    {
+        if(!empty($id)){
+            \CModule::IncludeModule("iblock");
+
+            $res = \CIBlockElement::GetByID($id);
+
+            if($ar_res = $res->GetNext()){
+                if($ar_res['DETAIL_PAGE_URL']){
+                    return $ar_res['DETAIL_PAGE_URL'];
+                }
+            }
+        }
+    }
+
+    public static function getDataById($id)
+    {
+        if(!empty($id)){
+            \CModule::IncludeModule("iblock");
+
+            $res = \CIBlockElement::GetByID($id);
+
+            if($ar_res = $res->GetNext()){
+                return  $ar_res;
+            }
+        }
+    }
+
+
 
 }
 

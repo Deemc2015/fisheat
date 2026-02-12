@@ -250,7 +250,7 @@
 
     }
     body{
-        margin-bottom: 32px;
+        margin-bottom: 60px;
     }
     footer a.cart-page{
         display: inline-block;
@@ -454,6 +454,9 @@
 @media (max-width:576px) {
     .left-order-page .promo-block__line{
         display: block;
+    }
+    .left-order-page .gifts-block, .left-order-page .promo-block{
+        padding-left: 12px;
     }
     .left-order-page .promo-block__left-promokod{
         margin-top: 24px;

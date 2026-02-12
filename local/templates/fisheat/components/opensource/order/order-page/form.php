@@ -28,15 +28,21 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <div class="order-cart-title">Ваш заказ</div>
                 <div class="delete-order"><?if(!$isMobile):?>Очистить корзину<?endif;?></div>
             </div>
-            <?foreach ($arResult['BASKET'] as $arBasketItem):?>
+            <?
+
+            foreach ($arResult['BASKET'] as $arBasketItem):?>
                 <div class="product-list__item" data-id="<?=$arBasketItem['PRODUCT_ID']?>">
-                    <?if(Loader::IncludeModule('ldo.develop')):?>
+                    <?if($arBasketItem['IMAGE']):?>
                     <div class="image-product">
-                        <img src="<?=Product::getImageById($arBasketItem['PRODUCT_ID'])?>" alt="<?=$arBasketItem['NAME']?>">
+                        <img src="<?=$arBasketItem['IMAGE']?>" alt="<?=$arBasketItem['NAME']?>">
                     </div>
                     <?endif?>
                     <?if($isMobile):?><div class="mobile-name"><?endif?>
-                    <div class="name-product"><?=$arBasketItem['NAME']?></div>
+
+                        <?if($arBasketItem['LINK']):?>
+                            <a href="<?=$arBasketItem['LINK']?>" class="name-product"><?=$arBasketItem['NAME']?></a>
+                        <?endif;?>
+
                     <div class="price-product">
                         <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
                         <?if($arBasketItem['VES']):?>

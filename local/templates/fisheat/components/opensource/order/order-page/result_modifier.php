@@ -12,6 +12,8 @@ use Bitrix\Sale\Order;
 use Bitrix\Sale\PropertyValue;
 use OpenSource\Order\LocationHelper;
 use OpenSource\Order\OrderHelper;
+use Bitrix\Main\Loader;
+use  Ldo\Develop\Product;
 
 $component = &$this->__component;
 $order = $component->order;
@@ -130,8 +132,6 @@ foreach ($availablePaySystem as $paySystem) {
 $arResult['BASKET'] = [];
 foreach ($order->getBasket() as $basketItem) {
 
-
-
     /**
      * @var BasketItem $basketItem
      */
@@ -140,6 +140,24 @@ foreach ($order->getBasket() as $basketItem) {
     $arBasketItem['NAME'] = $basketItem->getField('NAME');
     $arBasketItem['CURRENCY'] = $basketItem->getCurrency();
     $arBasketItem['PRODUCT_ID'] = $basketItem->getField('PRODUCT_ID');
+    if(Loader::IncludeModule('ldo.develop')){
+        $dataProduct = Product::getDataById($arBasketItem['PRODUCT_ID']);
+        if($dataProduct){
+
+            $arBasketItem['LINK'] = $dataProduct['DETAIL_PAGE_URL'];
+
+            if($dataProduct['PREVIEW_PICTURE']){
+
+                $imageProduct = \CFile::ResizeImageGet($dataProduct['PREVIEW_PICTURE'], array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+
+                if(is_array($imageProduct)){
+                    $arBasketItem['IMAGE'] = $imageProduct['src'];
+                }
+            }
+        }
+    }
+
+
     $db_props = CIBlockElement::GetProperty(4, $basketItem->getField('PRODUCT_ID'), array("sort" => "asc"), array("CODE"=>"ATT_VES"));
     $ar_props = $db_props->Fetch();
     if($ar_props['VALUE']){

@@ -1259,6 +1259,10 @@ section#viewed{
 }
 .left-order-page .name-product{
     font-size: 21px;
+    margin-left: 12px;
+    min-width: 290px;
+    text-decoration: none;
+    color:#ffffff;
 }
 .left-order-page .price-product__sum{
     font-family: 'Inter-Bold';
@@ -1273,10 +1277,7 @@ section#viewed{
     margin-bottom: 12px;
     align-items: center;
 }
-.left-order-page .name-product{
-    margin-left: 12px;
-    min-width: 290px;
-}
+
 .left-order-page .weight{
     color:#827C7C;
 }
