@@ -250,7 +250,7 @@
 
     }
     body{
-        margin-bottom: 0;
+        margin-bottom: 32px;
     }
     footer a.cart-page{
         display: inline-block;
