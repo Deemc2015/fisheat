@@ -41,9 +41,17 @@ class OpenSourceOrderAjaxController extends Controller
             ],
             'saveOrder' => [
                 'prefilters' => []
+            ],
+            'addQuantity' => [
+                'prefilters' => []
             ]
         ];
     }
+
+
+
+
+
 
     /**
      * @param string $q

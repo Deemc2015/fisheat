@@ -19,8 +19,10 @@ use Bitrix\Sale\Delivery;
 use OpenSource\Order\ErrorCollection;
 use OpenSource\Order\OrderHelper;
 use Bitrix\Sale\PaySystem;
+use Bitrix\Main\Engine\Contract\Controllerable;
+use Bitrix\Main\Engine\ActionFilter;
 
-class OpenSourceOrderComponent extends CBitrixComponent
+class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerable
 {
     /**
      * @var Order
@@ -412,6 +414,26 @@ class OpenSourceOrderComponent extends CBitrixComponent
         }
 
         $this->includeComponentTemplate();
+    }
+
+    public function configureActions()
+    {
+        return [
+            // Публичное действие без авторизации
+
+            'addQuantity' => [
+                'prefilters' => [
+
+                ],
+            ]
+
+        ];
+    }
+
+    public function addQuantityAction($dataProduct){
+
+        addMessage2Log($this->order);
+
     }
 
 }

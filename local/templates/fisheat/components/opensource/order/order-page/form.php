@@ -19,6 +19,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var string $componentPath */
 /** @var OpenSourceOrderComponent $component */
 
+echo "<pre>";
+print_r($arResult);
+echo "</pre>";
 ?>
 <form action="" method="post" name="os-order-form" id="os-order-form">
 <div class="order-page">
@@ -77,6 +80,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <div class="comments-block__top-title">Комментарий кухне</div>
                 <div class="comments-block__top-icon"></div>
             </div>
+            <textarea name="ORDER_DESCRIPTION" id="ORDER_DESCRIPTION" cols="4" ></textarea>
             <??>
         </div>
         <div class="gifts-block">
@@ -289,6 +293,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
     <div class="right-order-page">
         <?if(!$isMobile):?>
         <div class="delivery-block">
+            <? foreach ($arResult['DELIVERY_ERRORS'] as $error):
+            /** @var Error $error */
+            ?>
+            <div class="error"><?= $error->getMessage() ?></div>
+            <? endforeach;?>
                 <?if($arResult['DELIVERY_LIST']):?>
                     <div class="delivery-block__butons">
                 <?
@@ -409,10 +418,25 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
     <? // region 7/ проставили классы у флага и кнопки-отправки ?>
     <input type="hidden" name="save" value="y" class="send_open_source_order_flag">
-    <br>
 
-    <br>
-    <br>
+
+    <div class="hidden-fields">
+        <?foreach($arResult['PROPERTIES'] as $field):?>
+            <? foreach ($field['ERRORS'] as $error):
+                /** @var Error $error */
+                ?>
+                <div class="error"><?= $error->getMessage() ?></div>
+            <? endforeach; ?>
+            <?if($field['IS_REQUIRED']):
+                print_r($field);
+                ?>
+                <input name="<?=$field['FORM_NAME']?>" id="<?=$field['FORM_LABEL']?>" type="<?=$field['TYPE']?>" placeholder="<?=$field['NAME']?>" value="<?=$field['VALUE']?>">
+            <?endif?>
+        <?endforeach?>
+    </div>
+
+
     <? // endregion?>
 
 </form>
+

@@ -107,7 +107,7 @@
                     // Скрываем блок
                     timeBlock.style.display = 'none';
                     // Дополнительно: сбрасываем выбранные значения времени
-                    this.resetTimeDeliveryValues();
+
                 }
             } else {
                 console.log('Time delivery block not found');
@@ -199,9 +199,8 @@
                 this.updateQuantity(basketItem, newQuantity);
             } else {
                 // Если количество = 1, можно предложить удаление товара
-                if (confirm('Удалить товар из корзины?')) {
-                    this.removeItem(basketItem);
-                }
+                this.removeItem(basketItem);
+
             }
         },
 
@@ -257,7 +256,22 @@
                 quantity: newQuantity,
                 sessid: BX.bitrix_sessid()
             };
-            console.log('Would send data:', data);
+
+            if(data){
+                BX.ajax.runComponentAction('opensource:order', 'addQuantity', {
+                    mode: 'class',
+                    dataType: 'json',
+                    data: { dataProduct: data }
+                })
+                    .then(function(response) {
+                        console.log(response);
+                    })
+                    .catch(function(error) {
+                        console.error('AJAX ошибка:', error);
+                    });
+            }
+
+
         },
 
         // Удаление товара
