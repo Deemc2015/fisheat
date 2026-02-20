@@ -1221,6 +1221,9 @@ section#viewed{
     border-radius: 20px;
     padding: 24px;
 }
+.left-order-page .promoChange{
+    display: flex;
+}
 .order-page {
     margin-top: 24px;
     display: flex;
