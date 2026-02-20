@@ -441,3 +441,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 </form>
 
+<div class="wrp"></div>
+<div class="modal-delete">
+    <span class="close-modal"></span>
+    <div class="top-title">Удалить корзину</div>
+    <div class="text-modal">Вы действительно хотите удалить?</div>
+    <div class="button-modal">
+        <div class="cancel">Отмена</div>
+        <div class="delete">Да</div>
+    </div>
+    <?=bitrix_sessid_post()?>"
+
+</div>

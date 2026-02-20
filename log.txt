@@ -17247,3 +17247,5461 @@ updateProducts
 #5: call_user_func_array
 	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
 ----------
+Host: riba
+Date: 2026-02-20 14:16:55
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:16:55
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:54:39
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:54:39
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:58:23
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:58:23
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:58:26
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 14:58:26.094140',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984c6217564',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 14:59:41
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 14:59:41
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:08:14
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:08:14
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:08:23
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:08:23.373118',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984eb75b60f',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:09:22
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:09:22
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:10:41
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:10:41
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:11:07
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:11:04.049401',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984f58167a6',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:11:12
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:11:12.241811',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984f603b4ca',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:11:24
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:11:24.345074',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984f6c54a37',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:12:08
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:12:08.767888',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69984f98bbaf3',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:13:09
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:13:09
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:17:55
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:17:55
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:17:57
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:17:57.024421',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699850f506333',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:18:06
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:18:06.475980',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699850fe7470e',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:18:43
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:18:43.326434',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699851234ffa4',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:19:33
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:19:33.834136',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69985155cbdb6',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:20:23
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:20:23.863326',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69985187d30b3',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:21:24
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:21:24
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:21:30
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:21:30.782633',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699851cabf4eb',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:22:07
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:22:06.980714',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699851eeefa5d',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:22:29
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:22:29.036653',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69985205092d3',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:23:29
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:23:29
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:27:50
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:27:50
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:27:51
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:27:51.081666',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69985347142ff',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:28:51
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:28:51
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:29:12
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:29:12.220514',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_6998539836106',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:29:21
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:29:21.659828',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699853a1a1589',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:30:22
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:30:22
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:42:02
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:42:02
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 15:42:03
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:42:03.432004',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_6998569b69dc7',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 15:42:23
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 15:42:23.412882',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_699856af6532f',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------

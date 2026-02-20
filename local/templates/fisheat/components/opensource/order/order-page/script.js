@@ -9,6 +9,7 @@
             this.basketItems = {};
             this.initializeBasketItems();
             this.bindEvents();
+            this.bindRemoveOrder();
             this.bindDeliveryEvents(); // Добавляем привязку событий доставки
         },
 
@@ -39,6 +40,9 @@
 
             // Событие изменения количества (если будем делать input)
             document.addEventListener('change', BX.proxy(this.handleQuantityChange, this));
+
+            // Добавляем вызов метода привязки удаления корзины
+            this.bindRemoveOrder();
         },
 
         //Функцционал выбора способов доставки
@@ -52,6 +56,81 @@
                     deliveryInputs[i].addEventListener('click', BX.proxy(this.handleDeliveryClick, this));
                 }
             }
+        },
+
+        bindRemoveOrder: function() {
+            var deleteButton = document.querySelector('.delete-order');
+
+            if (deleteButton) {
+                BX.unbindAll(deleteButton);
+                BX.bind(deleteButton, 'click', BX.proxy(this.handleDeleteOrderClick, this));
+            }
+
+        },
+        // Новый метод для обработки клика по удалению корзины
+        handleDeleteOrderClick: function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            // Показываем модальное окно подтверждения
+            this.showConfirmModal();
+        },
+        showConfirmModal: function() {
+
+            var modal = document.querySelector('.modal-delete');
+            var wrp = document.querySelector('.wrp');
+
+            if(modal){
+                BX.addClass(wrp, 'show');
+                BX.addClass(modal, 'show');
+
+                var confirmButton = modal.querySelector('.delete');
+                var cancelButton = modal.querySelector('.cancel');
+                var closeButton = modal.querySelector('.close-modal');
+
+
+                // Удаляем предыдущие обработчики
+                if (confirmButton) {
+                    BX.unbindAll(confirmButton);
+                    BX.bind(confirmButton, 'click', BX.proxy(this.confirmDeleteOrder, this));
+                }
+
+                if (cancelButton) {
+                    BX.unbindAll(cancelButton);
+                    BX.bind(cancelButton, 'click', BX.proxy(this.closeConfirmModal, this));
+                }
+
+                if (closeButton) {
+                    BX.unbindAll(closeButton);
+                    BX.bind(closeButton, 'click', BX.proxy(this.closeConfirmModal, this));
+                }
+            }
+        },
+
+        closeConfirmModal: function() {
+
+            var modal = document.querySelector('.modal-delete');
+            var wrp = document.querySelector('.wrp');
+            if (modal) {
+
+                BX.removeClass(wrp, 'show');
+                BX.removeClass(modal, 'show');
+                // Убираем обработчик с фона
+                BX.unbind(modal, 'click', BX.proxy(this.handleModalBackgroundClick, this));
+            }
+        },
+        // Новый метод для подтверждения удаления
+        confirmDeleteOrder: function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Закрываем модальное окно
+            this.closeConfirmModal();
+
+            // Выполняем удаление корзины
+            this.deleteOrder();
+        },
+        deleteOrder: function() {
+            console.log('Отправка запроса на удаление');
         },
         // Функция кликка по доставке
         handleDeliveryClick: function(event) {
