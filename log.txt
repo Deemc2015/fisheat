@@ -16793,3 +16793,393 @@ NULL
 #5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
 	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
 ----------
+Host: riba
+Date: 2026-02-20 12:53:17
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 12:53:17
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 12:54:35
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 12:54:35
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 12:54:38
+Bitrix\Sale\BasketItem::__set_state(array(
+   'fields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+      'ID' => '235',
+      'LID' => 's1',
+      'MODULE' => 'catalog',
+      'PRODUCT_ID' => '2933',
+      'QUANTITY' => '8.0000',
+      'WEIGHT' => '0.00',
+      'DELAY' => 'N',
+      'CAN_BUY' => 'Y',
+      'PRICE' => 329.0,
+      'CUSTOM_PRICE' => 'N',
+      'BASE_PRICE' => 329.0,
+      'PRODUCT_PRICE_ID' => '921',
+      'PRICE_TYPE_ID' => '1',
+      'CURRENCY' => 'RUB',
+      'BARCODE_MULTI' => 'N',
+      'RESERVED' => 'N',
+      'RESERVE_QUANTITY' => NULL,
+      'NAME' => 'Шампиньоны терияки с рисом',
+      'CATALOG_XML_ID' => NULL,
+      'VAT_RATE' => NULL,
+      'NOTES' => 'Розничная цена',
+      'DISCOUNT_PRICE' => 0.0,
+      'PRODUCT_PROVIDER_CLASS' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+      'CALLBACK_FUNC' => NULL,
+      'ORDER_CALLBACK_FUNC' => NULL,
+      'PAY_CALLBACK_FUNC' => NULL,
+      'CANCEL_CALLBACK_FUNC' => NULL,
+      'DIMENSIONS' => 
+      array (
+        'WIDTH' => NULL,
+        'HEIGHT' => NULL,
+        'LENGTH' => NULL,
+      ),
+      'TYPE' => NULL,
+      'SET_PARENT_ID' => NULL,
+      'DETAIL_PAGE_URL' => '/catalog/vegan-menyu/shampinony-teriyaki-s-risom/',
+      'FUSER_ID' => '1',
+      'MEASURE_CODE' => '796',
+      'MEASURE_NAME' => 'шт',
+      'ORDER_ID' => NULL,
+      'DATE_INSERT' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:04.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'DATE_UPDATE' => 
+      Bitrix\Main\Type\DateTime::__set_state(array(
+         'value' => 
+        DateTime::__set_state(array(
+           'date' => '2026-02-20 10:47:06.000000',
+           'timezone_type' => 3,
+           'timezone' => 'Europe/Moscow',
+        )),
+         'userTimeEnabled' => true,
+      )),
+      'PRODUCT_XML_ID' => '2933',
+      'SUBSCRIBE' => 'N',
+      'RECOMMENDATION' => NULL,
+      'VAT_INCLUDED' => 'N',
+      'SORT' => '100',
+      'DATE_REFRESH' => NULL,
+      'DISCOUNT_NAME' => NULL,
+      'DISCOUNT_VALUE' => NULL,
+      'DISCOUNT_COUPON' => NULL,
+      'XML_ID' => 'bx_6998117889b83',
+      'MARKING_CODE_GROUP' => NULL,
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'eventName' => NULL,
+   'collection' => 
+  Bitrix\Sale\Basket::__set_state(array(
+     'collection' => 
+    array (
+      0 => NULL,
+    ),
+     'index' => 0,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => true,
+     'siteId' => 's1',
+     'fUserId' => 1,
+     'order' => 
+    Bitrix\Sale\Order::__set_state(array(
+       'fields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+          'CANCELED' => 'N',
+          'DEDUCTED' => 'N',
+          'ALLOW_DELIVERY' => 'N',
+          'PAYED' => 'N',
+          'UPDATED_1C' => 'N',
+          'LID' => 's1',
+          'USER_ID' => '1',
+          'CURRENCY' => 'RUB',
+          'STATUS_ID' => 'N',
+          'DATE_STATUS' => 
+          Bitrix\Main\Type\DateTime::__set_state(array(
+             'value' => 
+            DateTime::__set_state(array(
+               'date' => '2026-02-20 12:54:38.896504',
+               'timezone_type' => 3,
+               'timezone' => 'Europe/Moscow',
+            )),
+             'userTimeEnabled' => true,
+          )),
+          'EMP_STATUS_ID' => '1',
+          'XML_ID' => 'bx_69982f5edb255',
+          'PERSON_TYPE_ID' => 1,
+        ),
+         'changedValues' => 
+        array (
+          'UPDATED_1C' => true,
+          'LID' => true,
+          'USER_ID' => true,
+          'CURRENCY' => true,
+          'STATUS_ID' => true,
+          'DATE_STATUS' => true,
+          'EMP_STATUS_ID' => true,
+          'XML_ID' => true,
+          'PERSON_TYPE_ID' => true,
+        ),
+         'originalValues' => 
+        array (
+          'UPDATED_1C' => NULL,
+          'LID' => NULL,
+          'USER_ID' => NULL,
+          'CURRENCY' => NULL,
+          'STATUS_ID' => NULL,
+          'DATE_STATUS' => NULL,
+          'EMP_STATUS_ID' => NULL,
+          'XML_ID' => NULL,
+          'PERSON_TYPE_ID' => NULL,
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'eventName' => 'SaleOrder',
+       'calculatedFields' => 
+      Bitrix\Sale\Internals\Fields::__set_state(array(
+         'values' => 
+        array (
+        ),
+         'changedValues' => 
+        array (
+        ),
+         'originalValues' => 
+        array (
+        ),
+         'customFields' => 
+        array (
+        ),
+         'isClone' => false,
+      )),
+       'basketCollection' => NULL,
+       'propertyCollection' => NULL,
+       'discount' => NULL,
+       'tax' => NULL,
+       'internalId' => 1,
+       'isNew' => true,
+       'isSaveExecuting' => false,
+       'isClone' => false,
+       'isOnlyMathAction' => false,
+       'isMeaningfulField' => false,
+       'isStartField' => false,
+       'calculateType' => 'N',
+       'shipmentCollection' => 
+      Bitrix\Sale\ShipmentCollection::__set_state(array(
+         'collection' => 
+        array (
+        ),
+         'index' => -1,
+         'isClone' => false,
+         'anyItemDeleted' => false,
+         'anyItemAdded' => false,
+         'order' => NULL,
+      )),
+       'paymentCollection' => NULL,
+       'tradeBindingCollection' => NULL,
+       'printedChecks' => 
+      array (
+      ),
+    )),
+     'basketItemIndexMap' => 
+    array (
+      235 => 0,
+    ),
+     'maxItemSort' => 100,
+     'isLoadForFUserId' => false,
+     'isSaveExecuting' => false,
+  )),
+   'internalIndex' => 0,
+   'isClone' => false,
+   'propertyCollection' => NULL,
+   'calculatedFields' => 
+  Bitrix\Sale\Internals\Fields::__set_state(array(
+     'values' => 
+    array (
+    ),
+     'changedValues' => 
+    array (
+    ),
+     'originalValues' => 
+    array (
+    ),
+     'customFields' => 
+    array (
+    ),
+     'isClone' => false,
+  )),
+   'provider' => '\\Bitrix\\Catalog\\Product\\CatalogProvider',
+   'internalId' => 235,
+   'bundleCollection' => NULL,
+   'reserveQuantityCollection' => 
+  Bitrix\Sale\ReserveQuantityCollection::__set_state(array(
+     'collection' => 
+    array (
+    ),
+     'index' => -1,
+     'isClone' => false,
+     'anyItemDeleted' => false,
+     'anyItemAdded' => false,
+     'basketItem' => NULL,
+  )),
+))
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\bitrix\php_interface\init.php:87
+#1: myFunction
+	
+#2: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:445
+#3: Bitrix\Main\EventManager->sendToEventHandler
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\eventmanager.php:381
+#4: Bitrix\Main\EventManager->send
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\event.php:142
+#5: Bitrix\Main\Event->send
+	D:\OSPanel\domains\riba\bitrix\modules\sale\lib\basket\baserefreshstrategy.php:177
+----------
+Host: riba
+Date: 2026-02-20 12:55:42
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 12:55:42
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 13:30:27
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-20 13:30:27
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
