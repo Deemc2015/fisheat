@@ -19,9 +19,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var string $componentPath */
 /** @var OpenSourceOrderComponent $component */
 
-echo "<pre>";
-print_r($arResult);
-echo "</pre>";
 ?>
 <form action="" method="post" name="os-order-form" id="os-order-form">
 <div class="order-page">
@@ -80,7 +77,7 @@ echo "</pre>";
                 <div class="comments-block__top-title">Комментарий кухне</div>
                 <div class="comments-block__top-icon"></div>
             </div>
-            <textarea name="ORDER_DESCRIPTION" id="ORDER_DESCRIPTION" cols="4" ></textarea>
+            <textarea id="orderDescription" cols="4" class="form-control bx-soa-customer-textarea bx-ios-fix" name="ORDER_DESCRIPTION"></textarea>
             <??>
         </div>
         <div class="gifts-block">
@@ -107,10 +104,10 @@ echo "</pre>";
                 </div>
                 <div class="promo-block__right">
                     <div class="promo-block__left-promokod">
-                        <form action="#" class="promoChange">
-                            <input type="text" name="promokod" id="promocode" required />
+                        <div class="promoChange">
+                            <input type="text" name="promokod" id="promocode" />
                             <button type="submit">Применить</button>
-                        </form>
+                        </div>
 
                     </div>
 
@@ -313,7 +310,6 @@ echo "</pre>";
                     </div>
                 <?endif?>
 
-
             <div class="adress-user-list">
                 <div class="adress-user-list__item">
                     <label for="adress-user-list__item-name-1">
@@ -420,18 +416,23 @@ echo "</pre>";
     <input type="hidden" name="save" value="y" class="send_open_source_order_flag">
 
 
-    <div class="hidden-fields">
+    <style>
+        .hidden-fields{
+            display: none;
+        }
+    </style>
+
+
+   <div class="hidden-fields">
         <?foreach($arResult['PROPERTIES'] as $field):?>
             <? foreach ($field['ERRORS'] as $error):
                 /** @var Error $error */
                 ?>
                 <div class="error"><?= $error->getMessage() ?></div>
             <? endforeach; ?>
-            <?if($field['IS_REQUIRED']):
-                print_r($field);
-                ?>
+
                 <input name="<?=$field['FORM_NAME']?>" id="<?=$field['FORM_LABEL']?>" type="<?=$field['TYPE']?>" placeholder="<?=$field['NAME']?>" value="<?=$field['VALUE']?>">
-            <?endif?>
+
         <?endforeach?>
     </div>
 
