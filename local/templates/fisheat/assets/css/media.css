@@ -55,6 +55,30 @@
 }
 
 @media (max-width:768px) {
+
+    /*Личный кабинет*/
+    #profile-form .form-line:first-child{
+        display: block;
+    }
+    #profile-form input{
+        width: 100%;
+    }
+    .privilegies-block{
+        display: block;
+    }
+    #profile-form .form-line{
+        display: block;
+    }
+    #profile-form .form-line .form-group:first-child{
+        margin-right: 0;
+    }
+    #profile-form .form-line:first-child{
+        margin-bottom: 0;
+    }
+    #profile-form .form-group{
+        margin-bottom: 12px;
+    }
+        /**/
     .mobile-product-menu__title{
         font-size:26px;
     }
