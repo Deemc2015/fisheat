@@ -5,6 +5,8 @@ use Bitrix\Main\Error;
 use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Result;
+use Bitrix\Main\SystemException;
+use Bitrix\Sale;
 use Bitrix\Sale\Basket;
 use Bitrix\Sale\BasketItem;
 use Bitrix\Sale\Fuser;
@@ -425,14 +427,93 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'prefilters' => [
 
                 ],
-            ]
+            ],
+            'removeCart' =>[
+                'prefilters' => [
+
+                ],
+            ],
+
 
         ];
     }
 
+    public function removeCartAction($dataUser)
+    {
+        // Проверка сессии (обязательно!)
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        try {
+            $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
+                \Bitrix\Sale\Fuser::getId(),
+                \Bitrix\Main\Context::getCurrent()->getSite()
+            );
+
+            if (empty($basket) || $basket->count() == 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Корзина уже пуста'
+                ];
+            }
+
+            // Проверяем, привязана ли корзина к заказу
+            if ($basket->getOrderId() > 0) {
+                // Корзина привязана к заказу - работаем через заказ
+                $order = \Bitrix\Sale\Order::load($basket->getOrderId());
+                if (!$order) {
+                    throw new \Exception('Заказ не найден');
+                }
+
+                $orderBasket = $order->getBasket();
+                foreach ($orderBasket as $item) {
+                    $deleteResult = $item->delete();
+                    if (!$deleteResult->isSuccess()) {
+                        throw new \Exception(implode(', ', $deleteResult->getErrorMessages()));
+                    }
+                }
+
+                $saveResult = $order->save();
+                if (!$saveResult->isSuccess()) {
+                    throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
+                }
+
+            } else {
+                // Корзина не привязана - работаем напрямую
+                foreach ($basket as $item) {
+                    $deleteResult = $item->delete();
+                    if (!$deleteResult->isSuccess()) {
+                        throw new \Exception(implode(', ', $deleteResult->getErrorMessages()));
+                    }
+                }
+
+                $saveResult = $basket->save();
+                if (!$saveResult->isSuccess()) {
+                    throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
+                }
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Корзина успешно очищена'
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка при очистке корзины: ' . $e->getMessage()
+            ];
+        }
+    }
+
+
     public function addQuantityAction($dataProduct){
 
-        addMessage2Log($this->order);
+        echo "123";
 
     }
 

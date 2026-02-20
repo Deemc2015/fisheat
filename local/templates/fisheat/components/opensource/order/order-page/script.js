@@ -130,7 +130,30 @@
             this.deleteOrder();
         },
         deleteOrder: function() {
-            console.log('Отправка запроса на удаление');
+
+            var data = {
+                action: 'deleteCart',
+                sessid: BX.bitrix_sessid()
+            };
+
+            if(data){
+                BX.ajax.runComponentAction('opensource:order', 'removeCart', {
+                    mode: 'class',
+                    dataType: 'json',
+                    data: {dataUser: data}
+                })
+                    .then(function(response) {
+                        if (response.data && response.data.success) {
+                            location.reload();
+                        }
+
+                    })
+                    .catch(function(error) {
+                        console.error('AJAX ошибка:', error);
+                    });
+            }
+
+
         },
         // Функция кликка по доставке
         handleDeliveryClick: function(event) {
@@ -343,7 +366,7 @@
                     data: { dataProduct: data }
                 })
                     .then(function(response) {
-                        console.log(response);
+                        console.log("Пришел ответ",response);
                     })
                     .catch(function(error) {
                         console.error('AJAX ошибка:', error);

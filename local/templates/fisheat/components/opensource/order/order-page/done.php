@@ -19,7 +19,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var string $componentPath */
 /** @var OpenSourceOrderComponent $component */
 ?>
+<div class="order-page">
+    <?= Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_ORDER_CREATED', [
+        '#ORDER_ID#' => $arResult['ID']
+    ]) ?>
+</div>
 
-<?= Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_ORDER_CREATED', [
-    '#ORDER_ID#' => $arResult['ID']
-]) ?>
