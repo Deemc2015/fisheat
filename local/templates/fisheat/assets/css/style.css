@@ -1364,6 +1364,7 @@ input#property_COUNT_PERSON{
     color:#fff;
     width: 63px;
     text-align: center;
+    padding-left: 16px;
 }
 .order-page .plus{
     background: url('../images/plus.svg') no-repeat;

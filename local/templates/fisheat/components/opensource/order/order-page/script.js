@@ -3,7 +3,18 @@
 
     BX.namespace('LDO.CustomBasket');
 
+
+
     BX.LDO.CustomBasket = {
+
+        personCount: {
+            node: null,
+            input: null,
+            value: 1,
+            minValue: 1,
+            maxValue: 20 // Максимальное количество персон
+        },
+
         init: function(options) {
             this.options = options || {};
             this.basketItems = {};
@@ -17,6 +28,7 @@
             this.bindEvents();
             this.bindRemoveOrder();
             this.bindDeliveryEvents();
+            this.initPersonCount();
         },
 
         // Инициализация данных товаров
@@ -40,6 +52,92 @@
                 }
             }
         },
+
+        //Работа с количеством персон
+
+        // Метод инициализации блока персон
+        initPersonCount: function() {
+            this.personCount.node = document.querySelector('.count-people-block__count');
+
+            if (!this.personCount.node) return;
+
+            this.personCount.input = this.personCount.node.querySelector('input[name="properties[COUNT_PERSON]"]');
+
+            if (this.personCount.input) {
+                this.personCount.value = parseInt(this.personCount.input.value) || 1;
+            }
+
+            // Добавляем обработчики
+            this.bindPersonCountEvents();
+        },
+
+// Привязка событий для блока персон
+        bindPersonCountEvents: function() {
+            if (!this.personCount.node) return;
+
+            var minusBtn = this.personCount.node.querySelector('.minus');
+            var plusBtn = this.personCount.node.querySelector('.plus');
+
+            if (minusBtn) {
+                BX.unbindAll(minusBtn);
+                BX.bind(minusBtn, 'click', BX.proxy(function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.decreasePersonCount();
+                }, this));
+            }
+
+            if (plusBtn) {
+                BX.unbindAll(plusBtn);
+                BX.bind(plusBtn, 'click', BX.proxy(function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.increasePersonCount();
+                }, this));
+            }
+
+        },
+
+// Уменьшение количества персон
+        decreasePersonCount: function() {
+            var newValue = this.personCount.value - 1;
+            this.setPersonCount(newValue);
+        },
+
+// Увеличение количества персон
+        increasePersonCount: function() {
+            var newValue = this.personCount.value + 1;
+            this.setPersonCount(newValue);
+        },
+
+// Установка количества персон
+        setPersonCount: function(newValue) {
+            // Валидация
+            if (newValue < this.personCount.minValue) {
+                this.showErrorMessage('Минимальное количество персон: ' + this.personCount.minValue, 'info');
+                newValue = this.personCount.minValue;
+            }
+
+            if (newValue > this.personCount.maxValue) {
+                this.showErrorMessage('Максимальное количество персон: ' + this.personCount.maxValue, 'info');
+                newValue = this.personCount.maxValue;
+            }
+
+            // Если значение не изменилось - выходим
+            if (newValue === this.personCount.value) return;
+
+            // Сохраняем старое значение
+            var oldValue = this.personCount.value;
+
+            // Обновляем значение
+            this.personCount.value = newValue;
+
+            // Обновляем поле ввода
+            if (this.personCount.input) {
+                this.personCount.input.value = newValue;
+            }
+        },
+
 
         // Извлечение числа из цены
         extractPrice: function(node) {
