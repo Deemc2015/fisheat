@@ -487,7 +487,6 @@
         },
 
         updateAllItemsPrices: function(itemsData) {
-            console.log('Обновление цен всех товаров:', itemsData);
 
             for (var productId in this.basketItems) {
                 if (this.basketItems.hasOwnProperty(productId)) {
@@ -616,8 +615,37 @@
         },
 
         sendRemoveRequest: function(basketItem) {
-            console.log('Removing item:', basketItem.productId);
-            // Здесь будет AJAX запрос на удаление товара
+            // Сохраняем контекст для использования внутри колбэков
+            var self = this;
+            var currentBasketItem = basketItem; // Сохраняем товар для обработчика
+
+            var data = {
+                action: 'deleteProduct',
+                productId: basketItem.productId,
+                sessid: BX.bitrix_sessid()
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'deleteProduct', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataProduct: data }
+            })
+                .then(function(response) {
+                    console.log("Ответ от сервера:", response);
+
+                    if (response.data && response.data.success) {
+                        if (response.data.reload == 'Y') {
+                            location.reload();
+                        } else {
+                            // Передаем сохраненный basketItem
+                            self.handleRemoveSuccess(currentBasketItem);
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.error('AJAX ошибка:', error);
+                    self.showErrorMessage('Ошибка при удалении товара');
+                });
         },
 
         handleRemoveSuccess: function(basketItem) {

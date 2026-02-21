@@ -513,7 +513,89 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
-    public function deleteProductAction($id){
+    public function deleteProductAction($dataProduct){
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        if ($dataProduct['action'] != 'deleteProduct') {
+            return [
+                'success' => false,
+                'error' => 'Неизвестный тип операции'
+            ];
+        }
+
+        if ($dataProduct['productId'] <= 0) {
+            return [
+                'success' => false,
+                'error' => 'Неверный ID продукта: ' . $dataProduct['productId']
+            ];
+        }
+        try {
+            $basket = $this->getBasket();
+
+            if (empty($basket) || $basket->count() == 0) {
+                return [
+                    'success' => false,
+                    'error' => 'Корзина пуста'
+                ];
+            }
+
+            // Поиск товара
+            $obItem = $basket->getExistsItem('catalog', $dataProduct['productId']);
+
+            if (!$obItem) {
+                foreach ($basket as $item) {
+                    if ($item->getId() == $dataProduct['productId']) {
+                        $obItem = $item;
+                        break;
+                    }
+                }
+            }
+
+            if (!$obItem) {
+                return [
+                    'success' => false,
+                    'error' => 'Товар не найден в корзине. ID: ' . $dataProduct['productId']
+                ];
+            }
+
+            $resultDelete = $basket->getItemById($dataProduct['productId'])->delete();
+
+            if (!$resultDelete->isSuccess()) {
+                throw new \Exception(implode(', ', $resultDelete->getErrorMessages()));
+            }
+
+            $basket->save();
+
+            $countProduct = $basket->getQuantityList();
+
+            $reloadPage = 'Y';
+
+            if($countProduct){
+                $reloadPage = 'N';
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Товар успешно удален',
+                'reload' => $reloadPage
+            ];
+
+
+
+        }
+        catch (\Exception $e) {
+            addMessage2Log($e->getMessage(), 'deleteProductAction - ошибка в методе');
+            return [
+                'success' => false,
+                'error' => 'Ошибка: ' . $e->getMessage()
+            ];
+        }
 
     }
 
@@ -653,7 +735,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
 
         } catch (\Exception $e) {
-            addMessage2Log($e->getMessage(), 'addQuantityAction - ERROR');
+            addMessage2Log($e->getMessage(), 'addQuantityAction - ошибка в методе');
             return [
                 'success' => false,
                 'error' => 'Ошибка: ' . $e->getMessage()
@@ -667,6 +749,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             \Bitrix\Main\Context::getCurrent()->getSite()
         );
     }
+
 
     private function formatPrice($price)
     {
