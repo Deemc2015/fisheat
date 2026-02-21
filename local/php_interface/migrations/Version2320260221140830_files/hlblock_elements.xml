@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items hlblockUid="AdressUser" exchangeVersion="2" >
+<item>
+ <field name="UF_SHIRINA">
+  <value>1232133</value>
+ </field>
+ <field name="UF_DOLGOTA">
+  <value>13212321</value>
+ </field>
+ <field name="UF_ADDRESS">
+  <value>Название адреса</value>
+ </field>
+ <field name="UF_USER_ID">
+  <value>1</value>
+ </field>
+</item>
+
+</items>
