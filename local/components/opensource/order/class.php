@@ -513,7 +513,104 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
     public function addQuantityAction($dataProduct){
 
-        echo "123";
+        // Проверка сессии (обязательно!)
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        if($dataProduct['action'] != 'updateQuantity'){
+            return [
+                'success' => false,
+                'error' => 'Неизвестный тип операции'
+            ];
+        }
+
+        if($dataProduct['productId'] < 0){
+            return [
+                'success' => false,
+                'error' => 'Неверный ID продукта'
+            ];
+        }
+
+        if($dataProduct['quantity'] == 0){
+            return [
+                'success' => false,
+                'error' => 'Передано нулевое кол-во товара'
+            ];
+        }
+
+
+        try {
+            $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
+                \Bitrix\Sale\Fuser::getId(),
+                \Bitrix\Main\Context::getCurrent()->getSite()
+            );
+
+            if (empty($basket) || $basket->count() == 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Корзина пуста'
+                ];
+            }
+
+            //addMessage2Log($basket);
+
+            //$dataProduct['productId'] = 248;
+
+            //addMessage2Log($dataProduct['productId']);
+            //addMessage2Log($basket);
+
+            // Вариант 1: Поиск по ID товара в каталоге (PRODUCT_ID)
+            $obItem = $basket->getExistsItem('catalog', $dataProduct['productId']);
+            addMessage2Log('Вариант 1:');
+            // Вариант 2: Если не нашли, пробуем поискать по ID элемента корзины (ID)
+            if (!$obItem) {
+                foreach ($basket as $item) {
+                    if ($item->getId() == $dataProduct['productId']) {
+                        $obItem = $item;
+                        break;
+                    }
+                }
+            }
+
+            if($obItem){
+                // Устанавливаем новое количество
+                $resultUpdate = $obItem->setField('QUANTITY', $dataProduct['quantity']);
+
+                if (!$resultUpdate->isSuccess()) {
+                    throw new \Exception(implode(', ', $resultUpdate->getErrorMessages()));
+                }
+
+                $saveResult = $basket->save();
+
+                if (!$saveResult->isSuccess()) {
+                    throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
+                }
+
+
+
+
+                return [
+                    'success' => true,
+                    'quantity' => $dataProduct['quantity'],
+                    'message' => 'Количество успешно изменено'
+                ];
+            }
+
+
+
+
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка при изменении кол-ва товара: ' . $e->getMessage()
+            ];
+        }
+
 
     }
 

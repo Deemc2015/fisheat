@@ -609,6 +609,19 @@
 }
 
 @media (max-width:440px) {
+    /*Пустая корзина*/
+    .center-empty-cart{
+        width: 100%;
+        padding: 0 24px;
+
+    }
+    .center-empty-cart .title{
+        font-size:28px;
+    }
+    .center-empty-cart .buttons-block{
+        gap:12px;
+    }
+    /**/
     .product-item-detail-slider-container{
         height: 360px;
     }
@@ -653,6 +666,20 @@
 }
 
 @media (max-width:380px) {
+    /*Пустая корзина*/
+    .center-empty-cart .title {
+        font-size: 26px;
+    }
+    .center-empty-cart .buttons-block{
+        display: block;
+    }
+    .center-empty-cart .buttons-block a{
+        width: 100%;
+    }
+    .center-empty-cart .buttons-block a:first-child{
+        margin-bottom: 12px;
+    }
+    /**/
     .product-item-detail-slider-container{
         height: 300px;
     }

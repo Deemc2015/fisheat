@@ -33,7 +33,20 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                  * @var Error $error
                  */
                 ?>
+
+            <?if($error->getMessage() == 'Корзина пуста'):?>
+            <div class="empty-cart">
+                <div class="center-empty-cart">
+                    <div class="title">Как только выберете блюда,<br> они появятся здесь</div>
+                    <div class="buttons-block">
+                        <a href="/actions/" class="akciya">Посмотреть акции</a>
+                        <a href="/catalog/" class="return-catalog">Вернуться в каталог</a>
+                    </div>
+                </div>
+            </div>
+            <?else:?>
                 <div class="error"><?= $error->getMessage() ?></div>
+            <?endif?>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>

@@ -84,5 +84,5 @@ function myFunction(\Bitrix\Main\Event $event)
 {
     $entity = $event->getParameter("ENTITY");
     $values = $event->getParameter("VALUES");
-    addMessage2Log($entity);
+    //addMessage2Log($entity);
 }

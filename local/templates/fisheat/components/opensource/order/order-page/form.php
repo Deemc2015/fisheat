@@ -32,7 +32,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <?
 
             foreach ($arResult['BASKET'] as $arBasketItem):?>
-                <div class="product-list__item" data-id="<?=$arBasketItem['PRODUCT_ID']?>">
+                <div class="product-list__item" data-id="<?=$arBasketItem['ID']?>">
                     <?if($arBasketItem['IMAGE']):?>
                     <div class="image-product">
                         <img src="<?=$arBasketItem['IMAGE']?>" alt="<?=$arBasketItem['NAME']?>">

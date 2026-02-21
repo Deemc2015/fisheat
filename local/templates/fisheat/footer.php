@@ -156,27 +156,9 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
     <?endif?>
 
-
-
 </footer>
 </div>
 </div>
 </div>
-
-<?if(!$isMobile):?>
-
-<?$APPLICATION->IncludeComponent(
-    "ldo:cart.gifts",
-    "",
-    Array(
-        "CACHE_TIME" => "3600000",
-        "CACHE_TYPE" => "A",
-        "IBLOCK_ID" => "8",
-        "IBLOCK_TYPE" => "catalog"
-    )
-);?>
-
-<?endif;?>
-
 </body>
 </html>
