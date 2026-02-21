@@ -2904,3 +2904,896 @@ updateProducts
 #5: call_user_func_array
 	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
 ----------
+Host: riba
+Date: 2026-02-21 12:10:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:10:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:13:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:13:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:14:45
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:14:45
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:15:45
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:15:45
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:17:03
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:17:03
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:18:03
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:18:03
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:19:03
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:19:03
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:20:03
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:20:03
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:23:46
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:23:46
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:25:03
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:25:03
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:26:55
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:26:55
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:27:57
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:27:57
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:28:03
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:28:27
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:28:40
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:29:12
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:29:12
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:29:12
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:29:16
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:29:33
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:30:14
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:30:14
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:31:18
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:31:18
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:31:21
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:31:32
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:31:37
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:31:48
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:32:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:32:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:33:06
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 7. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:33:09
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 7. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:33:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:33:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:34:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:34:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:37:55
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:37:55
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:38:18
+Module: addQuantityAction - ERROR
+Товар "Спринг-роллы с овощами" уже добавлен в корзине в количестве 10. Можно добавить не более 10
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\components\opensource\order\class.php:656
+#1: OpenSourceOrderComponent->addQuantityAction
+	
+#2: ReflectionMethod->invokeArgs
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\autowire\binder.php:210
+#3: Bitrix\Main\Engine\AutoWire\Binder->invoke
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\action.php:117
+#4: Bitrix\Main\Engine\Action->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\component\inlineaction.php:60
+#5: Bitrix\Main\Engine\Component\InlineAction->runWithSourceParametersList
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\engine\controller.php:425
+----------
+Host: riba
+Date: 2026-02-21 12:39:04
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:39:04
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:40:28
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-02-21 12:40:28
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------

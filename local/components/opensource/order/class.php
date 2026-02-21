@@ -433,8 +433,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
                 ],
             ],
+            'deleteProduct'=>[
+                'prefilters' => [
 
-
+                ],
+            ],
         ];
     }
 
@@ -510,6 +513,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
+    public function deleteProductAction($id){
+
+    }
+
 
     public function addQuantityAction($dataProduct)
     {
@@ -543,10 +550,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         try {
-            $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
-                \Bitrix\Sale\Fuser::getId(),
-                \Bitrix\Main\Context::getCurrent()->getSite()
-            );
+            $basket = $this->getBasket();
 
             if (empty($basket) || $basket->count() == 0) {
                 return [
@@ -657,7 +661,12 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
-
+    private function getBasket(){
+        return \Bitrix\Sale\Basket::loadItemsForFUser(
+            \Bitrix\Sale\Fuser::getId(),
+            \Bitrix\Main\Context::getCurrent()->getSite()
+        );
+    }
 
     private function formatPrice($price)
     {

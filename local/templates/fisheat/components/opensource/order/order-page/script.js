@@ -11,7 +11,7 @@
             this.debounceTimers = {};
             this.buttonLocks = {};
             this.totalPriceNode = document.querySelector('.basket-total-price');
-            this.currency = 'RUB'; // Валюта по умолчанию
+            this.currency = 'RUB';
 
             this.initializeBasketItems();
             this.bindEvents();
@@ -50,15 +50,11 @@
 
         // Форматирование цены
         formatPrice: function(price, currency) {
-            // Округляем до 2 знаков
             price = Math.round(price * 100) / 100;
 
-            // Проверяем, есть ли дробная часть
             if (price % 1 === 0) {
-                // Целое число - без копеек
                 return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
             } else {
-                // Есть копейки - с двумя знаками
                 return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ') + ' ₽';
             }
         },
@@ -92,51 +88,162 @@
         handleDeleteOrderClick: function(event) {
             event.preventDefault();
             event.stopPropagation();
-            this.showConfirmModal();
+            this.showDeleteCartModal();
         },
 
-        showConfirmModal: function() {
+        // === УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО ===
+
+        // Основной метод для показа модального окна
+        showModal: function(options) {
             var modal = document.querySelector('.modal-delete');
             var wrp = document.querySelector('.wrp');
 
-            if(modal){
-                BX.addClass(wrp, 'show');
-                BX.addClass(modal, 'show');
+            if (!modal || !wrp) return;
 
-                var confirmButton = modal.querySelector('.delete');
-                var cancelButton = modal.querySelector('.cancel');
-                var closeButton = modal.querySelector('.close-modal');
+            // Очищаем предыдущие обработчики
+            this.clearModalHandlers(modal);
 
-                if (confirmButton) {
-                    BX.unbindAll(confirmButton);
-                    BX.bind(confirmButton, 'click', BX.proxy(this.confirmDeleteOrder, this));
+            // Устанавливаем контент
+            this.setModalContent(modal, options);
+
+            // Показываем окно
+            BX.addClass(wrp, 'show');
+            BX.addClass(modal, 'show');
+
+            // Настраиваем кнопки
+            var confirmButton = modal.querySelector('.delete');
+            var cancelButton = modal.querySelector('.cancel');
+            var closeButton = modal.querySelector('.close-modal');
+
+            if (confirmButton) {
+                BX.unbindAll(confirmButton);
+
+                if (options.confirmText) {
+                    confirmButton.textContent = options.confirmText;
                 }
 
-                if (cancelButton) {
-                    BX.unbindAll(cancelButton);
-                    BX.bind(cancelButton, 'click', BX.proxy(this.closeConfirmModal, this));
-                }
+                BX.bind(confirmButton, 'click', BX.proxy(function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.closeModal();
+                    if (options.onConfirm) {
+                        options.onConfirm.call(this, options.context);
+                    }
+                }, this));
+            }
 
-                if (closeButton) {
-                    BX.unbindAll(closeButton);
-                    BX.bind(closeButton, 'click', BX.proxy(this.closeConfirmModal, this));
-                }
+            if (cancelButton) {
+                BX.unbindAll(cancelButton);
+                BX.bind(cancelButton, 'click', BX.proxy(function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.closeModal();
+                    if (options.onCancel) {
+                        options.onCancel.call(this, options.context);
+                    }
+                }, this));
+            }
+
+            if (closeButton) {
+                BX.unbindAll(closeButton);
+                BX.bind(closeButton, 'click', BX.proxy(function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.closeModal();
+                }, this));
             }
         },
 
-        closeConfirmModal: function() {
+        // Очистка обработчиков модального окна
+        clearModalHandlers: function(modal) {
+            var buttons = modal.querySelectorAll('.delete, .cancel, .close-modal');
+            buttons.forEach(function(btn) {
+                BX.unbindAll(btn);
+            });
+        },
+
+        // Установка контента модального окна
+        setModalContent: function(modal, options) {
+            var titleNode = modal.querySelector('.top-title');
+            var messageNode = modal.querySelector('.text-modal');
+
+            if (titleNode) {
+                titleNode.textContent = options.title || 'Подтверждение';
+            }
+
+            if (messageNode) {
+                messageNode.textContent = options.message || 'Вы действительно хотите выполнить это действие?';
+            }
+        },
+
+        // Закрытие модального окна
+        closeModal: function() {
             var modal = document.querySelector('.modal-delete');
             var wrp = document.querySelector('.wrp');
-            if (modal) {
+            if (modal && wrp) {
                 BX.removeClass(wrp, 'show');
                 BX.removeClass(modal, 'show');
             }
         },
 
+        // === СПЕЦИАЛИЗИРОВАННЫЕ МЕТОДЫ ===
+
+        // Удаление корзины
+        showDeleteCartModal: function() {
+            this.showModal({
+                title: 'Удалить корзину',
+                message: 'Вы действительно хотите удалить всю корзину?',
+                confirmText: 'Да',
+                onConfirm: function() {
+                    this.deleteOrder();
+                }
+            });
+        },
+
+        // Удаление товара
+        showDeleteItemModal: function(basketItem) {
+            this.showModal({
+                title: 'Удалить товар',
+                message: 'Вы действительно хотите удалить этот товар из корзины?',
+                confirmText: 'Да',
+                context: basketItem,
+                onConfirm: function(context) {
+                    this.removeItem(context);
+                }
+            });
+        },
+
+        // Информационное окно
+        showInfoModal: function(message, title) {
+            this.showModal({
+                title: title || 'Информация',
+                message: message,
+                confirmText: 'Ок',
+                onConfirm: function() {
+                    // Просто закрываем
+                }
+            });
+        },
+
+        // Окно подтверждения с кастомным действием
+        showConfirmModal: function(title, message, onConfirm) {
+            this.showModal({
+                title: title,
+                message: message,
+                confirmText: 'Да',
+                onConfirm: onConfirm
+            });
+        },
+
+        // Для обратной совместимости
+        closeConfirmModal: function() {
+            this.closeModal();
+        },
+
         confirmDeleteOrder: function(event) {
             event.preventDefault();
             event.stopPropagation();
-            this.closeConfirmModal();
+            this.closeModal();
             this.deleteOrder();
         },
 
@@ -264,7 +371,7 @@
                 var newQuantity = basketItem.quantity - 1;
                 this.debouncedUpdate(basketItem, newQuantity);
             } else {
-                this.removeItem(basketItem);
+                this.showDeleteItemModal(basketItem);
             }
         },
 
@@ -315,7 +422,6 @@
             }
         },
 
-        // ОСНОВНОЙ МЕТОД ОТПРАВКИ ЗАПРОСА (ОБНОВЛЕН)
         sendQuantityUpdate: function(basketItem, newQuantity, oldQuantity) {
             var self = this;
             var productId = basketItem.productId;
@@ -339,27 +445,22 @@
 
                     if (response.data && response.data.success) {
 
-                        // ВАРИАНТ 1: Если сервер возвращает цены для всех товаров (рекомендуется)
                         if (response.data.items) {
                             self.updateAllItemsPrices(response.data.items);
                         }
 
-                        // ВАРИАНТ 2: Если сервер возвращает массив всех цен
                         if (response.data.allPrices) {
                             self.updateAllPricesFromArray(response.data.allPrices);
                         }
 
-                        // ВАРИАНТ 3: Если сервер возвращает только цену измененного товара
                         if (response.data.itemPrice && !response.data.items) {
                             self.updateItemPrice(basketItem, response.data.itemPrice);
                         }
 
-                        // Обновляем общую сумму корзины
                         if (response.data.totalPrice) {
                             self.updateTotalPriceDisplay(response.data.totalPrice);
                         }
 
-                        // Сохраняем валюту, если пришла
                         if (response.data.currency) {
                             self.currency = response.data.currency;
                         }
@@ -385,18 +486,14 @@
                 });
         },
 
-        // НОВЫЙ МЕТОД: обновление цен всех товаров из объекта items
         updateAllItemsPrices: function(itemsData) {
             console.log('Обновление цен всех товаров:', itemsData);
 
             for (var productId in this.basketItems) {
                 if (this.basketItems.hasOwnProperty(productId)) {
                     var basketItem = this.basketItems[productId];
-
-                    // Ищем товар в ответе сервера
                     var serverData = itemsData[productId];
 
-                    // Также пробуем найти по числовому ключу
                     if (!serverData) {
                         for (var key in itemsData) {
                             if (itemsData.hasOwnProperty(key) &&
@@ -408,12 +505,10 @@
                     }
 
                     if (serverData) {
-                        // Обновляем цену
                         if (basketItem.priceNode && serverData.price) {
                             this.updateItemPrice(basketItem, serverData.price);
                         }
 
-                        // Обновляем количество для синхронизации
                         if (basketItem.quantityNode && serverData.quantity) {
                             basketItem.quantityNode.textContent = serverData.quantity;
                             basketItem.quantity = serverData.quantity;
@@ -423,10 +518,7 @@
             }
         },
 
-
         updateAllPricesFromArray: function(priceArray) {
-            console.log('Обновление цен из массива:', priceArray);
-
             for (var productId in priceArray) {
                 if (priceArray.hasOwnProperty(productId) && this.basketItems[productId]) {
                     var basketItem = this.basketItems[productId];
@@ -475,9 +567,10 @@
 
                 if (Math.abs(currentPrice - newPrice) > 0.01) {
                     basketItem.priceNode.setAttribute('data-old-price', currentPrice);
-
                     this.animatePrice(basketItem.priceNode, currentPrice, newPrice);
                     basketItem.price = newPrice;
+                } else {
+                    basketItem.priceNode.innerHTML = this.formatPrice(newPrice);
                 }
             }
         },
@@ -519,13 +612,12 @@
         },
 
         removeItem: function(basketItem) {
-            if (confirm('Вы уверены, что хотите удалить товар из корзины?')) {
-                this.sendRemoveRequest(basketItem);
-            }
+            this.sendRemoveRequest(basketItem);
         },
 
         sendRemoveRequest: function(basketItem) {
-            console.log('Would remove item:', basketItem.productId);
+            console.log('Removing item:', basketItem.productId);
+            // Здесь будет AJAX запрос на удаление товара
         },
 
         handleRemoveSuccess: function(basketItem) {
@@ -548,11 +640,21 @@
 
         showSuccessMessage: function(message) {
             console.log('Success:', message);
+            // Можно заменить на информационное окно
+            // this.showInfoModal(message, 'Успешно');
         },
 
         showErrorMessage: function(message) {
             console.error('Error:', message);
-            alert('Ошибка: ' + message);
+            // Используем модальное окно для отображения ошибки
+            this.showModal({
+                title: 'Ошибка',
+                message: message,
+                confirmText: 'Понятно',
+                onConfirm: function() {
+                    // Просто закрываем окно
+                }
+            });
         }
     };
 
