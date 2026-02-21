@@ -7,10 +7,16 @@
         init: function(options) {
             this.options = options || {};
             this.basketItems = {};
+            this.priceAnimationData = {};
+            this.debounceTimers = {};
+            this.buttonLocks = {};
+            this.totalPriceNode = document.querySelector('.basket-total-price');
+            this.currency = 'RUB'; // Валюта по умолчанию
+
             this.initializeBasketItems();
             this.bindEvents();
             this.bindRemoveOrder();
-            this.bindDeliveryEvents(); // Добавляем привязку событий доставки
+            this.bindDeliveryEvents();
         },
 
         // Инициализация данных товаров
@@ -27,30 +33,46 @@
                         quantityNode: item.querySelector('.quantity-product'),
                         quantity: parseInt(item.querySelector('.quantity-product').textContent) || 0,
                         priceNode: item.querySelector('.price-product__sum'),
-                        productId: productId
+                        basePriceNode: item.querySelector('.price-product__base'),
+                        productId: productId,
+                        price: this.extractPrice(item.querySelector('.price-product__sum'))
                     };
                 }
             }
         },
 
+        // Извлечение числа из цены
+        extractPrice: function(node) {
+            if (!node) return 0;
+            var priceText = node.textContent.replace(/[^\d,.]/g, '').replace(',', '.');
+            return parseFloat(priceText) || 0;
+        },
+
+        // Форматирование цены
+        formatPrice: function(price, currency) {
+            // Округляем до 2 знаков
+            price = Math.round(price * 100) / 100;
+
+            // Проверяем, есть ли дробная часть
+            if (price % 1 === 0) {
+                // Целое число - без копеек
+                return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+            } else {
+                // Есть копейки - с двумя знаками
+                return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ') + ' ₽';
+            }
+        },
+
         // Привязка событий
         bindEvents: function() {
-            // События на кнопки +/- для всех товаров
             document.addEventListener('click', BX.proxy(this.handleClick, this));
-
-            // Событие изменения количества (если будем делать input)
             document.addEventListener('change', BX.proxy(this.handleQuantityChange, this));
-
-            // Добавляем вызов метода привязки удаления корзины
             this.bindRemoveOrder();
         },
 
-        //Функцционал выбора способов доставки
         bindDeliveryEvents: function() {
-
             var deliveryInputs = document.querySelectorAll('input[name="delivery_id"]');
 
-            // Если есть элементы доставки, вешаем обработчики
             if (deliveryInputs.length > 0) {
                 for (var i = 0; i < deliveryInputs.length; i++) {
                     deliveryInputs[i].addEventListener('click', BX.proxy(this.handleDeliveryClick, this));
@@ -65,17 +87,15 @@
                 BX.unbindAll(deleteButton);
                 BX.bind(deleteButton, 'click', BX.proxy(this.handleDeleteOrderClick, this));
             }
-
         },
-        // Новый метод для обработки клика по удалению корзины
+
         handleDeleteOrderClick: function(event) {
             event.preventDefault();
             event.stopPropagation();
-            // Показываем модальное окно подтверждения
             this.showConfirmModal();
         },
-        showConfirmModal: function() {
 
+        showConfirmModal: function() {
             var modal = document.querySelector('.modal-delete');
             var wrp = document.querySelector('.wrp');
 
@@ -87,8 +107,6 @@
                 var cancelButton = modal.querySelector('.cancel');
                 var closeButton = modal.querySelector('.close-modal');
 
-
-                // Удаляем предыдущие обработчики
                 if (confirmButton) {
                     BX.unbindAll(confirmButton);
                     BX.bind(confirmButton, 'click', BX.proxy(this.confirmDeleteOrder, this));
@@ -107,69 +125,50 @@
         },
 
         closeConfirmModal: function() {
-
             var modal = document.querySelector('.modal-delete');
             var wrp = document.querySelector('.wrp');
             if (modal) {
-
                 BX.removeClass(wrp, 'show');
                 BX.removeClass(modal, 'show');
-                // Убираем обработчик с фона
-                BX.unbind(modal, 'click', BX.proxy(this.handleModalBackgroundClick, this));
             }
         },
-        // Новый метод для подтверждения удаления
+
         confirmDeleteOrder: function(event) {
             event.preventDefault();
             event.stopPropagation();
-
-            // Закрываем модальное окно
             this.closeConfirmModal();
-
-            // Выполняем удаление корзины
             this.deleteOrder();
         },
-        deleteOrder: function() {
 
+        deleteOrder: function() {
             var data = {
                 action: 'deleteCart',
                 sessid: BX.bitrix_sessid()
             };
 
-            if(data){
-                BX.ajax.runComponentAction('opensource:order', 'removeCart', {
-                    mode: 'class',
-                    dataType: 'json',
-                    data: {dataUser: data}
+            BX.ajax.runComponentAction('opensource:order', 'removeCart', {
+                mode: 'class',
+                dataType: 'json',
+                data: {dataUser: data}
+            })
+                .then(function(response) {
+                    if (response.data && response.data.success) {
+                        location.reload();
+                    }
                 })
-                    .then(function(response) {
-                        if (response.data && response.data.success) {
-                            location.reload();
-                        }
-
-                    })
-                    .catch(function(error) {
-                        console.error('AJAX ошибка:', error);
-                    });
-            }
-
-
+                .catch(function(error) {
+                    console.error('AJAX ошибка:', error);
+                });
         },
-        // Функция кликка по доставке
+
         handleDeliveryClick: function(event) {
             var target = event.target;
             var deliveryId = target.value;
-
-            // Находим название доставки
             var deliveryName = this.getDeliveryName(target);
 
-            console.log('Delivery selected:', deliveryId, deliveryName);
-
-            // Вызываем функцию действия
             this.onDeliverySelected(deliveryId, deliveryName);
         },
 
-        // ПОЛУЧЕНИЕ НАЗВАНИЯ ДОСТАВКИ
         getDeliveryName: function(inputElement) {
             var label = inputElement.closest('label');
             if (label) {
@@ -181,78 +180,47 @@
             return '';
         },
 
-        // ФУНКЦИЯ ДЕЙСТВИЯ ПРИ ВЫБОРЕ ДОСТАВКИ
         onDeliverySelected: function(deliveryId, deliveryName) {
-            /*Усли выбрана доставка, показываем блок с выбором времени доставки*/
-
-
             if (deliveryId == 3){
-                this.toggleTimeDeliveryBlock();
+                this.toggleTimeDeliveryBlock(true);
                 this.toggleDeliveryElements('show');
-            }
-            else{
-                this.toggleTimeDeliveryBlock('show');
+            } else {
+                this.toggleTimeDeliveryBlock(false);
                 this.toggleDeliveryElements();
             }
-
         },
 
-        // Функция для показа/скрытия блока времени
         toggleTimeDeliveryBlock: function(show) {
             var timeBlock = document.querySelector('.time-delivery');
-
             if (timeBlock) {
-                if (show) {
-                    // Показываем блок
-                    timeBlock.style.display = 'block';
-                } else {
-                    // Скрываем блок
-                    timeBlock.style.display = 'none';
-                    // Дополнительно: сбрасываем выбранные значения времени
-
-                }
-            } else {
-                console.log('Time delivery block not found');
+                timeBlock.style.display = show ? 'block' : 'none';
             }
         },
 
-        /*Удаляем информацию о доставке, если выбран Самовывоз*/
         toggleDeliveryElements: function(view) {
-            // Находим ВСЕ блоки с классом delivery-text
             var deliveryBlocks = document.querySelectorAll('.delivery-text');
-
-            if(deliveryBlocks.length > 0) {
-                // Используем forEach для перебора
-                deliveryBlocks.forEach(function(block) {
-                    block.style.display = view ? 'flex' : 'none';
-                });
-            }
+            deliveryBlocks.forEach(function(block) {
+                block.style.display = view ? 'flex' : 'none';
+            });
         },
 
-
-        // Обработчик кликов (существующий код)
         handleClick: function(event) {
             var target = event.target;
             var productItem = this.findProductItem(target);
 
-            if (!productItem || !productItem.productId) {
-                return;
-            }
+            if (!productItem || !productItem.productId) return;
 
             var basketItem = this.basketItems[productItem.productId];
+            if (!basketItem) return;
 
-            if (!basketItem) {
-                return;
-            }
+            if (this.buttonLocks[basketItem.productId]) return;
 
-            // Обработка кнопки минус
             if (target.classList.contains('minus')) {
                 this.decreaseQuantity(basketItem);
                 event.preventDefault();
                 event.stopPropagation();
             }
 
-            // Обработка кнопки плюс
             if (target.classList.contains('plus')) {
                 this.increaseQuantity(basketItem);
                 event.preventDefault();
@@ -260,7 +228,6 @@
             }
         },
 
-        // Обработчик изменения количества (если будет input)
         handleQuantityChange: function(event) {
             var target = event.target;
 
@@ -278,7 +245,6 @@
             }
         },
 
-        // Найти родительский элемент товара
         findProductItem: function(element) {
             while (element && !element.classList.contains('product-list__item')) {
                 element = element.parentElement;
@@ -290,121 +256,287 @@
                     productId: element.getAttribute('data-id')
                 };
             }
-
             return null;
         },
 
-        // Уменьшение количества
         decreaseQuantity: function(basketItem) {
             if (basketItem.quantity > 1) {
                 var newQuantity = basketItem.quantity - 1;
-                this.updateQuantity(basketItem, newQuantity);
+                this.debouncedUpdate(basketItem, newQuantity);
             } else {
-                // Если количество = 1, можно предложить удаление товара
                 this.removeItem(basketItem);
-
             }
         },
 
-        // Увеличение количества
         increaseQuantity: function(basketItem) {
             var newQuantity = basketItem.quantity + 1;
-            this.updateQuantity(basketItem, newQuantity);
+            this.debouncedUpdate(basketItem, newQuantity);
         },
 
-        // Обновление количества товара
-        updateQuantity: function(basketItem, newQuantity) {
-            if (newQuantity < 1) {
-                newQuantity = 1;
+        debouncedUpdate: function(basketItem, newQuantity) {
+            var productId = basketItem.productId;
+
+            if (this.debounceTimers[productId]) {
+                clearTimeout(this.debounceTimers[productId]);
             }
+
+            this.updateQuantityDisplay(basketItem, newQuantity);
+            basketItem.quantity = newQuantity;
+
+            this.debounceTimers[productId] = setTimeout(function() {
+                this.sendQuantityUpdate(basketItem, newQuantity);
+                delete this.debounceTimers[productId];
+            }.bind(this), 300);
+        },
+
+        updateQuantity: function(basketItem, newQuantity) {
+            if (newQuantity < 1) newQuantity = 1;
 
             var oldQuantity = basketItem.quantity;
             basketItem.quantity = newQuantity;
 
-            // Обновляем отображение
             this.updateQuantityDisplay(basketItem, newQuantity);
-
-            // Отправляем запрос на сервер
             this.sendQuantityUpdate(basketItem, newQuantity, oldQuantity);
         },
 
-        // Обновление отображения количества
         updateQuantityDisplay: function(basketItem, newQuantity) {
             if (basketItem.quantityNode) {
                 basketItem.quantityNode.textContent = newQuantity;
             }
-
-            // Можно добавить анимацию
             this.addQuantityAnimation(basketItem.node);
         },
 
-        // Анимация изменения количества
         addQuantityAnimation: function(itemNode) {
             if (itemNode) {
                 BX.addClass(itemNode, 'quantity-updated');
-
                 setTimeout(function() {
                     BX.removeClass(itemNode, 'quantity-updated');
                 }, 300);
             }
         },
 
-        // Отправка запроса на обновление количества
+        // ОСНОВНОЙ МЕТОД ОТПРАВКИ ЗАПРОСА (ОБНОВЛЕН)
         sendQuantityUpdate: function(basketItem, newQuantity, oldQuantity) {
-            // Собираем данные для запроса
+            var self = this;
+            var productId = basketItem.productId;
+
+            this.lockButtons(basketItem, true);
+
             var data = {
                 action: 'updateQuantity',
-                productId: basketItem.productId,
+                productId: productId,
                 quantity: newQuantity,
                 sessid: BX.bitrix_sessid()
             };
 
-            if(data){
-                BX.ajax.runComponentAction('opensource:order', 'addQuantity', {
-                    mode: 'class',
-                    dataType: 'json',
-                    data: { dataProduct: data }
+            BX.ajax.runComponentAction('opensource:order', 'addQuantity', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataProduct: data }
+            })
+                .then(function(response) {
+                    console.log("Ответ от сервера:", response);
+
+                    if (response.data && response.data.success) {
+
+                        // ВАРИАНТ 1: Если сервер возвращает цены для всех товаров (рекомендуется)
+                        if (response.data.items) {
+                            self.updateAllItemsPrices(response.data.items);
+                        }
+
+                        // ВАРИАНТ 2: Если сервер возвращает массив всех цен
+                        if (response.data.allPrices) {
+                            self.updateAllPricesFromArray(response.data.allPrices);
+                        }
+
+                        // ВАРИАНТ 3: Если сервер возвращает только цену измененного товара
+                        if (response.data.itemPrice && !response.data.items) {
+                            self.updateItemPrice(basketItem, response.data.itemPrice);
+                        }
+
+                        // Обновляем общую сумму корзины
+                        if (response.data.totalPrice) {
+                            self.updateTotalPriceDisplay(response.data.totalPrice);
+                        }
+
+                        // Сохраняем валюту, если пришла
+                        if (response.data.currency) {
+                            self.currency = response.data.currency;
+                        }
+
+                        self.showSuccessMessage('Количество обновлено');
+                    } else {
+                        var errorMsg = response.data && response.data.error
+                            ? response.data.error
+                            : 'Ошибка при обновлении';
+
+                        self.revertQuantity(basketItem, oldQuantity || basketItem.quantity - 1);
+                        self.showErrorMessage(errorMsg);
+                    }
+
+                    self.lockButtons(basketItem, false);
                 })
-                    .then(function(response) {
-                        console.log("Пришел ответ",response);
-                    })
-                    .catch(function(error) {
-                        console.error('AJAX ошибка:', error);
-                    });
-            }
+                .catch(function(error) {
+                    console.error('AJAX ошибка:', error);
 
-
+                    self.revertQuantity(basketItem, oldQuantity || basketItem.quantity - 1);
+                    self.showErrorMessage('Ошибка соединения с сервером');
+                    self.lockButtons(basketItem, false);
+                });
         },
 
-        // Удаление товара
+        // НОВЫЙ МЕТОД: обновление цен всех товаров из объекта items
+        updateAllItemsPrices: function(itemsData) {
+            console.log('Обновление цен всех товаров:', itemsData);
+
+            for (var productId in this.basketItems) {
+                if (this.basketItems.hasOwnProperty(productId)) {
+                    var basketItem = this.basketItems[productId];
+
+                    // Ищем товар в ответе сервера
+                    var serverData = itemsData[productId];
+
+                    // Также пробуем найти по числовому ключу
+                    if (!serverData) {
+                        for (var key in itemsData) {
+                            if (itemsData.hasOwnProperty(key) &&
+                                (key == productId || itemsData[key].productId == productId)) {
+                                serverData = itemsData[key];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (serverData) {
+                        // Обновляем цену
+                        if (basketItem.priceNode && serverData.price) {
+                            this.updateItemPrice(basketItem, serverData.price);
+                        }
+
+                        // Обновляем количество для синхронизации
+                        if (basketItem.quantityNode && serverData.quantity) {
+                            basketItem.quantityNode.textContent = serverData.quantity;
+                            basketItem.quantity = serverData.quantity;
+                        }
+                    }
+                }
+            }
+        },
+
+
+        updateAllPricesFromArray: function(priceArray) {
+            console.log('Обновление цен из массива:', priceArray);
+
+            for (var productId in priceArray) {
+                if (priceArray.hasOwnProperty(productId) && this.basketItems[productId]) {
+                    var basketItem = this.basketItems[productId];
+                    var newPrice = priceArray[productId];
+
+                    if (basketItem.priceNode) {
+                        this.updateItemPrice(basketItem, newPrice);
+                    }
+                }
+            }
+        },
+
+        lockButtons: function(basketItem, lock) {
+            var productId = basketItem.productId;
+            var itemNode = basketItem.node;
+
+            if (lock) {
+                this.buttonLocks[productId] = true;
+                BX.addClass(itemNode, 'basket-item-updating');
+
+                var minusBtn = itemNode.querySelector('.minus');
+                var plusBtn = itemNode.querySelector('.plus');
+
+                if (minusBtn) minusBtn.disabled = true;
+                if (plusBtn) plusBtn.disabled = true;
+            } else {
+                delete this.buttonLocks[productId];
+                BX.removeClass(itemNode, 'basket-item-updating');
+
+                var minusBtn = itemNode.querySelector('.minus');
+                var plusBtn = itemNode.querySelector('.plus');
+
+                if (minusBtn) minusBtn.disabled = false;
+                if (plusBtn) plusBtn.disabled = false;
+            }
+        },
+
+        revertQuantity: function(basketItem, oldQuantity) {
+            basketItem.quantity = oldQuantity;
+            this.updateQuantityDisplay(basketItem, oldQuantity);
+        },
+
+        updateItemPrice: function(basketItem, newPrice) {
+            if (basketItem.priceNode) {
+                var currentPrice = this.extractPrice(basketItem.priceNode);
+
+                if (Math.abs(currentPrice - newPrice) > 0.01) {
+                    basketItem.priceNode.setAttribute('data-old-price', currentPrice);
+
+                    this.animatePrice(basketItem.priceNode, currentPrice, newPrice);
+                    basketItem.price = newPrice;
+                }
+            }
+        },
+
+        animatePrice: function(node, startPrice, endPrice) {
+            var self = this;
+            var startTime = null;
+            var duration = 300;
+
+            function animate(currentTime) {
+                if (!startTime) startTime = currentTime;
+                var elapsed = currentTime - startTime;
+                var progress = Math.min(elapsed / duration, 1);
+                var eased = 1 - (1 - progress) * (1 - progress);
+                var currentPrice = startPrice + (endPrice - startPrice) * eased;
+
+                node.innerHTML = self.formatPrice(currentPrice);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    node.innerHTML = self.formatPrice(endPrice);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        },
+
+        updateTotalPriceDisplay: function(totalPrice) {
+            if (this.totalPriceNode) {
+                var currentTotal = this.extractPrice(this.totalPriceNode);
+
+                if (Math.abs(currentTotal - totalPrice) > 0.01) {
+                    this.animatePrice(this.totalPriceNode, currentTotal, totalPrice);
+                } else {
+                    this.totalPriceNode.innerHTML = this.formatPrice(totalPrice);
+                }
+            }
+        },
+
         removeItem: function(basketItem) {
             if (confirm('Вы уверены, что хотите удалить товар из корзины?')) {
                 this.sendRemoveRequest(basketItem);
             }
         },
 
-        // Отправка запроса на удаление
         sendRemoveRequest: function(basketItem) {
             console.log('Would remove item:', basketItem.productId);
         },
 
-        // Обработка успешного удаления
         handleRemoveSuccess: function(basketItem) {
-            // Удаляем элемент из DOM
             if (basketItem.node && basketItem.node.parentNode) {
                 basketItem.node.parentNode.removeChild(basketItem.node);
             }
 
-            // Удаляем из объекта
             delete this.basketItems[basketItem.productId];
-
-            // Обновляем общую сумму
             this.updateTotalPrice();
-
-            // Показываем сообщение
             this.showSuccessMessage('Товар удален из корзины');
 
-            // Отправляем кастомное событие
             BX.onCustomEvent('OnBasketItemRemove', [{
                 productId: basketItem.productId
             }]);
@@ -415,11 +547,15 @@
         },
 
         showSuccessMessage: function(message) {
-            alert(message);
+            console.log('Success:', message);
+        },
+
+        showErrorMessage: function(message) {
+            console.error('Error:', message);
+            alert('Ошибка: ' + message);
         }
     };
 
-    // Функция для инициализации из PHP
     window.LDOInitBasket = function(options) {
         console.log('LDOInitBasket called with options:', options);
         BX.ready(function() {
@@ -427,9 +563,7 @@
         });
     };
 
-    // Автоматическая инициализация при загрузке DOM
     BX.ready(function() {
-        // Проверяем, есть ли элементы корзины на странице
         var basketItems = document.querySelectorAll('.product-list__item');
         if (basketItems.length > 0) {
             console.log('Auto-initializing basket component');
