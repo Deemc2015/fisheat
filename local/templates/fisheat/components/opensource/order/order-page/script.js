@@ -14,6 +14,25 @@
             minValue: 1,
             maxValue: 20 // Максимальное количество персон
         },
+        totalBlock: {
+            node: null,
+            addressNode: null,
+            addressValueNode: null,
+            deliveryNode: null,
+            deliveryPriceNode: null,
+            baseSumNode: null,
+            discountNode: null,
+            bonusNode: null,
+            totalNode: null,
+            currentData: {
+                address: '',
+                deliveryPrice: 0,
+                baseSum: 0,
+                discount: 0,
+                bonus: 0,
+                total: 0
+            }
+        },
 
         init: function(options) {
             this.options = options || {};
@@ -23,15 +42,95 @@
             this.buttonLocks = {};
             this.totalPriceNode = document.querySelector('.basket-total-price');
             this.currency = 'RUB';
-
+            this.initTotalBlock();
             this.initializeBasketItems();
             this.bindEvents();
             this.bindRemoveOrder();
             this.bindDeliveryEvents();
             this.initPersonCount();
         },
+        //Итоговые параметры
+        initTotalBlock: function() {
+            this.totalBlock.node = document.querySelector('.total-order-block');
 
-        // Инициализация данных товаров
+            if (!this.totalBlock.node) return;
+
+            // Адрес доставки - используем существующие классы
+            this.totalBlock.addressNode = this.totalBlock.node.querySelector('.adress-text');
+            this.totalBlock.addressValueNode = this.totalBlock.node.querySelector('.adress-value');
+
+            // Сумма доставки
+            this.totalBlock.deliveryNode = this.totalBlock.node.querySelector('.delivery-text');
+            this.totalBlock.deliveryPriceNode = this.totalBlock.node.querySelector('.delivery-price');
+
+            // Сумма заказа (базовая) - ищем по классу total-price
+            this.totalBlock.baseSumNode = this.totalBlock.node.querySelector('.total-price');
+
+            // Скидка - по классу total-skidka
+            this.totalBlock.discountNode = this.totalBlock.node.querySelector('.total-skidka');
+
+            // Бонусы - по классу total-bonus
+            this.totalBlock.bonusNode = this.totalBlock.node.querySelector('.total-bonus');
+
+            // Итого
+            this.totalBlock.totalNode = this.totalBlock.node.querySelector('.total-value');
+
+            // Сохраняем текущие значения
+            this.updateTotalBlockData();
+
+            console.log('Total block initialized', this.totalBlock);
+        },
+        updateTotalBlockData: function() {
+            if (this.totalBlock.addressValueNode) {
+                this.totalBlock.currentData.address = this.totalBlock.addressValueNode.textContent;
+            }
+
+            if (this.totalBlock.deliveryPriceNode) {
+                this.totalBlock.currentData.deliveryPrice = this.extractPrice(this.totalBlock.deliveryPriceNode);
+            }
+
+            if (this.totalBlock.baseSumNode) {
+                this.totalBlock.currentData.baseSum = this.extractPrice(this.totalBlock.baseSumNode);
+            }
+
+            if (this.totalBlock.discountNode) {
+                this.totalBlock.currentData.discount = this.extractPrice(this.totalBlock.discountNode);
+            }
+
+            if (this.totalBlock.bonusNode) {
+                this.totalBlock.currentData.bonus = this.extractPrice(this.totalBlock.bonusNode);
+            }
+
+            if (this.totalBlock.totalNode) {
+                this.totalBlock.currentData.total = this.extractPrice(this.totalBlock.totalNode);
+            }
+        },
+        updateAllTotals: function(data) {
+            if (data.deliveryPrice !== undefined) {
+                this.updateDeliveryPrice(data.deliveryPrice);
+            }
+
+            if (data.baseSum !== undefined) {
+                this.updateBaseSum(data.baseSum);
+            }
+
+            if (data.discount !== undefined) {
+                this.updateDiscount(data.discount);
+            }
+
+           /* if (data.bonus !== undefined) {
+                this.updateBonus(data.bonus);
+            }*/
+
+            if (data.total !== undefined) {
+                this.updateTotal(data.total);
+            }
+
+            /*if (data.address) {
+                this.updateDeliveryAddress(data.address);
+            }*/
+        },
+            // Инициализация данных товаров
         initializeBasketItems: function() {
             var items = document.querySelectorAll('.product-list__item');
 
@@ -52,6 +151,7 @@
                 }
             }
         },
+
 
         //Работа с количеством персон
 
@@ -563,6 +663,17 @@
                             self.currency = response.data.currency;
                         }
 
+
+                        self.updateAllTotals({
+                            deliveryPrice: response.data.deliveryPrice,
+                            baseSum: response.data.baseSum,
+                            discount: response.data.discount,
+                            //bonus: response.data.bonus,
+                            total: response.data.totalPrice
+                        });
+
+
+
                         self.showSuccessMessage('Количество обновлено');
                     } else {
                         var errorMsg = response.data && response.data.error
@@ -758,6 +869,85 @@
             BX.onCustomEvent('OnBasketItemRemove', [{
                 productId: basketItem.productId
             }]);
+        },
+
+        updateDeliveryPrice: function(price) {
+            if (this.totalBlock.deliveryPriceNode) {
+                var currentPrice = this.extractPrice(this.totalBlock.deliveryPriceNode);
+
+                if (Math.abs(currentPrice - price) > 0.01) {
+                    this.animatePrice(this.totalBlock.deliveryPriceNode, currentPrice, price);
+                    this.totalBlock.currentData.deliveryPrice = price;
+                } else {
+                    this.totalBlock.deliveryPriceNode.innerHTML = this.formatPrice(price);
+                }
+            }
+        },
+
+        /**
+         * Обновление базовой суммы заказа
+         */
+        updateBaseSum: function(price) {
+            if (this.totalBlock.baseSumNode) {
+                var currentPrice = this.extractPrice(this.totalBlock.baseSumNode);
+
+                if (Math.abs(currentPrice - price) > 0.01) {
+                    this.animatePrice(this.totalBlock.baseSumNode, currentPrice, price);
+                    this.totalBlock.currentData.baseSum = price;
+                } else {
+                    this.totalBlock.baseSumNode.innerHTML = this.formatPrice(price);
+                }
+            }
+        },
+
+
+        updateDiscount: function(price) {
+            if (this.totalBlock.discountNode) {
+                var currentPrice = this.extractPrice(this.totalBlock.discountNode);
+
+                if (Math.abs(currentPrice - price) > 0.01) {
+                    this.animatePrice(this.totalBlock.discountNode, currentPrice, price);
+                    this.totalBlock.currentData.discount = price;
+                } else {
+                    this.totalBlock.discountNode.innerHTML = this.formatPrice(price);
+                }
+            }
+        },
+
+
+        updateBonus: function(price) {
+            if (this.totalBlock.bonusNode) {
+                var currentPrice = this.extractPrice(this.totalBlock.bonusNode);
+
+                if (Math.abs(currentPrice - price) > 0.01) {
+                    this.animatePrice(this.totalBlock.bonusNode, currentPrice, price);
+                    this.totalBlock.currentData.bonus = price;
+                } else {
+                    this.totalBlock.bonusNode.innerHTML = this.formatPrice(price);
+                }
+            }
+        },
+
+
+        updateTotal: function(price) {
+            if (this.totalBlock.totalNode) {
+                var currentPrice = this.extractPrice(this.totalBlock.totalNode);
+
+                if (Math.abs(currentPrice - price) > 0.01) {
+                    this.animatePrice(this.totalBlock.totalNode, currentPrice, price);
+                    this.totalBlock.currentData.total = price;
+                } else {
+                    this.totalBlock.totalNode.innerHTML = this.formatPrice(price);
+                }
+            }
+        },
+
+
+        updateDeliveryAddress: function(address) {
+            if (this.totalBlock.addressValueNode) {
+                this.totalBlock.addressValueNode.textContent = address;
+                this.totalBlock.currentData.address = address;
+            }
         },
 
         updateTotalPrice: function() {

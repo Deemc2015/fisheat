@@ -56,6 +56,10 @@ use \Ldo\Develop\Pages;
             </div>
             <div class="mobile-main-menu">
                 <span class="close-menu"></span>
+                <div class="mobile-menu-top">
+                    <div class="location ">Уфа</div>
+                    <a href="tel:+79170472929" class="phone">8 (917) 041 29 29</a>
+                </div>
                 <?$APPLICATION->IncludeComponent("bitrix:menu", "top-menu", Array(
                     "ALLOW_MULTI_SELECT" => "N",	// Разрешить несколько активных пунктов одновременно
                     "CHILD_MENU_TYPE" => "left",	// Тип меню для остальных уровней
@@ -72,6 +76,14 @@ use \Ldo\Develop\Pages;
                 ),
                     false
                 );?>
+                <div class="bottom-menu-mobile">
+                    <div class="aplication-line">
+                        <a class="rustore" href="#"></a>
+                        <a class="appstore" href="#"></a>
+                    </div>
+                    <span>Отдел качества</span>
+                    <a href="tel:+79170472929" class="phone">8 (777) 777 77 77</a>
+                </div>
             </div>
             <?else:?>
                 <div class="top-header hidden-mobile">
@@ -96,7 +108,7 @@ use \Ldo\Develop\Pages;
                     </div>
                     <div class="location hidden-mobile">Уфа</div>
                     <div class="top-header__right hidden-mobile">
-                        <a href="tel:" class="phone">8 (917) 041 29 29</a>
+                        <a href="tel:+79170472929" class="phone">8 (917) 041 29 29</a>
                         <div class="time-work">12:00 - 22:30</div>
                     </div>
                 </div>

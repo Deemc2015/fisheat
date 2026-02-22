@@ -1770,11 +1770,11 @@ footer .copyright{
     height: 40px;
 }
 .link-aplication .rustore{
-    background: url('../images/rustore.png') no-repeat;
+    background: url('../images/rustore.svg') no-repeat;
     margin-right: 12px;
 }
 .link-aplication .appstore{
-    background: url('../images/appstore.png') no-repeat;
+    background: url('../images/appstore.svg') no-repeat;
 }
 /*Оформление заказа*/
 .price-product{

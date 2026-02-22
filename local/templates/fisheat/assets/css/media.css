@@ -56,6 +56,46 @@
 
 @media (max-width:768px) {
 
+    .mobile-menu-top a,.bottom-menu-mobile a{
+        text-decoration: none;
+        color:#ffffff;
+    }
+    .bottom-menu-mobile{
+        padding-left: 12px;
+        position:absolute;
+        bottom:24px;
+    }
+    .bottom-menu-mobile span{
+        margin-bottom: 6px;
+        display: block;
+        color:var(--bg-button);
+    }
+    .mobile-menu-top .location{
+        padding-left: 7px;
+        margin-bottom: 12px;
+    }
+    .mobile-menu-top .phone{
+        padding-left: 12px;
+        margin-bottom: 48px;
+    }
+    .aplication-line{
+        display: flex;
+        margin-bottom: 12px;
+    }
+    .aplication-line .rustore{
+        background: url('../images/rustore.svg') no-repeat;
+        margin-right: 12px;
+        display: block;
+        width: 121px;
+        height: 40px;
+    }
+    .aplication-line .appstore{
+        background: url('../images/appstore.svg') no-repeat;
+        display: block;
+        width: 121px;
+        height: 40px;
+    }
+
     /*Личный кабинет*/
     #profile-form .form-line:first-child{
         display: block;
@@ -142,7 +182,7 @@
         height: 100%;
         z-index: 55;
         top: 0px;
-        padding-top: 101px;
+        padding-top: 70px;
     }
     .mobile-main-menu .close-menu{
         background: url('../images/close-menu.svg') no-repeat;

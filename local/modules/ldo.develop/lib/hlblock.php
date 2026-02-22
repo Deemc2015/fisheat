@@ -105,13 +105,19 @@ class Hlblock
         return array_column($records, 'UF_NAME');
     }
 
-    private static function getHLEntity()
+    private static function getHLEntity($tableName)
     {
         static $entity = null;
 
+        $table = self::$hlblockTableName;
+
+        if($tableName){
+            $table = $tableName;
+        }
+
         if ($entity === null) {
             $hlblock = HL\HighloadBlockTable::getRow([
-                'filter' => ['=TABLE_NAME' => self::$hlblockTableName]
+                'filter' => ['=TABLE_NAME' => $table]
             ]);
             if ($hlblock) {
                 $entity = HL\HighloadBlockTable::compileEntity($hlblock)->getDataClass();
@@ -119,6 +125,68 @@ class Hlblock
         }
 
         return $entity;
+    }
+
+    public static function getAdressList(){
+
+        global $USER;
+
+        $userId = $USER->getId();
+
+        $tableName = 'adress_user';
+
+        if($userId){
+            if (!Loader::includeModule('highloadblock')) {
+                return [];
+            }
+
+            $entity = self::getHLEntity($tableName );
+
+            if (!$entity) {
+                return [];
+            }
+
+            $records = $entity::getList([
+                'select' => ['ID','UF_SHIRINA', 'UF_DOLGOTA','UF_ADDRESS','UF_PRICE','UF_DATE_ACTUAL','UF_MINIMAL_SUM','UF_FREE_DELIVERY'],
+                'filter' => ['UF_USER_ID' => $userId]
+            ])->fetchAll();
+
+
+            /*Тут добавить метод обновления данных по доставке, если актуальная дата меньше сегодняшнее*/
+
+            /*Добавить метод проверки последнего адреса заказа, установить чеккед для него и выводить первым*/
+
+            if(is_array($records)){
+                $i = 1;
+                $checked = false;
+                foreach ($records as $item){
+
+                    if($i == 1){
+                        $checked = 'true';
+                    }
+
+                    $arrAdress[] = [
+                        'ID' => $item['ID'],
+                        'CHECKED' => $checked,
+                        'ADRESS_NAME' => $item['UF_ADDRESS'],
+                        'SHIRINA' => $item['UF_SHIRINA'],
+                        'DOLGOTA' => $item['UF_DOLGOTA'],
+                        'MIN_SUM' => $item['UF_MINIMAL_SUM'],
+                        'PRICE' => $item['UF_PRICE'],
+                        'FREE_DELIVERY' => $item['UF_FREE_DELIVERY']
+                    ];
+                    $i++;
+                }
+
+                return $arrAdress;
+            }
+
+
+
+        }
+
+
+
     }
 
 

@@ -138,6 +138,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
                 <div class="adress-user-list">
+
                     <div class="adress-user-list__item">
                         <label for="adress-user-list__item-name-1">
                             <input name="address_id" type="radio" id="adress-user-list__item-name-1" value="1">
@@ -310,50 +311,45 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endforeach;?>
                     </div>
                 <?endif?>
-
+            <?if($arResult['USER_ADRESS']):?>
             <div class="adress-user-list">
-                <div class="adress-user-list__item">
-                    <label for="adress-user-list__item-name-1">
-                        <input name="address_id" type="radio" id="adress-user-list__item-name-1" value="1">
-                        <span></span>
-                        Максима Горького ул, д. 44, кв. 90
-                    </label>
-                    <div class="adress-user-list__item-btn">
-                        <div class="adress-user-list__item-btn-edit"></div>
-                        <div class="adress-user-list__item-btn-delete"></div>
-                    </div>
-                </div>
-                <div class="adress-user-list__item">
-                    <label for="adress-user-list__item-name-2">
-                        <input name="address_id" type="radio" id="adress-user-list__item-name-2" value="2">
-                        <span></span>
-                        Максима Горького ул, д. 44, кв. 90
-                    </label>
-                    <div class="adress-user-list__item-btn">
-                        <div class="adress-user-list__item-btn-edit"></div>
-                        <div class="adress-user-list__item-btn-delete"></div>
-                    </div>
-                </div>
+
+                    <?foreach($arResult['USER_ADRESS'] as $adress):?>
+                    <?//print_r($adress);?>
+                        <div class="adress-user-list__item">
+                            <label for="adress-user-list__item-name-<?=$adress['ID']?>">
+                                <input data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                <span></span>
+                                <?=$adress['ADRESS_NAME']?>
+                            </label>
+                            <div class="adress-user-list__item-btn">
+                                <div class="adress-user-list__item-btn-edit"></div>
+                                <div class="adress-user-list__item-btn-delete"></div>
+                            </div>
+                        </div>
+                    <?endforeach?>
             </div>
+            <?endif?>
             <div class="addAdress-user">Добавить адрес</div>
         </div>
         <?endif?>
         <div class="total-order-block">
+
             <h2>Стоимость заказа</h2>
-            <div class="total-order-block__line delivery-text">
-                <span>Адрес доставки</span><span>Максима Горького ул, д. 44, кв. 90</span>
+            <div class="total-order-block__line adress-text">
+                <span>Адрес доставки</span><span class="adress-value">Максима Горького ул, д. 44, кв. 90</span>
             </div>
             <div class="total-order-block__line delivery-text">
-                <span>Сумма доставки</span><span><?=$arResult['DELIVERY_PRICE_DISPLAY']?></span>
+                <span>Сумма доставки</span><span class="delivery-price"><?=$arResult['DELIVERY_PRICE_DISPLAY']?></span>
             </div>
             <div class="total-order-block__line">
-                <span>Сумма заказа</span><span><?=$arResult['SUM_BASE_DISPLAY']?></span>
+                <span>Сумма заказа</span><span class="total-price"><?=$arResult['SUM_BASE_DISPLAY']?></span>
             </div>
             <div class="total-order-block__line">
-                <span>Скидка</span><span><?=$arResult['DISCOUNT_VALUE_DISPLAY']?></span>
+                <span>Скидка</span><span class="total-skidka"><?=$arResult['DISCOUNT_VALUE_DISPLAY']?></span>
             </div>
             <div class="total-order-block__line">
-                <span>Начислено бонусов</span><span><?=$arResultEx['BONUS']['ORDER']['VALUE_FORMAT']?></span>
+                <span>Начислено бонусов</span><span class="total-bonus"><?=$arResultEx['BONUS']['ORDER']['VALUE_FORMAT']?></span>
             </div>
 
             <div class="total-order-block__bottom">

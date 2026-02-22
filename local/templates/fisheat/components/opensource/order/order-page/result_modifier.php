@@ -14,6 +14,7 @@ use OpenSource\Order\LocationHelper;
 use OpenSource\Order\OrderHelper;
 use Bitrix\Main\Loader;
 use  Ldo\Develop\Product;
+use Ldo\Develop\Hlblock;
 
 $component = &$this->__component;
 $order = $component->order;
@@ -64,6 +65,14 @@ foreach ($order->getPropertyCollection() as $prop) {
     $arResult['PROPERTIES'][$prop->getField('CODE')] = $arProp;
 }
 
+
+/*Адреса доставки пользователя*/
+if(Loader::includeModule('ldo.develop')){
+    $adressList = Hlblock::getAdressList();
+
+    $arResult['USER_ADRESS'] = $adressList;
+}
+/**/
 
 /**
  * DELIVERY
@@ -241,6 +250,9 @@ $arResult['DELIVERY_BASE_PRICE_DISPLAY'] = SaleFormatCurrency(
 
 //Стоимость доставки с учетом скидок
 $arResult['DELIVERY_PRICE'] = $order->getDeliveryPrice();
+
+$arResult['ff'] = $order->getPrice();
+
 $arResult['DELIVERY_PRICE_DISPLAY'] = SaleFormatCurrency(
     $arResult['DELIVERY_PRICE'],
     $arResult['CURRENCY']

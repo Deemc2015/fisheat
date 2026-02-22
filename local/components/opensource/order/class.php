@@ -373,14 +373,6 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         return $result;
     }
 
-    public function getPersonUserAddress(){
-        global $USER;
-
-        $userId = $USER->GetID();
-        /*тут данные по адресам доставки*/
-        return $userId;
-    }
-
     public function executeComponent()
     {
         try {
@@ -694,7 +686,12 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
             // ФОРМИРУЕМ ОТВЕТ С УЧЕТОМ СКИДОК
             $itemsData = [];
-            $totalPrice = 0;
+            $totalPrice = $basket->getPrice();
+            $priseNotDiscount = $basket->getBasePrice();
+            $discountSum = $totalPrice - $priseNotDiscount;
+
+
+
 
             foreach ($basket as $item) {
                 $basketId = $item->getId();
@@ -706,8 +703,6 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
                 // ИТОГОВАЯ цена товара (с учетом количества)
                 $itemTotalPrice = $unitPrice * $quantity;
-
-                $totalPrice += $itemTotalPrice;
 
                 $itemsData[$basketId] = [
                     'id' => $basketId,
@@ -731,7 +726,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'totalPrice' => $totalPrice,
                 'totalPriceFormatted' => $this->formatPrice($totalPrice),
                 'currency' => $this->getCurrency(),
-                'message' => 'Количество успешно изменено'
+                'message' => 'Количество успешно изменено',
+                'discount' => $discountSum
             ];
 
         } catch (\Exception $e) {
