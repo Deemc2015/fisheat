@@ -688,9 +688,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             $itemsData = [];
             $totalPrice = $basket->getPrice();
             $priseNotDiscount = $basket->getBasePrice();
-            $discountSum = $totalPrice - $priseNotDiscount;
-
-
+            $discountSum = 0;
 
 
             foreach ($basket as $item) {
@@ -703,6 +701,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
                 // ИТОГОВАЯ цена товара (с учетом количества)
                 $itemTotalPrice = $unitPrice * $quantity;
+
+                $discountSum += ($item->getBasePrice() - $unitPrice) * $quantity;
 
                 $itemsData[$basketId] = [
                     'id' => $basketId,
@@ -724,6 +724,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'success' => true,
                 'items' => $itemsData,
                 'totalPrice' => $totalPrice,
+                'totalSum' => $totalPrice + $discountSum,
                 'totalPriceFormatted' => $this->formatPrice($totalPrice),
                 'currency' => $this->getCurrency(),
                 'message' => 'Количество успешно изменено',
