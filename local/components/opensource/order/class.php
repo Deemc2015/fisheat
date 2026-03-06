@@ -413,29 +413,112 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     public function configureActions()
     {
         return [
-            // Публичное действие без авторизации
-
             'addQuantity' => [
-                'prefilters' => [
-
-                ],
+                'prefilters' => [],
             ],
-            'removeCart' =>[
-                'prefilters' => [
-
-                ],
+            'removeCart' => [
+                'prefilters' => [],
             ],
-            'deleteProduct'=>[
-                'prefilters' => [
-
-                ],
+            'deleteProduct' => [
+                'prefilters' => [],
+            ],
+            'changePromo' => [
+                'prefilters' => [],
+            ],
+            'clearPromo' => [
+                'prefilters' => [],
             ],
         ];
     }
 
+    /**
+     * Единый метод формирования ответа с данными корзины
+     */
+    private function prepareBasketResponse($basket = null, $message = '')
+    {
+        if (!$basket) {
+            $basket = $this->getBasket();
+        }
+
+        // Принудительно применяем скидки
+        $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
+        $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
+        $discounts->calculate();
+        $applyResult = $discounts->getApplyResult(true);
+
+        // Получаем цены со скидками
+        $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
+
+        $itemsData = [];
+        $totalPrice = 0;
+        $baseTotalPrice = 0;
+        $discountSum = 0;
+
+        foreach ($basket as $item) {
+            $basketId = $item->getId();
+            $productId = $item->getProductId();
+            $quantity = $item->getQuantity();
+            $basePrice = $item->getBasePrice(); // Базовая цена за единицу
+
+            // Цена за ЕДИНИЦУ со скидкой
+            $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
+
+            // ИТОГОВАЯ цена товара (с учетом количества)
+            $itemTotalPrice = $unitPrice * $quantity;
+            $itemBaseTotalPrice = $basePrice * $quantity;
+
+            $totalPrice += $itemTotalPrice;
+            $baseTotalPrice += $itemBaseTotalPrice;
+            $discountSum += ($basePrice - $unitPrice) * $quantity;
+
+            $itemsData[$productId] = [
+                'id' => $basketId,
+                'basketId' => $basketId,
+                'productId' => $productId,
+                'quantity' => $quantity,
+                'price' => $itemTotalPrice,
+                'unitPrice' => $unitPrice,
+                'basePrice' => $basePrice,
+                'baseTotalPrice' => $itemBaseTotalPrice,
+                'discount' => ($basePrice - $unitPrice) * $quantity,
+                'unitDiscount' => $basePrice - $unitPrice,
+                'currency' => $item->getCurrency(),
+                'priceFormatted' => $this->formatPrice($itemTotalPrice),
+                'unitPriceFormatted' => $this->formatPrice($unitPrice)
+            ];
+        }
+
+        $deliveryPrice = $this->getDeliveryPrice();
+        $totalWithDelivery = $totalPrice + $deliveryPrice;
+
+        $response = [
+            'success' => true,
+            'items' => $itemsData,
+            'totalPrice' => $totalPrice,
+            'baseSum' => $baseTotalPrice,
+            'discount' => $discountSum,
+            'deliveryPrice' => $deliveryPrice,
+            'total' => $totalWithDelivery,
+            'currency' => $this->getCurrency(),
+            'message' => $message ?: 'Данные корзины обновлены'
+        ];
+
+        return $response;
+    }
+
+    /**
+     * Получение цены доставки
+     */
+    private function getDeliveryPrice()
+    {
+        // Здесь должна быть логика получения текущей цены доставки
+        // Например, из сессии или из заказа
+        return 0;
+    }
+
     public function removeCartAction($dataUser)
     {
-        // Проверка сессии (обязательно!)
+        // Проверка сессии
         if (!check_bitrix_sessid()) {
             return [
                 'success' => false,
@@ -444,6 +527,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         try {
+            // Очищаем купоны при удалении корзины
+            Sale\DiscountCouponsManager::clear(true);
+
             $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
                 \Bitrix\Sale\Fuser::getId(),
                 \Bitrix\Main\Context::getCurrent()->getSite()
@@ -452,7 +538,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             if (empty($basket) || $basket->count() == 0) {
                 return [
                     'success' => true,
-                    'message' => 'Корзина уже пуста'
+                    'message' => 'Корзина уже пуста',
+                    'reload' => 'Y'
                 ];
             }
 
@@ -494,7 +581,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
             return [
                 'success' => true,
-                'message' => 'Корзина успешно очищена'
+                'message' => 'Корзина успешно очищена',
+                'reload' => 'Y'
             ];
 
         } catch (\Exception $e) {
@@ -505,7 +593,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
-    public function deleteProductAction($dataProduct){
+    public function deleteProductAction($dataProduct)
+    {
         // Проверка сессии
         if (!check_bitrix_sessid()) {
             return [
@@ -527,6 +616,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'error' => 'Неверный ID продукта: ' . $dataProduct['productId']
             ];
         }
+
         try {
             $basket = $this->getBasket();
 
@@ -556,7 +646,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 ];
             }
 
-            $resultDelete = $basket->getItemById($dataProduct['productId'])->delete();
+            $resultDelete = $obItem->delete();
 
             if (!$resultDelete->isSuccess()) {
                 throw new \Exception(implode(', ', $resultDelete->getErrorMessages()));
@@ -564,33 +654,28 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
             $basket->save();
 
-            $countProduct = $basket->getQuantityList();
+            $countProduct = $basket->count();
 
-            $reloadPage = 'Y';
-
-            if($countProduct){
-                $reloadPage = 'N';
+            // Если корзина пуста, возвращаем reload
+            if ($countProduct == 0) {
+                return [
+                    'success' => true,
+                    'message' => 'Товар успешно удален',
+                    'reload' => 'Y'
+                ];
             }
 
-            return [
-                'success' => true,
-                'message' => 'Товар успешно удален',
-                'reload' => $reloadPage
-            ];
+            // Возвращаем обновленные данные корзины
+            return $this->prepareBasketResponse($basket, 'Товар успешно удален');
 
-
-
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             addMessage2Log($e->getMessage(), 'deleteProductAction - ошибка в методе');
             return [
                 'success' => false,
                 'error' => 'Ошибка: ' . $e->getMessage()
             ];
         }
-
     }
-
 
     public function addQuantityAction($dataProduct)
     {
@@ -659,17 +744,75 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 throw new \Exception(implode(', ', $resultUpdate->getErrorMessages()));
             }
 
-            // ОБЫЧНЫЙ ПЕРЕСЧЕТ (не всегда применяет скидки)
-            $basket->refresh();
+            // Сохраняем корзину
+            if ($basket->getOrderId() > 0) {
+                $order = \Bitrix\Sale\Order::load($basket->getOrderId());
+                $order->setBasket($basket);
+                $saveResult = $order->save();
+            } else {
+                $saveResult = $basket->save();
+            }
 
-            // ПРИНУДИТЕЛЬНО ПРИМЕНЯЕМ СКИДКИ через Discount::buildFromBasket
-            $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
-            $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
-            $discounts->calculate();
-            $applyResult = $discounts->getApplyResult(true);
+            if (!$saveResult->isSuccess()) {
+                throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
+            }
 
-            // Получаем цены со скидками
-            $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
+            // Возвращаем единый формат ответа
+            return $this->prepareBasketResponse($basket, 'Количество успешно изменено');
+
+        } catch (\Exception $e) {
+            addMessage2Log($e->getMessage(), 'addQuantityAction - ошибка в методе');
+            return [
+                'success' => false,
+                'error' => 'Ошибка: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function changePromoAction($dataPromo)
+    {
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        if (!$dataPromo || !isset($dataPromo['promokod'])) {
+            return [
+                'success' => false,
+                'error' => 'Не передан промокод'
+            ];
+        }
+
+        try {
+            $promokod = trim($dataPromo['promokod']);
+
+            if (empty($promokod)) {
+                return [
+                    'success' => false,
+                    'error' => 'Введите промокод'
+                ];
+            }
+
+            // Очищаем предыдущие купоны перед применением нового
+            Sale\DiscountCouponsManager::clear(true);
+
+            // Применяем купон
+            $resultAdd = Sale\DiscountCouponsManager::add($promokod);
+
+            if (!$resultAdd) {
+                return [
+                    'success' => false,
+                    'error' => 'Не удалось применить промокод. Возможно, он недействителен или истек срок действия.'
+                ];
+            }
+
+            $basket = $this->getBasket();
+
+            // Обновляем поля в корзине с учетом купонов
+            $basket->refreshData(['PRICE', 'COUPONS']);
 
             // Сохраняем корзину
             if ($basket->getOrderId() > 0) {
@@ -684,73 +827,71 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
             }
 
-            // ФОРМИРУЕМ ОТВЕТ С УЧЕТОМ СКИДОК
-            $itemsData = [];
-            $totalPrice = $basket->getPrice();
-            $priseNotDiscount = $basket->getBasePrice();
-            $discountSum = 0;
-
-
-            foreach ($basket as $item) {
-                $basketId = $item->getId();
-                $productId = $item->getProductId();
-                $quantity = $item->getQuantity();
-
-                // Цена за ЕДИНИЦУ со скидкой
-                $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
-
-                // ИТОГОВАЯ цена товара (с учетом количества)
-                $itemTotalPrice = $unitPrice * $quantity;
-
-                $discountSum += ($item->getBasePrice() - $unitPrice) * $quantity;
-
-                $itemsData[$basketId] = [
-                    'id' => $basketId,
-                    'basketId' => $basketId,
-                    'productId' => $productId,
-                    'quantity' => $quantity,
-                    'unitPrice' => $unitPrice,                    // Цена за единицу
-                    'price' => $itemTotalPrice,                    // Итоговая сумма
-                    'basePrice' => $item->getBasePrice(),          // Базовая цена за единицу
-                    'priceFormatted' => $this->formatPrice($itemTotalPrice),
-                    'unitPriceFormatted' => $this->formatPrice($unitPrice),
-                    'discount' => ($item->getBasePrice() - $unitPrice) * $quantity,
-                    'unitDiscount' => $item->getBasePrice() - $unitPrice,
-                    'currency' => $item->getCurrency()
-                ];
-            }
-
-            return [
-                'success' => true,
-                'items' => $itemsData,
-                'totalPrice' => $totalPrice,
-                'totalSum' => $totalPrice + $discountSum,
-                'totalPriceFormatted' => $this->formatPrice($totalPrice),
-                'currency' => $this->getCurrency(),
-                'message' => 'Количество успешно изменено',
-                'discount' => $discountSum
-            ];
+            // Возвращаем единый формат ответа
+            return $this->prepareBasketResponse($basket, 'Промокод успешно применен');
 
         } catch (\Exception $e) {
-            addMessage2Log($e->getMessage(), 'addQuantityAction - ошибка в методе');
+            addMessage2Log($e->getMessage(), 'changePromoAction - ошибка в методе');
             return [
                 'success' => false,
-                'error' => 'Ошибка: ' . $e->getMessage()
+                'error' => 'Ошибка при применении промокода: ' . $e->getMessage()
             ];
         }
     }
 
-    private function getBasket(){
+    public function clearPromoAction($dataPromo = null)
+    {
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        try {
+            // Очищаем все купоны
+            Sale\DiscountCouponsManager::clear(true);
+
+            $basket = $this->getBasket();
+
+            // Обновляем корзину без купонов
+            $basket->refreshData(['PRICE', 'COUPONS']);
+
+            // Сохраняем корзину
+            if ($basket->getOrderId() > 0) {
+                $order = \Bitrix\Sale\Order::load($basket->getOrderId());
+                $order->setBasket($basket);
+                $saveResult = $order->save();
+            } else {
+                $saveResult = $basket->save();
+            }
+
+            if (!$saveResult->isSuccess()) {
+                throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
+            }
+
+            // Возвращаем единый формат ответа
+            return $this->prepareBasketResponse($basket, 'Промокод сброшен');
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка при сбросе промокода: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    private function getBasket()
+    {
         return \Bitrix\Sale\Basket::loadItemsForFUser(
             \Bitrix\Sale\Fuser::getId(),
             \Bitrix\Main\Context::getCurrent()->getSite()
         );
     }
 
-
     private function formatPrice($price)
     {
-        //Вариант 3: С использованием CCurrencyLang (как в Битриксе)
         return \CCurrencyLang::CurrencyFormat($price, 'RUB');
     }
 
@@ -758,5 +899,4 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     {
         return \Bitrix\Currency\CurrencyManager::getBaseCurrency();
     }
-
 }

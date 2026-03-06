@@ -73,6 +73,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
 
         </div>
+        <?
+        //echo "<pre>";
+        //print_r($arResult);
+
+        ?>
         <div class="comments-block">
             <div class="comments-block__top">
                 <div class="comments-block__top-title">Комментарий кухне</div>
@@ -107,7 +112,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="promo-block__left-promokod">
                         <div class="promoChange">
                             <input type="text" name="promokod" id="promocode" />
-                            <button type="submit">Применить</button>
+                            <button type="button">Применить</button>
                         </div>
 
                     </div>
