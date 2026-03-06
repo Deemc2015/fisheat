@@ -350,7 +350,7 @@ if(Loader::IncludeModule('ldo.favorites')){
 							{
 								?>
 								<div class="product-item-button-container" id="<?=$itemIds['BASKET_ACTIONS']?>">
-									<button data-id="<?=$actualItem['ID']?>"  class="btn btn-primary addCart <?=$buttonSizeClass?>" id="<?=$itemIds['BUY_LINK']?>"
+									<button data-id="<?=$actualItem['ID']?>"  class="<?if(in_array($actualItem['ID'], $arResult['IN_CART'])){echo 'in_cart';}?> btn btn-primary addCart <?=$buttonSizeClass?>" id="<?=$itemIds['BUY_LINK']?>"
 											href="javascript:void(0)" rel="nofollow"><svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M4.88622 6.17594V5.28917C4.88622 3.23221 6.54093 1.21183 8.59788 1.01985C11.0479 0.782153 13.114 2.71112 13.114 5.11547V6.37707M6.25739 19.2764H11.7426C15.4177 19.2764 16.0759 17.8046 16.2679 16.0127L16.9536 10.5275C17.2004 8.29686 16.5604 6.47759 12.6568 6.47759H5.34319C1.43955 6.47759 0.79961 8.29686 1.04644 10.5275L1.7321 16.0127C1.92408 17.8046 2.5823 19.2764 6.25739 19.2764Z" stroke="#F44336" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                             <path d="M12.1958 10.1343H12.204M5.79541 10.1343H5.80362" stroke="#F44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
