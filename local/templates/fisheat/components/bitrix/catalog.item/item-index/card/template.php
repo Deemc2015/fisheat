@@ -87,7 +87,9 @@ if($item['PROPERTIES']['ATT_VEGAN']['VALUE'] == 'да'){
 			}
 			?>
 		</span>
-		<span class="image-product"  id="<?=$itemIds['PICT']?>" style="background-image: url('<?=$bgProduct?>'); <?=($showSlider ? 'display: none;' : '')?>"></span>
+		<div id="image-product-block">
+            <img class="image-product" loading="lazy" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>"  id="<?=$itemIds['PICT']?>">
+        </div>
 		<?
 		if ($item['SECOND_PICT'])
 		{

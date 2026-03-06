@@ -422,8 +422,9 @@ h1.title-page{
 }
 .product-item-container a .image-product{
     height: 225px;
+    width: 100%;
     display: block;
-    background-size: cover;
+    object-fit: cover;
 }
 .product-item-container .product-item-title{
     display: flex;
