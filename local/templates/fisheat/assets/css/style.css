@@ -1515,21 +1515,22 @@ input#property_COUNT_PERSON{
     margin-right: 10px;
     display: block;
     border-radius: 7px;
+    background-size:cover !important;
 }
 .tag-detail-list span:last-child{
     margin-right: 0;
 }
 .tag-detail-list  .new{
-    background: url('../images/new-icon-detail.jpg') no-repeat;
+    background: url('../images/new-icon-detail.svg') no-repeat;
 }
 .tag-detail-list  .popular{
-    background: url('../images/popular-icon-detail.jpg') no-repeat;
+    background: url('../images/popular-icon-detail.svg') no-repeat;
 }
 .tag-detail-list  .vegan{
-    background: url('../images/veget-icon-detail.jpg') no-repeat;
+    background: url('../images/veget-icon-detail.svg') no-repeat;
 }
 .tag-detail-list  .hot{
-    background: url('../images/hot-icon-detail.jpg') no-repeat;
+    background: url('../images/hot-icon-detail.svg') no-repeat;
 }
 .top-section-list{
     margin-bottom: 21px;
