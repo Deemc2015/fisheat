@@ -869,7 +869,7 @@ h1.title-page{
     height: 30px;
     position: absolute;
     right: 12px;
-    background: url('../images/info-product-icon.png') no-repeat;
+    background: url('../images/info-product-icon.svg') no-repeat;
     cursor: pointer;
     top: 7px;
 }

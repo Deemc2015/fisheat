@@ -337,7 +337,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                 <?if($isMobile):?>
                     <h1 class="title-product"><?=$arResult['NAME'];?></h1>
                     <div class="after-title-product">
-                        <div class="after-title-product__price"><?=$price['PRINT_RATIO_PRICE']?></div>
                         <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
                             <div class="after-title-product__weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
                         <?endif;?>

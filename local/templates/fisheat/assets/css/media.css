@@ -61,6 +61,12 @@
         height: 30px;
         margin-right: 5px;
     }
+    .after-title-product__weight{
+        font-weight:bold;
+    }
+    .product-item-detail-slider-container{
+        margin-top: -24px;
+    }
     /**/
 
     .mobile-menu-top a,.bottom-menu-mobile a{
