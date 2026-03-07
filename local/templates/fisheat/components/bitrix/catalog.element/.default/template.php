@@ -385,9 +385,11 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 										?>
 
 										<div class="product-item-detail-info-container">
-										    <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
-										    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
-										    <?endif;?>
+                                            <?if(!$isMobile):?>
+                                                <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
+                                                    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
+                                                <?endif;?>
+                                            <?endif;?>
 											<?php
 											if ($arParams['SHOW_OLD_PRICE'] === 'Y')
 											{

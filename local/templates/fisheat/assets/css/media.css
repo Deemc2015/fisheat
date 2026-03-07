@@ -61,6 +61,9 @@
         height: 30px;
         margin-right: 5px;
     }
+    .product-item-detail-pay-block{
+        justify-content: space-between;
+    }
     .after-title-product__weight{
         font-weight:bold;
     }
@@ -707,6 +710,11 @@
     }
 }
 @media (max-width:400px) {
+    /*Детальная карточка товара*/
+    .container-detail-page .product-item-detail-pay-block{
+        width: 100%;
+    }
+    /**/
     .product-item-detail-slider-container{
         height: 325px;
     }
