@@ -409,6 +409,29 @@
 				}
 			}
 
+
+
+
+
+
+
+			if (this.obAddToBasketBtn) {
+				// Сохраняем оригинальный обработчик
+				var originalHandler = this.obAddToBasketBtn.onclick;
+
+				// Добавляем свой обработчик
+				BX.bind(this.obAddToBasketBtn, 'click', function(event) {
+					// Скрываем кнопку
+					BX.hide(this.obAddToBasketBtn);
+
+					// Убираем класс hidden у блока count-block-detail
+					var countBlock = document.querySelector('.count-block-detail');
+					if (countBlock) {
+						BX.removeClass(countBlock, 'hidden');
+					}
+				}.bind(this));
+			}
+
 			if (this.productType === 3)
 			{
 				if (this.visual.TREE_ID)
@@ -545,6 +568,8 @@
 					}
 				}
 
+
+
 				switch (this.productType)
 				{
 					case 0: // no catalog
@@ -626,6 +651,145 @@
 						this.setCurrent();
 						break;
 				}
+
+				// Инициализация управления количеством через кастомные кнопки
+
+					var countBlock = document.querySelector('.count-block-detail');
+
+					if (countBlock) {
+						var minusBtn = countBlock.querySelector('.minus');
+						var plusBtn = countBlock.querySelector('.plus');
+						var quantitySpan = countBlock.querySelector('.quantity-product');
+
+						// Получаем максимальное количество из атрибута
+						var maxQuantity = parseInt(plusBtn.getAttribute('data-max-count')) || 999;
+						var minQuantity = 1;
+						var stepQuantity = 1;
+
+						console.log('Максимальное количество:', maxQuantity);
+
+						// Создаем скрытое поле
+						if (!this.obQuantity) {
+							this.obQuantity = BX.create('INPUT', {
+								props: {
+									type: 'hidden',
+									id: this.visual.QUANTITY_ID,
+									value: quantitySpan ? quantitySpan.innerHTML : 1
+								}
+							});
+							this.obProduct.appendChild(this.obQuantity);
+						}
+
+						// Функция обновления
+						var updateQuantity = function(newValue) {
+							newValue = parseInt(newValue);
+							if (isNaN(newValue) || newValue < 1) newValue = 1;
+
+							// Проверка лимитов
+							if (newValue < minQuantity) newValue = minQuantity;
+							if (newValue > maxQuantity) newValue = maxQuantity;
+
+							// Обновление
+							quantitySpan.innerHTML = newValue;
+							if (this.obQuantity) this.obQuantity.value = newValue;
+
+							// Пересчет цены
+							if (typeof this.setPrice === 'function') {
+								this.setPrice();
+							}
+
+							// Блокировка кнопок
+							if (minusBtn) {
+								if (newValue <= minQuantity) {
+									minusBtn.classList.add('disabled');
+									minusBtn.style.pointerEvents = 'none';
+									minusBtn.style.opacity = '0.5';
+								} else {
+									minusBtn.classList.remove('disabled');
+									minusBtn.style.pointerEvents = 'auto';
+									minusBtn.style.opacity = '1';
+								}
+							}
+
+							if (plusBtn) {
+								if (newValue >= maxQuantity) {
+									plusBtn.classList.add('disabled');
+									plusBtn.style.pointerEvents = 'none';
+									plusBtn.style.opacity = '0.5';
+								} else {
+									plusBtn.classList.remove('disabled');
+									plusBtn.style.pointerEvents = 'auto';
+									plusBtn.style.opacity = '1';
+								}
+							}
+						}.bind(this);
+
+						// Функция для создания обработчика с долгим нажатием
+						var createLongPressHandler = function(btn, direction) {
+							var timer = null;
+							var interval = null;
+
+							var start = function(e) {
+								e.preventDefault();
+
+								// Первое изменение
+								var currentValue = parseInt(quantitySpan.innerHTML) || 1;
+								var newValue = direction === 'plus'
+									? currentValue + stepQuantity
+									: currentValue - stepQuantity;
+								updateQuantity(newValue);
+
+								// Запускаем интервал после задержки
+								timer = setTimeout(function() {
+									interval = setInterval(function() {
+										var currentValue = parseInt(quantitySpan.innerHTML) || 1;
+										var newValue = direction === 'plus'
+											? currentValue + stepQuantity
+											: currentValue - stepQuantity;
+										updateQuantity(newValue);
+									}, 150);
+								}, 300);
+							};
+
+							var stop = function() {
+								clearTimeout(timer);
+								clearInterval(interval);
+							};
+
+							return { start: start, stop: stop };
+						};
+
+						// Применяем обработчики
+						if (minusBtn) {
+							var minusHandler = createLongPressHandler(minusBtn, 'minus');
+							BX.bind(minusBtn, 'mousedown', minusHandler.start);
+							BX.bind(minusBtn, 'mouseup', minusHandler.stop);
+							BX.bind(minusBtn, 'mouseleave', minusHandler.stop);
+							BX.bind(minusBtn, 'touchstart', minusHandler.start);
+							BX.bind(minusBtn, 'touchend', minusHandler.stop);
+							BX.bind(minusBtn, 'touchcancel', minusHandler.stop);
+						}
+
+						if (plusBtn) {
+							var plusHandler = createLongPressHandler(plusBtn, 'plus');
+							BX.bind(plusBtn, 'mousedown', plusHandler.start);
+							BX.bind(plusBtn, 'mouseup', plusHandler.stop);
+							BX.bind(plusBtn, 'mouseleave', plusHandler.stop);
+							BX.bind(plusBtn, 'touchstart', plusHandler.start);
+							BX.bind(plusBtn, 'touchend', plusHandler.stop);
+							BX.bind(plusBtn, 'touchcancel', plusHandler.stop);
+						}
+
+						// Инициализация
+						var initialValue = parseInt(quantitySpan.innerHTML);
+						if (isNaN(initialValue) || initialValue < 1) initialValue = 1;
+						if (initialValue > maxQuantity) initialValue = maxQuantity;
+						updateQuantity(initialValue);
+					}
+
+
+
+
 
 				this.obBuyBtn && BX.bind(this.obBuyBtn, 'click', BX.proxy(this.buyBasket, this));
 				this.smallCardNodes.buyButton && BX.bind(this.smallCardNodes.buyButton, 'click', BX.proxy(this.buyBasket, this));

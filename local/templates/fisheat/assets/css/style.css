@@ -2294,3 +2294,43 @@ footer .copyright{
 .center-empty-cart .return-catalog{
     background: var(--bg-button);
 }
+.count-block-detail{
+    display: flex;
+    width: 130px;
+    align-items:center;
+    justify-content: space-between;
+}
+.count-block-detail .quantity-product{
+    font-size: 24px;
+    margin-top: 5px;
+}
+.count-block-detail.hidden{
+    display: none;
+}
+.count-block-detail .plus, .count-block-detail .minus{
+    width: 40px;
+    height: 40px;
+    border:1px solid #ffffff;
+    border-radius:50%;
+    cursor:pointer;
+    transition:all .3s;
+}
+.count-block-detail .plus:hover, .count-block-detail .minus:hover{
+    opacity:.7;
+}
+.count-block-detail .plus:before{
+    content:'';
+    width: 38px;
+    height: 40px;
+    display: block;
+    background: url('../images/plus-detail.svg') no-repeat;
+    background-position: center;
+}
+.count-block-detail .minus:before{
+    content:'';
+    width: 38px;
+    height: 40px;
+    display: block;
+    background: url('../images/minus-detail.svg') no-repeat;
+    background-position: center;
+}

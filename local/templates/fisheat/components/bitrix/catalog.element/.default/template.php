@@ -219,11 +219,12 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 ?>
 <?
 $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
-?>
-<?
-    print_r($arResult['IN_CART']);
+
 
 ?>
+
+
+
 <div class="bx-catalog-element bx-<?=$arParams['TEMPLATE_THEME']?>" id="<?=$itemIds['ID']?>"
 	itemscope itemtype="http://schema.org/Product">
 	<div class="container-detail-page">
@@ -328,9 +329,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                             <div class="detail-block-info__detail-info"><span>Углеводы</span> <span><?=$arResult['NUTRITIONAL']['YGLEVODY']?></span></div>
                         <?endif;?>
 
-
-
-
                     </div>
                 </div>
                 <?endif?>
@@ -343,8 +341,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 
                     </div>
                 <?endif?>
-
-
 
 			    <?if($arResult['DETAIL_TEXT']):?>
 			    <div class="description-block">
@@ -363,13 +359,7 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
         			    <div class="title-block-desc">Рекомендации</div>
                         <div class="text-block-desc"><p><?=$arResult['PROPERTIES']['ATT_RECOMENDATION']['~VALUE']['TEXT'];?></p></div>
 			    <?endif;?>
-			    <?
-			    
-			    /*echo "<pre>";
-			    print_r($arResult['PROPERTIES']);*/
-			    
-			    ?>
-			    
+
 			    </div>
 				<div class="row">
 					
@@ -426,36 +416,6 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 										<?php
 										break;
 
-								
-									
-
-									case 'quantity':
-										if ($arParams['USE_PRODUCT_QUANTITY'])
-										{
-											?>
-											<div class="product-item-detail-info-container" style="<?=(!$actualItem['CAN_BUY'] ? 'display: none;' : '')?>"
-												data-entity="quantity-block">
-												<div class="product-item-detail-info-container-title"><?=Loc::getMessage('CATALOG_QUANTITY')?></div>
-												<div class="product-item-amount">
-													<div class="product-item-amount-field-container">
-														<span class="product-item-amount-field-btn-minus no-select" id="<?=$itemIds['QUANTITY_DOWN_ID']?>"></span>
-														<input class="product-item-amount-field" id="<?=$itemIds['QUANTITY_ID']?>" type="number"
-															value="<?=$price['MIN_QUANTITY']?>">
-														<span class="product-item-amount-field-btn-plus no-select" id="<?=$itemIds['QUANTITY_UP_ID']?>"></span>
-														<span class="product-item-amount-description-container">
-															<span id="<?=$itemIds['QUANTITY_MEASURE']?>">
-																<?=$actualItem['ITEM_MEASURE']['TITLE']?>
-															</span>
-															<span id="<?=$itemIds['PRICE_TOTAL']?>"></span>
-														</span>
-													</div>
-												</div>
-											</div>
-											<?php
-										}
-
-										break;
-
 									case 'buttons':
 										?>
 										<div class="main-button-container"  data-entity="main-button-container">
@@ -464,12 +424,26 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 												if ($showAddBtn)
 												{
 													?>
-													<div class="product-item-detail-info-container">
-														<a class="btn <?=$showButtonClassName?> product-item-detail-buy-button" id="<?=$itemIds['ADD_BASKET_LINK']?>"
-															href="javascript:void(0);">
-															<span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
-														</a>
-													</div>
+                                                    <?if($arResult['IN_CART']):?>
+                                                        <div class="count-block-detail">
+                                                            <span class="minus"></span>
+                                                            <span class="quantity-product">1</span>
+                                                            <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>
+                                                        </div>
+                                                    <?else:?>
+                                                        <div class="product-item-detail-info-container">
+                                                            <a class="btn <?=$showButtonClassName?> product-item-detail-buy-button" id="<?=$itemIds['ADD_BASKET_LINK']?>"
+                                                               href="javascript:void(0);">
+                                                                <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="count-block-detail hidden">
+                                                            <span class="minus"></span>
+                                                            <span class="quantity-product">1</span>
+                                                            <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>
+                                                        </div>
+                                                    <?endif;?>
+
 													<?php
 												}
 
