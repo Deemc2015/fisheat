@@ -220,7 +220,10 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 <?
 $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
 ?>
+<?
+    print_r($arResult['IN_CART']);
 
+?>
 <div class="bx-catalog-element bx-<?=$arParams['TEMPLATE_THEME']?>" id="<?=$itemIds['ID']?>"
 	itemscope itemtype="http://schema.org/Product">
 	<div class="container-detail-page">

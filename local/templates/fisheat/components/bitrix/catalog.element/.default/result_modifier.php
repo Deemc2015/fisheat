@@ -25,3 +25,28 @@ if($arResult['PROPERTIES']['ATT_GIRY']['VALUE']){
 if($arResult['PROPERTIES']['ATT_YGLEVODY']['VALUE']){
     $arResult['NUTRITIONAL']['YGLEVODY'] = $arResult['PROPERTIES']['ATT_YGLEVODY']['VALUE'];
 }
+
+
+$arBasketItems = [];
+
+$dbBasketItems = CSaleBasket::GetList(
+    ["ID" => "ASC"],
+    [
+        "FUSER_ID" => CSaleBasket::GetBasketUserID(),
+        "LID" => SITE_ID,
+        "ORDER_ID" => "NULL"
+    ],
+    false,
+    false,
+    ["PRODUCT_ID"]
+);
+while ($arItems = $dbBasketItems->Fetch())
+{
+    $arBasketItems[] = $arItems['PRODUCT_ID'];
+}
+
+if(in_array($arResult['ID'],$arBasketItems)){
+    $arResult['IN_CART'] = true;
+}
+
+
