@@ -238,6 +238,11 @@ section{
     max-width: 1524px;
     overflow: hidden;
 }
+
+/**/
+.gifts-list .slick-slide{
+    height: 217px;
+}
 /*Слайдер на главной*/
 #slider-index .slick-slide{
     height: 248px;
@@ -2333,4 +2338,38 @@ footer .copyright{
     display: block;
     background: url('../images/minus-detail.svg') no-repeat;
     background-position: center;
+}
+.addCartGift {
+    cursor: pointer;
+    background: #F44336;
+    font-size: 18px;
+    text-align: center;
+    width: 140px;
+    font-size:18px;
+    border-radius:6px;
+    padding: 10px 0;
+    transition:all .3s;
+}
+.addCartGift:hover{
+    opacity:.7;
+}
+.not-avaliable-text{
+    color:#FE1212;
+    font-size:12px;
+    text-align: center;
+}
+.gifts-list__item-img img{
+    border-radius:6px;
+    width: 140px;
+}
+.gifts-block__items{
+    margin-top: 24px;
+}
+.gifts-list__item-title{
+    margin-top: 12px;
+    min-height:34px;
+    margin-bottom: 12px;
+}
+.gifts-list__item{
+    width: 140px;
 }

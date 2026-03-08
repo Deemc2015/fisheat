@@ -86,12 +86,45 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <textarea id="orderDescription" cols="4" class="form-control bx-soa-customer-textarea bx-ios-fix" name="ORDER_DESCRIPTION"></textarea>
             <??>
         </div>
+        <?php if (!empty($arResult['GIFTS'])): ?>
         <div class="gifts-block">
+            <?php if ($arResult['NEAREST_GIFT']): ?>
             <div class="gifts-block__top">
                 <i></i>
-                <p>До подарка 1 уровня осталось еще <span>184 ₽</span></p>
+                <p>До подарка <?= $arResult['NEAREST_GIFT']['LEVEL'] ?>  осталось еще <span><?= $arResult['NEAREST_GIFT']['SUM_FREE'] ?> ₽</span></p>
             </div>
-            <div class="gifts-block__items"></div>
+            <?php endif; ?>
+            <div class="gifts-block__items">
+
+                    <!-- Список всех подарков (уже отсортирован) -->
+                    <div class="gifts-list">
+                        <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
+
+                        <?foreach($gifts as $gift):?>
+                            <div class="gifts-list__item">
+                                <div class="gifts-list__item-img">
+                                    <picture>
+                                        <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
+                                        <img src="<?=$gift['PREVIEW_PICTURE']?>" />
+                                    </picture>
+                                </div>
+                                <div class="gifts-list__item-title"><?=$gift['NAME']?></div>
+                                <?if($gift['AVAILABLE']):?>
+                                    <div class="addCartGift" id-product="<?=$gift['ID']?>">Выбрать</div>
+                                <?else:?>
+                                    <div class="not-avaliable-text">
+                                        Доступно при заказе от<br> <?=$gift['SUM_LEVEL']?> ₽
+                                    </div>
+                                <?endif;?>
+
+                            </div>
+                        <?endforeach?>
+
+                        <?php endforeach; ?>
+                    </div>
+
+                <?php endif; ?>
+            </div>
         </div>
         <div class="promo-block">
             <h2>Применение скидок</h2>

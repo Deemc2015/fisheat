@@ -36,6 +36,11 @@
                 total: 0
             }
         },
+        selectedGiftId: null,        // ID выбранного подарка
+        selectedGiftNode: null,      // DOM-элемент выбранного подарка
+        gifts: {                     // Объект для хранения данных о подарках
+            warningModal: null       // Ссылка на модальное окно предупреждения
+        },
 
         // ==============================================
         // МЕТОДЫ ИНИЦИАЛИЗАЦИИ
@@ -390,6 +395,26 @@
          */
         handleClick: function(event) {
             var target = event.target;
+
+
+            // Обработка клика по кнопке выбора подарка
+            if (target.classList.contains('addCartGift')) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var giftItem = target.closest('.gifts-list__item');
+                var productId = target.getAttribute('id-product');
+
+                if (giftItem && productId) {
+                    // Используем BX.proxy для вызова метода с правильным контекстом
+                    BX.proxy(this.selectGift, this)(productId, giftItem);
+                }
+                return;
+            }
+            //**************************************************//
+
+
+
             var productItem = this.findProductItem(target);
 
             if (!productItem || !productItem.productId) return;
@@ -410,6 +435,27 @@
                 event.preventDefault();
                 event.stopPropagation();
             }
+
+
+
+
+        },
+
+        /**
+         * Выбор подарка
+         */
+        selectGift: function(productId, giftItem) {
+            var self = this;
+
+            // Если уже выбран этот же подарок - ничего не делаем
+            if (this.selectedGiftId === productId) {
+                return;
+            }
+
+            this.showGiftWarningModal(function() {
+                self.applyGiftSelection(productId, giftItem);
+           });
+
         },
 
         /**
@@ -841,22 +887,6 @@
                     self.showErrorMessage('Ошибка при удалении товара');
                 });
         },
-
-        /** Обработчик успешного удаления (устаревший, оставлен для совместимости) */
-        handleRemoveSuccess: function(basketItem) {
-            if (basketItem.node && basketItem.node.parentNode) {
-                basketItem.node.parentNode.removeChild(basketItem.node);
-            }
-
-            delete this.basketItems[basketItem.productId];
-            this.updateTotalPrice();
-            this.showSuccessMessage('Товар удален из корзины');
-
-            BX.onCustomEvent('OnBasketItemRemove', [{
-                productId: basketItem.productId
-            }]);
-        },
-
         // ==============================================
         // МЕТОДЫ ОБНОВЛЕНИЯ ИТОГОВЫХ БЛОКОВ
         // ==============================================
@@ -944,6 +974,101 @@
                     }
                 }, this));
             }
+        },
+
+        /**
+         * Показывает предупреждение о несовместимости подарка с промокодом/бонусами
+         * @param {Function} onConfirm - функция, выполняемая после подтверждения
+         */
+        showGiftWarningModal: function(onConfirm) {
+            var self = this;
+
+            var modal = document.querySelector('.modal-delete');
+            var wrp = document.querySelector('.wrp');
+
+            if (!modal || !wrp) {
+                // Если нет модального окна, создаем простое confirm
+                if (confirm('При выборе подарка использование промокода и списание бонусов будет невозможно. Продолжить?')) {
+                    onConfirm();
+                }
+                return;
+            }
+
+            // Настраиваем существующее модальное окно
+            var titleNode = modal.querySelector('.top-title');
+            var messageNode = modal.querySelector('.text-modal');
+            var confirmButton = modal.querySelector('.delete');
+            var cancelButton = modal.querySelector('.cancel');
+
+            if (titleNode) {
+                titleNode.textContent = 'Внимание!';
+            }
+
+            if (messageNode) {
+                messageNode.innerHTML = 'При выборе подарка использование промокода и списание бонусов будет невозможно.<br><br>Продолжить?';
+            }
+
+            // Очищаем старые обработчики
+            if (confirmButton) BX.unbindAll(confirmButton);
+            if (cancelButton) BX.unbindAll(cancelButton);
+
+            // Добавляем новые обработчики
+            if (confirmButton) {
+                BX.bind(confirmButton, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self.closeModal();
+                    onConfirm();
+                });
+
+                confirmButton.textContent = 'Да';
+            }
+
+            if (cancelButton) {
+                BX.bind(cancelButton, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self.closeModal();
+                });
+
+                cancelButton.textContent = 'Отмена';
+            }
+
+            // Показываем модальное окно
+            BX.addClass(wrp, 'show');
+            BX.addClass(modal, 'show');
+
+            // Сохраняем ссылку
+            this.gifts.warningModal = modal;
+        },
+
+        /**
+         * Применяет выбор подарка
+         */
+        applyGiftSelection: function(productId, giftItem) {
+            // Убираем выделение с предыдущего подарка
+            if (this.selectedGiftNode) {
+                this.selectedGiftNode.classList.remove('selected');
+                var prevButton = this.selectedGiftNode.querySelector('.addCartGift');
+                if (prevButton) {
+                    prevButton.textContent = 'Выбрать';
+                }
+            }
+
+            // Выделяем новый подарок
+            giftItem.classList.add('selected');
+            var addButton = giftItem.querySelector('.addCartGift');
+            if (addButton) {
+                addButton.textContent = 'Выбрано';
+            }
+
+            // Сохраняем выбранный подарок
+            this.selectedGiftId = productId;
+            this.selectedGiftNode = giftItem;
+
+            console.log('Выбран подарок:', productId);
+
+            // TODO: Отправка на сервер
         },
 
         /** Применяет промокод - отправляет запрос на сервер */

@@ -15,6 +15,7 @@ use OpenSource\Order\OrderHelper;
 use Bitrix\Main\Loader;
 use  Ldo\Develop\Product;
 use Ldo\Develop\Hlblock;
+use Ldo\Develop\Iblock;
 
 $component = &$this->__component;
 $order = $component->order;
@@ -251,7 +252,7 @@ $arResult['DELIVERY_BASE_PRICE_DISPLAY'] = SaleFormatCurrency(
 //Стоимость доставки с учетом скидок
 $arResult['DELIVERY_PRICE'] = $order->getDeliveryPrice();
 
-$arResult['ff'] = $order->getPrice();
+
 
 $arResult['DELIVERY_PRICE_DISPLAY'] = SaleFormatCurrency(
     $arResult['DELIVERY_PRICE'],
@@ -264,6 +265,100 @@ $arResult['DELIVERY_DISCOUNT_DISPLAY'] = SaleFormatCurrency(
     $arResult['DELIVERY_PRICE'],
     $arResult['CURRENCY']
 );
+
+
+//Выводим список подарков в корзине
+$idProducts = Iblock::getList('gifts', [
+    'NAME',
+    'PRODUCT_ID' => 'ATT_PRODUCT.VALUE',
+    'SUM_LEVEL' => 'ATT_SUM_CART.VALUE'
+]);
+
+$arrProducts = []; // Инициализируем массив
+
+if ($idProducts) {
+    foreach ($idProducts as $gift) {
+        $arrProducts['GIFTS'][$gift['NAME']][] = [
+            'PRODUCT_ID' => (int)$gift['PRODUCT_ID'],
+            'SUM_LEVEL' => (float)$gift['SUM_LEVEL']
+        ];
+    }
+}
+
+$dataProducts = [];
+
+if (!empty($arrProducts['GIFTS'])) {
+    foreach ($arrProducts['GIFTS'] as $key => $data) {
+        // Собираем все ID товаров
+        $productIds = array_column($data, 'PRODUCT_ID');
+
+        // Получаем информацию о товарах
+        $products = Iblock::getList('catalog',
+            ['ID', 'NAME', 'PREVIEW_PICTURE'],
+            ['ID' => $productIds]
+        );
+
+        if ($products) {
+            $sumLevel = (int)$data[0]['SUM_LEVEL'];
+            $currentSum = (int)$arResult['PRODUCTS_PRICE'];
+
+            // Определяем доступность подарка
+            $isAvailable = ($currentSum >= $sumLevel);
+            $sumFree = $isAvailable ? 0 : ($sumLevel - $currentSum);
+
+            foreach ($products as $product) {
+
+                $arrImg = CFile::ResizeImageGet($product['PREVIEW_PICTURE'], array('width'=>150, 'height'=>150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+                $img = $arrImg['src'];
+
+                $dataProducts[$key][] = [
+                    'ID' => $product['ID'],
+                    'NAME' => $product['NAME'],
+                    'PREVIEW_PICTURE' => $img,
+                    'SUM_LEVEL' => $sumLevel,
+                    'AVAILABLE' => $isAvailable,
+                    'SUM_FREE' => $sumFree,
+                    'CURRENT_SUM' => $currentSum   // Текущая сумма корзины
+                ];
+            }
+        }
+    }
+
+    // Сортируем уровни по SUM_LEVEL (от меньшего к большему)
+    if (!empty($dataProducts)) {
+        uasort($dataProducts, function($a, $b) {
+            return $a[0]['SUM_LEVEL'] - $b[0]['SUM_LEVEL'];
+        });
+
+        // Добавляем информацию о ближайшем недоступном подарке
+        $nearestGift = null;
+        foreach ($dataProducts as $level => $giftData) {
+            if (!$giftData[0]['AVAILABLE']) {
+                $nearestGift = [
+                    'LEVEL' => $level,
+                    'SUM_FREE' => $giftData[0]['SUM_FREE'],
+                    'SUM_LEVEL' => $giftData[0]['SUM_LEVEL'],
+                ];
+                break;
+            }
+        }
+
+        // Добавляем в результат
+        $arResult['GIFTS'] = $dataProducts;
+        $arResult['NEAREST_GIFT'] = $nearestGift; // Ближайший недоступный подарок
+
+        // Добавляем информацию для быстрого доступа в шаблоне
+        $arResult['GIFTS_SUMMARY'] = [
+            'CURRENT_SUM' => $currentSum,
+            'HAS_AVAILABLE' => !empty(array_filter($dataProducts, function($gift) {
+                return $gift[0]['AVAILABLE'];
+            })),
+            'NEXT_LEVEL' => $nearestGift ? $nearestGift['LEVEL'] : null,
+            'NEXT_SUM_FREE' => $nearestGift ? $nearestGift['SUM_FREE'] : 0
+        ];
+    }
+}
+
 
 /**
  * ORDER TOTAL PRICES
