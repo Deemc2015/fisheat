@@ -23,6 +23,7 @@ use OpenSource\Order\OrderHelper;
 use Bitrix\Sale\PaySystem;
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Engine\ActionFilter;
+use \Ldo\Develop\Hlblock;
 
 class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerable
 {
@@ -428,6 +429,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'clearPromo' => [
                 'prefilters' => [],
             ],
+            'deleteAddress'=> [
+                'prefilters' => [],
+            ],
         ];
     }
 
@@ -718,15 +722,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 ];
             }
 
-            // Поиск товара
-            $obItem = $basket->getExistsItem('catalog', $dataProduct['productId']);
-
-            if (!$obItem) {
-                foreach ($basket as $item) {
-                    if ($item->getId() == $dataProduct['productId']) {
-                        $obItem = $item;
-                        break;
-                    }
+            foreach ($basket as $item) {
+                if ($item->getProductId() == $dataProduct['productId']) {
+                    $obItem = $item;
+                    break;
                 }
             }
 
@@ -761,12 +760,55 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             return $this->prepareBasketResponse($basket, 'Количество успешно изменено');
 
         } catch (\Exception $e) {
-            addMessage2Log($e->getMessage(), 'addQuantityAction - ошибка в методе');
+
             return [
                 'success' => false,
                 'error' => 'Ошибка: ' . $e->getMessage()
             ];
         }
+    }
+
+    public function deleteAddressAction($dataAddress){
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        if($dataAddress['action'] !='deleteAddress'){
+            return [
+                'success' => false,
+                'error' => 'Неизвестный тип операции'
+            ];
+        }
+
+        if(!$dataAddress['addressId']){
+            return [
+                'success' => false,
+                'error' => 'Не передан ID адреса'
+            ];
+        }
+
+        $addressId = (int)$dataAddress['addressId'];
+
+        if(Loader::includeModule('ldo.develop')){
+
+            $deleteResult = Hlblock::deleteAddress($addressId);
+
+            if($deleteResult){
+                return [
+                    'success' => true,
+                    'message' => 'Адрес успешно удален'
+                ];
+            }
+
+        }
+
+
+
+
     }
 
     public function changePromoAction($dataPromo)

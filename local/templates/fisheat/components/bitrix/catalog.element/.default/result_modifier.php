@@ -28,6 +28,7 @@ if($arResult['PROPERTIES']['ATT_YGLEVODY']['VALUE']){
 
 
 $arBasketItems = [];
+$basketItemData = []; // Массив для хранения данных о позициях в корзине
 
 $dbBasketItems = CSaleBasket::GetList(
     ["ID" => "ASC"],
@@ -38,15 +39,28 @@ $dbBasketItems = CSaleBasket::GetList(
     ],
     false,
     false,
-    ["PRODUCT_ID"]
+    ["PRODUCT_ID", "QUANTITY", "PRICE", "ID"] // Добавляем нужные поля
 );
 while ($arItems = $dbBasketItems->Fetch())
 {
     $arBasketItems[] = $arItems['PRODUCT_ID'];
+
+    // Сохраняем данные по каждому товару в корзине, ключ - PRODUCT_ID
+    $basketItemData[$arItems['PRODUCT_ID']] = [
+        'BASKET_ID' => $arItems['ID'],
+        'QUANTITY' => $arItems['QUANTITY'],
+        'PRICE' => $arItems['PRICE']
+    ];
 }
 
-if(in_array($arResult['ID'],$arBasketItems)){
+if(in_array($arResult['ID'], $arBasketItems)){
     $arResult['IN_CART'] = true;
+
+    // Добавляем данные конкретного товара из корзины
+    $productId = $arResult['ID'];
+    if (isset($basketItemData[$productId])) {
+        $arResult['BASKET_DATA'] = $basketItemData[$productId];
+    }
 }
 
 

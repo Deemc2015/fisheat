@@ -180,11 +180,33 @@ class Hlblock
 
                 return $arrAdress;
             }
+        }
+    }
+
+    public static function deleteAddress(int $id){
+
+        if($id){
+            $tableName = 'adress_user';
+
+            if (!Loader::includeModule('highloadblock')) {
+                return [];
+            }
+
+            $entity = self::getHLEntity($tableName );
+
+            if (!$entity) {
+                return [];
+            }
 
 
+            $result = $entity::Delete($id);
+
+
+            if($result->isSuccess()){
+                return true;
+            }
 
         }
-
 
 
     }

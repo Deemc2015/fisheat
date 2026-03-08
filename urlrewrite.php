@@ -24,20 +24,20 @@ $arUrlRewrite=array (
     'PATH' => '/loyalty/index.php',
     'SORT' => 100,
   ),
-  11 => 
-  array (
-    'CONDITION' => '#^/catalog/#',
-    'RULE' => '',
-    'ID' => 'bitrix:catalog',
-    'PATH' => '/catalog/index.php',
-    'SORT' => 100,
-  ),
   12 => 
   array (
     'CONDITION' => '#^/actions/#',
     'RULE' => '',
     'ID' => 'bitrix:news',
     'PATH' => '/actions/index.php',
+    'SORT' => 100,
+  ),
+  14 => 
+  array (
+    'CONDITION' => '#^/catalog/#',
+    'RULE' => '',
+    'ID' => 'bitrix:catalog',
+    'PATH' => '/catalog/index.php',
     'SORT' => 100,
   ),
   7 => 

@@ -220,7 +220,9 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 <?
 $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
 
-
+/*echo "<pre>";
+print_r($arResult['BASKET_DATA']);
+echo "</pre>";*/
 ?>
 
 
@@ -417,6 +419,7 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 										break;
 
 									case 'buttons':
+
 										?>
 										<div class="main-button-container"  data-entity="main-button-container">
 											<div id="<?=$itemIds['BASKET_ACTIONS_ID']?>" style="display: <?=($actualItem['CAN_BUY'] ? '' : 'none')?>;">
@@ -425,9 +428,9 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 												{
 													?>
                                                     <?if($arResult['IN_CART']):?>
-                                                        <div class="count-block-detail">
+                                                        <div data-id="<?=$arResult['ID']?>" class="count-block-detail">
                                                             <span class="minus"></span>
-                                                            <span class="quantity-product">1</span>
+                                                            <span class="quantity-product"><?=$arResult['BASKET_DATA']['QUANTITY']?></span>
                                                             <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>
                                                         </div>
                                                     <?else:?>
@@ -437,7 +440,7 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                                                                 <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
                                                             </a>
                                                         </div>
-                                                        <div class="count-block-detail hidden">
+                                                        <div data-id="<?=$arResult['ID']?>" class="count-block-detail hidden">
                                                             <span class="minus"></span>
                                                             <span class="quantity-product">1</span>
                                                             <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>

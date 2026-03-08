@@ -66,6 +66,7 @@
             this.bindRemoveOrder();                  // Привязка удаления корзины
             this.bindDeliveryEvents();               // Привязка событий доставки
             this.initPersonCount();                  // Инициализация блока персон
+            this.initAddressDelete();                // Удаление адреса доставки
         },
 
         /**
@@ -1331,6 +1332,105 @@
                 })
                 .catch(function(error) {
                     console.error('AJAX ошибка:', error);
+                });
+        },
+
+        /**
+         * Инициализация обработчиков для удаления адресов
+         */
+        initAddressDelete: function() {
+            var deleteButtons = document.querySelectorAll('.adress-user-list__item-btn-delete');
+            var self = this;
+
+            for (var i = 0; i < deleteButtons.length; i++) {
+                var button = deleteButtons[i];
+
+                BX.unbindAll(button);
+                BX.bind(button, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    var addressItem = event.target.closest('.adress-user-list__item');
+                    if (!addressItem) return;
+
+                    // Получаем ID адреса из data-id атрибута
+                    var radioInput = addressItem.querySelector('input[name="address_id"]');
+                    var addressId = radioInput ? radioInput.getAttribute('data-id') : '';
+
+                    console.log('Удаление адреса ID:', addressId);
+
+                    // Показываем модальное окно
+                    self.showDeleteAddressModal(addressId, addressItem);
+                });
+            }
+        },
+
+        /**
+         * Показывает модальное окно подтверждения удаления адреса
+         */
+        showDeleteAddressModal: function(addressId, addressItem) {
+            var self = this;
+
+            this.showModal({
+                title: 'Удаление адреса',
+                message: 'Вы действительно хотите удалить этот адрес?',
+                confirmText: 'Да, удалить',
+                context: {
+                    addressId: addressId,
+                    addressItem: addressItem
+                },
+                onConfirm: function(context) {
+                    self.deleteAddress(context.addressId, context.addressItem);
+                }
+            });
+        },
+
+        /**
+         * Отправляет запрос на удаление адреса
+         */
+        deleteAddress: function(addressId, addressItem) {
+            var self = this;
+
+            // Показываем индикатор загрузки
+            if (addressItem) {
+                BX.addClass(addressItem, 'deleting');
+            }
+
+            var data = {
+                action: 'deleteAddress',
+                addressId: addressId,
+                sessid: BX.bitrix_sessid()
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'deleteAddress', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataAddress: data }
+            })
+                .then(function(response) {
+                    console.log('Ответ при удалении адреса:', response);
+
+                    if ( response.success) {
+                        // Удаляем элемент из DOM
+                        if (addressItem && addressItem.parentNode) {
+                            addressItem.parentNode.removeChild(addressItem);
+                        }
+
+
+                    } else {
+                        var errorMsg = response.data && response.data.error
+                            ? response.data.error
+                            : 'Ошибка при удалении адреса';
+
+                        self.showErrorMessage(errorMsg);
+
+                    }
+                })
+                .catch(function(error) {
+                    console.error('AJAX ошибка при удалении адреса:', error);
+
+                    self.showErrorMessage('Ошибка соединения с сервером');
+
                 });
         },
 

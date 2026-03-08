@@ -409,12 +409,6 @@
 				}
 			}
 
-
-
-
-
-
-
 			if (this.obAddToBasketBtn) {
 				// Сохраняем оригинальный обработчик
 				var originalHandler = this.obAddToBasketBtn.onclick;
@@ -666,7 +660,7 @@
 						var minQuantity = 1;
 						var stepQuantity = 1;
 
-						console.log('Максимальное количество:', maxQuantity);
+
 
 						// Создаем скрытое поле
 						if (!this.obQuantity) {
@@ -722,6 +716,8 @@
 									plusBtn.style.opacity = '1';
 								}
 							}
+
+							this.sendQuantityToBasket(newValue);
 						}.bind(this);
 
 						// Функция для создания обработчика с долгим нажатием
@@ -1110,6 +1106,44 @@
 			}
 
 			this.cycleSlider();
+		},
+		// Добавьте этот метод в JCCatalogElement.prototype
+		// Добавьте этот метод в JCCatalogElement.prototype
+		sendQuantityToBasket: function(quantity) {
+			// Получаем ID корзины из DOM
+			var countBlock = document.querySelector('.count-block-detail');
+			var productId = countBlock ? countBlock.getAttribute('data-id') : null;/*ID товара корзины*/
+
+			if (!productId) {
+				console.error('ID корзины не найден');
+				return;
+			}
+
+			var data = {
+				action: 'updateQuantity',
+				productId: productId,
+				quantity: quantity,
+				sessid: BX.bitrix_sessid()
+			};
+
+			BX.ajax.runComponentAction('opensource:order', 'addQuantity', {
+				mode: 'class',
+				dataType: 'json',
+				data: { dataProduct: data }
+			})
+				.then(function(response) {
+					console.log('Количество в корзине обновлено', response);
+
+					if (response.data && response.data.success) {
+						// Можно показать сообщение об успехе
+						console.log('Количество успешно обновлено');
+					} else {
+						console.error('Ошибка:', response.data?.error || 'Неизвестная ошибка');
+					}
+				})
+				.catch(function(error) {
+					console.error('Ошибка при обновлении количества в корзине', error);
+				});
 		},
 
 		setAnalyticsDataLayer: function(action)

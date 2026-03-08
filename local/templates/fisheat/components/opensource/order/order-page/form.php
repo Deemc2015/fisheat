@@ -161,8 +161,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="delivery-block__butons">
                         <?
                         $i == 1;
-                        foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
-                            ?>
+                        foreach($arResult['DELIVERY_LIST'] as $itemDelivery):?>
 
                             <label for="code-<?=$itemDelivery['ID']?>">
                                 <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
@@ -356,7 +355,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <?//print_r($adress);?>
                         <div class="adress-user-list__item">
                             <label for="adress-user-list__item-name-<?=$adress['ID']?>">
-                                <input data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                 <span></span>
                                 <?=$adress['ADRESS_NAME']?>
                             </label>
