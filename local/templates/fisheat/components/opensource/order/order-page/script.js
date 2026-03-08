@@ -1374,7 +1374,7 @@
             this.showModal({
                 title: 'Удаление адреса',
                 message: 'Вы действительно хотите удалить этот адрес?',
-                confirmText: 'Да, удалить',
+                confirmText: 'Да',
                 context: {
                     addressId: addressId,
                     addressItem: addressItem
