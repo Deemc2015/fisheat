@@ -701,7 +701,7 @@
 
 						// Блокировка кнопок
 						if (minusBtn) {
-							if (initialValue <= minQuantity) {
+							if (newValue <= minQuantity) {
 								minusBtn.classList.add('disabled');
 								minusBtn.style.pointerEvents = 'none';
 								minusBtn.style.opacity = '0.5';
