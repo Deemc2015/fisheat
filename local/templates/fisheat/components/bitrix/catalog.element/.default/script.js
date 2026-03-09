@@ -798,18 +798,6 @@
 					if (initialValue > maxQuantity) initialValue = maxQuantity;
 
 					updateQuantityUI(initialValue);
-
-					if (minusBtn) {
-						if (initialValue <= minQuantity) {
-							minusBtn.classList.add('disabled');
-							minusBtn.style.pointerEvents = 'none';
-							minusBtn.style.opacity = '0.5';
-						} else {
-							minusBtn.classList.remove('disabled');
-							minusBtn.style.pointerEvents = 'auto';
-							minusBtn.style.opacity = '1';
-						}
-					}
 				}
 
 
