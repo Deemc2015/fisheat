@@ -152,19 +152,23 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </label>
                 </div>
                 <div class="promo-block__right">
-                    <div class="promo-block__left-promokod">
+
                         <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
+                    <div class="promo-block__left-promokod">
                         <div class="promoChange">
                             <input type="text" name="promokod" readonly  id="promocode" value="<?=$_SESSION["CATALOG_USER_COUPONS"][0]?>"/>
                             <button type="button">Отменить</button>
                         </div>
+                    </div>
                             <?else:?>
-                            <div class="promoChange" style="display:none;">
+                    <div class="promo-block__left-promokod" style="display:none;">
+                            <div class="promoChange" >
                                 <input type="text" name="promokod"  id="promocode" />
                                 <button type="button">Применить</button>
                             </div>
-                            <?endif?>
                     </div>
+                            <?endif?>
+
 
                 </div>
             </div>
