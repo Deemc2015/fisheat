@@ -851,7 +851,7 @@
 				// Товара нет в корзине - показываем кнопку "В корзину"
 				quantitySpan.innerHTML = '1';
 			}
-		}
+		},
 
 
 		initConfig: function()
