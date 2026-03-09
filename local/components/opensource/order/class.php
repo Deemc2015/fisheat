@@ -429,7 +429,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'clearPromo' => [
                 'prefilters' => [],
             ],
-            'deleteAddress'=> [
+            'deleteAddress' => [
+                'prefilters' => [],
+            ],
+            'getBasketItemData' => [
                 'prefilters' => [],
             ],
         ];
@@ -676,6 +679,40 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
     }
+
+
+    public function getBasketItemDataAction($productId)
+    {
+        $productId = (int)$productId;
+
+        $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
+            \Bitrix\Sale\Fuser::getId(),
+            \Bitrix\Main\Context::getCurrent()->getSite()
+        );
+
+        $result = [
+            'success' => true,
+            'productId' => $productId,
+            'inCart' => false,
+            'quantity' => 0,
+            'basketId' => null
+        ];
+
+        foreach ($basket as $item) {
+            if ($item->getProductId() == $productId) {
+                $result['inCart'] = true;
+                $result['quantity'] = $item->getQuantity();
+                $result['basketId'] = $item->getId();
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+
+
+
 
     public function addQuantityAction($dataProduct)
     {

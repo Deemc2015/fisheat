@@ -324,6 +324,13 @@
 
 		init: function()
 		{
+			/*Актуальная информация о товаре, если он в корзине*/
+			this.loadBasketData();
+
+			/**/
+
+
+
 			var i = 0,
 				j = 0,
 				treeItems = null;
@@ -809,6 +816,29 @@
 				}
 			}
 		},
+
+
+		loadBasketData: function() {
+			var productId = this.product.id;
+
+			BX.ajax.runComponentAction('opensource:order', 'getBasketItemData', {
+				mode: 'class',
+				dataType: 'json',
+				data: {
+					productId: productId
+				}
+			})
+				.then(function(response) {
+					if (response.data && response.data.success) {
+						this.updateBasketUI(response.data);
+					}
+				}.bind(this))
+				.catch(function(error) {
+					console.error('Ошибка загрузки данных корзины:', error);
+				});
+		},
+
+
 
 		initConfig: function()
 		{
