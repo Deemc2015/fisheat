@@ -839,30 +839,6 @@
 					console.error('Ошибка загрузки данных корзины:', error);
 				});
 		},
-
-		renderProductActions: function(container, data) {
-			var maxQuantity = container.getAttribute('data-max-quantity') || 999;
-
-			if (data.inCart) {
-				// Показываем блок управления количеством
-				container.innerHTML = '' +
-					'<div class="count-block-detail" data-basket-id="' + data.basketId + '">' +
-					'<span class="minus"></span>' +
-					'<span class="quantity-product">' + data.quantity + '</span>' +
-					'<span class="plus"></span>' +
-					'</div>';
-			} else {
-				// Показываем кнопку "В корзину"
-				container.innerHTML = '' +
-					'<div class="product-item-detail-info-container">' +
-					'<a class="btn btn-default product-item-detail-buy-button" ' +
-					'href="javascript:void(0);" onclick="addToCart(' + data.productId + ')">' +
-					'<span>В корзину</span>' +
-					'</a>' +
-					'</div>';
-			}
-		},
-
 		updateBasketUI: function(data) {
 			var countBlock = document.querySelector('.count-block-detail');
 			if (!countBlock) return;
