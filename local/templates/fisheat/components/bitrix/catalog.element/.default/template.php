@@ -447,9 +447,7 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                                                             <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
                                                         </a>
                                                     </div>
-
-
-                                                    <div class="count-block-detail hidden" data-basket-id="<?=$arResult['ID']?>">
+                                                    <div class="count-block-detail hidden" data-id="<?=$arResult['ID']?>">
                                                         <span class="minus"></span>
                                                         <span class="quantity-product">1</span>
                                                         <span class="plus"></span>
