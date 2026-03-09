@@ -55,6 +55,9 @@
 }
 
 @media (max-width:768px) {
+    .slider-index__item{
+        height: 100%;
+    }
     /*Детальная карточка товара*/
     .tag-detail-list span{
         width: 30px;
