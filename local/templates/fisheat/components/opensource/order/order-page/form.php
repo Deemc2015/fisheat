@@ -187,31 +187,25 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endif?>
 
 
-                <div class="adress-user-list">
+                <?if($arResult['USER_ADRESS']):?>
+                    <div class="adress-user-list">
 
-                    <div class="adress-user-list__item">
-                        <label for="adress-user-list__item-name-1">
-                            <input name="address_id" type="radio" id="adress-user-list__item-name-1" value="1">
-                            <span></span>
-                            Максима Горького ул, д. 44, кв. 90
-                        </label>
-                        <div class="adress-user-list__item-btn">
-                            <div class="adress-user-list__item-btn-edit"></div>
-                            <div class="adress-user-list__item-btn-delete"></div>
-                        </div>
+                        <?foreach($arResult['USER_ADRESS'] as $adress):?>
+                            <?//print_r($adress);?>
+                            <div class="adress-user-list__item">
+                                <label for="adress-user-list__item-name-<?=$adress['ID']?>">
+                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                    <span></span>
+                                    <?=$adress['ADRESS_NAME']?>
+                                </label>
+                                <div class="adress-user-list__item-btn">
+                                    <div class="adress-user-list__item-btn-edit"></div>
+                                    <div class="adress-user-list__item-btn-delete"></div>
+                                </div>
+                            </div>
+                        <?endforeach?>
                     </div>
-                    <div class="adress-user-list__item">
-                        <label for="adress-user-list__item-name-2">
-                            <input name="address_id" type="radio" id="adress-user-list__item-name-2" value="2">
-                            <span></span>
-                            Максима Горького ул, д. 44, кв. 90
-                        </label>
-                        <div class="adress-user-list__item-btn">
-                            <div class="adress-user-list__item-btn-edit"></div>
-                            <div class="adress-user-list__item-btn-delete"></div>
-                        </div>
-                    </div>
-                </div>
+                <?endif?>
                 <div class="addAdress-user">Добавить адрес</div>
             </div>
         <?endif?>
