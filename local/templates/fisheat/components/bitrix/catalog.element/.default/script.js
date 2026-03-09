@@ -816,14 +816,9 @@
 				}
 			}
 		},
-
-
 		loadBasketData: function() {
 			var self = this;
 			var productId = this.product.id;
-			var container = document.getElementById('product-actions-' + productId);
-
-			if (!container) return;
 
 			BX.ajax.runComponentAction('opensource:order', 'getBasketItemData', {
 				mode: 'class',
@@ -832,7 +827,7 @@
 			})
 				.then(function(response) {
 					if (response.data && response.data.success) {
-						self.renderProductActions(container, response.data);
+						self.updateBasketUI(response.data);
 					}
 				})
 				.catch(function(error) {
@@ -840,17 +835,39 @@
 				});
 		},
 		updateBasketUI: function(data) {
+			var addToCartBlock = document.querySelector('.add-to-cart-block');
 			var countBlock = document.querySelector('.count-block-detail');
-			if (!countBlock) return;
 
-			var quantitySpan = countBlock.querySelector('.quantity-product');
+			if (!addToCartBlock || !countBlock) return;
 
 			if (data.inCart) {
-				quantitySpan.innerHTML = data.quantity;
-				countBlock.setAttribute('data-basket-id', data.basketId);
+				// Товар в корзине
+				addToCartBlock.style.display = 'none';
+				countBlock.classList.remove('hidden');
+
+				// Обновляем количество и ID корзины
+				var quantitySpan = countBlock.querySelector('.quantity-product');
+				if (quantitySpan) {
+					quantitySpan.innerHTML = data.quantity;
+				}
+
+				// Важно: data.basketId - это ID позиции в корзине
+				countBlock.setAttribute('data-id', data.basketId);
+
+				// Обновляем скрытое поле
+				if (this.obQuantity) {
+					this.obQuantity.value = data.quantity;
+				}
 			} else {
-				// Товара нет в корзине - показываем кнопку "В корзину"
-				quantitySpan.innerHTML = '1';
+				// Товара нет в корзине
+				addToCartBlock.style.display = 'block';
+				countBlock.classList.add('hidden');
+				countBlock.setAttribute('data-id', this.product.id);
+
+				var quantitySpan = countBlock.querySelector('.quantity-product');
+				if (quantitySpan) {
+					quantitySpan.innerHTML = '1';
+				}
 			}
 		},
 
