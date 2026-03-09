@@ -662,8 +662,10 @@
 					var plusBtn = countBlock.querySelector('.plus');
 					var quantitySpan = countBlock.querySelector('.quantity-product');
 
-					// Получаем максимальное количество из атрибута
-					var maxQuantity = parseInt(plusBtn.getAttribute('data-max-count')) || 999;
+
+					// Получаем максимальное количество из родительского блока
+					var productActionsBlock = document.querySelector('.product-actions-block');
+					var maxQuantity = productActionsBlock ? parseInt(productActionsBlock.getAttribute('data-max-quantity')) || 999 : 999;
 					var minQuantity = 1;
 					var stepQuantity = 1;
 
@@ -699,7 +701,7 @@
 
 						// Блокировка кнопок
 						if (minusBtn) {
-							if (newValue <= minQuantity) {
+							if (initialValue <= minQuantity) {
 								minusBtn.classList.add('disabled');
 								minusBtn.style.pointerEvents = 'none';
 								minusBtn.style.opacity = '0.5';
