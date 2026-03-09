@@ -1613,7 +1613,7 @@ input#property_COUNT_PERSON{
     transition: all .3s;
     border: none;
     padding: 12px 10px;
-    font-family: 'Blogger Sans';
+    font-family: 'Blogger Sans','Roboto';
     line-height: 1;
 }
 #del_filter{

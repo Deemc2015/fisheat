@@ -751,6 +751,21 @@
     }
 }
 @media (max-width:400px) {
+    /*Фильтр*/
+    .smart-filter-parameters-box label {
+        min-width: 80px;
+        margin-right: 6px;
+        margin-bottom: 0px;
+        padding: 6px 10px;
+    }
+    .top-section-list{
+        margin-bottom: 12px;
+    }
+    .smart-filter_bottons {
+        margin: 0;
+        margin-bottom: 20px;
+    }
+    /**/
     /*Детальная карточка товара*/
     .container-detail-page .product-item-detail-pay-block{
         width: 100%;
@@ -799,10 +814,10 @@
 @media (max-width:360px) {
     /*Фильтр*/
     .top-section-list .sort-block{
-        width: 180px;
+        width: 195px;
     }
     .sort-block-product{
-        width: 180px;
+        width: 195px;
     }
     /**/
     /*Товары*/
@@ -837,6 +852,29 @@
 }
 
 @media (max-width:340px) {
+    /*Фильтр*/
+    .top-section-list .sort-block,.sort-block-product div{
+        font-size:17px;
+    }
+    .top-section-list .sort-block{
+        width: 185px;
+        padding-left: 24px;
+    }
+    .sort-block-product{
+        width: 185px;
+    }
+    .top-section-list .sort-block:before,.top-section-list .filter-change:before{
+        left: 5px;
+    }
+    .top-section-list .filter-change{
+        padding-left: 30px;
+        font-size:17px;
+    }
+    .smart-filter-parameters-box label span{
+        font-size:17px;
+    }
+
+    /**/
     .product-item-detail-slider-container{
         height: 270px;
     }
