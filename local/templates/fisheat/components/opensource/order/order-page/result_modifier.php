@@ -150,6 +150,8 @@ foreach ($order->getBasket() as $basketItem) {
     $arBasketItem['NAME'] = $basketItem->getField('NAME');
     $arBasketItem['CURRENCY'] = $basketItem->getCurrency();
     $arBasketItem['PRODUCT_ID'] = $basketItem->getField('PRODUCT_ID');
+    $arProduct = CCatalogProduct::GetByID($arBasketItem['PRODUCT_ID']);
+    $arBasketItem['COUNT_AVALIABLE'] = $arProduct['QUANTITY'];
     if(Loader::IncludeModule('ldo.develop')){
         $dataProduct = Product::getDataById($arBasketItem['PRODUCT_ID']);
         if($dataProduct){

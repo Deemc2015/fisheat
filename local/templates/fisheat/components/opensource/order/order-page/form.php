@@ -54,7 +54,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                     <div class="amount-product-block">
                             <span class="minus"></span>
-                            <span class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
+                            <span data-max-quantity="<?=$arBasketItem['COUNT_AVALIABLE']?>" class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
                         <span class="plus"></span>
                     </div>
                 </div>
@@ -131,7 +131,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <div class="promo-block__line">
                 <div class="promo-block__left">
                     <label for="code-1">
-                        <input  type="radio" id="code-1" name="promo_id" value="promokod" >
+                        <input type="radio" id="code-1" name="promo_id" value="promokod" >
                         <span></span>
                         Промокод
                     </label>
@@ -143,10 +143,19 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 </div>
                 <div class="promo-block__right">
                     <div class="promo-block__left-promokod">
+                        <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
                         <div class="promoChange">
-                            <input type="text" name="promokod" id="promocode" />
-                            <button type="button">Применить</button>
+                            <input type="text" name="promokod" readonly  id="promocode" value="<?=$_SESSION["CATALOG_USER_COUPONS"][0]?>"/>
+                            <button type="button">Отменить</button>
                         </div>
+                            <?else:?>
+                            <div class="promoChange">
+                                <input type="text" name="promokod"  id="promocode" />
+                                <button type="button">Применить</button>
+                            </div>
+                            <?endif?>
+
+
 
                     </div>
 

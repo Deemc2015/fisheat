@@ -631,17 +631,13 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 ];
             }
 
-            // Поиск товара
-            $obItem = $basket->getExistsItem('catalog', $dataProduct['productId']);
-
-            if (!$obItem) {
-                foreach ($basket as $item) {
-                    if ($item->getId() == $dataProduct['productId']) {
-                        $obItem = $item;
-                        break;
-                    }
+            foreach ($basket as $item) {
+                if ($item->getProductId() == $dataProduct['productId']) {
+                    $obItem = $item;
+                    break;
                 }
-            }
+               }
+
 
             if (!$obItem) {
                 return [

@@ -2199,6 +2199,7 @@ footer .copyright{
     font-family: 'Blogger Sans';
     padding: 0 12px;
     width: 188px;
+    padding-top: 5px;
 }
 .left-order-page .promo-block__left-promokod{
     display: flex;

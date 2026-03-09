@@ -67,6 +67,15 @@
             this.bindDeliveryEvents();               // Привязка событий доставки
             this.initPersonCount();                  // Инициализация блока персон
             this.initAddressDelete();                // Удаление адреса доставки
+            this.initPromoType();
+
+
+            // Скрываем блок промокода при загрузке, если он не выбран
+            var promoCodeBlock = document.querySelector('.promo-block__left-promokod');
+            if (promoCodeBlock) {
+                promoCodeBlock.style.display = 'none';
+            }
+
         },
 
         /**
@@ -505,8 +514,16 @@
 
         /** Уменьшает количество товара на 1 */
         decreaseQuantity: function(basketItem) {
-            if (basketItem.quantity > 1) {
-                var newQuantity = basketItem.quantity - 1;
+            // Проверяем, не заблокированы ли кнопки
+            if (this.buttonLocks[basketItem.productId]) {
+                return; // Если заблокированы, игнорируем клик
+            }
+
+            var maxQuantity = this.getMaxQuantity(basketItem);
+            var currentQuantity = basketItem.quantity;
+
+            if (currentQuantity > 1) {
+                var newQuantity = currentQuantity - 1;
                 this.debouncedUpdate(basketItem, newQuantity);
             } else {
                 this.showDeleteItemModal(basketItem);
@@ -515,7 +532,21 @@
 
         /** Увеличивает количество товара на 1 */
         increaseQuantity: function(basketItem) {
-            var newQuantity = basketItem.quantity + 1;
+            // Проверяем, не заблокированы ли кнопки
+            if (this.buttonLocks[basketItem.productId]) {
+                return; // Если заблокированы, игнорируем клик
+            }
+
+            var maxQuantity = this.getMaxQuantity(basketItem);
+            var currentQuantity = basketItem.quantity;
+
+            // Проверяем на клиенте перед отправкой
+            if (currentQuantity + 1 > maxQuantity) {
+                this.showErrorMessage('Доступно только ' + maxQuantity + ' шт.');
+                return;
+            }
+
+            var newQuantity = currentQuantity + 1;
             this.debouncedUpdate(basketItem, newQuantity);
         },
 
@@ -525,7 +556,26 @@
          * @param {number} newQuantity - новое количество
          */
         debouncedUpdate: function(basketItem, newQuantity) {
+            var self = this;
             var productId = basketItem.productId;
+            var maxQuantity = this.getMaxQuantity(basketItem); // Получаем максимальное количество
+
+            // Проверяем на клиенте, не превышает ли новое количество максимум
+            if (newQuantity > maxQuantity) {
+                // Если превышает, показываем сообщение и НЕ отправляем запрос
+                this.showErrorMessage('Доступно только ' + maxQuantity + ' шт.');
+
+                // Возвращаем старое значение (не даем увеличить)
+                this.updateQuantityDisplay(basketItem, basketItem.quantity);
+                return;
+            }
+
+            // Проверяем минимальное количество
+            if (newQuantity < 1) {
+                this.showErrorMessage('Количество не может быть меньше 1');
+                this.updateQuantityDisplay(basketItem, 1);
+                return;
+            }
 
             if (this.debounceTimers[productId]) {
                 clearTimeout(this.debounceTimers[productId]);
@@ -535,9 +585,9 @@
             basketItem.quantity = newQuantity;
 
             this.debounceTimers[productId] = setTimeout(function() {
-                this.sendQuantityUpdate(basketItem, newQuantity);
-                delete this.debounceTimers[productId];
-            }.bind(this), 300);
+                self.sendQuantityUpdate(basketItem, newQuantity, basketItem.quantity);
+                delete self.debounceTimers[productId];
+            }, 300);
         },
 
         /**
@@ -560,11 +610,51 @@
          * @param {object} basketItem - объект товара
          * @param {number} newQuantity - новое количество
          */
+        /**
+         * Обновляет отображение количества в DOM
+         * @param {object} basketItem - объект товара
+         * @param {number} newQuantity - новое количество
+         */
         updateQuantityDisplay: function(basketItem, newQuantity) {
             if (basketItem.quantityNode) {
                 basketItem.quantityNode.textContent = newQuantity;
+
+                // Обновляем состояние кнопок после изменения количества
+                this.updateButtonState(basketItem);
             }
             this.addQuantityAnimation(basketItem.node);
+        },
+
+        /**
+         * Обновляет состояние кнопок в зависимости от текущего количества
+         * @param {object} basketItem - объект товара
+         */
+        updateButtonState: function(basketItem) {
+            var minusBtn = basketItem.node.querySelector('.minus');
+            var plusBtn = basketItem.node.querySelector('.plus');
+            var quantityElement = basketItem.node.querySelector('.quantity-product');
+            var maxQuantity = quantityElement ? parseInt(quantityElement.getAttribute('data-max-quantity')) || 999 : 999;
+            var currentQuantity = basketItem.quantity;
+
+            if (minusBtn) {
+                if (currentQuantity <= 1) {
+                    minusBtn.style.pointerEvents = 'none';
+                    minusBtn.style.opacity = '0.5';
+                } else {
+                    minusBtn.style.pointerEvents = 'auto';
+                    minusBtn.style.opacity = '1';
+                }
+            }
+
+            if (plusBtn) {
+                if (currentQuantity >= maxQuantity) {
+                    plusBtn.style.pointerEvents = 'none';
+                    plusBtn.style.opacity = '0.5';
+                } else {
+                    plusBtn.style.pointerEvents = 'auto';
+                    plusBtn.style.opacity = '1';
+                }
+            }
         },
 
         /** Добавляет CSS-анимацию при изменении количества */
@@ -587,6 +677,7 @@
             var self = this;
             var productId = basketItem.productId;
 
+            // Блокируем кнопки
             this.lockButtons(basketItem, true);
 
             var data = {
@@ -605,22 +696,19 @@
                     console.log("Ответ от сервера:", response);
 
                     if (response.data && response.data.success) {
-                        // Обновление цены конкретного товара, если пришла
+                        // Успешное обновление
                         if (response.data.itemPrice) {
                             self.updateItemPrice(basketItem, response.data.itemPrice);
                         }
 
-                        // Обновление всех цен, если пришел массив
                         if (response.data.items) {
                             self.updateAllItemsPrices(response.data.items);
                         }
 
-                        // Обновление общей суммы
                         if (response.data.totalPrice) {
                             self.updateTotalPriceDisplay(response.data.totalPrice);
                         }
 
-                        // Обновление итоговых блоков
                         self.updateAllTotals({
                             deliveryPrice: response.data.deliveryPrice,
                             baseSum: response.data.baseSum,
@@ -628,25 +716,50 @@
                             total: response.data.totalPrice
                         });
 
+                        // Обновляем максимальное количество, если пришло с сервера
+                        if (response.data.maxQuantity) {
+                            var quantityElement = basketItem.node.querySelector('.quantity-product');
+                            if (quantityElement) {
+                                quantityElement.setAttribute('data-max-quantity', response.data.maxQuantity);
+                            }
+                        }
+
                         self.showSuccessMessage('Количество обновлено');
                     } else {
+                        // Ошибка - возвращаем старое количество
                         var errorMsg = response.data && response.data.error
                             ? response.data.error
                             : 'Ошибка при обновлении';
 
-                        self.revertQuantity(basketItem, oldQuantity || basketItem.quantity - 1);
+                        // Возвращаем именно то количество, которое было до попытки изменения
+                        self.revertQuantity(basketItem, oldQuantity);
                         self.showErrorMessage(errorMsg);
                     }
 
+                    // Разблокируем кнопки
                     self.lockButtons(basketItem, false);
                 })
                 .catch(function(error) {
                     console.error('AJAX ошибка:', error);
 
-                    self.revertQuantity(basketItem, oldQuantity || basketItem.quantity - 1);
+                    // При ошибке соединения возвращаем старое количество
+                    self.revertQuantity(basketItem, oldQuantity);
                     self.showErrorMessage('Ошибка соединения с сервером');
                     self.lockButtons(basketItem, false);
                 });
+        },
+        /**
+         * Получает максимальное количество товара
+         * @param {object} basketItem - объект товара
+         * @returns {number} - максимальное количество
+         */
+        getMaxQuantity: function(basketItem) {
+            // Ищем элемент с количеством, у которого есть data-max-quantity
+            var quantityElement = basketItem.node.querySelector('.quantity-product[data-max-quantity]');
+            if (quantityElement) {
+                return parseInt(quantityElement.getAttribute('data-max-quantity')) || 999;
+            }
+            return 999; // Значение по умолчанию
         },
 
         /**
@@ -733,17 +846,45 @@
                 var minusBtn = itemNode.querySelector('.minus');
                 var plusBtn = itemNode.querySelector('.plus');
 
-                if (minusBtn) minusBtn.disabled = true;
-                if (plusBtn) plusBtn.disabled = true;
+                if (minusBtn) {
+                    minusBtn.style.pointerEvents = 'none';
+                    minusBtn.style.opacity = '0.5';
+                }
+                if (plusBtn) {
+                    plusBtn.style.pointerEvents = 'none';
+                    plusBtn.style.opacity = '0.5';
+                }
             } else {
                 delete this.buttonLocks[productId];
                 BX.removeClass(itemNode, 'basket-item-updating');
 
                 var minusBtn = itemNode.querySelector('.minus');
                 var plusBtn = itemNode.querySelector('.plus');
+                var quantityElement = itemNode.querySelector('.quantity-product');
+                var maxQuantity = quantityElement ? parseInt(quantityElement.getAttribute('data-max-quantity')) || 999 : 999;
+                var currentQuantity = basketItem.quantity;
 
-                if (minusBtn) minusBtn.disabled = false;
-                if (plusBtn) plusBtn.disabled = false;
+                if (minusBtn) {
+                    // Разблокируем минус только если количество больше 1
+                    if (currentQuantity > 1) {
+                        minusBtn.style.pointerEvents = 'auto';
+                        minusBtn.style.opacity = '1';
+                    } else {
+                        minusBtn.style.pointerEvents = 'none';
+                        minusBtn.style.opacity = '0.5';
+                    }
+                }
+
+                if (plusBtn) {
+                    // Разблокируем плюс только если количество меньше максимума
+                    if (currentQuantity < maxQuantity) {
+                        plusBtn.style.pointerEvents = 'auto';
+                        plusBtn.style.opacity = '1';
+                    } else {
+                        plusBtn.style.pointerEvents = 'none';
+                        plusBtn.style.opacity = '0.5';
+                    }
+                }
             }
         },
 
@@ -1453,7 +1594,92 @@
                 confirmText: 'Понятно',
                 onConfirm: function() {}
             });
-        }
+        },
+        // ==============================================
+// МЕТОДЫ ДЛЯ РАБОТЫ С ПРОМО (ПРОМОКОД/БОНУСЫ)
+// ==============================================
+
+        /**
+         * Инициализация обработчиков для радио-кнопок выбора типа промо
+         */
+        initPromoType: function() {
+            var promoInputs = document.querySelectorAll('input[name="promo_id"]');
+
+            for (var i = 0; i < promoInputs.length; i++) {
+                var input = promoInputs[i];
+
+                BX.unbindAll(input);
+                BX.bind(input, 'change', BX.proxy(function(event) {
+                    this.handlePromoTypeChange(event);
+                }, this));
+            }
+        },
+
+        /**
+         * Обработчик изменения типа промо
+         * @param {Event} event - событие изменения
+         */
+        handlePromoTypeChange: function(event) {
+            var target = event.target;
+            var promoType = target.value; // 'promokod' или 'bonus'
+
+            console.log('Выбран тип промо:', promoType);
+
+            if (promoType === 'promokod') {
+                this.showPromoCodeBlock();
+            } else if (promoType === 'bonus') {
+                this.showBonusBlock();
+            }
+        },
+
+        /**
+         * Показывает блок ввода промокода
+         */
+        showPromoCodeBlock: function() {
+            // TODO: реализовать показ блока промокода
+            console.log('Показ блока промокода');
+
+            // Скрываем блок бонусов, если он есть
+            this.hideBonusBlock();
+
+            // Показываем блок промокода
+            var promoCodeBlock = document.querySelector('.promo-block__left-promokod');
+            if (promoCodeBlock) {
+                promoCodeBlock.style.display = 'block';
+            }
+        },
+
+        /**
+         * Показывает блок оплаты бонусами
+         */
+        showBonusBlock: function() {
+            // TODO: реализовать показ блока бонусов
+            console.log('Показ блока бонусов');
+
+            // Скрываем блок промокода
+            this.hidePromoCodeBlock();
+
+            // TODO: показать блок бонусов (если он есть)
+            // Если блока для бонусов еще нет, нужно его создать или показать
+        },
+
+        /**
+         * Скрывает блок промокода
+         */
+        hidePromoCodeBlock: function() {
+            var promoCodeBlock = document.querySelector('.promo-block__left-promokod');
+            if (promoCodeBlock) {
+                promoCodeBlock.style.display = 'none';
+            }
+        },
+
+        /**
+         * Скрывает блок бонусов
+         */
+        hideBonusBlock: function() {
+            // TODO: скрыть блок бонусов (если он есть)
+            console.log('Скрытие блока бонусов');
+        },
     };
 
     // ==============================================
