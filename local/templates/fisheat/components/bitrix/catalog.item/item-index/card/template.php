@@ -7,7 +7,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
 use \Ldo\Favorites\Favorites;
 use \Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
-
+use Ldo\Develop\Pict;
 /**
  * @global CMain $APPLICATION
  * @var array $arParams
@@ -35,6 +35,9 @@ if($item['PREVIEW_PICTURE']){
 }
 $bgProduct = $bgProduct['src'];
 
+if(Loader::includeModule('ldo.develop')){
+    $webP = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 280, 280, true, 65);
+}
 if($item['PROPERTIES']['ATT_NEW']['VALUE'] == 'да'){
     $new = true;
 }
@@ -88,14 +91,19 @@ if($item['PROPERTIES']['ATT_VEGAN']['VALUE'] == 'да'){
 			?>
 		</span>
 		<div id="image-product-block">
-            <img class="image-product" loading="lazy" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>"  id="<?=$itemIds['PICT']?>">
+           <picture>
+                <?if($webP):?>
+                    <source srcset="<?=$webP?>" />
+                <?endif;?>
+                <img src="<?=$bgProduct?>" alt="<?=$arResult['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+           </picture>
         </div>
 		<?
 		if ($item['SECOND_PICT'])
 		{
 			$bgImage = !empty($item['PREVIEW_PICTURE_SECOND']) ? $item['PREVIEW_PICTURE_SECOND']['SRC'] : $item['PREVIEW_PICTURE']['SRC'];
 			?>
-			<span class="" id="<?=$itemIds['SECOND_PICT']?>" style="background-image: url('<?=$bgProduct?>'); <?=($showSlider ? 'display: none;' : '')?>"></span>
+
 			<?
 		}
 

@@ -2380,3 +2380,7 @@ footer .copyright{
 .slider-index__item{
     height: 248px;
 }
+#image-product-block{
+    height: 228px;
+    overflow:hidden;
+}

@@ -4,6 +4,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
     die();
 }
 
+
+
 $arBasketItems = [];
 
 $dbBasketItems = CSaleBasket::GetList(
@@ -23,4 +25,3 @@ while ($arItems = $dbBasketItems->Fetch())
 }
 
 $arResult['IN_CART'] = $arBasketItems;
-

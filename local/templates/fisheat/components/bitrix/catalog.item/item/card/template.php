@@ -7,7 +7,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
 use \Ldo\Favorites\Favorites;
 use \Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
-
+use Ldo\Develop\Pict;
 /**
  * @global CMain $APPLICATION
  * @var array $arParams
@@ -34,6 +34,11 @@ if($item['PREVIEW_PICTURE']){
     $bgProduct = CFile::ResizeImageGet($item['PREVIEW_PICTURE']['ID'], ['width'=>280, 'height'=>280], BX_RESIZE_IMAGE_PROPORTIONAL, true);
 }
 $bgProduct = $bgProduct['src'];
+
+if(Loader::includeModule('ldo.develop')){
+    $webP = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 280, 280, true, 65);
+}
+
 
 if($item['PROPERTIES']['ATT_NEW']['VALUE'] == 'да'){
     $new = true;
@@ -84,14 +89,26 @@ if(!$actualItem['CAN_BUY']){
 				foreach ($morePhoto as $key => $photo)
 				{
 					?>
-					<span class=" item <?=($key == 0 ? 'active' : '')?>" style="background-image: url('<?=$photo['SRC']?>');"></span>
+                    <picture>
+                        <?if($webP):?>
+                            <source srcset="<?=$webP?>" />
+                        <?endif;?>
+                        <img src="<?=$photo['SRC']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                   </picture>
+
 					<?
 				}
 			}
 			?>
 		</span>
             <div id="image-product-block">
-		        <img class="image-product" loading="lazy" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>"  id="<?=$itemIds['PICT']?>">
+                <picture>
+                        <?if($webP):?>
+                            <source srcset="<?=$webP?>" />
+                        <?endif;?>
+                        <img id="<?=$itemIds['PICT']?> src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                   </picture>
+
             </div>
 		<?
 		if ($item['SECOND_PICT'])
