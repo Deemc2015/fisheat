@@ -68,14 +68,6 @@
             this.initPersonCount();                  // Инициализация блока персон
             this.initAddressDelete();                // Удаление адреса доставки
             this.initPromoType();
-
-
-            // Скрываем блок промокода при загрузке, если он не выбран
-            var promoCodeBlock = document.querySelector('.promo-block__left-promokod');
-            if (promoCodeBlock) {
-                promoCodeBlock.style.display = 'none';
-            }
-
         },
 
         /**

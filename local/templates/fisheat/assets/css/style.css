@@ -2374,3 +2374,6 @@ footer .copyright{
 .gifts-list__item{
     width: 140px;
 }
+.gifts-list__item.disabled{
+    filter:grayscale(1);
+}

@@ -101,7 +101,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>
-                            <div class="gifts-list__item">
+                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>">
                                 <div class="gifts-list__item-img">
                                     <picture>
                                         <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
@@ -109,13 +109,20 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                     </picture>
                                 </div>
                                 <div class="gifts-list__item-title"><?=$gift['NAME']?></div>
-                                <?if($gift['AVAILABLE']):?>
-                                    <div class="addCartGift" id-product="<?=$gift['ID']?>">Выбрать</div>
-                                <?else:?>
+                                <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
                                     <div class="not-avaliable-text">
-                                        Доступно при заказе от<br> <?=$gift['SUM_LEVEL']?> ₽
+                                        Выбор недоступен
                                     </div>
-                                <?endif;?>
+                                <?else:?>
+                                    <?if($gift['AVAILABLE']):?>
+                                        <div class="addCartGift" id-product="<?=$gift['ID']?>">Выбрать</div>
+                                    <?else:?>
+                                        <div class="not-avaliable-text">
+                                            Доступно при заказе от<br> <?=$gift['SUM_LEVEL']?> ₽
+                                        </div>
+                                    <?endif;?>
+                                <?endif?>
+
 
                             </div>
                         <?endforeach?>
@@ -130,13 +137,13 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <h2>Применение скидок</h2>
             <div class="promo-block__line">
                 <div class="promo-block__left">
-                    <label for="code-1">
-                        <input type="radio" id="code-1" name="promo_id" value="promokod" >
+                    <label for="promo-1">
+                        <input <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'checked';}?> type="radio" id="promo-1" name="promo_id" value="promokod" >
                         <span></span>
                         Промокод
                     </label>
-                    <label for="code-2">
-                        <input  type="radio" id="code-2" name="promo_id" value="bonus" >
+                    <label for="promo-2">
+                        <input  type="radio" id="promo-2" name="promo_id" value="bonus" >
                         <span></span>
                         Оплата бонусами
                     </label>
@@ -149,14 +156,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             <button type="button">Отменить</button>
                         </div>
                             <?else:?>
-                            <div class="promoChange">
+                            <div class="promoChange" style="display:none;">
                                 <input type="text" name="promokod"  id="promocode" />
                                 <button type="button">Применить</button>
                             </div>
                             <?endif?>
-
-
-
                     </div>
 
                 </div>
