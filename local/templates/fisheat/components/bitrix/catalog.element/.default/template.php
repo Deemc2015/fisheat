@@ -221,7 +221,7 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 ?>
 <?
 $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
-
+print_r($arResult['BASKET_DATA']);
 /*echo "<pre>";
 print_r($arResult['BASKET_DATA']);
 echo "</pre>";*/
