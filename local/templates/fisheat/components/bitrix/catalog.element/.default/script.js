@@ -838,6 +838,20 @@
 				});
 		},
 
+		updateBasketUI: function(data) {
+			var countBlock = document.querySelector('.count-block-detail');
+			if (!countBlock) return;
+
+			var quantitySpan = countBlock.querySelector('.quantity-product');
+
+			if (data.inCart) {
+				quantitySpan.innerHTML = data.quantity;
+				countBlock.setAttribute('data-basket-id', data.basketId);
+			} else {
+				// Товара нет в корзине - показываем кнопку "В корзину"
+				quantitySpan.innerHTML = '1';
+			}
+		}
 
 
 		initConfig: function()
