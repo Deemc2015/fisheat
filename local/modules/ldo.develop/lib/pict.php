@@ -1,6 +1,7 @@
 <?php
 namespace Ldo\Develop;
-
+//use Bitrix\Main\Loader;
+use CFile;
 /**
  * Класс для работы с изображениями и генерации WebP формата
  */

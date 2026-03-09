@@ -3,6 +3,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Catalog\ProductTable;
+use Ldo\Develop\Pict;
+use Bitrix\Main\Loader;
 
 /**
  * @global CMain $APPLICATION
@@ -295,9 +297,17 @@ echo "</pre>";*/
 								{
 								    $photoNew = CFile::ResizeImageGet($photo['ID'], array('width'=>700, 'height'=>700), BX_RESIZE_IMAGE_PROPORTIONAL, true,false,false,70);
 
+								    if(Loader::includeModule('ldo.develop')){
+								        $webP = Pict::getResizeWebpSrc($photo['ID'], 700, 700, true, 65);
+                                    }
                                     ?>
 									<div class="product-item-detail-slider-image<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=$photoNew['ID']?>">
-										<img src="<?=$photoNew['src']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                                        <picture>
+                                            <?if($webP):?>
+                                                <source srcset="<?=$webP?>" />
+                                            <?endif;?>
+                                            <img src="<?=$photoNew['src']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                                        </picture>
 
 									</div>
 									<?php
@@ -475,8 +485,6 @@ echo "</pre>";*/
 										break;
 								}
 							}
-
-
 							?>
 
 						</div>
