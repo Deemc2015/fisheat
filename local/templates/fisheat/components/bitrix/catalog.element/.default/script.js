@@ -819,23 +819,48 @@
 
 
 		loadBasketData: function() {
+			var self = this;
 			var productId = this.product.id;
+			var container = document.getElementById('product-actions-' + productId);
+
+			if (!container) return;
 
 			BX.ajax.runComponentAction('opensource:order', 'getBasketItemData', {
 				mode: 'class',
 				dataType: 'json',
-				data: {
-					productId: productId
-				}
+				data: { productId: productId }
 			})
 				.then(function(response) {
 					if (response.data && response.data.success) {
-						this.updateBasketUI(response.data);
+						self.renderProductActions(container, response.data);
 					}
-				}.bind(this))
+				})
 				.catch(function(error) {
 					console.error('Ошибка загрузки данных корзины:', error);
 				});
+		},
+
+		renderProductActions: function(container, data) {
+			var maxQuantity = container.getAttribute('data-max-quantity') || 999;
+
+			if (data.inCart) {
+				// Показываем блок управления количеством
+				container.innerHTML = '' +
+					'<div class="count-block-detail" data-basket-id="' + data.basketId + '">' +
+					'<span class="minus"></span>' +
+					'<span class="quantity-product">' + data.quantity + '</span>' +
+					'<span class="plus"></span>' +
+					'</div>';
+			} else {
+				// Показываем кнопку "В корзину"
+				container.innerHTML = '' +
+					'<div class="product-item-detail-info-container">' +
+					'<a class="btn btn-default product-item-detail-buy-button" ' +
+					'href="javascript:void(0);" onclick="addToCart(' + data.productId + ')">' +
+					'<span>В корзину</span>' +
+					'</a>' +
+					'</div>';
+			}
 		},
 
 		updateBasketUI: function(data) {

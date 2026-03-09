@@ -221,10 +221,7 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 ?>
 <?
 $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix\Conversion\Internals\MobileDetect) && $md->isMobile();
-print_r($arResult['BASKET_DATA']);
-/*echo "<pre>";
-print_r($arResult['BASKET_DATA']);
-echo "</pre>";*/
+
 ?>
 
 
@@ -437,25 +434,13 @@ echo "</pre>";*/
 												if ($showAddBtn)
 												{
 													?>
-                                                    <?if($arResult['IN_CART']):?>
-                                                        <div data-id="<?=$arResult['ID']?>" class="count-block-detail">
-                                                            <span class="minus"></span>
-                                                            <span class="quantity-product"><?=$arResult['BASKET_DATA']['QUANTITY']?></span>
-                                                            <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>
-                                                        </div>
-                                                    <?else:?>
-                                                        <div class="product-item-detail-info-container">
-                                                            <a class="btn <?=$showButtonClassName?> product-item-detail-buy-button" id="<?=$itemIds['ADD_BASKET_LINK']?>"
-                                                               href="javascript:void(0);">
-                                                                <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
-                                                            </a>
-                                                        </div>
-                                                        <div data-id="<?=$arResult['ID']?>" class="count-block-detail hidden">
-                                                            <span class="minus"></span>
-                                                            <span class="quantity-product">1</span>
-                                                            <span data-max-count="<?=$arResult['PRODUCT']['QUANTITY']?>" class="plus"></span>
-                                                        </div>
-                                                    <?endif;?>
+
+                                                    <div class="product-actions-block"
+                                                         id="product-actions-<?=$arResult['ID']?>"
+                                                         data-product-id="<?=$arResult['ID']?>"
+                                                         data-max-quantity="<?=$arResult['PRODUCT']['QUANTITY']?>">
+
+                                                    </div>
 
 													<?php
 												}
