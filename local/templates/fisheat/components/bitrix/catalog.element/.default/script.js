@@ -647,6 +647,7 @@
 				}
 
 				// Инициализация управления количеством через кастомные кнопки
+
 				var countBlock = document.querySelector('.count-block-detail');
 
 				if (countBlock) {
@@ -671,8 +672,8 @@
 						this.obProduct.appendChild(this.obQuantity);
 					}
 
-					// Функция обновления с флагом skipSend
-					var updateQuantity = function(newValue, skipSend) {
+					// Функция ТОЛЬКО для обновления UI (без отправки)
+					var updateQuantityUI = function(newValue) {
 						newValue = parseInt(newValue);
 						if (isNaN(newValue) || newValue < 1) newValue = 1;
 
@@ -713,15 +714,15 @@
 								plusBtn.style.opacity = '1';
 							}
 						}
+					}.bind(this);
 
-						// Отправляем на сервер только если skipSend не true
-						if (!skipSend) {
-							this.sendQuantityToBasket(newValue);
-						}
+					// Функция для отправки на сервер
+					var sendQuantityToServer = function(newValue) {
+						this.sendQuantityToBasket(newValue);
 					}.bind(this);
 
 					// Функция для создания обработчика с долгим нажатием
-					var createLongPressHandler = function(btn, direction) {
+					var createLongPressHandler = function(direction) {
 						var timer = null;
 						var interval = null;
 
@@ -733,8 +734,25 @@
 							var newValue = direction === 'plus'
 								? currentValue + stepQuantity
 								: currentValue - stepQuantity;
-							updateQuantity(newValue, false); // Явно указываем, что это не инициализация
-						}.bind(this);
+
+							// Обновляем UI
+							updateQuantityUI(newValue);
+							// Отправляем на сервер
+							sendQuantityToServer(newValue);
+
+							// Запускаем интервал после задержки
+							timer = setTimeout(function() {
+								interval = setInterval(function() {
+									var currentValue = parseInt(quantitySpan.innerHTML) || 1;
+									var newValue = direction === 'plus'
+										? currentValue + stepQuantity
+										: currentValue - stepQuantity;
+
+									updateQuantityUI(newValue);
+									sendQuantityToServer(newValue);
+								}, 150);
+							}, 300);
+						};
 
 						var stop = function() {
 							clearTimeout(timer);
@@ -742,11 +760,11 @@
 						};
 
 						return { start: start, stop: stop };
-					}.bind(this);
+					};
 
 					// Применяем обработчики
 					if (minusBtn) {
-						var minusHandler = createLongPressHandler(minusBtn, 'minus');
+						var minusHandler = createLongPressHandler('minus');
 						BX.bind(minusBtn, 'mousedown', minusHandler.start);
 						BX.bind(minusBtn, 'mouseup', minusHandler.stop);
 						BX.bind(minusBtn, 'mouseleave', minusHandler.stop);
@@ -756,7 +774,7 @@
 					}
 
 					if (plusBtn) {
-						var plusHandler = createLongPressHandler(plusBtn, 'plus');
+						var plusHandler = createLongPressHandler('plus');
 						BX.bind(plusBtn, 'mousedown', plusHandler.start);
 						BX.bind(plusBtn, 'mouseup', plusHandler.stop);
 						BX.bind(plusBtn, 'mouseleave', plusHandler.stop);
@@ -765,11 +783,13 @@
 						BX.bind(plusBtn, 'touchcancel', plusHandler.stop);
 					}
 
-					// Инициализация - передаем true, чтобы не отправлять на сервер
+					// ИНИЦИАЛИЗАЦИЯ - ТОЛЬКО UI, БЕЗ ОТПРАВКИ
 					var initialValue = parseInt(quantitySpan.innerHTML);
 					if (isNaN(initialValue) || initialValue < 1) initialValue = 1;
 					if (initialValue > maxQuantity) initialValue = maxQuantity;
-					updateQuantity(initialValue, true); // skipSend = true
+
+					// Вызываем только функцию обновления UI
+					updateQuantityUI(initialValue);
 				}
 
 
