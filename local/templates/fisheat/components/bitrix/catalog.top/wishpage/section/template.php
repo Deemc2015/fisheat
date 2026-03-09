@@ -144,7 +144,7 @@ $containerName = 'catalog-top-container';
 												<?
 												$APPLICATION->IncludeComponent(
 													'bitrix:catalog.item',
-													'item-index',
+													'item',
 													array(
 														'RESULT' => array(
 															'ITEM' => $item,

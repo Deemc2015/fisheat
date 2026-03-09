@@ -106,8 +106,8 @@ if(!$actualItem['CAN_BUY']){
                         <?if($webP):?>
                             <source srcset="<?=$webP?>" />
                         <?endif;?>
-                        <img id="<?=$itemIds['PICT']?> src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
-                   </picture>
+                        <img id="<?=$itemIds['PICT']?>" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                </picture>
 
             </div>
 		<?

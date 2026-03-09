@@ -221,7 +221,7 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
                         <?
                         $APPLICATION->IncludeComponent(
                             'bitrix:catalog.item',
-                            'item-index',
+                            'item',
                             array(
                                 'RESULT' => array(
                                     'ITEM' => $item,
