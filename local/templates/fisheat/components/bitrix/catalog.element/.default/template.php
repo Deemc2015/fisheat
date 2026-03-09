@@ -434,27 +434,27 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 												if ($showAddBtn)
 												{
 													?>
-                                                    <!-- Единый блок для всех состояний -->
+
                                                     <div class="product-actions-block"
                                                          data-product-id="<?=$arResult['ID']?>"
-                                                         data-max-quantity="<?=$arResult['PRODUCT']['QUANTITY']?>">
+                                                    data-max-quantity="<?=$arResult['PRODUCT']['QUANTITY']?>">
 
-                                                        <!-- Блок с кнопкой "В корзину" (изначально скрыт, если товар в корзине) -->
-                                                        <div class="product-item-detail-info-container add-to-cart-block">
-                                                            <a class="btn <?=$showButtonClassName?> product-item-detail-buy-button"
-                                                               id="<?=$itemIds['ADD_BASKET_LINK']?>"
-                                                               href="javascript:void(0);">
-                                                                <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
-                                                            </a>
-                                                        </div>
 
-                                                        <!-- Блок управления количеством (изначально скрыт) -->
-                                                        <div class="count-block-detail hidden" data-basket-id="">
-                                                            <span class="minus"></span>
-                                                            <span class="quantity-product">1</span>
-                                                            <span class="plus"></span>
-                                                        </div>
+                                                    <div class="product-item-detail-info-container add-to-cart-block">
+                                                        <a class="btn <?=$showButtonClassName?> product-item-detail-buy-button"
+                                                           id="<?=$itemIds['ADD_BASKET_LINK']?>"
+                                                           href="javascript:void(0);">
+                                                            <span><?=$arParams['MESS_BTN_ADD_TO_BASKET']?></span>
+                                                        </a>
                                                     </div>
+
+
+                                                    <div class="count-block-detail hidden" data-basket-id="">
+                                                        <span class="minus"></span>
+                                                        <span class="quantity-product">1</span>
+                                                        <span class="plus"></span>
+                                                    </div>
+                                                </div>
 
 													<?php
 												}
