@@ -55,6 +55,29 @@
 }
 
 @media (max-width:768px) {
+
+    /*Адаптив главной*/
+    .product-item-container img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #image-product-block{
+        height: 185px;
+    }
+    .product-item-container .desc-product{
+        display: none;
+    }
+    .product-item-container .product-item-title a{
+        height: 44px;
+        width: 100%;
+        display: block;
+    }
+    .product-item-container .product-item-title{
+        display: block;
+        white-space: normal;
+    }
+
     .slider-index__item{
         height: 100%;
     }
