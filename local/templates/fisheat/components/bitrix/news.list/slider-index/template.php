@@ -19,7 +19,16 @@ $this->setFrameMode(true);
 	$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 	?>
     <div id="<?=$this->GetEditAreaId($arItem['ID']);?>" class="slider-index__item">
-        <a href="<?=$arItem['PROPERTIES']['ATT_LINK']['VALUE']?>"><img src="<?=$arItem['PREVIEW_PICTURE']['SRC']?>" alt="<?=$arItem['NAME']?>"></a>
+        <a href="<?=$arItem['PROPERTIES']['ATT_LINK']['VALUE']?>">
+            <picture>
+                <?if($arItem['WEBP']):?>
+                    <source srcset="<?=$arItem['WEBP']?>" />
+                <?endif;?>
+                <img  src="<?=$arItem['IMG']['src']?>" alt="<?=$arItem['NAME']?>" title="<?=$arItem['NAME']?>">
+            </picture>
+
+        </a>
+
     </div>
 
 <?endforeach;?>
