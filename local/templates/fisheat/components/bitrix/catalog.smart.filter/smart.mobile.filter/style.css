@@ -8,9 +8,7 @@
   --animation1: all .25s ease-out; }
 
 .smart-filter {}
-  @media (max-width: 768px) {
-    .smart-filter {
-      padding: 15px 15px 0px 15px; } }
+
   .smart-filter_title {
     font-weight: bold;
     margin: 0px 0px 10px 0px;
@@ -68,10 +66,6 @@
     background-position: top; }
   .smart-filter_bottons {
     margin: 10px 0px 30px 0px;}
-    @media (max-width: 768px) {
-      .smart-filter_bottons {
-        margin: 0px 15px 15px 15px; } }
-
 
   .smart-filter-container-modef {
     position: relative;
@@ -158,13 +152,11 @@
   .mobile_filter_panel {
     position: fixed;
     overflow-y: scroll;
-    width: 270px;
-    height: 100vh;
-    background: var(--c3);
+    width: 100%;
+    height: auto;
     top: 0;
-    left: -270px;
-    z-index: 1000;
-    transition: var(--animation1); } }
+    left: 0px;
+    z-index: 1000;} }
 .mobile_filter_panel_show {
   left: 0; }
 @media (max-width: 768px) {

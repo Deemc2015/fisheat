@@ -1434,7 +1434,7 @@ input#property_COUNT_PERSON{
 }
 .top-section-list .filter-change:before{
     content:'';
-    background: url('../images/filter-icon.png') no-repeat;
+    background: url('../images/filter-icon.svg') no-repeat;
     width: 18px;
     height: 18px;
     display: block;
@@ -1451,7 +1451,7 @@ input#property_COUNT_PERSON{
 }
 .top-section-list .sort-block:before{
     content:'';
-    background: url('../images/sort-icon.png') no-repeat;
+    background: url('../images/sort-icon.svg') no-repeat;
     width: 16px;
     height: 16px;
     display: block;

@@ -39,8 +39,6 @@ if($name == 'show_counter' && $type == 'desc'){
     </div>
 </div>
 
-<button class="mobile_filter_button">Показать фильтр</button>
-
 <div class="mobile_filter_panel <?if($arResult['OPEN_FILTER']){echo 'open';}?>">
 
     <form name="<? echo $arResult["FILTER_NAME"] . "_form" ?>" action="<? echo $arResult["FORM_ACTION"] ?>" method="get">
