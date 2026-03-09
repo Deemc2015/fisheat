@@ -21,8 +21,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var OpenSourceOrderComponent $component */
 
 
-
-echo "12312";
 ?>
 
 
@@ -299,7 +297,7 @@ echo "12312";
     </div>
     <? // region?>
     <?
-    if (\Bitrix\Main\Loader::includeModule('acrit.bonus')) {
+    /*if (\Bitrix\Main\Loader::includeModule('acrit.bonus')) {
 
         $arResultEx = [
                 'ORDER_PRICE' => $arResult['PRICE'] - $arResult['DELIVERY_PRICE'],
@@ -309,21 +307,21 @@ echo "12312";
         $resultBonus = \Acrit\Bonus\Profile::runPayProfiles($arResultEx);
         echo "<pre>";
         print_r($resultBonus);
-        echo "</pre>";
+        echo "</pre>";*/
         ?>
     <?
 
-    echo \Acrit\Bonus\Core::getPayOrderBlock($arResultEx['BONUSPAY'], /** @lang JavaScript */ 'AcritBonusPayBonusBtn();');
+    // echo \Acrit\Bonus\Core::getPayOrderBlock($arResultEx['BONUSPAY'], /** @lang JavaScript */ 'AcritBonusPayBonusBtn();');
     ?>
     <script>
-        function AcritBonusPayBonusBtn() {
+       /* function AcritBonusPayBonusBtn() {
             // не отправляем заказ на сохранение, а перегружаем страницу
             $(".send_open_source_order_flag").val('n');
             // эмулируем отправку формы заказа, чтобы бонусы подхватились
             $(".send_open_source_order_submit").click();
             // отключаем кнопку "оплатить бонусами" от использования
             $(this).css('pointer-events', 'none');
-        }
+        }*/
     </script>
     <?
         // распечатайте $arResultEx['BONUSPAY'] - его можно использовать в дальнейшем для вывода данных,
@@ -331,7 +329,7 @@ echo "12312";
         // \Bitrix\Main\Diag\Debug::dump($arResultEx);
 
         // 4/ Получение бонусов за этот заказ (с учетом фильтров в профиле начисления бонусов за заказ)
-        $arResultEx['BONUS']['ORDER'] = \Acrit\Bonus\Core::getCartOrderBonus('ORDER', $arResultEx);
+        //$arResultEx['BONUS']['ORDER'] = \Acrit\Bonus\Core::getCartOrderBonus('ORDER', $arResultEx);
         //d($arResultEx);
     }
     ?>
