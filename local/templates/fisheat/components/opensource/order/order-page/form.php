@@ -331,7 +331,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         // 4/ Получение бонусов за этот заказ (с учетом фильтров в профиле начисления бонусов за заказ)
         //$arResultEx['BONUS']['ORDER'] = \Acrit\Bonus\Core::getCartOrderBonus('ORDER', $arResultEx);
         //d($arResultEx);
-    }
+    //}
     ?>
     <? // endregion?>
 
