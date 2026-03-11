@@ -3,9 +3,6 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Главная");
 
 ?>
-<div>
-    Вика, привет!!!!!!!!
-</div>
 <?if($isMobile):?>
     <div class="search-mobile hidden-pk">
         <?$APPLICATION->IncludeComponent(
