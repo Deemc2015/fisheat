@@ -799,11 +799,7 @@
 
 					updateQuantityUI(initialValue);
 				}
-
-
-
-
-
+				
 				this.obBuyBtn && BX.bind(this.obBuyBtn, 'click', BX.proxy(this.buyBasket, this));
 				this.smallCardNodes.buyButton && BX.bind(this.smallCardNodes.buyButton, 'click', BX.proxy(this.buyBasket, this));
 

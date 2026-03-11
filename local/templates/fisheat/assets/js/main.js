@@ -80,6 +80,12 @@ $(document).ready(function(){
         $(this).setCursorPosition(0);
     }).mask("99.99.9999");
 
+    $(document).mouseup(function (e) {
+        var container = $('.modal-delete');
+        if (container.has(e.target).length === 0) {
+            $('.wrp,.modal-delete').removeClass('show');
+        }
+    });
 
     /*$('.gifts-list').slick({
         slidesToShow: 7,
