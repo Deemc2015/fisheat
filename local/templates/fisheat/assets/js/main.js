@@ -40,6 +40,10 @@ $(document).on('click', '.sort-block-product div', function(event) {
 $(document).ready(function(){
     $(".mycustom-scroll").mCustomScrollbar();
 
+    $('.addCart').click(function(){
+        $(this).addClass('in_cart');
+    })
+
 
     $('.filter-change').click(function(){
         $('.mobile_filter_panel').toggleClass('open');
