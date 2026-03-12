@@ -11664,3 +11664,1347 @@ updateProducts
 #5: call_user_func_array
 	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
 ----------
+Host: riba
+Date: 2026-03-11 15:53:06
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:53:06
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:54:09
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:54:09
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:55:40
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:55:40
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:56:41
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:56:41
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:59:21
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 15:59:21
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:01:18
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:01:18
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:03:46
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:03:46
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:07:43
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:07:43
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:09:18
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:09:18
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:14:17
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:14:17
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:15:30
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:15:30
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:16:59
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:16:59
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:18:12
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:18:12
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:20:23
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:20:23
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:22:04
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:22:04
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:37:07
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:37:07
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:38:56
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:38:56
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:40:09
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:40:09
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:41:38
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:41:38
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:43:13
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 16:43:13
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:05:19
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:05:19
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:07:58
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:07:58
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:11:12
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:11:12
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:13:16
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:13:16
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:15:17
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:15:17
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:17:51
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:17:51
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:20:19
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:20:19
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:21:20
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:21:20
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:45:26
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:45:26
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:46:26
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:46:26
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:49:01
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:49:01
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:50:59
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:50:59
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:52:18
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:52:18
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:53:31
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 18:53:31
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 19:24:38
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 19:24:38
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 19:27:11
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-11 19:27:11
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:15:54
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:15:54
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:17:15
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:17:15
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:18:40
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:18:40
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:19:40
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:19:40
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:36:59
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:36:59
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:38:13
+updateCategory
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:9
+#1: Ldo\Rkeeper\Agents::updateCategory
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------
+Host: riba
+Date: 2026-03-12 08:38:13
+updateProducts
+#0: AddMessage2Log
+	D:\OSPanel\domains\riba\local\modules\ldo.rkeeper\lib\agents.php:14
+#1: Ldo\Rkeeper\Agents::updateProducts
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php(508) : eval()'d code:1
+#2: eval
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:508
+#3: CAllAgent::ExecuteAgents
+	D:\OSPanel\domains\riba\bitrix\modules\main\classes\general\agent.php:357
+#4: CAllAgent::CheckAgents
+	
+#5: call_user_func_array
+	D:\OSPanel\domains\riba\bitrix\modules\main\lib\application.php:845
+----------

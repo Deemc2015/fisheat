@@ -47,6 +47,9 @@ body{
     display: flex;
     align-items: center;
 }
+.top-menu nav{
+    width: 700px;
+}
 .top-menu ul{
     list-style-type: none;
     padding: 0;
@@ -95,7 +98,7 @@ a:hover{
 }
 header .phone:before{
     content:'';
-    background: url('../images/phone.png') no-repeat;
+    background: url('../images/phone.svg') no-repeat;
     display: block;
     width: 14px;
     height: 18px;
@@ -112,7 +115,7 @@ header .time-work{
 }
 header .time-work:before{
     content:'';
-    background: url('../images/time.png') no-repeat;
+    background: url('../images/time.svg') no-repeat;
     display: block;
     width: 18px;
     height: 18px;
@@ -126,7 +129,7 @@ header .time-work:before{
 }
 .location:before{
     content:'';
-    background: url('../images/location.png') no-repeat;
+    background: url('../images/location.svg') no-repeat;
     display: block;
     width: 24px;
     height: 24px;
@@ -250,8 +253,7 @@ section{
 #slider-index img{
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    border-radius: 20px;
+    object-fit: cover;
 }
 #slider-index  .slick-slide {
     padding: 0 9px;
@@ -2379,8 +2381,27 @@ footer .copyright{
 }
 .slider-index__item{
     height: 248px;
+    border-radius:20px;
+    overflow:hidden;
 }
 #image-product-block{
     height: 228px;
     overflow:hidden;
 }
+ #image-product-block img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gifts-block{
+    width: 1065px;
+}
+#orderDescription{
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    height: 150px;
+}
+

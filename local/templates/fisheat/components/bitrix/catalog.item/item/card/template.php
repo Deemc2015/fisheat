@@ -37,6 +37,8 @@ $bgProduct = $bgProduct['src'];
 
 if(Loader::includeModule('ldo.develop')){
     $webP = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 280, 280, true, 65);
+    $webP_768 = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 208, 208, true, 65);
+    $webP_400 = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 187, 187, true, 65);
 }
 
 
@@ -91,7 +93,9 @@ if(!$actualItem['CAN_BUY']){
 					?>
                     <picture>
                         <?if($webP):?>
-                            <source srcset="<?=$webP?>" />
+                            <source srcset="<?=$webP?>" media="(min-width: 1920px)"/>
+                            <source srcset="<?=$webP_768?>" media="(min-width: 768px)">
+                            <source srcset="<?=$webP_400?>" media="(min-width: 400px)">
                         <?endif;?>
                         <img src="<?=$photo['SRC']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
                    </picture>
@@ -104,7 +108,9 @@ if(!$actualItem['CAN_BUY']){
             <div id="image-product-block">
                 <picture>
                         <?if($webP):?>
-                            <source srcset="<?=$webP?>" />
+                            <source srcset="<?=$webP?>" media="(min-width: 1920px)"/>
+                            <source srcset="<?=$webP_768?>" media="(min-width: 768px)">
+                            <source srcset="<?=$webP_400?>" media="(min-width: 400px)">
                         <?endif;?>
                         <img id="<?=$itemIds['PICT']?>" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
                 </picture>
