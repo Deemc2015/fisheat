@@ -927,11 +927,6 @@
         width: 195px;
     }
     /**/
-    /*Товары*/
-    .product-item-container{
-        flex: 0 0 100%;
-    }
-    /**/
 
     .count-people-block__count{
         margin-top: 12px;
