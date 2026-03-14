@@ -80,12 +80,12 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
     <div class="mobile-footer">
         <div class="mobile-footer__left">
-            <a  href="/mobile_app/" class="home-icon <?if($APPLICATION->GetCurPage(false) == '/'){echo 'active';}?>"></a>
+            <a  href="/mobile_app/" class="home-icon <?if($APPLICATION->GetCurPage(false) == '/mobile_app/'){echo 'active';}?>"></a>
             <a href="/" class="search-footer-link"></a>
         </div>
         <div class="mobile-footer__right">
-            <a href="/personal/" class="personal-link-footer <?if($APPLICATION->GetCurPage(false) == '/personal/'){echo 'active';}?>"></a>
-            <a href="/izbrannye-tovary/" class="wish-link-footer <?if($APPLICATION->GetCurPage(false) == '/izbrannye-tovary/'){echo 'active';}?>"></a>
+            <a href="/mobile_app/personal/" class="personal-link-footer <?if($APPLICATION->GetCurPage(false) == '/mobile_app/personal/'){echo 'active';}?>"></a>
+            <a href="/mobile_app/izbrannye-tovary/" class="wish-link-footer <?if($APPLICATION->GetCurPage(false) == '/mobile_app/izbrannye-tovary/'){echo 'active';}?>"></a>
         </div>
     </div>
 

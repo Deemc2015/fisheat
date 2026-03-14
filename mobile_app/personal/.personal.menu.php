@@ -1,0 +1,32 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Профиль", 
+		"/personal/", 
+		Array(), 
+		Array("CLASS"=>"profile"), 
+		"" 
+	),
+	Array(
+		"Заказы", 
+		"/personal/moi-zakazy/", 
+		Array(), 
+		Array("CLASS"=>"orders"), 
+		"" 
+	),
+	Array(
+		"Промокоды", 
+		"/personal/promokody/", 
+		Array(), 
+		Array("CLASS"=>"promo"), 
+		"" 
+	),
+	Array(
+		"Уведомления", 
+		"/personal/uvedomleniya/", 
+		Array(), 
+		Array("CLASS"=>"notification"), 
+		"" 
+	)
+);
+?>
