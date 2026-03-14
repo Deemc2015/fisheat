@@ -78,7 +78,6 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 <?endif;?>
 <footer>
 
-<?if($isMobile):?>
     <div class="mobile-footer">
         <div class="mobile-footer__left">
             <a  href="/" class="home-icon <?if($APPLICATION->GetCurPage(false) == '/'){echo 'active';}?>"></a>
@@ -114,47 +113,6 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         false
     );?>
 
-
-
-    <?else:?>
-    <div class="top-line hidden-mobile">
-        <div class="left-footer">
-            <a href="/" class="footer-logo"></a>
-        </div>
-        <div class="center-footer">
-            <div class="footer-menu">
-                <?$APPLICATION->IncludeComponent(
-                    "bitrix:menu",
-                    "top-menu",
-                    Array(
-                        "ALLOW_MULTI_SELECT" => "N",
-                        "CHILD_MENU_TYPE" => "left",
-                        "DELAY" => "N",
-                        "MAX_LEVEL" => "1",
-                        "MENU_CACHE_GET_VARS" => array(""),
-                        "MENU_CACHE_TIME" => "3600",
-                        "MENU_CACHE_TYPE" => "N",
-                        "MENU_CACHE_USE_GROUPS" => "Y",
-                        "ROOT_MENU_TYPE" => "top",
-                        "USE_EXT" => "N"
-                    )
-                );?>
-            </div>
-        </div>
-        <div class="right-footer">
-            <div class="link-aplication">
-                <a href="#" class="rustore"></a>
-                <a href="#" class="appstore"></a>
-            </div>
-        </div>
-    </div>
-    <div class="bottom-line hidden-mobile">
-        <a href="" class="politika">Политика конфиденциальности</a>
-        <span class="copyright">© 2010 - <?=Date('Y');?> Рыба закусывала</span>
-        <a href="" class="politika-two">Политика cookie</a>
-    </div>
-
-    <?endif?>
 </footer>
 </div>
 </div>
