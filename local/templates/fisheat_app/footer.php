@@ -95,8 +95,8 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         array(
             "HIDE_ON_BASKET_PAGES" => "Y",
             "PATH_TO_AUTHORIZE" => "",
-            "PATH_TO_BASKET" => "/oformlenie-zakaza/",
-            "PATH_TO_ORDER" => "/oformlenie-zakaza/",
+            "PATH_TO_BASKET" => "/mobile_app/oformlenie-zakaza/",
+            "PATH_TO_ORDER" => "/mobile_app/oformlenie-zakaza/",
             "PATH_TO_PERSONAL" => SITE_DIR."personal/",
             "PATH_TO_PROFILE" => SITE_DIR."personal/",
             "PATH_TO_REGISTER" => SITE_DIR."login/",
