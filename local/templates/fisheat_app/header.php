@@ -52,7 +52,7 @@ use \Ldo\Develop\Pages;
         <div class="header">
             <div class="mobile-head hidden-pk">
                 <div class="burger"></div>
-                <a href="/" class="logo-mobile"></a>
+                <a href="/mobile_app/" class="logo-mobile"></a>
                 <div class="mobile-menu"></div>
             </div>
             <div class="mobile-main-menu">
