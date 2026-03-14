@@ -473,6 +473,7 @@
         width: 26px;
         min-width: 26px;
         height: 26px;
+        display: block;
     }
     footer .personal-link-footer{
         background: url('../images/user-icon.svg') no-repeat;
