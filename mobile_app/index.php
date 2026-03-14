@@ -137,13 +137,7 @@ $APPLICATION->SetTitle("Главная");
 		);?>
 	</div>
 
-
-
-
-
-
-
-	<section >
+	<section>
 		<?$APPLICATION->IncludeComponent(
 			"bitrix:catalog.section",
 			"category-index",
@@ -224,7 +218,7 @@ $APPLICATION->SetTitle("Главная");
 					0 => "ATT_VES",
 				),
 				"SECTION_CODE" => $_REQUEST["SECTION_CODE"],
-				"SECTION_ID" => "206",
+				"SECTION_ID" => "211",
 				"SECTION_ID_VARIABLE" => "SECTION_ID",
 				"SECTION_URL" => "",
 				"SECTION_USER_FIELDS" => array(
@@ -341,7 +335,7 @@ $APPLICATION->SetTitle("Главная");
 				"PROPERTY_CODE_MOBILE" => array(
 				),
 				"SECTION_CODE" => "",
-				"SECTION_ID" => "18",
+				"SECTION_ID" => "211",
 				"SECTION_ID_VARIABLE" => "SECTION_ID",
 				"SECTION_URL" => "",
 				"SECTION_USER_FIELDS" => array(
