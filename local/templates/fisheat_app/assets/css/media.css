@@ -728,11 +728,18 @@
         display: none;
     }
     section{
-        padding: 0 12px;
+
         margin-top: 24px;
+    }
+    section#page{
+        margin-top: 0;
+        padding: 0 ;
     }
     .category-top-info__name{
         font-size:26px;
+    }
+    .search-mobile{
+        margin-top: 12px;
     }
     .sectionlist-product{
         margin-bottom: 0;
