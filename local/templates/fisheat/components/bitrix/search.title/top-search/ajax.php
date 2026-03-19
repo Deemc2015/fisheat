@@ -26,7 +26,7 @@ if (!empty($arResult['CATEGORIES']) && $arResult['CATEGORIES_ITEMS_EXISTS']):?>
                         $arrImage = CFile::ResizeImageGet($dataProduct['PREVIEW_PICTURE'], array('width'=>70, 'height'=>70), BX_RESIZE_IMAGE_PROPORTIONAL, true);
                         $arrImage = $arrImage['src'];
 
-                        $arrDesc = $dataProduct['PREVIEW_TEXT'];
+                        $arrDesc = $dataProduct['DETAIL_TEXT'];
                     }
                 }
 
