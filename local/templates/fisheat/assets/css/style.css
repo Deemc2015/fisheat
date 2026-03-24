@@ -1660,6 +1660,10 @@ input#property_COUNT_PERSON{
     border:1px solid #868686;
     padding: 20px;
 }
+.title-search-result .right-block-product{
+    overflow: hidden;
+    height: 60px;
+}
 .title-search-result-block a{
     color:#ffffff;
     text-decoration: none;
