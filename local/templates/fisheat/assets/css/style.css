@@ -2408,4 +2408,8 @@ footer .copyright{
     margin-top: 12px;
     height: 150px;
 }
-
+/*Корневой раздел каталога*/
+.titleSectionCatalog{
+    font-size: 36px;
+    margin-bottom: 21px;
+}
