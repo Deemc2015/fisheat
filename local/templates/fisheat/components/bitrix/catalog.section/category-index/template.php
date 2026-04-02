@@ -122,7 +122,9 @@ $containerName = 'container-'.$navParams['NavNum'];
 
 
 
-
+if(count($arResult['ITEMS']) < 1){
+    return false;
+}
 
 ?>
 <div class="category-top-info">
@@ -131,7 +133,6 @@ $containerName = 'container-'.$navParams['NavNum'];
 </div>
 
 <?
-/*print_r($arResult['CATEGORY_INFO']['PODRAZDEL']);*/
 
 if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
     <div class="children_category">
