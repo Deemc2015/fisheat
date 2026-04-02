@@ -125,7 +125,9 @@ $(document).ready(function(){
     })
 
 
-    $('#slider-index').slick({
+    $('#slider-index').on('init', function(event, slick) {
+        $(this).removeClass('disabled');
+    }).slick({
         slidesToShow: 3,
         slidesToScroll: 1,
         arrows:false,
@@ -173,7 +175,8 @@ $(document).ready(function(){
                 }
             }
         ],
-    })
+    });
+
     $(document).on('click', '.wish-add', function(e) {
         e.preventDefault();
         var id = $(this).attr('data-id');
