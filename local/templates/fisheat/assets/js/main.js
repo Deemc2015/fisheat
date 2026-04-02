@@ -178,27 +178,23 @@ $(document).ready(function(){
         ],
     });
 
-    $(document).on('click', '.wish-add', function(e) {
+    $(document).on('click', '.product-item-container .wish-add', function(e) {
         e.preventDefault();
         var id = $(this).attr('data-id');
-
         $(this).toggleClass('active');
+
+        var remove = false;
+
+        if(!$(this).hasClass('active')){
+            var remove = true;
+        }
         // Отправляем AJAX-запрос
         $.ajax({
             url: '/local/ajax/wishlist.php', // Путь к обработчику
             type: 'GET',
             data: { id: id },
             success: function(response) {
-                /*if(response == 0){
-                    $('.header-right__wish span').hide();
-                    $('.header-right__wish').removeClass('active');
-                }
-                else{
-                    if(!$('.header-right__wish').hasClass('active')){
-                        $('.header-right__wish').addClass('active')
-                    }
-                    $('.header-right__wish').html('<span>'+response+'</span>');
-                }*/
+
                 $('.count-wish').html(response);
                 if(response == 0){
                     $('.count-wish').hide();

@@ -8,7 +8,7 @@ use Bitrix\Sale;
 use Bitrix\Main\Context;
 
 
-
+$APPLICATION->setPageProperty("NOCACHE", "Y");
 ?>
 
         <div class="wish-page-list">
@@ -103,7 +103,8 @@ use Bitrix\Main\Context;
 		"DATA_LAYER_NAME" => "dataLayer",
 		"BRAND_PROPERTY" => "-",
 		"SEF_RULE" => "",
-		"OFFER_ADD_PICT_PROP" => "-"
+		"OFFER_ADD_PICT_PROP" => "-",
+		"COMPOSITE_FRAME_MODE" => "N"
 	),
 	false
 );
