@@ -268,7 +268,5 @@ if(Loader::includeModule('ldo.develop')):?>
         </section>
     <?endif;?>
 
-
-
 <?endif;?>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
