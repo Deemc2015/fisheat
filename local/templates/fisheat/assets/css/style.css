@@ -457,6 +457,24 @@ h1.title-page{
     font-size: 12px;
     margin-top: 5px;
 }
+.product-item-title a {
+    color: #3f3f3f;
+    text-decoration: none;
+    transition: 250ms linear all;
+}
+.product-item-container {
+    position: relative;
+}
+.product-item-title {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: normal;
+    font-size: 14px;
+    text-align: center;
+}
 .product-item-container .bottom-line{
     display: flex;
     padding-left: 16px;
