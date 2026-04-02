@@ -1517,16 +1517,24 @@ input#property_COUNT_PERSON{
     margin-right: 0;
 }
 .product-item-container .tags-bottom-product .new{
-    background: url('../images/new-icon.jpg') no-repeat;
+    background: url('../images/new-icon-detail.svg') no-repeat;
+    width: 30px;
+    height: 30px;
 }
 .product-item-container .tags-bottom-product .popular{
-    background: url('../images/popular-icon.jpg') no-repeat;
+    background: url('../images/popular-icon-detail.svg') no-repeat;
+    width: 30px;
+    height: 30px;
 }
 .product-item-container .tags-bottom-product .vegan{
-    background: url('../images/veget-icon.jpg') no-repeat;
+    background: url('../images/veget-icon-detail.svg') no-repeat;
+    width: 30px;
+    height: 30px;
 }
 .product-item-container .tags-bottom-product .hot{
-    background: url('../images/hot-icon.jpg') no-repeat;
+    background: url('../images/hot-icon-detail.svg') no-repeat;
+    width: 30px;
+    height: 30px;
 }
 .tag-detail-list{
     position: absolute;
