@@ -140,8 +140,28 @@ use \Ldo\Develop\Sections;
 
 <?php
 
-if(Loader::includeModule('ldo.develop')):?>
-    <?php $idsSection = Sections::getListViewIndex('catalog');
+if(Loader::includeModule('ldo.develop')):
+    // Используем кеширование с проверкой существования класса
+    $cache = \Bitrix\Main\Data\Cache::createInstance();
+    $cacheId = 'sections_catalog_mobile';
+    $cacheDir = '/ldo_develop/mobile';
+
+    if ($cache->initCache(3600, $cacheId, $cacheDir)) {
+        $idsSection = $cache->getVars();
+    } else {
+        // Проверяем существование класса перед вызовом
+        if (!class_exists('\Bitrix\Iblock\IblockTable')) {
+            \Bitrix\Main\Loader::includeModule('iblock');
+        }
+
+        $idsSection = Sections::getListViewIndex('catalog');
+
+        if (!empty($idsSection)) {
+            $cache->startDataCache();
+            $cache->endDataCache($idsSection);
+        }
+    }
+
     if(count($idsSection) > 0):?>
         <section>
             <?foreach($idsSection as $sectionId):?>
