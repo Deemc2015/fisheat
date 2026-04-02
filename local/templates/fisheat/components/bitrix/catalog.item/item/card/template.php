@@ -57,6 +57,7 @@ if($item['PROPERTIES']['ATT_VEGAN']['VALUE'] == 'да'){
 if(!$actualItem['CAN_BUY']){
     $disabledClass = 'not-avaliable';
 }
+$topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 ?>
 
 
@@ -67,6 +68,14 @@ if(!$actualItem['CAN_BUY']){
 		<span  data-entity="image-wrapper">
 
 	<? endif; ?>
+       <?if($topInfo && is_array($topInfo)):?>
+           <div class="tags-top-product">
+               <?foreach ($topInfo as $tag):?>
+                   <span title="<?=$tag?>"><?=$tag?></span>
+               <?endforeach;?>
+           </div>
+       <?endif;?>
+
         <div class="tags-bottom-product">
         <?if($new):?>
             <span title="Новинка" class="new"></span>

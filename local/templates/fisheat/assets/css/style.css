@@ -2453,3 +2453,19 @@ footer .copyright{
 #load-more:hover{
     opacity:0.7;
 }
+.tags-top-product{
+    position: absolute;
+    top:12px;
+    left: 12px;
+}
+.tags-top-product span{
+    color:#ffffff;
+    background: var(--bg-button);
+    text-decoration: none;
+    font-size:14px;
+    margin-bottom: 6px;
+    border-radius:6px;
+    font-family: "Inter Light",'Roboto';
+    padding: 2px 8px;
+    display: table;
+}
