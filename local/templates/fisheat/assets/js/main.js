@@ -126,6 +126,7 @@ $(document).ready(function(){
 
 
     $('#slider-index').on('init', function(event, slick) {
+        console.log('Слайдер запустился');
         $(this).removeClass('disabled');
     }).slick({
         slidesToShow: 3,
