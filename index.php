@@ -214,7 +214,7 @@ if(Loader::includeModule('ldo.develop')):?>
                     "PAGER_SHOW_ALWAYS" => "N",
                     "PAGER_TEMPLATE" => ".default",
                     "PAGER_TITLE" => "Товары",
-                    "PAGE_ELEMENT_COUNT" => "18",
+                    "PAGE_ELEMENT_COUNT" => "5",
                     "PARTIAL_PRODUCT_PROPERTIES" => "N",
                     "PRICE_CODE" => array(
                         0 => "BASE",
