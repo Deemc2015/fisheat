@@ -265,6 +265,7 @@ section#slider-index{
     padding: 0;
     background: transparent;
     margin-top: 24px;
+    height: 287px;
 }
 #slider-index .slick-dots button:before{
     content:none;
