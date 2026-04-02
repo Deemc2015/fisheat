@@ -2431,3 +2431,25 @@ footer .copyright{
     font-size: 36px;
     margin-bottom: 21px;
 }
+.titleSectionCatalog +  .product-line{
+    margin-bottom: 48px;
+}
+#load-more{
+    color:#ffffff;
+    width: 233px;
+    background: #1B1818;
+    margin: 0 auto;
+    border-radius:12px;
+    font-size: 18px;
+    font-family: "Inter Light",'Roboto';
+    display: block;
+    cursor:pointer;
+    padding: 21px 0;
+    margin-top: 24px;
+    text-align: center;
+    line-height: 1;
+    transition:all .3s;
+}
+#load-more:hover{
+    opacity:0.7;
+}

@@ -255,25 +255,18 @@ $containerName = 'container-'.$navParams['NavNum'];?>
 if ($showLazyLoad)
 {
 	?>
-	<div class="row bx-<?=$arParams['TEMPLATE_THEME']?>">
-		<div class="btn btn-default btn-lg center-block" style="margin: 15px;"
-			data-use="show-more-<?=$navParams['NavNum']?>">
-			<?=$arParams['MESS_BTN_LAZY_LOAD']?>
-		</div>
+	<div class="row">
+        <div class="col-lg-12">
+            <div id="load-more" class=""
+                 data-use="show-more-<?=$navParams['NavNum']?>">
+                <?=$arParams['MESS_BTN_LAZY_LOAD']?>
+            </div>
+        </div>
+
 	</div>
 	<?
 }
 
-if ($showBottomPager)
-{
-	?>
-	<div data-pagination-num="<?=$navParams['NavNum']?>">
-		<!-- pagination-container -->
-		<?=$arResult['NAV_STRING']?>
-		<!-- pagination-container -->
-	</div>
-	<?
-}
 
 $signer = new \Bitrix\Main\Security\Sign\Signer;
 $signedTemplate = $signer->sign($templateName, 'catalog.section');
