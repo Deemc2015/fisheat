@@ -112,14 +112,14 @@ class Ldo_develop extends CModule
 
     protected function registerModuleHandlers(){
         $eventManager = EventManager::getInstance();
-        $result = $eventManager->registerEventHandler("sale", "OnSaleBasketItemRefreshData", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
+        $result = $eventManager->registerEventHandler("sale", "OnSaleBasketBeforeSaved", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
         return true;
     }
 
     protected function unRegisterModuleHandlers()
     {
         $eventManager = EventManager::getInstance();
-        $eventManager->unRegisterEventHandler("sale", "OnSaleBasketItemRefreshData", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
+        $eventManager->unRegisterEventHandler("sale", "OnSaleBasketBeforeSaved", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
     }
 
 

@@ -864,6 +864,7 @@ h1.title-page{
 }
 .sectionlist-product{
     margin-bottom: 34px;
+    overflow:hidden;
 }
 .product-item-detail-slider-container{
     width: 700px;

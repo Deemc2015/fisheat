@@ -2,6 +2,7 @@
 namespace Ldo\Develop;
 
 use Bitrix\Main\Loader;
+use Ldo\Develop\Iblock;
 
 class Product
 {
@@ -50,8 +51,27 @@ class Product
         }
     }
 
-    public static function getFreeCategoryProducts(){
+    public static function checkInFreeCategoryProducts($sectionProduct){
 
+        $dataFreePosition = Iblock::getList('free', ['ID','NAME', 'ATT_RAZDEL_' => 'ATT_RAZDEL.VALUE','FREE_POSITION' => 'ATT_FREE_PRODUCT.VALUE','COUNT' =>'ATT_COUNT_PRODUCT.VALUE']);
+
+        $freeProductsId = [];
+
+
+        if($dataFreePosition){
+            foreach($dataFreePosition as $categoryInfo){
+                if($sectionProduct == (int)$categoryInfo['ATT_RAZDEL_']){
+                    $freeProductsId['IDS'][] = (int)$categoryInfo['FREE_POSITION'];
+                    $freeProductsId['PORTION'] = (int)$categoryInfo['COUNT'];
+                }
+            }
+
+            if(!empty($freeProductsId)){
+                return $freeProductsId;
+            }
+        }
+
+        return false;
     }
 
 
