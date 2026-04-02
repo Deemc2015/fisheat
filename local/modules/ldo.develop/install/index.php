@@ -41,7 +41,7 @@ class Ldo_develop extends CModule
     public function DoInstall()
     {
         RegisterModule($this->MODULE_ID);
-        //$this->RegisterModuleHandlers();
+        $this->RegisterModuleHandlers();
         //$this->addAgents();
         //$this->InstallDB();
         //$this->InstallFiles();
@@ -63,7 +63,7 @@ class Ldo_develop extends CModule
     public function DoUninstall()
     {
         UnRegisterModule($this->MODULE_ID);
-        //$this->unRegisterModuleHandlers();
+        $this->unRegisterModuleHandlers();
         //$this->removeAgents();
         //$this->UnInstallDB();
         //$this->UnInstallFiles();
@@ -112,14 +112,14 @@ class Ldo_develop extends CModule
 
     protected function registerModuleHandlers(){
         $eventManager = EventManager::getInstance();
-        $result = $eventManager->registerEventHandler("main", "OnProlog", $this->MODULE_ID, "\Ldo\Develop\Redirect", "checkRedirect");
+        $result = $eventManager->registerEventHandler("sale", "OnSaleBasketItemRefreshData", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
         return true;
     }
 
     protected function unRegisterModuleHandlers()
     {
         $eventManager = EventManager::getInstance();
-        $eventManager->unRegisterEventHandler("main", "OnProlog", $this->MODULE_ID, "\Ldo\Develop\Redirect", "checkRedirect");
+        $eventManager->unRegisterEventHandler("sale", "OnSaleBasketItemRefreshData", $this->MODULE_ID, "\Ldo\Develop\Basket", "getData");
     }
 
 

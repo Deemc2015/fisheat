@@ -2,6 +2,7 @@
 namespace Ldo\Develop;
 
 use Bitrix\Iblock\IblockTable;
+use Bitrix\Iblock\ElementTable;
 use Bitrix\Main\SystemException;
 
 class Iblock
@@ -42,8 +43,6 @@ class Iblock
         }
 
     }
-
-
 
 }
 

@@ -206,7 +206,7 @@ $APPLICATION->SetTitle("Каталог товаров");
 		"SIDEBAR_DETAIL_POSITION" => "right",
 		"DATA_LAYER_NAME" => "dataLayer",
 		"BRAND_PROPERTY" => "-",
-		"SEF_FOLDER" => "/catalog/",
+		"SEF_FOLDER" => "/mobile_app/catalog/",
 		"LIST_PROPERTY_CODE_MOBILE" => array(
 		),
 		"FILTER_NAME" => "arrFilter",

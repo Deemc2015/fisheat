@@ -50,6 +50,10 @@ class Product
         }
     }
 
+    public static function getFreeCategoryProducts(){
+
+    }
+
 
 
 }

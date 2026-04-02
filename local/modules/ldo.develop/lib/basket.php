@@ -9,6 +9,8 @@ use Bitrix\Main\SystemException;
 use Bitrix\Sale;
 use Bitrix\Sale\DiscountCouponsManager;
 
+use Ldo\Develop\Product;
+
 Loader::includeModule('sale');
 
 class Basket
@@ -88,5 +90,14 @@ class Basket
         }
 
         return (int)$intCount;
+    }
+
+    public static function getData($dataCart){
+        $dataBasket = $dataCart->getParameter("VALUES");
+        $productId =  $dataBasket['PRODUCT']['ID'];
+        if ($productId){
+            $dataProduct = Product::getDataById($productId);
+            addMessage2Log($dataProduct);
+        }
     }
 }

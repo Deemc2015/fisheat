@@ -226,7 +226,7 @@ aside{
 }
 aside .block-menu{
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
 }
 section{
     background: var(--bg-gray);
@@ -283,13 +283,15 @@ section#slider-index.disabled:before{
     top: calc(50% - 49px);
 }
 section#slider-index.disabled:after{
-    content:'';
-    width: 100%;
+    content: '';
+    width: auto;
     height: 100%;
     background: #1b1818;
     display: block;
     position: absolute;
     top: 0;
+    left: 9px;
+    right: 9px;
 }
 #slider-index .slick-dots button:before{
     content:none;
