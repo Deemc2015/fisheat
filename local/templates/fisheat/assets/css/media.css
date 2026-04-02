@@ -802,6 +802,7 @@
     }
     .product-item-container .product-item-title a{
         font-size:16px;
+        height: auto;
     }
 }
 
