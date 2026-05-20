@@ -1,14 +1,19 @@
 
 $.fn.setCursorPosition = function(pos) {
-    if ($(this).get(0).setSelectionRange) {
-        $(this).get(0).setSelectionRange(pos, pos);
-    } else if ($(this).get(0).createTextRange) {
-        var range = $(this).get(0).createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', pos);
-        range.moveStart('character', pos);
-        range.select();
+    var el = this[0];
+    if (el) {
+        if (el.setSelectionRange) {
+            el.focus();
+            el.setSelectionRange(pos, pos);
+        } else if (el.createTextRange) {
+            var range = el.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
     }
+    return this;
 };
 
 
@@ -38,6 +43,17 @@ $(document).on('click', '.sort-block-product div', function(event) {
 
 
 $(document).ready(function(){
+
+    $('.openmodalauth').click(function(e){
+        e.preventDefault();
+        $('.modal-auth, .wrp').addClass('show');
+    })
+
+    $('.modal-auth .close-modal').click(function(){
+        $('.modal-auth, .wrp').removeClass('show');
+    })
+
+
     $(".mycustom-scroll").mCustomScrollbar();
 
     $('.addCart').click(function(){
@@ -77,18 +93,18 @@ $(document).ready(function(){
     })
 
 
-    $("#profile-form #phone").click(function(){
-        $(this).setCursorPosition(3);
-    }).mask("+7(999) 999-9999");
+    $("#profile-form #phone").mask("+7(___) ___-____");
+    $('.modal-auth #phone-user').mask("+7 (999) 999-99-99");
+
+
 
     $("#profile-form #dateB").click(function(){
         $(this).setCursorPosition(0);
     }).mask("99.99.9999");
 
-    $(document).mouseup(function (e) {
-        var container = $('.modal-delete');
-        if (container.has(e.target).length === 0) {
-            $('.wrp,.modal-delete').removeClass('show');
+    $(document).mouseup(function(e) {
+        if (!$(e.target).closest('.modal-auth').length) {
+            $('.modal-auth, .wrp').removeClass('show');
         }
     });
 

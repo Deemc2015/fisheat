@@ -1055,9 +1055,94 @@ section#viewed{
     padding: 24px;
     z-index: 3;
     display: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Стандартный синтаксис */
 }
-.modal-delete.show{
+.modal-auth{
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top:calc(50% - 190px/2);
+    background: #ffffff;
+    border-radius: 12px;
+    width: 355px;
+    text-align: center;
+    padding: 24px;
+    z-index: 3;
+    display: none;
+}
+.modal-auth button{
+    background: var(--bg-button);
+    font-size: 18px;
+    text-align: center;
     display: block;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    width: 100%;
+    padding: 20px 0;
+    outline:none;
+    color:#ffffff;
+    border:none !important;
+    margin-top: 12px;
+    transition: all .3s;
+}
+.modal-auth button:hover {
+    opacity: 0.7;
+}
+.modal-auth h3{
+    color:#000000;
+    font-weight:normal;
+    font-size: 21px;
+}
+.modal-auth input{
+    color: #242424;
+    z-index: 1;
+    background-color: #f1f1f5;
+    border: 1px solid #f1f1f5;
+    border-radius: 6px;
+    block-size: 52px;
+    inline-size: 100%;
+    padding-block: 14px 15px;
+    padding-inline: 46px 14px;
+    font-size: 18px;
+    line-height: 1;
+    transition: all .3s;
+    position: relative;
+}
+.modal-auth #phone-auth{
+    position: relative;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Стандартный синтаксис */
+}
+.modal-auth #phone-auth:before{
+    content:'';
+    background: url('../images/phone-input.png') no-repeat;
+    width: 23px;
+    height: 23px;
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: 15px;
+    left: 15px;
+}
+.modal-auth .close-modal{
+    background: url('../images/close-modal.png') no-repeat;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    top: 8px;
+    right: 8px;
+    display: block;
+    cursor:pointer;
+}
+.modal-delete.show,.modal-auth.show{
+    display: block !important;
 }
 .modal-delete .top-title{
     font-size:22px;
@@ -1077,6 +1162,10 @@ section#viewed{
 .modal-delete .text-modal{
     font-size:16px;
     color:#000000;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Стандартный синтаксис */
 }
 .modal-delete .cancel{
     font-size: 18px;

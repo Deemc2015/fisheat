@@ -155,6 +155,9 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
     </div>
 
     <?endif?>
+
+
+
 </footer>
 </div>
 </div>

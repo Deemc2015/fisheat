@@ -30,7 +30,19 @@ AcritBonusInOrderOpensourceIntegration::init();
 
 
 
-?><?$APPLICATION->IncludeComponent(
+?>
+<?if(!$USER->IsAuthorized()):?>
+
+<script>
+    $(document).ready(function(){
+        $('.modal-auth, .wrp').addClass('show');
+    })
+</script>
+
+<?endif?>
+
+
+<?$APPLICATION->IncludeComponent(
 	"opensource:order", 
 	"order-page", 
 	array(
