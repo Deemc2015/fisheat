@@ -1083,12 +1083,13 @@ section#viewed{
     font-weight: bold;
     border-radius: 6px;
     width: 100%;
-    padding: 20px 0;
+    padding: 17px 0;
     outline:none;
     color:#ffffff;
     border:none !important;
     margin-top: 12px;
     transition: all .3s;
+    line-height: 1;
 }
 .modal-auth button:hover {
     opacity: 0.7;
@@ -1112,6 +1113,11 @@ section#viewed{
     line-height: 1;
     transition: all .3s;
     position: relative;
+}
+.modal-auth .bottom-auth,.modal-auth .bottom-auth a{
+    color:#777777;
+    font-size:14px;
+    margin-top: 12px;
 }
 .modal-auth #phone-auth{
     position: relative;

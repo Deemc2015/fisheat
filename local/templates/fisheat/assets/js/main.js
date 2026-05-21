@@ -49,9 +49,7 @@ $(document).ready(function(){
         $('.modal-auth, .wrp').addClass('show');
     })
 
-    $('.modal-auth .close-modal').click(function(){
-        $('.modal-auth, .wrp').removeClass('show');
-    })
+
 
 
     $(".mycustom-scroll").mCustomScrollbar();
@@ -92,10 +90,14 @@ $(document).ready(function(){
         $('.bread-link').removeClass('view');
     })
 
+    $("#profile-form #phone").click(function(){
+        $(this).setCursorPosition(3);
+    }).mask("+7 (999) 999-99-99");
 
-    $("#profile-form #phone").mask("+7(___) ___-____");
-    $('.modal-auth #phone-user').mask("+7 (999) 999-99-99");
 
+    $('.modal-auth #phone-user').click(function(){
+        $(this).setCursorPosition(3);
+    }).mask("+7 (999) 999-99-99");
 
 
     $("#profile-form #dateB").click(function(){

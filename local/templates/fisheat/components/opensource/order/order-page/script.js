@@ -36,6 +36,11 @@
                 total: 0
             }
         },
+        gramsTotalBlock: {
+            node: null,           // DOM-элемент блока с общей суммой граммов
+            totalGramsNode: null, // Элемент с общей суммой граммов
+            totalGrams: 0         // Текущее значение граммов
+        },
         selectedGiftId: null,        // ID выбранного подарка
         selectedGiftNode: null,      // DOM-элемент выбранного подарка
         gifts: {                     // Объект для хранения данных о подарках
@@ -69,6 +74,18 @@
             this.initAddressDelete();                // Удаление адреса доставки
             this.initPromoType();
         },
+
+
+        //
+        // * Инициализация блока с граммами
+        //
+        initGramsBlock: function() {
+        this.gramsTotalBlock.node = document.querySelector('.total-grams-block');
+        if (!this.gramsTotalBlock.node) return;
+
+        this.gramsTotalBlock.totalGramsNode = this.gramsTotalBlock.node.querySelector('.total-grams-value');
+        this.updateGramsDisplay();
+    },
 
         /**
          * Инициализация блока с итоговыми суммами заказа

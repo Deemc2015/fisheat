@@ -352,17 +352,13 @@ use \Ldo\Develop\Pages;
 <? endif; ?>
 
     <? endif; ?>
-<?if(!$USER->IsAuthorized()):?>
-    <div class="wrp"></div>
-    <div class="modal-auth">
-        <span class="close-modal"></span>
-        <h3>Войти или создать профиль</h3>
-        <form action="#" method="POST">
-            <div id="phone-auth">
-                <input id="phone-user" name="USER_PHONE" type="text" value="" required>
-            </div>
-
-            <button type="submit">Получить код</button>
-        </form>
-    </div>
-    <?endif;?>
+<?$APPLICATION->IncludeComponent(
+	"ldo:user.auth", 
+	".default", 
+	array(
+		"COMPOSITE_FRAME_MODE" => "N",
+		"COMPOSITE_FRAME_TYPE" => "AUTO",
+		"COMPONENT_TEMPLATE" => ".default"
+	),
+	false
+);?>
