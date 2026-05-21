@@ -177,22 +177,28 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     private function startCall($phone)
     {
         $httpClient = new HttpClient();
-
-        // Отключаем проверку SSL для тестового сервера
         $httpClient->disableSslVerification();
+        $httpClient->setTimeout(60); // Увеличиваем таймаут для синхронного режима
+        $httpClient->setStreamTimeout(60);
 
+        // ВАЖНО: правильные заголовки
         $httpClient->setHeader('Authorization', 'Bearer ' . $this->apiToken);
         $httpClient->setHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $httpClient->setTimeout(30);
-        $httpClient->setStreamTimeout(30);
+        $httpClient->setHeader('Content-Length', strlen(http_build_query([
+            'dn' => $phone,
+            'timeout' => 30,
+            'async' => 0 // Меняем на синхронный режим, чтобы получить pin сразу
+        ])));
+
+        // Используем API v1.0 или v2.0 с async=0
+        $url = $this->apiUrl . 'v1.0/start-call-password/'; // v1.0 всегда синхронный
 
         $postData = http_build_query([
             'dn' => $phone,
-            'timeout' => 30,
-            'async' => 1
+            'timeout' => 30
+            // async не нужен для v1.0
         ]);
 
-        $url = $this->apiUrl . 'start-call-password/';
         $response = $httpClient->post($url, $postData);
 
         if ($response === false) {
@@ -202,17 +208,29 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         $data = json_decode($response, true);
 
-        if ($data && $data['status'] === 'success') {
-            return [
-                'success' => true,
-                'callId' => $data['data']['callid'],
-                'code' => $data['data']['pin'] ?? null
-            ];
+        // Проверяем статус ответа по документации
+        if ($data && isset($data['status']) && $data['status'] === 'success') {
+            // Для синхронного режима result должен быть не null
+            if (isset($data['data']['result']) && $data['data']['result'] !== 'null') {
+                return [
+                    'success' => true,
+                    'callId' => $data['data']['callid'],
+                    'code' => $data['data']['pin'] ?? null // pin доступен только в синхронном режиме
+                ];
+            } else {
+                // Если звонок еще не завершен
+                return [
+                    'success' => false,
+                    'error' => 'Звонок еще не совершен. Попробуйте позже.',
+                    'callId' => $data['data']['callid'] ?? null
+                ];
+            }
         }
 
         $errorMessage = $data['data']['message'] ?? 'Неизвестная ошибка';
         return ['success' => false, 'error' => $errorMessage];
     }
+
 
     /**
      * Получение статуса звонка
