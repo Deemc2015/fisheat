@@ -1,191 +1,247 @@
-$(document).ready(function() {
-    let currentCallId = null;
-    let statusCheckInterval = null;
+$(document).ready(function(){
 
-    // Закрытие модальных окон
-    $('.modal-auth .close-modal, .modal-auth-step .close-modal').click(function() {
-        $('.modal-auth, .modal-auth-step, .wrp').removeClass('show');
-        $('.modal-auth form').trigger('reset');
-        if (statusCheckInterval) {
-            clearInterval(statusCheckInterval);
-        }
-    });
 
-    // Шаг 1: Отправка номера телефона
-    $('#userAuth').submit(async function(e) {
-        e.preventDefault();
+    $('#confirmAuth').on('submit', function(e) {
+        e.preventDefault(); // Останавливаем обычную отправку
 
-        var userPhone = $('#phone-user', this).val();
-
-        if (!userPhone) {
-            alert('Введите номер телефона');
-            return;
-        }
-
-        $('#submit-btn').prop('disabled', true).text('Отправка...');
-
-        try {
-            const response = await BX.ajax.runComponentAction('ldo:user.auth', 'nextStep', {
-                mode: 'class',
-                data: { userPhone: userPhone },
-            });
-
-            if (response.data.success) {
-                currentCallId = response.data.callId;
-
-                // Сохраняем callId в поле формы
-                $('#call-id').val(currentCallId);
-
-                // Меняем интерфейс
-                $('#phone-auth').hide();
-                $('#code-auth').show();
-                $('#modal-title').text('Введите последние 4 цифры входящего номера');
-                $('#submit-btn').text('Подтвердить');
-
-                // Показываем сообщение
-                $('#call-message').text(response.data.message).show();
-
-                // Начинаем проверку статуса звонка
-                startStatusCheck();
-
-                step = 'code';
-                $('.code-input:first').focus();
-            } else {
-                alert(response.data.error || 'Ошибка отправки');
-                $('#submit-btn').prop('disabled', false).text('Получить код');
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Произошла ошибка. Попробуйте позже.');
-            $('#submit-btn').prop('disabled', false).text('Получить код');
-        }
-    });
-
-    // Шаг 2: Подтверждение кода
-    $(document).on('submit', '#codeAuthForm', async function(e) {
-        e.preventDefault();
-
+        // Собираем код из всех полей
         let code = '';
         $('.code-input').each(function() {
             code += $(this).val();
         });
 
         if (code.length !== 4) {
-            alert('Введите 4-значный код');
-            return;
+            alert('Введите все 4 цифры');
+            return false;
         }
 
-        $('#submit-code-btn').prop('disabled', true).text('Проверка...');
+        // Записываем код в скрытое поле (если нужно)
+        $('#confirm_code').val(code);
 
-        // Останавливаем проверку статуса
-        if (statusCheckInterval) {
-            clearInterval(statusCheckInterval);
-        }
+        // Вызываем функцию confirmCode
+        confirmCode(code).then(function(result) {
+            if (result) {
+                // Успешное подтверждение кода
+                console.log('Код подтвержден успешно');
 
-        try {
-            const response = await BX.ajax.runComponentAction('ldo:user.auth', 'confirmCode', {
-                mode: 'class',
-                data: { code: code },
-            });
+                // Закрываем модальное окно
+                $('.modal-auth-step, .wrp').removeClass('show');
 
-            if (response.data.success) {
-                alert('Авторизация успешна!');
-                location.reload();
+                // Дополнительные действия при успехе
+                // Например, перезагрузить страницу или показать сообщение
+                // location.reload(); // Раскомментировать если нужно перезагрузить
+
             } else {
-                alert(response.data.error || 'Неверный код');
-                $('.code-input').val('');
-                $('.code-input:first').focus();
-                $('#submit-code-btn').prop('disabled', false).text('Подтвердить');
+                // Ошибка подтверждения кода
+                alert('Неверный код. Попробуйте снова.');
 
-                // Возобновляем проверку статуса
-                startStatusCheck();
+                // Очищаем поля ввода
+                $('.code-input').val('');
+
+                // Устанавливаем фокус на первое поле
+                $('.code-input').first().focus();
             }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Ошибка проверки кода');
-            $('#submit-code-btn').prop('disabled', false).text('Подтвердить');
-            startStatusCheck();
-        }
+        });
     });
 
-    // Функция проверки статуса звонка
-    function startStatusCheck() {
-        if (statusCheckInterval) {
-            clearInterval(statusCheckInterval);
-        }
 
-        // Проверяем каждые 3 секунды
-        statusCheckInterval = setInterval(async function() {
-            if (!currentCallId) return;
 
-            try {
-                const response = await BX.ajax.runComponentAction('ldo:user.auth', 'checkCallStatus', {
-                    mode: 'class',
-                    data: { callId: currentCallId },
-                });
 
-                if (response.data.success) {
-                    if (response.data.status === 'NORMAL_CLEARING') {
-                        // Звонок успешен, показываем сообщение
-                        $('#call-status').text('Звонок принят! Введите полученный код.').css('color', 'green');
+    $('.modal-auth .close-modal').click(function(){
+        $('.modal-auth, .wrp').removeClass('show');
+        $('.modal-auth form').trigger('reset');
+        // Также скрываем второй шаг
+        $('.modal-auth-step').removeClass('show');
+    })
 
-                        // Останавливаем проверку, так как звонок уже прошел
-                        clearInterval(statusCheckInterval);
-                        statusCheckInterval = null;
-                    } else if (response.data.status === 'USER_BUSY') {
-                        $('#call-status').text('Номер занят. Попробуйте снова.').css('color', 'red');
-                    } else if (response.data.status === 'NO_ANSWER') {
-                        $('#call-status').text('Нет ответа. Попробуйте снова.').css('color', 'red');
-                    }
+
+    $('.modal-auth-step .close-modal').click(function(){
+        $('.modal-auth-step, .wrp').removeClass('show');
+        $('.modal-auth-step').removeClass('show');
+        $('.modal-auth form,.modal-auth-step form').trigger('reset');
+    })
+
+    $('#userAuth').submit(function(e){
+        e.preventDefault();
+
+        var userPhone = $('#phone-user', this).val();
+
+        if(userPhone){
+            // Используем async/await внутри обработчика
+            getNextStep(userPhone).then(function(result) {
+
+                if(result){
+                    $('.modal-auth').removeClass('show');
+                    $('.modal-auth-step').addClass('show');
                 }
-            } catch (error) {
-                console.error('Ошибка проверки статуса:', error);
-            }
-        }, 3000);
+            });
+        }
+    })
 
-        // Таймаут через 60 секунд
-        setTimeout(function() {
-            if (statusCheckInterval) {
-                clearInterval(statusCheckInterval);
-                statusCheckInterval = null;
-                $('#call-status').text('Время ожидания истекло. Попробуйте снова.').css('color', 'red');
-            }
-        }, 60000);
-    }
-});
+})
 
-// Обработка ввода кода (как было ранее)
 $(document).on('keyup', '.code-input', function(e) {
     let $this = $(this);
     let $wrapper = $this.closest('.code-input-block');
     let $inputs = $wrapper.find('.code-input');
     let currentIndex = $inputs.index($this);
 
-    if (/^[0-9]$/.test(e.key)) {
-        $this.val(e.key);
+    // Получаем нажатую клавишу
+    let key = e.key;
 
-        if (currentIndex < $inputs.length - 1) {
+    // Ввод цифры (любая цифра от 0 до 9)
+    if(/^[0-9]$/.test(key)) {
+        // Если поле пустое или заменяем значение
+        if($this.val().length === 0 || e.keyCode !== 46) {
+            $this.val(key);
+        }
+
+        // Переход к следующему полю
+        if(currentIndex < $inputs.length - 1) {
             $inputs.eq(currentIndex + 1).focus();
         }
 
-        if (currentIndex === $inputs.length - 1) {
+        // Если последнее поле - проверяем код
+        if(currentIndex === $inputs.length - 1) {
             let code = '';
             $inputs.each(function() {
                 code += $(this).val();
             });
-            if (code.length === $inputs.length) {
+            if(code.length === $inputs.length) {
                 $('#codeAuthForm').submit();
             }
         }
     }
 
-    if (e.key === 'Backspace') {
-        if ($this.val() === '') {
-            if (currentIndex > 0) {
+    // Обработка Backspace
+    if(e.key === 'Backspace') {
+        if($this.val() === '') {
+            // Если поле пустое - переходим к предыдущему
+            if(currentIndex > 0) {
                 $inputs.eq(currentIndex - 1).val('').focus();
             }
         } else {
+            // Если есть значение - очищаем текущее поле
             $this.val('');
+        }
+        e.preventDefault();
+    }
+
+    // Обработка Delete
+    if(e.key === 'Delete') {
+        $this.val('');
+        if(currentIndex < $inputs.length - 1) {
+            $inputs.eq(currentIndex + 1).focus();
+        }
+    }
+
+    // Обработка стрелок
+    if(e.key === 'ArrowLeft' && currentIndex > 0) {
+        $inputs.eq(currentIndex - 1).focus();
+    }
+    if(e.key === 'ArrowRight' && currentIndex < $inputs.length - 1) {
+        $inputs.eq(currentIndex + 1).focus();
+    }
+});
+
+// Дополнительно: обработка вставки из буфера
+$(document).on('paste', '.code-input', function(e) {
+    e.preventDefault();
+    let paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+    let digits = paste.replace(/\D/g, '').split('');
+    let $wrapper = $(this).closest('.code-input-block');
+    let $inputs = $wrapper.find('.code-input');
+
+    for(let i = 0; i < Math.min(digits.length, $inputs.length); i++) {
+        $inputs.eq(i).val(digits[i]);
+    }
+
+    // Фокус на следующее пустое поле или последнее
+    let nextEmptyIndex = -1;
+    for(let i = 0; i < $inputs.length; i++) {
+        if($inputs.eq(i).val() === '') {
+            nextEmptyIndex = i;
+            break;
+        }
+    }
+
+    if(nextEmptyIndex !== -1) {
+        $inputs.eq(nextEmptyIndex).focus();
+    } else if(digits.length >= $inputs.length) {
+        // Все поля заполнены - отправляем форму
+        let code = '';
+        $inputs.each(function() {
+            code += $(this).val();
+        });
+        if(code.length === $inputs.length) {
+            $('#codeAuthForm').submit();
         }
     }
 });
+
+// Фокус на первом поле при открытии модального окна
+$(document).on('click', '.modal-auth-step.show', function() {
+    setTimeout(function() {
+        $('.code-input:first').focus();
+    }, 100);
+});
+
+
+
+
+function getNextStep(userPhone){
+    return BX.ajax.runComponentAction('ldo:user.auth', 'nextStep', {
+        mode: 'class',
+        data: {userPhone},
+    })
+        .then(function(response) {
+            if(response.status == 'success' && response.data.type === 'stepTwo'){
+                // Сохраняем requestId если нужно
+                if(response.data.requestId) {
+                    $('#call-id').val(response.data.requestId);
+                }
+                return true;
+            }
+            // Если есть ошибка в ответе
+            if(response.data && response.data.error) {
+                alert(response.data.error);
+            }
+            return false;
+        })
+        .catch(function(error) {
+            console.error('Ошибка:', error);
+            // Показываем ошибку пользователю
+            let errorMsg = error.errors?.[0]?.message || 'Ошибка отправки запроса';
+            alert(errorMsg);
+            return false;
+        });
+}
+
+
+function confirmCode(code){
+    return BX.ajax.runComponentAction('ldo:user.auth', 'confirmCode', {
+        mode: 'class',
+        data: {code},
+    })
+        .then(function(response) {
+            if(response.status == 'success'){
+                console.log(response);
+                return true;
+            }
+            return false;
+        })
+        .catch(function(error) {
+            console.error('Ошибка:', error);
+            return false;
+        });
+}
+
+
+
+
+
+
+
+
+
+

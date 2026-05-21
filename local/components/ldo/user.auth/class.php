@@ -73,7 +73,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             return [
                 'success' => true,
                 'requestId' => $result['request_id'],
-                'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры входящего номера.'
+                'type' => 'stepTwo'
             ];
         }
 
