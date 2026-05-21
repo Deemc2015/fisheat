@@ -177,20 +177,27 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     private function startCall($phone)
     {
         $httpClient = new HttpClient();
+
+        // Отключаем проверку SSL для тестового сервера
+        $httpClient->disableSslVerification();
+
         $httpClient->setHeader('Authorization', 'Bearer ' . $this->apiToken);
         $httpClient->setHeader('Content-Type', 'application/x-www-form-urlencoded');
+        $httpClient->setTimeout(30);
+        $httpClient->setStreamTimeout(30);
 
         $postData = http_build_query([
             'dn' => $phone,
             'timeout' => 30,
-            'async' => 1 // Используем асинхронный режим
+            'async' => 1
         ]);
 
         $url = $this->apiUrl . 'start-call-password/';
         $response = $httpClient->post($url, $postData);
 
         if ($response === false) {
-            return ['success' => false, 'error' => 'Ошибка соединения с сервером'];
+            $error = $httpClient->getError();
+            return ['success' => false, 'error' => 'Ошибка соединения: ' . print_r($error, true)];
         }
 
         $data = json_decode($response, true);
