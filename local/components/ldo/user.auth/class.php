@@ -54,7 +54,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         session_start();
         $_SESSION['auth_phone'] = $userPhone;
 
-        // Параметры запроса согласно документации
+        // Параметры запроса
         $params = [
             'to' => $userPhone,
             'user' => $this->login,
@@ -83,33 +83,10 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         ];
     }
 
-    /**
-     * 2. Проверка статуса звонка (опционально)
-     */
-    public function checkCallStatusAction($requestId)
-    {
-        if (!$requestId) {
-            return ['success' => false, 'error' => 'Не указан ID запроса'];
-        }
 
-        $result = $this->getCallStatus($requestId);
-
-        if ($result['success']) {
-            return [
-                'success' => true,
-                'status' => $result['status'],
-                'statusCode' => $result['status_code']
-            ];
-        }
-
-        return [
-            'success' => false,
-            'error' => $result['error'] ?? 'Ошибка проверки статуса'
-        ];
-    }
 
     /**
-     * 3. Подтверждение кода и авторизация
+     * 2. Подтверждение кода и авторизация/регистрация
      */
     public function confirmCodeAction($code)
     {
@@ -128,6 +105,8 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         // Сравниваем введенный код с ожидаемым (4 цифры из Caller ID)
         if ($expectedCode && $expectedCode === $code) {
             $authResult = $this->authorizeUser($userPhone);
+
+            addMessage2Log($userPhone);
 
             if ($authResult['success']) {
                 unset($_SESSION['auth_phone']);
@@ -148,7 +127,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         return [
             'success' => false,
-            'error' => 'Неверный код. Введите последние 4 цифры номера, с которого поступил звонок.'
+            'error' => 'Введен неверный код.'
         ];
     }
 
@@ -177,12 +156,6 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $error = curl_error($ch);
         curl_close($ch);
 
-        // Логируем для отладки
-        $this->logDebug("Request URL: " . $this->apiUrlSend);
-        $this->logDebug("Request params: " . print_r($params, true));
-        $this->logDebug("Response HTTP code: " . $httpCode);
-        $this->logDebug("Response body: " . $response);
-
         if ($response === false) {
             return ['success' => false, 'error' => 'CURL ошибка: ' . $error];
         }
@@ -203,57 +176,13 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         return ['success' => false, 'error' => $errorMessage];
     }
 
-    /**
-     * Проверка статуса звонка
-     */
-    private function getCallStatus($requestId)
-    {
-        $params = [
-            'id' => $requestId,
-            'user' => $this->login,
-            'pass' => $this->password,
-            'extended' => 'true'
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrlStatus . '?' . http_build_query($params));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-        // Используем Bearer токен для авторизации
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $this->bearerToken
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($response === false) {
-            return ['success' => false, 'error' => 'Ошибка соединения'];
-        }
-
-        $data = json_decode($response, true);
-
-        if ($httpCode === 200 && isset($data['status'])) {
-            return [
-                'success' => true,
-                'status' => $data['status'],
-                'status_code' => $data['status_code'] ?? 0
-            ];
-        }
-
-        $errorMessage = $data['error'] ?? 'Ошибка получения статуса';
-        return ['success' => false, 'error' => $errorMessage];
-    }
 
     /**
      * Авторизация/регистрация пользователя
      */
     private function authorizeUser($phone)
     {
+        addMessage2Log('Авторизуем пользователя');
 
         return ['success' => true];
     }
@@ -285,13 +214,5 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         return false;
     }
 
-    /**
-     * Функция для отладки
-     */
-    private function logDebug($message)
-    {
-        if (defined("BX_LOG_DEBUG") && BX_LOG_DEBUG) {
-            file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/greensms_debug.log', date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
-        }
-    }
+
 }

@@ -225,7 +225,6 @@ function confirmCode(code){
     })
         .then(function(response) {
             if(response.status == 'success'){
-                console.log(response);
                 return true;
             }
             return false;
