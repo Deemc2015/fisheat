@@ -6,11 +6,10 @@ use Bitrix\Main\Engine\ActionFilter;
 
 class CUserAuth extends \CBitrixComponent implements Controllerable
 {
-    // ВАЖНО: ключи должны быть ровно 48 символов в HEX (только 0-9a-f)
-    // Пример правильного формата: 'a1b2c3d4e5f67890123456789012345678901234567890'
-    private $authKey = '958234bf11a4b741f927bdb53798c83bfeaff24a6a7daeb3';
-    private $signKey = '68a4b84dfd2ab242e328f25dd3bbecf11518683e82db35b1';
-    private $apiUrl = 'https://api.new-tel.net/';
+    // Данные из личного кабинета GreenSMS
+    private $login = 'deemc';
+    private $password = '0479096qQ!';
+    private $apiUrl = 'https://api3.greensms.ru/call/';
 
     public function executeComponent()
     {
@@ -27,233 +26,86 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     public function configureActions()
     {
         return [
-            'nextStep' => [
-                '-prefilters' => [
-                    ActionFilter\Authentication::class,
-                ],
-            ],
-            'checkCallStatus' => [
-                '-prefilters' => [
-                    ActionFilter\Authentication::class,
-                ],
-            ],
-            'confirmCode' => [
-                '-prefilters' => [
-                    ActionFilter\Authentication::class,
-                ],
-            ],
-            'testConnection' => [
-                '-prefilters' => [],
-            ],
+            'nextStep' => ['-prefilters' => [ActionFilter\Authentication::class]],
+            'checkCallStatus' => ['-prefilters' => [ActionFilter\Authentication::class]],
+            'confirmCode' => ['-prefilters' => [ActionFilter\Authentication::class]],
         ];
     }
 
     /**
-     * Тестовый метод для проверки соединения и авторизации
-     */
-    public function testConnectionAction()
-    {
-        // Простой GET запрос к API (не требует авторизации)
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.new-tel.net/');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_NOBODY, true);
-
-        curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        return [
-            'connection_test' => [
-                'http_code' => $httpCode,
-                'curl_error' => $error,
-                'status' => $httpCode > 0 ? 'connected' : 'failed'
-            ],
-            'api_info' => [
-                'auth_key_length' => strlen($this->authKey),
-                'sign_key_length' => strlen($this->signKey),
-                'required_length' => 48,
-                'auth_key_valid' => $this->validateHex($this->authKey),
-                'sign_key_valid' => $this->validateHex($this->signKey)
-            ]
-        ];
-    }
-
-    /**
-     * Проверка что строка состоит только из HEX символов
-     */
-    private function validateHex($str)
-    {
-        return preg_match('/^[0-9a-f]+$/i', $str) && strlen($str) === 48;
-    }
-
-    /**
-     * Формирование Bearer-токена (по документации Нью-Тел)
-     */
-    private function getToken($methodName, $params, $time)
-    {
-        // Формируем строку для подписи
-        $signatureString = $methodName . "\n" . $time . "\n" . $this->authKey . "\n" . $params . "\n" . $this->signKey;
-
-        // Вычисляем SHA-256 хэш
-        $signature = hash('sha256', $signatureString);
-
-        // Формируем токен: authKey + time + signature
-        $token = $this->authKey . $time . $signature;
-
-        // Логируем для отладки (временно)
-        addMessage2Log("=== TOKEN DEBUG ===");
-        addMessage2Log("Method: " . $methodName);
-        addMessage2Log("Time: " . $time);
-        addMessage2Log("Params: " . $params);
-        addMessage2Log("Signature string (with \\n): " . str_replace("\n", "\\n", $signatureString));
-        addMessage2Log("Signature: " . $signature);
-        addMessage2Log("Token length: " . strlen($token) . " (должен быть 48+10+64=122)");
-
-        return $token;
-    }
-
-    /**
-     * Выполнение запроса к API
-     */
-    private function apiRequest($methodName, $paramsArray = [])
-    {
-        $jsonParams = json_encode($paramsArray);
-        $time = time();
-        $token = $this->getToken($methodName, $jsonParams, $time);
-
-        $url = $this->apiUrl . $methodName;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonParams);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $token,
-            'Content-Type: application/json',
-            'Accept: application/json'
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        addMessage2Log("API Response Code: " . $httpCode);
-        addMessage2Log("API Response: " . $response);
-
-        if ($response === false) {
-            return ['success' => false, 'error' => 'CURL error: ' . $error];
-        }
-
-        if ($httpCode !== 200) {
-            return ['success' => false, 'error' => 'HTTP ' . $httpCode . ': ' . $response];
-        }
-
-        $data = json_decode($response, true);
-        return ['success' => true, 'data' => $data];
-    }
-
-    /**
-     * 1. Инициируем звонок
+     * 1. Отправляем запрос на звонок
      */
     public function nextStepAction($userPhone)
     {
         $userPhone = $this->normalizePhone($userPhone);
         if (!$userPhone) {
-            return ['success' => false, 'error' => 'Неверный формат номера телефона'];
+            return [
+                'success' => false,
+                'error' => 'Неверный формат номера телефона'
+            ];
         }
 
         session_start();
         $_SESSION['auth_phone'] = $userPhone;
 
-        // Генерируем 4-значный PIN
-        $pin = str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
-        $_SESSION['expected_code'] = $pin;
-
         // Параметры запроса
         $params = [
-            'dstNumber' => $userPhone,
-            'pin' => $pin,
-            'fixedCid' => 0
+            'to' => $userPhone,
+            'voice' => 'true',  // Проговаривать код голосом (опционально)
+            'lang' => 'ru'      // Язык голосового сообщения
         ];
 
-        $response = $this->apiRequest('call-password/start-password-call', $params);
+        $result = $this->sendCall($params);
 
-        if (!$response['success']) {
-            return ['success' => false, 'error' => $response['error']];
+        if ($result['success']) {
+            // Сохраняем request_id для проверки статуса (опционально)
+            $_SESSION['call_id'] = $result['request_id'];
+            // Сохраняем ожидаемый код (последние 4 цифры номера)
+            $_SESSION['expected_code'] = $result['code'];
+
+            return [
+                'success' => true,
+                'callId' => $result['request_id'],
+                'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры входящего номера.'
+            ];
         }
 
-        $data = $response['data'];
-
-        if (isset($data['status']) && $data['status'] === 'success') {
-            if (isset($data['data']['result']) && $data['data']['result'] === 'success') {
-                $callDetails = $data['data']['callDetails'] ?? [];
-
-                if (!empty($callDetails['callId'])) {
-                    $_SESSION['call_id'] = $callDetails['callId'];
-
-                    return [
-                        'success' => true,
-                        'callId' => $callDetails['callId'],
-                        'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры номера, с которого поступил вызов.'
-                    ];
-                }
-            }
-
-            $errorMsg = $data['data']['message'] ?? 'Ошибка сервиса';
-            return ['success' => false, 'error' => $errorMsg];
-        }
-
-        return ['success' => false, 'error' => 'Неизвестная ошибка API'];
+        return [
+            'success' => false,
+            'error' => $result['error'] ?? 'Ошибка инициализации звонка'
+        ];
     }
 
     /**
-     * 2. Проверка статуса звонка
+     * 2. Проверка статуса звонка (опционально)
      */
     public function checkCallStatusAction($callId)
     {
-        $response = $this->apiRequest('call-password/get-password-call-status', ['callId' => $callId]);
+        $result = $this->getCallStatus($callId);
 
-        if (!$response['success']) {
-            return ['success' => false, 'error' => $response['error']];
+        if ($result['success']) {
+            $statusMap = [
+                'Call success' => 'NORMAL_CLEARING',
+                'Call failure' => 'CALL_FAILURE',
+                'Call rejected' => 'CALL_REJECTED',
+                'Call buffered' => 'BUFFERED',
+                'Status not ready' => 'PENDING'
+            ];
+
+            return [
+                'success' => true,
+                'status' => $statusMap[$result['status']] ?? $result['status']
+            ];
         }
 
-        $data = $response['data'];
-
-        if (isset($data['status']) && $data['status'] === 'success') {
-            if (isset($data['data']['result']) && $data['data']['result'] === 'success') {
-                $callDetails = $data['data']['callDetails'] ?? [];
-
-                // Маппинг статусов для вашего JS
-                $statusMap = [
-                    'answered' => 'NORMAL_CLEARING',
-                    'busy' => 'USER_BUSY',
-                    'no answer' => 'NO_ANSWER',
-                    'cancel' => 'CANCEL'
-                ];
-
-                $status = $callDetails['status'] ?? 'unknown';
-
-                return [
-                    'success' => true,
-                    'status' => $statusMap[$status] ?? $status
-                ];
-            }
-        }
-
-        return ['success' => false, 'error' => 'Статус не найден'];
+        return [
+            'success' => false,
+            'error' => $result['error'] ?? 'Ошибка проверки статуса'
+        ];
     }
 
     /**
-     * 3. Подтверждение кода
+     * 3. Подтверждение кода и авторизация
      */
     public function confirmCodeAction($code)
     {
@@ -263,9 +115,13 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $expectedCode = $_SESSION['expected_code'] ?? null;
 
         if (!$userPhone) {
-            return ['success' => false, 'error' => 'Сессия истекла'];
+            return [
+                'success' => false,
+                'error' => 'Сессия истекла. Попробуйте снова.'
+            ];
         }
 
+        // Сравниваем введенный код с ожидаемым
         if ($expectedCode && $expectedCode === $code) {
             $authResult = $this->authorizeUser($userPhone);
 
@@ -274,25 +130,150 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
                 unset($_SESSION['call_id']);
                 unset($_SESSION['expected_code']);
 
-                return ['success' => true, 'message' => 'Авторизация успешна!'];
+                return [
+                    'success' => true,
+                    'message' => 'Авторизация успешна!'
+                ];
             }
 
-            return ['success' => false, 'error' => $authResult['error']];
+            return [
+                'success' => false,
+                'error' => $authResult['error'] ?? 'Ошибка авторизации'
+            ];
         }
 
-        return ['success' => false, 'error' => 'Неверный код'];
+        return [
+            'success' => false,
+            'error' => 'Неверный код. Введите последние 4 цифры номера, с которого поступил звонок.'
+        ];
     }
 
     /**
-     * Авторизация пользователя
+     * Отправка звонка через API GreenSMS
+     */
+    private function sendCall($params)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . 'send');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        // Авторизация через user/pass (можно заменить на Bearer токен)
+        curl_setopt($ch, CURLOPT_USERPWD, $this->login . ':' . $this->password);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            return ['success' => false, 'error' => 'CURL ошибка: ' . $error];
+        }
+
+        $data = json_decode($response, true);
+
+        if ($httpCode === 200 && isset($data['request_id'])) {
+            return [
+                'success' => true,
+                'request_id' => $data['request_id'],
+                'code' => $data['code']
+            ];
+        }
+
+        $errorMessage = $data['error'] ?? 'Ошибка сервиса (HTTP ' . $httpCode . ')';
+        return ['success' => false, 'error' => $errorMessage];
+    }
+
+    /**
+     * Проверка статуса звонка
+     */
+    private function getCallStatus($callId)
+    {
+        $params = ['id' => $callId];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . 'status?' . http_build_query($params));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->login . ':' . $this->password);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false) {
+            return ['success' => false, 'error' => 'Ошибка соединения'];
+        }
+
+        $data = json_decode($response, true);
+
+        if ($httpCode === 200 && isset($data['status'])) {
+            return [
+                'success' => true,
+                'status' => $data['status'],
+                'status_code' => $data['status_code'] ?? null
+            ];
+        }
+
+        $errorMessage = $data['error'] ?? 'Ошибка получения статуса';
+        return ['success' => false, 'error' => $errorMessage];
+    }
+
+    /**
+     * Авторизация/регистрация пользователя
      */
     private function authorizeUser($phone)
     {
+        global $USER;
+
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        $userLogin = 'user_' . $phone;
+
+        $userData = \CUser::GetByLogin($userLogin)->Fetch();
+
+        if (!$userData) {
+            $filter = ['UF_PHONE' => $phone];
+            $rsUser = \CUser::GetList(($by = 'id'), ($order = 'asc'), $filter);
+            $userData = $rsUser->Fetch();
+        }
+
+        if (!$userData) {
+            $password = \Bitrix\Main\Security\Random::getString(8, true);
+
+            $user = new \CUser();
+            $fields = [
+                'LOGIN' => $userLogin,
+                'NAME' => 'Пользователь',
+                'PASSWORD' => $password,
+                'CONFIRM_PASSWORD' => $password,
+                'ACTIVE' => 'Y',
+                'GROUP_ID' => [2],
+                'UF_PHONE' => $phone
+            ];
+
+            $userId = $user->Add($fields);
+
+            if ($userId) {
+                $USER->Authorize($userId);
+                return ['success' => true];
+            }
+
+            return ['success' => false, 'error' => $user->LAST_ERROR];
+        }
+
+        $USER->Authorize($userData['ID']);
         return ['success' => true];
     }
 
     /**
-     * Нормализация номера
+     * Нормализация номера телефона
+     * GreenSMS принимает номера от 11 до 14 цифр
      */
     private function normalizePhone($phone)
     {
