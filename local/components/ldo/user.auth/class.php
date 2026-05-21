@@ -7,8 +7,11 @@ use Bitrix\Main\Engine\ActionFilter;
 class CUserAuth extends \CBitrixComponent implements Controllerable
 {
     // Данные из личного кабинета GreenSMS
-    private $login = 'deemc';
-    private $password = '0479096qQ!';
+    //private $login = 'deemc';
+    //private $password = '0479096qQ!';
+
+    private $login = 'test';
+    private $password = 'test';
     private $bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZGVlbWMiLCJpYXQiOjE3NzkzNjg2MjYsImlzcyI6ImFwaS5ncmVlbnNtcy5ydSJ9.AWP40CPxUtUb0VLs1p9yCJ2ZFoA9MU-HH4QPTecwfu0';
 
     private $apiUrlSend = 'https://api3.greensms.ru/call/send';
