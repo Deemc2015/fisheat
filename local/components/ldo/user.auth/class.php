@@ -95,26 +95,23 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $userPhone = $_SESSION['auth_phone'] ?? null;
         $expectedCode = $_SESSION['expected_code'] ?? null;
 
-        if (!$userPhone) {
+        if (!$userPhone || !$expectedCode) {
             return [
                 'success' => false,
                 'error' => 'Сессия истекла. Попробуйте снова.'
             ];
         }
 
-        // Сравниваем введенный код с ожидаемым (4 цифры из Caller ID)
-        if ($expectedCode && $expectedCode === $code) {
+        // Сравниваем коды
+        if ($expectedCode === $code) {
             $authResult = $this->authorizeUser($userPhone);
-
-            addMessage2Log($userPhone);
 
             if ($authResult['success']) {
                 unset($_SESSION['auth_phone']);
-                unset($_SESSION['request_id']);
                 unset($_SESSION['expected_code']);
 
                 return [
-                    'success' => true,
+                    'success' => true,  // ВАЖНО: возвращаем success => true
                     'message' => 'Авторизация успешна!'
                 ];
             }
@@ -125,9 +122,10 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
+        // Неверный код
         return [
             'success' => false,
-            'error' => 'Введен неверный код.'
+            'error' => 'Неверный код.'
         ];
     }
 

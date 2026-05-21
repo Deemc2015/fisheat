@@ -219,18 +219,57 @@ function getNextStep(userPhone){
 
 
 function confirmCode(code){
+    const submitBtn = $('#codeAuthForm button[type="submit"]');
+    const codeInputs = $('.code-input');
+
+    // Блокируем форму
+    submitBtn.prop('disabled', true).text('Проверка...');
+    codeInputs.prop('disabled', true);
+
     return BX.ajax.runComponentAction('ldo:user.auth', 'confirmCode', {
         mode: 'class',
         data: {code},
     })
         .then(function(response) {
-            if(response.status == 'success'){
+            submitBtn.prop('disabled', false).text('Подтвердить');
+            codeInputs.prop('disabled', false);
+
+            // ИСПРАВЛЕНО: Проверяем success в response.data
+            if(response.status == 'success' && response.data && response.data.success === true){
+                console.log('Код подтвержден успешно');
                 return true;
             }
+
+            // Ошибка - показываем сообщение от сервера
+            let errorMsg = response.data?.error || 'Неверный код. Попробуйте снова.';
+            alert(errorMsg);
+
+            // Очищаем поля ввода
+            $('.code-input').val('');
+            $('.code-input').first().focus();
+
             return false;
         })
         .catch(function(error) {
+            submitBtn.prop('disabled', false).text('Подтвердить');
+            codeInputs.prop('disabled', false);
+
             console.error('Ошибка:', error);
+
+            // Обработка ошибок от сервера
+            let errorMsg = 'Ошибка проверки кода';
+            if(error.errors && error.errors[0] && error.errors[0].message) {
+                errorMsg = error.errors[0].message;
+            } else if(error.data && error.data.error) {
+                errorMsg = error.data.error;
+            }
+
+            alert(errorMsg);
+
+            // Очищаем поля ввода
+            $('.code-input').val('');
+            $('.code-input').first().focus();
+
             return false;
         });
 }
