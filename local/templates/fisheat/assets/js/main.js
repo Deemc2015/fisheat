@@ -105,8 +105,10 @@ $(document).ready(function(){
     }).mask("99.99.9999");
 
     $(document).mouseup(function(e) {
-        if (!$(e.target).closest('.modal-auth').length) {
-            $('.modal-auth, .wrp').removeClass('show');
+        // Закрываем любое модальное окно при клике вне его
+        if ($(e.target).closest('.modal-auth, .modal-auth-step, .modal-delete').length === 0) {
+            $('.modal-auth, .modal-auth-step, .modal-delete, .wrp').removeClass('show');
+            $('.modal-auth form, .modal-auth-step form, .modal-delete form').trigger('reset');
         }
     });
 

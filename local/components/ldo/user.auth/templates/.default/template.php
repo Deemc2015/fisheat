@@ -18,10 +18,10 @@
 
 <?if($arResult['NOT_AUTH_USER']):?>
     <div class="wrp"></div>
-    <div class="modal-auth">
+    <div class="modal-auth ">
         <span class="close-modal"></span>
         <h3>Войти или создать профиль</h3>
-        <form action="#" method="POST">
+        <form id="userAuth" action="#" method="POST">
             <div id="phone-auth">
                 <input id="phone-user" name="USER_PHONE" type="text" value="" required>
             </div>
@@ -33,4 +33,33 @@
             <a target="_blank" href="">Политика конфиденциальности</a>
         </div>
     </div>
+
+    <div class="modal-auth-step">
+        <span class="close-modal"></span>
+        <h3 id="modal-title">Введите последние 4 цифры входящего номера</h3>
+        <form id="codeAuthForm" action="#" method="POST">
+            <div id="call-message" style="display: none; margin-bottom: 15px; text-align: center;"></div>
+            <div id="call-status" style="margin-bottom: 15px; text-align: center; color: #666;"></div>
+
+            <div class="code-input-block" data-amount="4">
+                <div class="code-input-wrapper">
+                    <input type="text" inputmode="numeric" autocomplete="one-time-code" class="code-input" maxlength="1">
+                </div>
+                <div class="code-input-wrapper">
+                    <input type="text" inputmode="numeric" autocomplete="one-time-code" class="code-input" maxlength="1">
+                </div>
+                <div class="code-input-wrapper">
+                    <input type="text" inputmode="numeric" autocomplete="one-time-code" class="code-input" maxlength="1">
+                </div>
+                <div class="code-input-wrapper">
+                    <input type="text" inputmode="numeric" autocomplete="one-time-code" class="code-input" maxlength="1">
+                </div>
+            </div>
+
+            <input type="hidden" id="call-id">
+
+            <button id="submit-code-btn" type="submit">Подтвердить</button>
+        </form>
+    </div>
+
 <?endif;?>

@@ -1,0 +1,81 @@
+.modal-auth-step{
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: calc(50% - 190px / 2);
+    background: #ffffff;
+    border-radius: 12px;
+    width: 355px;
+    text-align: center;
+    padding: 24px;
+    z-index: 3;
+    display: none;
+}
+
+.modal-auth-step.show{
+    display: block;
+}
+
+.modal-auth-step button{
+    background: var(--bg-button);
+    font-size: 18px;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    width: 100%;
+    padding: 17px 0;
+    outline:none;
+    color:#ffffff;
+    border:none !important;
+    margin-top: 12px;
+    transition: all .3s;
+    line-height: 1;
+}
+.modal-auth-step button:hover {
+    opacity: 0.7;
+}
+.modal-auth-step h3{
+    color:#000000;
+    font-weight:normal;
+    font-size: 21px;
+}
+.modal-auth-step input{
+    color: #242424;
+    z-index: 1;
+    background-color: #f1f1f5;
+    border: 1px solid #f1f1f5;
+    border-radius: 6px;
+    block-size: 50px;
+    inline-size: 100%;
+    padding-block: 14px 15px;
+    padding-inline: 20px 14px;
+    font-size: 18px;
+    line-height: 1;
+    transition: all .3s;
+    position: relative;
+}
+.modal-auth-step input:focus{
+    border-color: var(--bg-gray);
+}
+.modal-auth-step .code-input-wrapper{
+    width: 50px;
+}
+.modal-auth-step .code-input-block{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0px 24px;
+}
+.modal-auth-step .close-modal{
+    background: url('/local/templates/fisheat/assets/css/../images/close-modal.png') no-repeat;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    top: 8px;
+    right: 8px;
+    display: block;
+    cursor:pointer;
+}
