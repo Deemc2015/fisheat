@@ -7,13 +7,12 @@ use Bitrix\Main\Engine\ActionFilter;
 class CUserAuth extends \CBitrixComponent implements Controllerable
 {
     // Данные из личного кабинета GreenSMS
-    //private $login = 'deemc';
-    //private $password = '0479096qQ!';
+    private $login = 'deemc';
+    private $password = '0479096qQ!';
+    private $bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZGVlbWMiLCJpYXQiOjE3NzkzNjg2MjYsImlzcyI6ImFwaS5ncmVlbnNtcy5ydSJ9.AWP40CPxUtUb0VLs1p9yCJ2ZFoA9MU-HH4QPTecwfu0';
 
-    private $login = 'test';
-    private $password = 'test';
-
-    private $apiUrl = 'https://api3.greensms.ru/call/';
+    private $apiUrlSend = 'https://api3.greensms.ru/call/send';
+    private $apiUrlStatus = 'https://api3.greensms.ru/call/status';
 
     public function executeComponent()
     {
@@ -37,7 +36,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * 1. Отправляем запрос на звонок
+     * 1. Отправляем запрос на звонок через /call/send с Bearer токеном
      */
     public function nextStepAction($userPhone)
     {
@@ -52,24 +51,25 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         session_start();
         $_SESSION['auth_phone'] = $userPhone;
 
-        // Параметры запроса
+        // Параметры запроса согласно документации
         $params = [
             'to' => $userPhone,
-            'voice' => 'true',  // Проговаривать код голосом (опционально)
+            'user' => $this->login,
+            'pass' => $this->password,
+            'voice' => 'true',  // Проговаривать код голосом
             'lang' => 'ru'      // Язык голосового сообщения
         ];
 
         $result = $this->sendCall($params);
 
         if ($result['success']) {
-            // Сохраняем request_id для проверки статуса (опционально)
-            $_SESSION['call_id'] = $result['request_id'];
-            // Сохраняем ожидаемый код (последние 4 цифры номера)
+            // Сохраняем request_id и ожидаемый код
+            $_SESSION['request_id'] = $result['request_id'];
             $_SESSION['expected_code'] = $result['code'];
 
             return [
                 'success' => true,
-                'callId' => $result['request_id'],
+                'requestId' => $result['request_id'],
                 'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры входящего номера.'
             ];
         }
@@ -83,22 +83,19 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     /**
      * 2. Проверка статуса звонка (опционально)
      */
-    public function checkCallStatusAction($callId)
+    public function checkCallStatusAction($requestId)
     {
-        $result = $this->getCallStatus($callId);
+        if (!$requestId) {
+            return ['success' => false, 'error' => 'Не указан ID запроса'];
+        }
+
+        $result = $this->getCallStatus($requestId);
 
         if ($result['success']) {
-            $statusMap = [
-                'Call success' => 'NORMAL_CLEARING',
-                'Call failure' => 'CALL_FAILURE',
-                'Call rejected' => 'CALL_REJECTED',
-                'Call buffered' => 'BUFFERED',
-                'Status not ready' => 'PENDING'
-            ];
-
             return [
                 'success' => true,
-                'status' => $statusMap[$result['status']] ?? $result['status']
+                'status' => $result['status'],
+                'statusCode' => $result['status_code']
             ];
         }
 
@@ -125,13 +122,13 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
-        // Сравниваем введенный код с ожидаемым
+        // Сравниваем введенный код с ожидаемым (4 цифры из Caller ID)
         if ($expectedCode && $expectedCode === $code) {
             $authResult = $this->authorizeUser($userPhone);
 
             if ($authResult['success']) {
                 unset($_SESSION['auth_phone']);
-                unset($_SESSION['call_id']);
+                unset($_SESSION['request_id']);
                 unset($_SESSION['expected_code']);
 
                 return [
@@ -153,12 +150,12 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Отправка звонка через API GreenSMS
+     * Отправка звонка через API GreenSMS с Bearer токеном
      */
     private function sendCall($params)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . 'send');
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrlSend);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
@@ -166,13 +163,22 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-        // Авторизация через user/pass (можно заменить на Bearer токен)
-        curl_setopt($ch, CURLOPT_USERPWD, $this->login . ':' . $this->password);
+        // Используем Bearer токен для авторизации
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $this->bearerToken,
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
         curl_close($ch);
+
+        // Логируем для отладки
+        $this->logDebug("Request URL: " . $this->apiUrlSend);
+        $this->logDebug("Request params: " . print_r($params, true));
+        $this->logDebug("Response HTTP code: " . $httpCode);
+        $this->logDebug("Response body: " . $response);
 
         if ($response === false) {
             return ['success' => false, 'error' => 'CURL ошибка: ' . $error];
@@ -180,7 +186,8 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         $data = json_decode($response, true);
 
-        if ($httpCode === 200 && isset($data['request_id'])) {
+        // Проверяем успешный ответ
+        if ($httpCode === 200 && isset($data['request_id']) && isset($data['code'])) {
             return [
                 'success' => true,
                 'request_id' => $data['request_id'],
@@ -188,6 +195,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
+        // Обработка ошибок
         $errorMessage = $data['error'] ?? 'Ошибка сервиса (HTTP ' . $httpCode . ')';
         return ['success' => false, 'error' => $errorMessage];
     }
@@ -195,17 +203,26 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     /**
      * Проверка статуса звонка
      */
-    private function getCallStatus($callId)
+    private function getCallStatus($requestId)
     {
-        $params = ['id' => $callId];
+        $params = [
+            'id' => $requestId,
+            'user' => $this->login,
+            'pass' => $this->password,
+            'extended' => 'true'
+        ];
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . 'status?' . http_build_query($params));
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrlStatus . '?' . http_build_query($params));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->login . ':' . $this->password);
+
+        // Используем Bearer токен для авторизации
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $this->bearerToken
+        ]);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -221,7 +238,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             return [
                 'success' => true,
                 'status' => $data['status'],
-                'status_code' => $data['status_code'] ?? null
+                'status_code' => $data['status_code'] ?? 0
             ];
         }
 
@@ -234,66 +251,44 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function authorizeUser($phone)
     {
-        global $USER;
 
-        $phone = preg_replace('/[^0-9]/', '', $phone);
-        $userLogin = 'user_' . $phone;
-
-        $userData = \CUser::GetByLogin($userLogin)->Fetch();
-
-        if (!$userData) {
-            $filter = ['UF_PHONE' => $phone];
-            $rsUser = \CUser::GetList(($by = 'id'), ($order = 'asc'), $filter);
-            $userData = $rsUser->Fetch();
-        }
-
-        if (!$userData) {
-            $password = \Bitrix\Main\Security\Random::getString(8, true);
-
-            $user = new \CUser();
-            $fields = [
-                'LOGIN' => $userLogin,
-                'NAME' => 'Пользователь',
-                'PASSWORD' => $password,
-                'CONFIRM_PASSWORD' => $password,
-                'ACTIVE' => 'Y',
-                'GROUP_ID' => [2],
-                'UF_PHONE' => $phone
-            ];
-
-            $userId = $user->Add($fields);
-
-            if ($userId) {
-                $USER->Authorize($userId);
-                return ['success' => true];
-            }
-
-            return ['success' => false, 'error' => $user->LAST_ERROR];
-        }
-
-        $USER->Authorize($userData['ID']);
         return ['success' => true];
     }
 
     /**
      * Нормализация номера телефона
-     * GreenSMS принимает номера от 11 до 14 цифр
      */
     private function normalizePhone($phone)
     {
+        // Удаляем все нецифровые символы
         $phone = preg_replace('/[^0-9]/', '', $phone);
 
-        if (strlen($phone) === 11 && ($phone[0] === '7' || $phone[0] === '8')) {
-            if ($phone[0] === '8') {
-                $phone = '7' . substr($phone, 1);
-            }
+        // Если номер начинается с 8, заменяем на 7
+        if (strlen($phone) === 11 && $phone[0] === '8') {
+            $phone = '7' . substr($phone, 1);
             return $phone;
         }
 
+        // Если номер 10-значный, добавляем 7
         if (strlen($phone) === 10) {
             return '7' . $phone;
         }
 
+        // Если номер уже в международном формате (11-14 цифр)
+        if (strlen($phone) >= 11 && strlen($phone) <= 14) {
+            return $phone;
+        }
+
         return false;
+    }
+
+    /**
+     * Функция для отладки
+     */
+    private function logDebug($message)
+    {
+        if (defined("BX_LOG_DEBUG") && BX_LOG_DEBUG) {
+            file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/greensms_debug.log', date('Y-m-d H:i:s') . ' - ' . $message . PHP_EOL, FILE_APPEND);
+        }
     }
 }
