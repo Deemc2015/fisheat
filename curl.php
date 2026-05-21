@@ -1,46 +1,24 @@
 <?php
-echo "<pre>";
 
-// Тест 1: file_get_contents
-echo "1. file_get_contents test:\n";
-$result = @file_get_contents('https://api.new-tel.net');
-echo $result === false ? "FAILED\n" : "SUCCESS\n";
-$error = error_get_last();
-print_r($error);
+$token = '0a2532ebe145039a1f9356451746a0139a2adc979c5f51c1ba6e4877450940ba';
+$phone = '79177695923'; // Ваш тестовый номер
 
-// Тест 2: CURL test
-echo "\n2. CURL test:\n";
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://api.new-tel.net');
+curl_setopt($ch, CURLOPT_URL, 'https://api.call-password.ru/api/v1.0/start-call-password/');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['dn' => $phone, 'timeout' => 30]));
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-$result = curl_exec($ch);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $token,
+    'Content-Type: application/x-www-form-urlencoded'
+]);
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $error = curl_error($ch);
-$info = curl_getinfo($ch);
 curl_close($ch);
 
-echo "Result: " . ($result === false ? "FAILED\n" : "SUCCESS\n");
-echo "Error: $error\n";
-print_r($info);
-
-// Тест 3: fsockopen
-echo "\n3. fsockopen test:\n";
-$fp = @fsockopen('ssl://api.new-tel.net', 443, $errno, $errstr, 10);
-if ($fp) {
-    echo "SUCCESS - Connection established\n";
-    fclose($fp);
-} else {
-    echo "FAILED - $errno: $errstr\n";
-}
-
-// Тест 4: Проверка disabled функций
-echo "\n4. Disabled functions:\n";
-$disabled = ini_get('disable_functions');
-echo $disabled ?: "none\n";
-
-echo "\n5. open_basedir:\n";
-echo ini_get('open_basedir') ?: "none\n";
-
-echo "\n6. allow_url_fopen:\n";
-echo ini_get('allow_url_fopen') ? "On\n" : "Off\n";
+echo "HTTP Code: " . $httpCode . "\n";
+echo "Response: " . $response . "\n";
+echo "Error: " . $error . "\n";
