@@ -6,10 +6,8 @@ use Bitrix\Main\Engine\ActionFilter;
 
 class CUserAuth extends \CBitrixComponent implements Controllerable
 {
-    // ВАШИ КЛЮЧИ из личного кабинета Нью-Тел (замените на реальные)
-    private $authKey = '958234bf11a4b741f927bdb53798c83bfeaff24a6a7daeb3';
-    private $signKey = '68a4b84dfd2ab242e328f25dd3bbecf11518683e82db35b1';
-    private $apiUrl = 'https://api.new-tel.net/';
+    private $apiToken = '0a2532ebe145039a1f9356451746a0139a2adc979c5f51c1ba6e4877450940ba';
+    private $apiUrl = 'https://api.call-password.ru/api/';
 
     public function executeComponent()
     {
@@ -45,37 +43,22 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Формирование Bearer-токена
+     * Выполнение CURL запроса к API
      */
-    private function getToken($methodName, $params, $time)
+    private function curlPost($url, $postData)
     {
-        return $this->authKey . $time . hash(
-                'sha256',
-                $methodName . "\n" . $time . "\n" . $this->authKey . "\n" . $params . "\n" . $this->signKey
-            );
-    }
-
-    /**
-     * Выполнение CURL запроса
-     */
-    private function curlRequest($methodName, $paramsArray)
-    {
-        $jsonParams = json_encode($paramsArray);
-        $time = time();
-        $token = $this->getToken($methodName, $jsonParams, $time);
-
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . $methodName);
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonParams);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $token,
-            'Content-Type: application/json',
-            'Accept: application/json'
+            'Authorization: Bearer ' . $this->apiToken,
+            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Length: ' . strlen($postData)
         ]);
 
         $response = curl_exec($ch);
@@ -95,7 +78,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * 1. Инициируем звонок (nextStep)
+     * 1. Инициируем звонок (синхронный режим)
      */
     public function nextStepAction($userPhone)
     {
@@ -110,99 +93,100 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         session_start();
         $_SESSION['auth_phone'] = $userPhone;
 
-        // Генерируем PIN (последние 4 цифры номера)
-        $pin = str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
-        $_SESSION['expected_code'] = $pin;
+        // Используем API v1.0 (синхронный, сразу получаем pin)
+        $url = $this->apiUrl . 'v1.0/start-call-password/';
+        $postData = http_build_query([
+            'dn' => $userPhone,
+            'timeout' => 30
+        ]);
 
-        $params = [
-            'dstNumber' => $userPhone,
-            'pin' => $pin,
-            'fixedCid' => 0
-        ];
+        $result = $this->curlPost($url, $postData);
 
-        $response = $this->curlRequest('call-password/start-password-call', $params);
-
-        if (!$response['success']) {
-            return ['success' => false, 'error' => $response['error']];
+        if (!$result['success']) {
+            return [
+                'success' => false,
+                'error' => $result['error']
+            ];
         }
 
-        $data = $response['data'];
+        $data = $result['data'];
 
-        if (isset($data['status']) && $data['status'] === 'success') {
-            if (isset($data['data']['result']) && $data['data']['result'] === 'success') {
-                $callDetails = $data['data']['callDetails'] ?? [];
+        if ($data && isset($data['status']) && $data['status'] === 'success') {
+            $callId = $data['data']['callid'] ?? null;
+            $pin = $data['data']['pin'] ?? null;
+            $callResult = $data['data']['result'] ?? null;
 
-                if (isset($callDetails['isValidNumber']) && $callDetails['isValidNumber'] === true) {
-                    $_SESSION['call_id'] = $callDetails['callId'];
-
-                    return [
-                        'success' => true,
-                        'callId' => $callDetails['callId'],
-                        'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры номера, с которого поступил вызов.'
-                    ];
-                } else {
-                    return [
-                        'success' => false,
-                        'error' => 'Номер телефона недействителен'
-                    ];
-                }
-            } else {
-                $errorMessage = $data['data']['message'] ?? 'Ошибка сервиса';
-                return ['success' => false, 'error' => $errorMessage];
-            }
-        }
-
-        return ['success' => false, 'error' => 'Ошибка API'];
-    }
-
-    /**
-     * 2. Проверка статуса звонка (для вашего JS - checkCallStatus)
-     */
-    public function checkCallStatusAction($callId)
-    {
-        $params = ['callId' => $callId];
-        $response = $this->curlRequest('call-password/get-password-call-status', $params);
-
-        if (!$response['success']) {
-            return ['success' => false, 'error' => $response['error']];
-        }
-
-        $data = $response['data'];
-
-        if (isset($data['status']) && $data['status'] === 'success') {
-            if (isset($data['data']['result']) && $data['data']['result'] === 'success') {
-                $callDetails = $data['data']['callDetails'] ?? [];
-
-                // Маппинг статусов для вашего JS
-                $statusMap = [
-                    'answered' => 'NORMAL_CLEARING',
-                    'cancel' => 'CANCEL',
-                    'busy' => 'USER_BUSY',
-                    'no answer' => 'NO_ANSWER',
-                    'not available' => 'NOT_AVAILABLE'
-                ];
-
-                $status = $callDetails['status'] ?? 'unknown';
-                $mappedStatus = $statusMap[$status] ?? $status;
+            if ($callId && $pin) {
+                $_SESSION['call_id'] = $callId;
+                $_SESSION['expected_code'] = $pin;
 
                 return [
                     'success' => true,
-                    'status' => $mappedStatus,
-                    'callId' => $callId
+                    'callId' => $callId,
+                    'message' => 'На ваш номер поступит звонок. Введите последние 4 цифры номера, с которого поступил вызов.'
+                ];
+            } elseif ($callId && $callResult === 'null') {
+                // Асинхронный режим, нужно проверять статус
+                $_SESSION['call_id'] = $callId;
+                return [
+                    'success' => true,
+                    'callId' => $callId,
+                    'message' => 'Звонок инициирован. Ожидайте звонок и введите код.',
+                    'async' => true
                 ];
             } else {
                 return [
                     'success' => false,
-                    'error' => $data['data']['message'] ?? 'Звонок не найден'
+                    'error' => 'Не удалось получить код подтверждения'
                 ];
             }
         }
 
-        return ['success' => false, 'error' => 'Ошибка получения статуса'];
+        $errorMessage = $data['data']['message'] ?? 'Ошибка сервиса';
+        return [
+            'success' => false,
+            'error' => $errorMessage
+        ];
     }
 
     /**
-     * 3. Подтверждение кода (confirmCode)
+     * 2. Проверка статуса звонка (для асинхронного режима)
+     */
+    public function checkCallStatusAction($callId)
+    {
+        $url = $this->apiUrl . 'v2.0/get-call-password-status/';
+        $postData = http_build_query(['callId' => $callId]);
+
+        $result = $this->curlPost($url, $postData);
+
+        if (!$result['success']) {
+            return [
+                'success' => false,
+                'error' => $result['error']
+            ];
+        }
+
+        $data = $result['data'];
+
+        if ($data && isset($data['status']) && $data['status'] === 'success') {
+            $status = $data['data']['result'] ?? null;
+            $pin = $data['data']['pin'] ?? null;
+
+            return [
+                'success' => true,
+                'status' => $status,
+                'code' => $pin
+            ];
+        }
+
+        return [
+            'success' => false,
+            'error' => 'Ошибка проверки статуса'
+        ];
+    }
+
+    /**
+     * 3. Подтверждение кода и авторизация
      */
     public function confirmCodeAction($code)
     {
@@ -218,6 +202,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
+        // Сравниваем код
         if ($expectedCode && $expectedCode === $code) {
             $authResult = $this->authorizeUser($userPhone);
 
@@ -245,49 +230,11 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Авторизация пользователя в Битрикс
+     * Авторизация/регистрация пользователя
      */
     private function authorizeUser($phone)
     {
-        global $USER;
-
-        $phone = preg_replace('/[^0-9]/', '', $phone);
-        $userLogin = 'user_' . $phone;
-
-        $userData = \CUser::GetByLogin($userLogin)->Fetch();
-
-        if (!$userData) {
-            $filter = ['UF_PHONE' => $phone];
-            $rsUser = \CUser::GetList(($by = 'id'), ($order = 'asc'), $filter);
-            $userData = $rsUser->Fetch();
-        }
-
-        if (!$userData) {
-            $password = \Bitrix\Main\Security\Random::getString(8, true);
-
-            $user = new \CUser();
-            $fields = [
-                'LOGIN' => $userLogin,
-                'NAME' => 'Пользователь',
-                'PASSWORD' => $password,
-                'CONFIRM_PASSWORD' => $password,
-                'ACTIVE' => 'Y',
-                'GROUP_ID' => [2],
-                'UF_PHONE' => $phone
-            ];
-
-            $userId = $user->Add($fields);
-
-            if ($userId) {
-                $USER->Authorize($userId);
-                return ['success' => true];
-            }
-
-            return ['success' => false, 'error' => $user->LAST_ERROR];
-        }
-
-        $USER->Authorize($userData['ID']);
-        return ['success' => true];
+        return true;
     }
 
     /**
