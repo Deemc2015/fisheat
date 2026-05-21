@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
 
-    $('#confirmAuth').on('submit', function(e) {
+    $('#codeAuthForm').on('submit', function(e) {
         e.preventDefault(); // Останавливаем обычную отправку
 
         // Собираем код из всех полей
