@@ -180,9 +180,12 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function authorizeUser($phone)
     {
+        $userInDb = $this->isExist($phone);
 
-        if($this->isExist($phone)){
+        if($userInDb){
             addMessage2Log('Пользователь существует');
+            addMessage2Log($userInDb);
+            $this->authUser($userInDb);
         }
         else{
             addMessage2Log('Пользователь не найден, регистрируем');
@@ -201,11 +204,19 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
 
         if ($arUser = $dbUsers->Fetch()){
-            return true;
+            return $arUser['ID'];
         }
 
         return false;
 
+    }
+
+    /**
+     * Авторизация пользователя
+     */
+    private function authUser(int $id){
+        global $USER;
+        $USER->Authorize($id);
     }
 
     /**
