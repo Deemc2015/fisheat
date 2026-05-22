@@ -493,7 +493,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'currency' => $item->getCurrency(),
                 'priceFormatted' => $this->formatPrice($itemTotalPrice),
                 'unitPriceFormatted' => $this->formatPrice($unitPrice),
-                'unitWeight' => $unitWeight
+                'unitWeight' => (int)$unitWeight
             ];
         }
 

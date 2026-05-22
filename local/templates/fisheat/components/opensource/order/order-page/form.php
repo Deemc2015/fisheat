@@ -49,8 +49,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                     <div class="price-product">
                         <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
-                        <?if($arBasketItem['VES']):?>
-                            <div class="weight"><?=$arBasketItem['VES']?></div>
+                        <?if($arBasketItem['WEIGHT']):?>
+                            <div class="weight"><?=$arBasketItem['WEIGHT']?> г</div>
                         <?endif;?>
                     </div>
                     <?if($isMobile):?></div><?endif?>

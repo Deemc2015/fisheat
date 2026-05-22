@@ -169,13 +169,8 @@ foreach ($order->getBasket() as $basketItem) {
         }
     }
 
-
-    $db_props = CIBlockElement::GetProperty(4, $basketItem->getField('PRODUCT_ID'), array("sort" => "asc"), array("CODE"=>"ATT_VES"));
-    $ar_props = $db_props->Fetch();
-    if($ar_props['VALUE']){
-        $arBasketItem['VES'] = $ar_props['VALUE'];
-    }
     $arBasketItem['PROPERTIES'] = [];
+
     foreach ($basketItem->getPropertyCollection() as $basketPropertyItem):
         /**
          * @var BasketPropertyItem $basketPropertyItem
@@ -188,6 +183,8 @@ foreach ($order->getBasket() as $basketItem) {
             ];
         }
     endforeach;
+
+    $arBasketItem['WEIGHT'] = (int)$basketItem->getWeight();
 
     $arBasketItem['QUANTITY'] = $basketItem->getQuantity();
     $arBasketItem['QUANTITY_DISPLAY'] = $basketItem->getQuantity();
