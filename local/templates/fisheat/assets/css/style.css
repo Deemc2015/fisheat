@@ -1017,7 +1017,6 @@ section#viewed{
     top: -16px;
     right: -1px;
     padding-top: 3px;
-
 }
 .lk-page{
     margin-right: 4px !important;
@@ -1054,7 +1053,7 @@ section#viewed{
     width: 355px;
     text-align: center;
     padding: 24px;
-    z-index: 3;
+    z-index: 6;
     display: none;
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
