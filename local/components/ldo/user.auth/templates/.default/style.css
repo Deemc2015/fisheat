@@ -128,3 +128,21 @@
 .modal-auth-step .return-step:hover{
     opacity:0.7;
 }
+/* Стили для блока таймера */
+#timer-block {
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    color: #666;
+}
+
+#timer-countdown {
+    font-weight: bold;
+    color: #ff5722;
+}
+
+/* Стиль для неактивной кнопки */
+#submit-phone-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

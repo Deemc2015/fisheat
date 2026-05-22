@@ -26,7 +26,12 @@
                 <input id="phone-user" name="USER_PHONE" type="text" value="" required>
             </div>
 
-            <button type="submit">Получить код</button>
+            <!-- Блок для таймера -->
+            <div id="timer-block" style="display: none; margin-top: 10px; text-align: center; color: #666;">
+                Повторная отправка через <span id="timer-countdown">60</span> секунд
+            </div>
+
+            <button type="submit" id="submit-phone-btn">Получить код</button>
         </form>
         <div class="bottom-auth">
             Нажимая на кнопку, я даю <a target="_blank" href="">согласие на обработку моих персональных данных</a>.

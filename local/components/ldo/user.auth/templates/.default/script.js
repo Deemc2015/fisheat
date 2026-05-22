@@ -1,11 +1,87 @@
 $(document).ready(function(){
 
+    // Глобальные переменные для таймера
+    let timerInterval = null;
+    let remainingTime = 0;
+
+    // Функция запуска таймера
+    function startTimer(seconds) {
+        // Останавливаем существующий таймер если есть
+        stopTimer();
+
+        remainingTime = seconds;
+
+        // Показываем блок таймера
+        $('#timer-block').show();
+        $('#timer-countdown').text(remainingTime);
+
+        // Делаем кнопку неактивной
+        $('#submit-phone-btn').prop('disabled', true);
+
+        timerInterval = setInterval(function() {
+            remainingTime--;
+
+            if(remainingTime > 0) {
+                $('#timer-countdown').text(remainingTime);
+            } else {
+                // Таймер закончился
+                stopTimer();
+                $('#timer-block').hide();
+                $('#submit-phone-btn').prop('disabled', false);
+            }
+        }, 1000);
+    }
+
+    // Функция остановки таймера
+    function stopTimer() {
+        if(timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    // Функция сохранения времени отправки в localStorage
+    function savePhoneSendTime() {
+        localStorage.setItem('phone_auth_send_time', Date.now());
+        localStorage.setItem('phone_auth_phone', $('#phone-user').val());
+    }
+
+    // Функция проверки и восстановления таймера
+    function checkAndRestoreTimer() {
+        let sendTime = localStorage.getItem('phone_auth_send_time');
+        let savedPhone = localStorage.getItem('phone_auth_phone');
+        let currentPhone = $('#phone-user').val();
+
+        if(sendTime && savedPhone === currentPhone) {
+            let elapsed = Math.floor((Date.now() - parseInt(sendTime)) / 1000);
+            let remaining = 60 - elapsed;
+
+            if(remaining > 0) {
+                // Если таймер еще не закончился
+                startTimer(remaining);
+                return true;
+            } else {
+                // Таймер закончился - очищаем localStorage
+                localStorage.removeItem('phone_auth_send_time');
+                localStorage.removeItem('phone_auth_phone');
+            }
+        }
+        return false;
+    }
+
+    // Функция очистки данных таймера
+    function clearTimerData() {
+        stopTimer();
+        localStorage.removeItem('phone_auth_send_time');
+        localStorage.removeItem('phone_auth_phone');
+        $('#timer-block').hide();
+        $('#submit-phone-btn').prop('disabled', false);
+    }
 
     $('#codeAuthForm').on('submit', function(e) {
-        e.preventDefault(); // Останавливаем обычную отправку
+        e.preventDefault();
         let errorBlock = $('#codeAuthForm .error-block');
 
-        // Собираем код из всех полей
         let code = '';
         $('.code-input').each(function() {
             code += $(this).val();
@@ -16,28 +92,17 @@ $(document).ready(function(){
             return false;
         }
 
-        // Записываем код в скрытое поле (если нужно)
         $('#confirm_code').val(code);
 
-        // Вызываем функцию confirmCode
         confirmCode(code).then(function(result) {
-
             if (result) {
-                // Успешное подтверждение кода
-                // Закрываем модальное окно
+                // При успешной авторизации очищаем данные таймера
+                clearTimerData();
                 $('.modal-auth-step, .wrp').removeClass('show');
-
-                //Перезагрузка страницы при успешной авторизации/регистрации
                 location.reload();
-
             } else {
-                // Ошибка подтверждения кода
                 errorBlock.addClass('show').html('Неверный код. Попробуйте снова.');
-
-                // Очищаем поля ввода
                 $('.code-input').val('');
-
-                // Устанавливаем фокус на первое поле
                 $('.code-input').first().focus();
             }
         });
@@ -46,39 +111,65 @@ $(document).ready(function(){
     $('.modal-auth .close-modal').click(function(){
         $('.modal-auth, .wrp').removeClass('show');
         $('.modal-auth form').trigger('reset');
-        // Также скрываем второй шаг
         $('.modal-auth-step').removeClass('show');
-    })
+        // Очищаем данные таймера при закрытии
+        clearTimerData();
+    });
 
     $('.modal-auth-step .close-modal').click(function(){
         $('.modal-auth-step, .wrp').removeClass('show');
-        $('.modal-auth-step').removeClass('show');
         $('.modal-auth form,.modal-auth-step form').trigger('reset');
-    })
+        // Не очищаем таймер при закрытии второго шага
+    });
 
     $('#userAuth').submit(function(e){
         e.preventDefault();
 
         var userPhone = $('#phone-user', this).val();
 
+        // Проверяем, активен ли таймер
+        if($('#submit-phone-btn').prop('disabled')) {
+            alert('Пожалуйста, подождите ' + remainingTime + ' секунд перед повторной отправкой');
+            return false;
+        }
+
         if(userPhone){
+            // Сохраняем время отправки и телефон
+            savePhoneSendTime();
+
             getNextStep(userPhone).then(function(result) {
                 if(result){
                     $('.modal-auth').removeClass('show');
                     $('.modal-auth-step').addClass('show');
+                    // Запускаем таймер после успешной отправки
+                    startTimer(60);
+                } else {
+                    // Если отправка не удалась, очищаем данные таймера
+                    clearTimerData();
                 }
+            }).catch(function() {
+                // При ошибке очищаем таймер
+                clearTimerData();
             });
         }
-    })
-
+    });
 
     $('.modal-auth-step .return-step').click(function(){
         $('.modal-auth-step').removeClass('show');
         $('.modal-auth').addClass('show');
-    })
 
-})
+        // При возврате на первый шаг проверяем состояние таймера
+        checkAndRestoreTimer();
+    });
 
+    // При загрузке страницы проверяем таймер
+    // Проверяем только если модальное окно активно
+    if($('.modal-auth').length > 0) {
+        checkAndRestoreTimer();
+    }
+});
+
+// Остальной код для работы с полями ввода кода остается без изменений
 $(document).on('keyup', '.code-input', function(e) {
     let $this = $(this);
     let $wrapper = $this.closest('.code-input-block');
@@ -88,22 +179,17 @@ $(document).on('keyup', '.code-input', function(e) {
 
     errorBlock.removeClass('show');
 
-    // Получаем нажатую клавишу
     let key = e.key;
 
-    // Ввод цифры (любая цифра от 0 до 9)
     if(/^[0-9]$/.test(key)) {
-        // Если поле пустое или заменяем значение
         if($this.val().length === 0 || e.keyCode !== 46) {
             $this.val(key);
         }
 
-        // Переход к следующему полю
         if(currentIndex < $inputs.length - 1) {
             $inputs.eq(currentIndex + 1).focus();
         }
 
-        // Если последнее поле - проверяем код
         if(currentIndex === $inputs.length - 1) {
             let code = '';
             $inputs.each(function() {
@@ -115,21 +201,17 @@ $(document).on('keyup', '.code-input', function(e) {
         }
     }
 
-    // Обработка Backspace
     if(e.key === 'Backspace') {
         if($this.val() === '') {
-            // Если поле пустое - переходим к предыдущему
             if(currentIndex > 0) {
                 $inputs.eq(currentIndex - 1).val('').focus();
             }
         } else {
-            // Если есть значение - очищаем текущее поле
             $this.val('');
         }
         e.preventDefault();
     }
 
-    // Обработка Delete
     if(e.key === 'Delete') {
         $this.val('');
         if(currentIndex < $inputs.length - 1) {
@@ -137,7 +219,6 @@ $(document).on('keyup', '.code-input', function(e) {
         }
     }
 
-    // Обработка стрелок
     if(e.key === 'ArrowLeft' && currentIndex > 0) {
         $inputs.eq(currentIndex - 1).focus();
     }
@@ -146,7 +227,6 @@ $(document).on('keyup', '.code-input', function(e) {
     }
 });
 
-// Дополнительно: обработка вставки из буфера
 $(document).on('paste', '.code-input', function(e) {
     e.preventDefault();
     let paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
@@ -158,7 +238,6 @@ $(document).on('paste', '.code-input', function(e) {
         $inputs.eq(i).val(digits[i]);
     }
 
-    // Фокус на следующее пустое поле или последнее
     let nextEmptyIndex = -1;
     for(let i = 0; i < $inputs.length; i++) {
         if($inputs.eq(i).val() === '') {
@@ -170,7 +249,6 @@ $(document).on('paste', '.code-input', function(e) {
     if(nextEmptyIndex !== -1) {
         $inputs.eq(nextEmptyIndex).focus();
     } else if(digits.length >= $inputs.length) {
-        // Все поля заполнены - отправляем форму
         let code = '';
         $inputs.each(function() {
             code += $(this).val();
@@ -181,9 +259,7 @@ $(document).on('paste', '.code-input', function(e) {
     }
 });
 
-
-
-
+// Остальные функции getNextStep и confirmCode остаются без изменений
 function getNextStep(userPhone){
     return BX.ajax.runComponentAction('ldo:user.auth', 'nextStep', {
         mode: 'class',
@@ -191,13 +267,11 @@ function getNextStep(userPhone){
     })
         .then(function(response) {
             if(response.status == 'success' && response.data.type === 'stepTwo'){
-                // Сохраняем requestId если нужно
                 if(response.data.requestId) {
                     $('#call-id').val(response.data.requestId);
                 }
                 return true;
             }
-            // Если есть ошибка в ответе
             if(response.data && response.data.error) {
                 alert(response.data.error);
             }
@@ -205,20 +279,17 @@ function getNextStep(userPhone){
         })
         .catch(function(error) {
             console.error('Ошибка:', error);
-            // Показываем ошибку пользователю
             let errorMsg = error.errors?.[0]?.message || 'Ошибка отправки запроса';
             alert(errorMsg);
             return false;
         });
 }
 
-
 function confirmCode(code){
     const submitBtn = $('#codeAuthForm button[type="submit"]');
     const codeInputs = $('.code-input');
     let errorBlock = $('#codeAuthForm .error-block');
 
-    // Блокируем форму
     submitBtn.prop('disabled', true).text('Проверка...');
     codeInputs.prop('disabled', true);
 
@@ -230,17 +301,12 @@ function confirmCode(code){
             submitBtn.prop('disabled', false).text('Подтвердить');
             codeInputs.prop('disabled', false);
 
-            // ИСПРАВЛЕНО: Проверяем success в response.data
             if(response.status == 'success' && response.data && response.data.success === true){
                 return true;
             }
 
-            // Ошибка - показываем сообщение от сервера
             let errorMsg = response.data?.error || 'Неверный код. Попробуйте снова.';
-
             errorBlock.addClass('show').html(errorMsg);
-
-            // Очищаем поля ввода
             $('.code-input').val('');
             $('.code-input').first().focus();
 
@@ -250,9 +316,6 @@ function confirmCode(code){
             submitBtn.prop('disabled', false).text('Подтвердить');
             codeInputs.prop('disabled', false);
 
-            errorBlock.addClass('show').html(error);
-
-            // Обработка ошибок от сервера
             let errorMsg = 'Ошибка проверки кода';
             if(error.errors && error.errors[0] && error.errors[0].message) {
                 errorMsg = error.errors[0].message;
@@ -261,21 +324,9 @@ function confirmCode(code){
             }
 
             errorBlock.addClass('show').html(errorMsg);
-
-            // Очищаем поля ввода
             $('.code-input').val('');
             $('.code-input').first().focus();
 
             return false;
         });
 }
-
-
-
-
-
-
-
-
-
-
