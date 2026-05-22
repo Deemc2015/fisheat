@@ -3,6 +3,10 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Engine\ActionFilter;
+use Bitrix\Main\Loader;
+use Bitrix\Main\Context;
+use Bitrix\Sale\Fuser;
+use Bitrix\Sale\Basket;
 
 class CUserAuth extends \CBitrixComponent implements Controllerable
 {
@@ -84,8 +88,6 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         ];
     }
 
-
-
     /**
      * 2. Подтверждение кода и авторизация/регистрация
      */
@@ -105,11 +107,25 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         // Сравниваем коды
         if ($expectedCode === $code) {
+            // Сохраняем старый FUSER до авторизации
+            $oldFuserId = null;
+            if (Loader::includeModule('sale')) {
+                $oldFuserId = Fuser::getId();
+            }
+
             $authResult = $this->authorizeUser($userPhone);
 
             if ($authResult['success']) {
+                // Переносим корзину после успешной авторизации
+                if ($oldFuserId && Loader::includeModule('sale')) {
+                    global $USER;
+                    $userId = $USER->GetID();
+                    $this->mergeBasketAfterAuth($oldFuserId, $userId);
+                }
+
                 unset($_SESSION['auth_phone']);
                 unset($_SESSION['expected_code']);
+                unset($_SESSION['request_id']);
 
                 return [
                     'success' => true,
@@ -128,6 +144,109 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             'success' => false,
             'error' => 'Неверный код.'
         ];
+    }
+
+    /**
+     * Перенос корзины при авторизации
+     */
+    private function mergeBasketAfterAuth($oldFuserId, $userId)
+    {
+        if (!Loader::includeModule('sale')) {
+            return;
+        }
+
+        try {
+            $siteId = Context::getCurrent()->getSite();
+
+            // Получаем новый FUSER для авторизованного пользователя
+            $newFuserId = Fuser::getIdByUserId($userId);
+
+            // Если FUSER совпадают, то перенос не нужен
+            if ($oldFuserId == $newFuserId) {
+                return;
+            }
+
+            // Загружаем старую корзину (анонимную)
+            $oldBasket = Basket::loadItemsForFUser($oldFuserId, $siteId);
+
+            // Загружаем новую корзину (пользовательскую, если есть)
+            $newBasket = Basket::loadItemsForFUser($newFuserId, $siteId);
+
+            // Объединяем корзины
+            if ($oldBasket->count() > 0) {
+                foreach ($oldBasket as $oldItem) {
+                    $productId = $oldItem->getProductId();
+                    $moduleId = $oldItem->getField('MODULE');
+                    $quantity = $oldItem->getQuantity();
+
+                    // Проверяем, есть ли уже такой товар в новой корзине
+                    $existingItem = $newBasket->getExistsItem($moduleId, $productId);
+
+                    if ($existingItem) {
+                        // Если товар уже есть - увеличиваем количество
+                        $newQuantity = $existingItem->getQuantity() + $quantity;
+                        $existingItem->setField('QUANTITY', $newQuantity);
+                    } else {
+                        // Если товара нет - переносим его
+                        $newItem = $newBasket->createItem($moduleId, $productId);
+                        $newItem->setFields([
+                            'QUANTITY' => $quantity,
+                            'CURRENCY' => $oldItem->getCurrency(),
+                            'LID' => $siteId,
+                            'PRICE' => $oldItem->getPrice(),
+                            'CUSTOM_PRICE' => $oldItem->isCustomPrice() ? 'Y' : 'N',
+                            'CAN_BUY' => $oldItem->canBuy() ? 'Y' : 'N',
+                            'DELAY' => $oldItem->isDelay() ? 'Y' : 'N',
+                        ]);
+
+                        // Переносим свойства товара
+                        $oldPropertyCollection = $oldItem->getPropertyCollection();
+                        $newPropertyCollection = $newItem->getPropertyCollection();
+
+                        $props = [];
+                        foreach ($oldPropertyCollection as $property) {
+                            $props[] = [
+                                'NAME' => $property->getField('NAME'),
+                                'CODE' => $property->getField('CODE'),
+                                'VALUE' => $property->getField('VALUE'),
+                                'SORT' => $property->getField('SORT'),
+                            ];
+                        }
+
+                        if (!empty($props)) {
+                            $newPropertyCollection->setProperty($props);
+                        }
+                    }
+                }
+
+                // Сохраняем новую корзину
+                $saveResult = $newBasket->save();
+                if (!$saveResult->isSuccess()) {
+                    $errors = $saveResult->getErrorMessages();
+                    // Логируем ошибку, но не прерываем авторизацию
+                    \Bitrix\Main\Diag\Debug::writeToFile(
+                        implode(', ', $errors),
+                        'Basket merge error: ',
+                        '/local/logs/basket.log'
+                    );
+                }
+
+                // Очищаем старую корзину
+                $oldBasket->clearCollection();
+                $oldBasket->save();
+            }
+
+            // Обновляем FUSER в текущей сессии
+            Fuser::refreshSessionCurrentId();
+
+        } catch (\Exception $e) {
+            // Логируем ошибку, но не прерываем авторизацию
+            \Bitrix\Main\Diag\Debug::writeToFile(
+                $e->getMessage(),
+                'Basket merge exception: ',
+                '/local/logs/basket.log'
+            );
+        }
     }
 
     /**
@@ -175,7 +294,6 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         return ['success' => false, 'error' => $errorMessage];
     }
 
-
     /**
      * Авторизация/регистрация пользователя
      */
@@ -193,11 +311,9 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             }
         }
         else{
-
             $resultAuth  = $this->registrationUser($phone);
 
             if($resultAuth['TYPE'] == 'OK'){
-
                 $resultAuth = $this->authUser($resultAuth['ID']);
 
                 if($resultAuth){
@@ -207,6 +323,8 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
                     return ['success' => false, 'error' => 'Ошибка регистрации.'];
                 }
             }
+
+            return ['success' => false, 'error' => 'Ошибка регистрации.'];
         }
     }
 
@@ -215,7 +333,6 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function isExist($phone)
     {
-
         $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
 
         if ($arUser = $dbUsers->Fetch()){
@@ -223,7 +340,6 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         }
 
         return false;
-
     }
 
     /**
@@ -235,10 +351,10 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $authResult = $USER->Authorize($id);
 
         if($authResult){
-
             return true;
         }
 
+        return false;
     }
 
     /**
@@ -278,6 +394,4 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         return false;
     }
-
-
 }
