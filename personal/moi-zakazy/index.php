@@ -4,7 +4,9 @@ $APPLICATION->SetTitle("Мои заказы");
 
 $_REQUEST['show_all'] = "Y";
 ?>
-
+<? if(!$USER->IsAuthorized()){
+    LocalRedirect('/');
+} ?>
 
 <?$APPLICATION->IncludeComponent(
 	"bitrix:sale.personal.order", 
