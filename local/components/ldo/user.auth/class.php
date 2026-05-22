@@ -192,7 +192,11 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             }
         }
         else{
-            addMessage2Log('Пользователь не найден, регистрируем');
+
+            $resultAuth  = $this->registrationUser($phone);
+
+            addMessage2Log($resultAuth);
+
         }
 
 
@@ -228,6 +232,17 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             return true;
         }
 
+    }
+
+    /**
+     * Регистрация пользователя
+     */
+    private function registrationUser($phone){
+        global $USER;
+
+        $arResult = $USER->Register($phone, "", "", "123456", "123456", );
+
+        return $arResult;
     }
 
     /**
