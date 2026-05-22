@@ -1072,7 +1072,7 @@ section#viewed{
     width: 355px;
     text-align: center;
     padding: 24px;
-    z-index: 3;
+    z-index: 6;
     display: none;
 }
 .modal-auth button{
@@ -1205,7 +1205,7 @@ section#viewed{
     left: 0;
     right: 0;
     height: 100%;
-    z-index: 2;
+    z-index: 6;
     background: #0000004f;
     top:0;
     display: none;

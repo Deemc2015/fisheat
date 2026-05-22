@@ -35,6 +35,7 @@
     </div>
 
     <div class="modal-auth-step">
+        <span class="return-step"></span>
         <span class="close-modal"></span>
         <h3 id="modal-title">Введите последние 4 цифры входящего номера</h3>
         <form id="codeAuthForm" action="#" method="POST">

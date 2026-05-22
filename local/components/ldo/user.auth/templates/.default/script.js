@@ -22,8 +22,6 @@ $(document).ready(function(){
         // Вызываем функцию confirmCode
         confirmCode(code).then(function(result) {
 
-            console.log(result);
-
             if (result) {
                 // Успешное подтверждение кода
                 // Закрываем модальное окно
@@ -45,16 +43,12 @@ $(document).ready(function(){
         });
     });
 
-
-
-
     $('.modal-auth .close-modal').click(function(){
         $('.modal-auth, .wrp').removeClass('show');
         $('.modal-auth form').trigger('reset');
         // Также скрываем второй шаг
         $('.modal-auth-step').removeClass('show');
     })
-
 
     $('.modal-auth-step .close-modal').click(function(){
         $('.modal-auth-step, .wrp').removeClass('show');
@@ -68,15 +62,19 @@ $(document).ready(function(){
         var userPhone = $('#phone-user', this).val();
 
         if(userPhone){
-            // Используем async/await внутри обработчика
             getNextStep(userPhone).then(function(result) {
-
                 if(result){
                     $('.modal-auth').removeClass('show');
                     $('.modal-auth-step').addClass('show');
                 }
             });
         }
+    })
+
+
+    $('.modal-auth-step .return-step').click(function(){
+        $('.modal-auth-step').removeClass('show');
+        $('.modal-auth').addClass('show');
     })
 
 })

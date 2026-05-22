@@ -9,7 +9,7 @@
     width: 355px;
     text-align: center;
     padding: 24px;
-    z-index: 3;
+    z-index: 6;
     display: none;
 }
 
@@ -88,4 +88,43 @@
     right: 8px;
     display: block;
     cursor:pointer;
+}
+.modal-auth-step .return-step:before{
+    content: "";
+    background-color: #dbd6ce;
+    block-size: 2px;
+    inline-size: 14px;
+    transition: background-color .3s;
+    position: absolute;
+    inset-block-start: calc(50% - 1px);
+    inset-inline-end: calc(50% - 9px);
+}
+.modal-auth-step .return-step:after{
+    content: "";
+    box-sizing: content-box;
+    border: 2px solid #dbd6ce;
+    border-width: 2px 2px 0 0;
+    block-size: 8px;
+    inline-size: 8px;
+    transition: border-color .3s;
+    position: absolute;
+    inset-block-start: calc(50% - 5px);
+    inset-inline-start: calc(50% - 5px);
+    transform: rotate(-135deg);
+}
+.modal-auth-step .return-step{
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    block-size: 0;
+    inline-size: 0px;
+    font-size: 0;
+    line-height: 0;
+    display: flex;
+    position: relative;
+    cursor:pointer;
+    transition:all .3s;
+}
+.modal-auth-step .return-step:hover{
+    opacity:0.7;
 }
