@@ -3,6 +3,7 @@ $(document).ready(function(){
 
     $('#codeAuthForm').on('submit', function(e) {
         e.preventDefault(); // Останавливаем обычную отправку
+        let errorBlock = $('#codeAuthForm .error-block');
 
         // Собираем код из всех полей
         let code = '';
@@ -11,7 +12,7 @@ $(document).ready(function(){
         });
 
         if (code.length !== 4) {
-            alert('Введите все 4 цифры');
+            errorBlock.addClass('show').html('Введите все 4 цифры');
             return false;
         }
 
@@ -22,8 +23,6 @@ $(document).ready(function(){
         confirmCode(code).then(function(result) {
             if (result) {
                 // Успешное подтверждение кода
-                console.log('Код подтвержден успешно');
-
                 // Закрываем модальное окно
                 $('.modal-auth-step, .wrp').removeClass('show');
 
@@ -33,7 +32,7 @@ $(document).ready(function(){
 
             } else {
                 // Ошибка подтверждения кода
-                alert('Неверный код. Попробуйте снова.');
+                errorBlock.addClass('show').html('Неверный код. Попробуйте снова.');
 
                 // Очищаем поля ввода
                 $('.code-input').val('');
@@ -85,6 +84,9 @@ $(document).on('keyup', '.code-input', function(e) {
     let $wrapper = $this.closest('.code-input-block');
     let $inputs = $wrapper.find('.code-input');
     let currentIndex = $inputs.index($this);
+    let errorBlock = $('#codeAuthForm .error-block');
+
+    errorBlock.removeClass('show');
 
     // Получаем нажатую клавишу
     let key = e.key;
@@ -179,13 +181,6 @@ $(document).on('paste', '.code-input', function(e) {
     }
 });
 
-// Фокус на первом поле при открытии модального окна
-$(document).on('click', '.modal-auth-step.show', function() {
-    setTimeout(function() {
-        $('.code-input:first').focus();
-    }, 100);
-});
-
 
 
 
@@ -254,7 +249,6 @@ function confirmCode(code){
         .catch(function(error) {
             submitBtn.prop('disabled', false).text('Подтвердить');
             codeInputs.prop('disabled', false);
-
 
             errorBlock.addClass('show').html(error);
 
