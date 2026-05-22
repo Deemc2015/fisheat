@@ -216,7 +216,11 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function authUser(int $id){
         global $USER;
-        $USER->Authorize($id);
+        $authResult = $USER->Authorize($id);
+
+
+        addMessage2Log('$authResult');
+        addMessage2Log($authResult);
     }
 
     /**
