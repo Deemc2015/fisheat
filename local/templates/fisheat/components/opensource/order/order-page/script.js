@@ -180,7 +180,8 @@
                         priceNode: item.querySelector('.price-product__sum'), // Элемент с ценой
                         basePriceNode: item.querySelector('.price-product__base'), // Базовая цена
                         productId: productId,
-                        price: this.extractPrice(item.querySelector('.price-product__sum'))
+                        price: this.extractPrice(item.querySelector('.price-product__sum')),
+                        weightNode: item.querySelector('.weight')
                     };
                 }
             }
@@ -808,6 +809,10 @@
                             }
                         }
 
+                        if (serverData.unitWeight !== undefined) {
+                            this.updateItemWeight(basketItem, serverData.unitWeight);
+                        }
+
                         // Обновление количества, если пришло
                         if (basketItem.quantityNode && serverData.quantity !== undefined) {
                             basketItem.quantityNode.textContent = serverData.quantity;
@@ -939,7 +944,7 @@
         animatePrice: function(node, startPrice, endPrice) {
             var self = this;
             var startTime = null;
-            var duration = 300;
+            var duration = 0;
 
             function animate(currentTime) {
                 if (!startTime) startTime = currentTime;
@@ -1095,6 +1100,15 @@
                 } else {
                     this.totalBlock.bonusNode.innerHTML = this.formatPrice(price);
                 }
+            }
+        },
+        /** Обновляет вес товаров */
+        updateItemWeight: function(basketItem, totalWeight) {
+            var weightNode = basketItem.weightNode;
+            if (weightNode && totalWeight !== undefined) {
+                var formattedWeight = totalWeight + ' г';
+
+                weightNode.textContent = formattedWeight;
             }
         },
 

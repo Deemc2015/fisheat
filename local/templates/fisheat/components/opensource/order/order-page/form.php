@@ -50,7 +50,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="price-product">
                         <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
                         <?if($arBasketItem['WEIGHT']):?>
-                            <div class="weight"><?=$arBasketItem['WEIGHT']?> г</div>
+                            <div class="weight"><?echo (int)$arBasketItem['WEIGHT']*$arBasketItem['QUANTITY']?> г</div>
                         <?endif;?>
                     </div>
                     <?if($isMobile):?></div><?endif?>
