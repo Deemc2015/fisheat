@@ -181,10 +181,31 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     private function authorizeUser($phone)
     {
 
-        addMessage2Log($phone);
-        addMessage2Log('Авторизуем пользователя');
+        if($this->isExist($phone)){
+            addMessage2Log('Пользователь существует');
+        }
+        else{
+            addMessage2Log('Пользователь не найден, регистрируем');
+        }
 
         return ['success' => true];
+    }
+
+
+    /**
+     * Проверка пользователя на наличие в БД
+     */
+    private function isExist($phone)
+    {
+
+        $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
+
+        if ($arUser = $dbUsers->Fetch()){
+            return true;
+        }
+
+        return false;
+
     }
 
     /**
