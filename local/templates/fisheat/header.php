@@ -201,7 +201,7 @@ use \Ldo\Develop\Pages;
                                         </defs>
                                     </svg></i>Войти</a>
 
-                        <?else:?>hi
+                        <?else:?>
 
                             <a href="/personal/" class="lk-page <?=$class?>"><i><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g clip-path="url(#clip0_35_350)">
