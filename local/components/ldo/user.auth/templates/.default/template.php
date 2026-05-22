@@ -58,6 +58,8 @@
 
             <input type="hidden" id="call-id">
 
+            <span class="error-block"></span>
+
             <button id="submit-code-btn" type="submit">Подтвердить</button>
         </form>
     </div>

@@ -111,7 +111,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
                 unset($_SESSION['expected_code']);
 
                 return [
-                    'success' => true,  // ВАЖНО: возвращаем success => true
+                    'success' => true,
                     'message' => 'Авторизация успешна!'
                 ];
             }

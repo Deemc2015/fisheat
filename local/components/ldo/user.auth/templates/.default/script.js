@@ -221,6 +221,7 @@ function getNextStep(userPhone){
 function confirmCode(code){
     const submitBtn = $('#codeAuthForm button[type="submit"]');
     const codeInputs = $('.code-input');
+    let errorBlock = $('#codeAuthForm .error-block');
 
     // Блокируем форму
     submitBtn.prop('disabled', true).text('Проверка...');
@@ -236,13 +237,13 @@ function confirmCode(code){
 
             // ИСПРАВЛЕНО: Проверяем success в response.data
             if(response.status == 'success' && response.data && response.data.success === true){
-                console.log('Код подтвержден успешно');
                 return true;
             }
 
             // Ошибка - показываем сообщение от сервера
             let errorMsg = response.data?.error || 'Неверный код. Попробуйте снова.';
-            alert(errorMsg);
+
+            errorBlock.addClass('show').html(errorMsg);
 
             // Очищаем поля ввода
             $('.code-input').val('');
@@ -254,7 +255,8 @@ function confirmCode(code){
             submitBtn.prop('disabled', false).text('Подтвердить');
             codeInputs.prop('disabled', false);
 
-            console.error('Ошибка:', error);
+
+            errorBlock.addClass('show').html(error);
 
             // Обработка ошибок от сервера
             let errorMsg = 'Ошибка проверки кода';
@@ -264,7 +266,7 @@ function confirmCode(code){
                 errorMsg = error.data.error;
             }
 
-            alert(errorMsg);
+            errorBlock.addClass('show').html(errorMsg);
 
             // Очищаем поля ввода
             $('.code-input').val('');
