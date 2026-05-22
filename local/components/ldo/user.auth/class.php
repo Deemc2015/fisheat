@@ -180,6 +180,8 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function authorizeUser($phone)
     {
+
+        addMessage2Log($phone);
         addMessage2Log('Авторизуем пользователя');
 
         return ['success' => true];
