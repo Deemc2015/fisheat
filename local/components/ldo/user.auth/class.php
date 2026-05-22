@@ -183,15 +183,19 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         $userInDb = $this->isExist($phone);
 
         if($userInDb){
-            addMessage2Log('Пользователь существует');
-            addMessage2Log($userInDb);
-            $this->authUser($userInDb);
+            $resultAuth  = $this->authUser($userInDb);
+            if($resultAuth){
+                return ['success' => true];
+            }
+            else{
+                return ['success' => false, 'error' => 'Ошибка авторизации.'];
+            }
         }
         else{
             addMessage2Log('Пользователь не найден, регистрируем');
         }
 
-        return ['success' => true];
+
     }
 
 
@@ -216,11 +220,14 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
      */
     private function authUser(int $id){
         global $USER;
+
         $authResult = $USER->Authorize($id);
 
+        if($authResult){
 
-        addMessage2Log('$authResult');
-        addMessage2Log($authResult);
+            return true;
+        }
+
     }
 
     /**

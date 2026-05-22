@@ -21,6 +21,9 @@ $(document).ready(function(){
 
         // Вызываем функцию confirmCode
         confirmCode(code).then(function(result) {
+
+            console.log(result);
+
             if (result) {
                 // Успешное подтверждение кода
                 // Закрываем модальное окно
