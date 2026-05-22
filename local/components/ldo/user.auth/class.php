@@ -247,7 +247,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     private function registrationUser($phone){
         global $USER;
 
-        $arResult = $USER->Register($phone, "", "", "123456", "123456", $phone.'@gmail.com');
+        $arResult = $USER->Register($phone, "", "", "123456", "123456", $phone.'@gmail.com', SITE_ID);
 
         return $arResult;
     }
