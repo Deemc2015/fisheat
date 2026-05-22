@@ -466,6 +466,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             $productId = $item->getProductId();
             $quantity = $item->getQuantity();
             $basePrice = $item->getBasePrice(); // Базовая цена за единицу
+            $unitWeight = $item->getWeight();
 
             // Цена за ЕДИНИЦУ со скидкой
             $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
@@ -491,7 +492,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'unitDiscount' => $basePrice - $unitPrice,
                 'currency' => $item->getCurrency(),
                 'priceFormatted' => $this->formatPrice($itemTotalPrice),
-                'unitPriceFormatted' => $this->formatPrice($unitPrice)
+                'unitPriceFormatted' => $this->formatPrice($unitPrice),
+                'unitWeight' => $unitWeight
             ];
         }
 

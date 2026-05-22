@@ -58,6 +58,7 @@ if(!$actualItem['CAN_BUY']){
     $disabledClass = 'not-avaliable';
 }
 $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
+
 ?>
 
 
@@ -196,8 +197,8 @@ if(Loader::IncludeModule('ldo.favorites')){
 			<?=$productTitle?>
 			<? if ($itemHasDetailUrl): ?>
 		</a>
-        <?if($item['DISPLAY_PROPERTIES']['ATT_VES']['VALUE']):?>
-            <div class="weight-product"><?=$item['DISPLAY_PROPERTIES']['ATT_VES']['VALUE']?></div>
+        <?if($item['PRODUCT']['WEIGHT']):?>
+            <div class="weight-product"><?=$item['PRODUCT']['WEIGHT']?> г</div>
         <?endif;?>
 	<? endif; ?>
 	</h3>

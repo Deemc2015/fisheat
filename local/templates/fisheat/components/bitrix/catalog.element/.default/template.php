@@ -344,8 +344,8 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
                 <?if($isMobile):?>
                     <h1 class="title-product"><?=$arResult['NAME'];?></h1>
                     <div class="after-title-product">
-                        <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
-                            <div class="after-title-product__weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
+                        <?if($arResult['PRODUCT']['WEIGHT']):?>
+                            <div class="after-title-product__weight"><?=$arResult['PRODUCT']['WEIGHT'];?></div>
                         <?endif;?>
 
                     </div>
@@ -385,8 +385,8 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
 
 										<div class="product-item-detail-info-container">
                                             <?if(!$isMobile):?>
-                                                <?if($arResult['PROPERTIES']['ATT_VES']['VALUE']):?>
-                                                    <div class="weight"><?=$arResult['PROPERTIES']['ATT_VES']['VALUE'];?></div>
+                                                <?if($arResult['PRODUCT']['WEIGHT']):?>
+                                                    <div class="weight"><?=$arResult['PRODUCT']['WEIGHT'];?> г </div>
                                                 <?endif;?>
                                             <?endif;?>
 											<?php
