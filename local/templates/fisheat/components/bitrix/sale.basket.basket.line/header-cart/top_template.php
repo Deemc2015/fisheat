@@ -7,11 +7,18 @@
  */
 $compositeStub = (isset($arResult['COMPOSITE_STUB']) && $arResult['COMPOSITE_STUB'] == 'Y');
 ?><?
+    $class = '';
+
+    if(!$USER->IsAuthorized()){
+        $arParams['PATH_TO_BASKET']  = '';
+        $class = 'openmodalauth';
+    }
+
 		if (!$arResult["DISABLE_USE_BASKET"])
 		{
 			?>
 
-            <a href="<?= $arParams['PATH_TO_BASKET'] ?>" class="cart-page">
+            <a  href="<?= $arParams['PATH_TO_BASKET'] ?>" class="cart-page <?=$class?>">
                     <?
                     if (!$compositeStub)
                     {
