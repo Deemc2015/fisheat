@@ -44,6 +44,7 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
     public function nextStepAction($userPhone)
     {
         $userPhone = $this->normalizePhone($userPhone);
+
         if (!$userPhone) {
             return [
                 'success' => false,
@@ -205,15 +206,9 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
                 else{
                     return ['success' => false, 'error' => 'Ошибка регистрации.'];
                 }
-
             }
-
-
         }
-
-
     }
-
 
     /**
      * Проверка пользователя на наличие в БД
