@@ -195,7 +195,19 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
             $resultAuth  = $this->registrationUser($phone);
 
-            addMessage2Log($resultAuth);
+            if($resultAuth['TYPE'] == 'OK'){
+
+                $resultAuth = $this->authUser($resultAuth['ID']);
+
+                if($resultAuth){
+                    return ['success' => true];
+                }
+                else{
+                    return ['success' => false, 'error' => 'Ошибка регистрации.'];
+                }
+
+            }
+
 
         }
 
