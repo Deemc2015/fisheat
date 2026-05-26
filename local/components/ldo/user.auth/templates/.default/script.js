@@ -99,7 +99,7 @@ $(document).ready(function(){
                 // При успешной авторизации очищаем данные таймера
                 clearTimerData();
                 $('.modal-auth-step, .wrp').removeClass('show');
-                location.reload();
+                location.href="/personal/";
             } else {
                 errorBlock.addClass('show').html('Неверный код. Попробуйте снова.');
                 $('.code-input').val('');
