@@ -379,6 +379,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         try {
             $this->createVirtualOrder($this->arParams['PERSON_TYPE_ID']);
 
+            $this->prefillPropertiesWithUserData();
+
             $propertiesList = $this->request['properties'] ?? $this->arParams['DEFAULT_PROPERTIES'] ?? [];
             if (!empty($propertiesList)) {
                 $this->setOrderProperties($propertiesList);
@@ -977,4 +979,66 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     {
         return \Bitrix\Currency\CurrencyManager::getBaseCurrency();
     }
+
+    // Добавьте этот метод в класс OpenSourceOrderComponent
+    private function getUserInfo()
+    {
+        global $USER;
+
+        $userID = $USER->GetID();
+
+        if (!$userID) {
+            return false;
+        }
+
+        $user = CUser::GetByID($userID)->Fetch();
+
+        if (!$user) {
+            return false;
+        }
+
+        return array(
+            'EMAIL' => $user['EMAIL'],
+            'NAME' => $user['NAME'],
+            'PHONE' => $user['PERSONAL_PHONE'],
+        );
+    }
+
+    /**
+     * Предзаполнение свойств заказа данными авторизованного пользователя
+     */
+    private function prefillPropertiesWithUserData()
+    {
+        global $USER;
+
+        if (!$USER->IsAuthorized()) {
+            return;
+        }
+
+        $userInfo = $this->getUserInfo();
+        if (!$userInfo) {
+            return;
+        }
+
+        $propertyCollection = $this->order->getPropertyCollection();
+
+        // Маппинг полей пользователя на свойства заказа
+        $mapping = [
+            'NAME' => 'NAME',      // свойство с кодом NAME
+            'FIO' => 'NAME',       // если есть свойство FIO
+            'EMAIL' => 'EMAIL',
+            'PHONE' => 'PHONE',
+        ];
+
+        foreach ($mapping as $propertyCode => $userField) {
+            $property = $propertyCollection->getItemByOrderPropertyCode($propertyCode);
+            if ($property && empty($property->getValue())) {
+                $value = $userInfo[$userField] ?? null;
+                if (!empty($value)) {
+                    $property->setValue($value);
+                }
+            }
+        }
+    }
+
 }

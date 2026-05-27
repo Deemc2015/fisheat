@@ -465,7 +465,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
     <style>
-        .hidden-fields{
+        .hidd3en-fields{
             display: none;
         }
     </style>

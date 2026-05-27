@@ -64,6 +64,31 @@ foreach ($order->getPropertyCollection() as $prop) {
     }
 
     $arResult['PROPERTIES'][$prop->getField('CODE')] = $arProp;
+
+}
+
+
+function getUserInfo(){
+
+    global $USER;
+
+    $userID = $USER->GetID();
+
+    if(!$userID){
+        return false;
+    }
+
+    $user = CUser::GetByID($userID)->Fetch();
+
+    if (!$user) {
+        return false;
+    }
+
+    return array(
+        'EMAIL' => $user['EMAIL'],
+        'NAME' => $user['NAME'],
+        'PHONE' => $user['PERSONAL_PHONE'],
+    );
 }
 
 
