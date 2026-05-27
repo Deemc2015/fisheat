@@ -56,6 +56,18 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
+        $isDisabledUser = $this->isDisabled($userPhone);
+
+        if($isDisabledUser){
+            return [
+                'success' => false,
+                'error' => 'Аккаунт с таким email был ранее удален. '
+                    . 'Вы можете восстановить его, обратившись к администратору.'
+            ];
+
+            return false;
+        }
+
         session_start();
         $_SESSION['auth_phone'] = $userPhone;
 
@@ -327,6 +339,17 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             }
 
             return ['success' => false, 'error' => 'Ошибка регистрации.'];
+        }
+    }
+
+    private function isDisabled($phone)
+    {
+        $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
+
+        if ($arUser = $dbUsers->Fetch()){
+            if($arUser['ACTIVE'] == 'N'){
+                return true;
+            }
         }
     }
 
