@@ -67,7 +67,7 @@
     margin-top: 12px;
     margin-bottom: 12px;
 }
-.modal-auth-step .error-block.show{
+.modal-auth-step .error-block.show,.modal-auth .error-block.show{
     display: block;
 }
 .modal-auth-step .code-input-wrapper{
