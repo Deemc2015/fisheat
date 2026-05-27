@@ -56,13 +56,29 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
             ];
         }
 
+
+        $isBan = $this->isBan($userPhone);
+
+        if($isBan){
+            return [
+                'success' => false,
+                'error' => 'Аккаунт с таким телефоном заблокирован. '
+                    . 'Обратитесь к администратору.'
+            ];
+
+            return false;
+        }
+
+
+
+
         $isDisabledUser = $this->isDisabled($userPhone);
 
         if($isDisabledUser){
             return [
                 'success' => false,
-                'error' => 'Аккаунт с таким email был ранее удален. '
-                    . 'Вы можете восстановить его, обратившись к администратору.'
+                'error' => 'Аккаунт с таким телефоном был ранее удален. '
+                    . 'Для восстановления, обратитесь к администратору.'
             ];
 
             return false;
@@ -342,12 +358,30 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         }
     }
 
+    /**
+     * Проверка пользователя на активность
+     */
     private function isDisabled($phone)
     {
         $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
 
         if ($arUser = $dbUsers->Fetch()){
             if($arUser['ACTIVE'] == 'N'){
+                return true;
+            }
+        }
+    }
+
+
+    /**
+     * Проверка пользователя на блокировку
+     */
+    private function isBan($phone)
+    {
+        $dbUsers = CUser::GetList([], [], ['LOGIN' => $phone]);
+
+        if ($arUser = $dbUsers->Fetch()){
+            if($arUser['BLOCKED'] == 'Y'){
                 return true;
             }
         }
