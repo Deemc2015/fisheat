@@ -60,7 +60,7 @@
 .modal-auth-step input:focus{
     border-color: var(--bg-gray);
 }
-.modal-auth-step .error-block{
+.modal-auth-step .error-block,.modal-auth .error-block{
     display: none;
     color:red;
     font-size:14px;
