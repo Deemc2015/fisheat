@@ -108,7 +108,7 @@ class CProfile extends \CBitrixComponent implements Controllerable
 
         return array(
             'EMAIL' => $user['EMAIL'],
-            'NAME' => $user['TITLE'],
+            'NAME' => $user['NAME'],
             'PHONE' => $user['PERSONAL_PHONE'],
             'BIRTHDAY' => $user['PERSONAL_BIRTHDAY']
         );
@@ -135,7 +135,7 @@ class CProfile extends \CBitrixComponent implements Controllerable
         $userFields = [];
 
         $userFields = [
-            'TITLE' => $post['NAME'] ?? '',
+            'NAME' => $post['NAME'] ?? '',
             'PERSONAL_PHONE' => $phone ?? '',
             'EMAIL' => $post['EMAIL'] ?? ''
         ];
