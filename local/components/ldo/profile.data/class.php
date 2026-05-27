@@ -136,8 +136,9 @@ class CProfile extends \CBitrixComponent implements Controllerable
 
         $userFields = [
             'NAME' => $post['NAME'] ?? '',
-            'PERSONAL_PHONE' => $phone ?? '',
-            'EMAIL' => $post['EMAIL'] ?? ''
+            'PERSONAL_PHONE' => $phone,
+            'EMAIL' => $post['EMAIL'] ?? '',
+            'LOGIN' => $phone
         ];
 
         global $USER;
