@@ -313,6 +313,8 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
         else{
             $resultAuth  = $this->registrationUser($phone);
 
+            $userUpdate = $this->updateUser($resultAuth['ID'],$phone);
+
             if($resultAuth['TYPE'] == 'OK'){
                 $resultAuth = $this->authUser($resultAuth['ID']);
 
@@ -367,6 +369,24 @@ class CUserAuth extends \CBitrixComponent implements Controllerable
 
         return $arResult;
     }
+
+    private function updateUser(int $userId, $phone){
+
+        $user = new CUser;
+
+        $fields = [
+            'EMAIL' => '',
+            'PERSONAL_PHONE' => $phone
+	    ];
+
+        $user->Update($userId, $fields);
+
+        if($user->LAST_ERROR){
+            return $user->LAST_ERROR;
+        }
+
+    }
+
 
     /**
      * Нормализация номера телефона
