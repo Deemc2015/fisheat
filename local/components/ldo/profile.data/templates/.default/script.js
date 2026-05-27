@@ -40,7 +40,7 @@ function saveForm(dataForm) {
             saveButton.innerHTML = originalText;
 
             if (response.data && response.data.success) {
-                //location.reload();
+                location.reload();
             } else {
                 // Ошибка
                 var errorMsg = response.data?.error || 'Произошла ошибка при сохранении';

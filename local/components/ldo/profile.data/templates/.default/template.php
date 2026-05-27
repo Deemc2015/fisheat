@@ -40,16 +40,13 @@ use Bitrix\Main\Localization\Loc;
         <div class="form-group">
             <label for="name">Телефон *</label>
             <div class="input-edit phone">
-                <input type="text" name="PHONE" id="phone" required placeholder="Телефон" value="<?=($arResult['PHONE'] ?? ' ')?>">
-                <?if($arResult['PHONE']):?>
-                    <span class="clear"></span>
-                <?endif;?>
+                <input type="text" name="PHONE" id="phone" required readonly disabled placeholder="Телефон" value="<?=($arResult['PHONE'] ?? ' ')?>">
             </div>
         </div>
         <div class="form-group">
             <label for="name">День рождения </label>
             <div class="input-edit dateB">
-                <input type="text" name="DATEB" id="dateB" <?if($arResult['BIRTHDAY']){echo "readonly";}?> placeholder="__.__.____г." value="<?=($arResult['BIRTHDAY'] ?? ' ')?>">
+                <input type="text" name="DATEB" id="dateB" <?if($arResult['BIRTHDAY']){echo "readonly disabled";}?> placeholder="__.__.____г." value="<?=($arResult['BIRTHDAY'] ?? ' ')?>">
             </div>
         </div>
     </div>

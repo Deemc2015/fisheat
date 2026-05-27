@@ -121,24 +121,18 @@ class CProfile extends \CBitrixComponent implements Controllerable
             $post = $postArray;
         }
 
-        $phone = null;
         if($post['PHONE']){
-            $phone = $this->normalizePhone($post['PHONE']);
-            if ($phone === false) {
                 return [
                     'success' => false,
-                    'error' => 'Неверный формат номера телефона'
+                    'error' => 'Нельзя изменить номер телефона, удалите аккаунт и зайдите с новым номером.'
                 ];
-            }
         }
 
         $userFields = [];
 
         $userFields = [
             'NAME' => $post['NAME'] ?? '',
-            'PERSONAL_PHONE' => $phone,
             'EMAIL' => $post['EMAIL'] ?? '',
-            'LOGIN' => $phone
         ];
 
         global $USER;
