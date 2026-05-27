@@ -30,7 +30,7 @@
             <div id="timer-block" style="display: none; margin-top: 10px; text-align: center; color: #666;">
                 Повторная отправка через <span id="timer-countdown">60</span> секунд
             </div>
-
+            <span class="error-block"></span>
             <button type="submit" id="submit-phone-btn">Получить код</button>
         </form>
         <div class="bottom-auth">

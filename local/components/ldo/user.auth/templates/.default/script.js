@@ -273,14 +273,14 @@ function getNextStep(userPhone){
                 return true;
             }
             if(response.data && response.data.error) {
-                alert(response.data.error);
+                $('.modal-auth .error-block').html(response.data.error);
             }
             return false;
         })
         .catch(function(error) {
             console.error('Ошибка:', error);
             let errorMsg = error.errors?.[0]?.message || 'Ошибка отправки запроса';
-            alert(errorMsg);
+            $('.modal-auth .error-block').html(errorMsg);
             return false;
         });
 }
