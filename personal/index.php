@@ -3,6 +3,10 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetPageProperty("title", "Контактные данные");
 $APPLICATION->SetTitle("Контактные данные");?>
 
+<? if(!$USER->IsAuthorized()){
+    LocalRedirect('/');
+} ?>
+
 <?$APPLICATION->IncludeComponent(
     "ldo:profile.data",
     "",
