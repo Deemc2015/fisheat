@@ -3,13 +3,6 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetPageProperty("title", "Контактные данные");
 $APPLICATION->SetTitle("Контактные данные");?>
 
-<? if(!$USER->IsAuthorized()){
-    LocalRedirect('/');
-} ?>
-
-
-
-
 <?$APPLICATION->IncludeComponent(
     "ldo:profile.data",
     "",
@@ -36,4 +29,6 @@ $APPLICATION->SetTitle("Контактные данные");?>
     <a href="/" class="bonus-detail">Узнать, как получить бонусы</a>
 </section>
 
-<?/*require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");*/?>
+</div>
+    </div>
+<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
