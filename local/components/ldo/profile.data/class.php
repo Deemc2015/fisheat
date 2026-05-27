@@ -175,13 +175,8 @@ class CProfile extends \CBitrixComponent implements Controllerable
     private function deleteUser()
     {
         global $USER;
-
-        if ($USER->GetID() != $this->userId) {
-            return ['success' => false, 'error' => 'Недостаточно прав'];
-        }
-
         $user = new CUser;
-        $result = $user->Delete($this->userId);
+        $result = $user->Delete($USER->GetID());
 
         if ($result) {
             // Очищаем кеш перед удалением
