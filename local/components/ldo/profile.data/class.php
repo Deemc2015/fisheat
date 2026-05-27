@@ -175,18 +175,27 @@ class CProfile extends \CBitrixComponent implements Controllerable
     private function deleteUser()
     {
         global $USER;
+
         $user = new CUser;
-        $result = $user->Delete($USER->GetID());
+
+        $fields = [
+            'ACTIVE' => 'N'
+        ];
+
+        $user = new CUser;
+        $result = $user->Update($USER->GetID(), $fields);
 
         if ($result) {
             // Очищаем кеш перед удалением
-            $this->clearUserCache($this->userId);
+            $this->clearUserCache($USER->GetID());
             $USER->Logout();
             return ['success' => true, 'message' => 'Аккаунт удален'];
         } else {
             return ['success' => false, 'error' => $user->LAST_ERROR];
         }
     }
+
+
 
     /**
      * Нормализация номера телефона
