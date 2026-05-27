@@ -1,10 +1,9 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
-use \Bitrix\Main\Data\Cache;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Data\Cache;
 use Bitrix\Main\Engine\Contract\Controllerable;
-use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Engine\ActionFilter;
 
 class CProfile extends \CBitrixComponent implements Controllerable
@@ -15,37 +14,17 @@ class CProfile extends \CBitrixComponent implements Controllerable
     {
         global $USER;
 
-
         if (!$USER->IsAuthorized()) {
             return false;
         }
 
         $this->userId = $USER->GetID();
 
-
-        $cache = Cache::createInstance();
-
-        if(isset($_GET['clear_cache']) && $_GET['clear_cache'] == 'Y'){
-            $cache->clean('ldo_profile_'.$this->userId);
-        }
-
-        if ($cache->initCache(3600, 'ldo_profile_'.$this->userId)) {
-
-            $this->arResult = $cache->getVars();
-
-        }
-        elseif ($cache->startDataCache()) {
-
-            $this->arResult = $this->getUserData($this->userId);
-
-            $cache->endDataCache($this->arResult); // записываем в кеш
-
-        }
+        // Кеширование данных пользователя
+        $this->arResult = $this->getCachedUserData($this->userId);
 
         $this->includeComponentTemplate();
     }
-
-
 
     public function configureActions()
     {
@@ -63,6 +42,62 @@ class CProfile extends \CBitrixComponent implements Controllerable
         ];
     }
 
+    /**
+     * Получение данных пользователя с кешированием
+     */
+    private function getCachedUserData($userID)
+    {
+        $cache = Cache::createInstance();
+        $cacheKey = 'ldo_profile_data_' . $userID;
+        $cachePath = '/ldo/profile/';
+        $cacheTime = 3600; // 1 час
+
+        // Очищаем кеш если передан параметр
+        if (isset($_GET['clear_cache']) && $_GET['clear_cache'] == 'Y') {
+            $cache->clean($cacheKey, $cachePath);
+        }
+
+        if ($cache->initCache($cacheTime, $cacheKey, $cachePath)) {
+            // Возвращаем данные из кеша
+            return $cache->getVars();
+        } elseif ($cache->startDataCache()) {
+            // Получаем данные из БД
+            $userData = $this->getUserData($userID);
+
+            // Тегируем кеш для возможности групповой очистки
+            $taggedCache = \Bitrix\Main\Application::getInstance()->getTaggedCache();
+            $taggedCache->startTagCache($cachePath);
+            $taggedCache->registerTag('user_data_' . $userID);
+            $taggedCache->registerTag('user_profile_' . $userID);
+            $taggedCache->endTagCache();
+
+            $cache->endDataCache($userData);
+            return $userData;
+        }
+
+        return false;
+    }
+
+    /**
+     * Очистка кеша пользователя
+     */
+    private function clearUserCache($userID)
+    {
+        $cache = Cache::createInstance();
+        $cacheKey = 'ldo_profile_data_' . $userID;
+        $cachePath = '/ldo/profile/';
+
+        // Очищаем основной кеш
+        $cache->clean($cacheKey, $cachePath);
+
+        // Очищаем тегированный кеш
+        $taggedCache = \Bitrix\Main\Application::getInstance()->getTaggedCache();
+        $taggedCache->clearByTag('user_data_' . $userID);
+        $taggedCache->clearByTag('user_profile_' . $userID);
+
+        return true;
+    }
+
     private function getUserData($userID)
     {
         $user = CUser::GetByID($userID)->Fetch();
@@ -70,36 +105,159 @@ class CProfile extends \CBitrixComponent implements Controllerable
         if (!$user) {
             return false;
         }
+
         return array(
             'EMAIL' => $user['EMAIL'],
-            'NAME' => $user['NAME'],
+            'NAME' => $user['TITLE'],
             'PHONE' => $user['PERSONAL_PHONE'],
             'BIRTHDAY' => $user['PERSONAL_BIRTHDAY']
-
         );
     }
 
     public function sendFormAction($post)
     {
-        //$this->arParams = $post['arParams'];
+        if (is_string($post)) {
+            parse_str($post, $postArray);
+            $post = $postArray;
+        }
 
-        return $post;
+        $phone = null;
+        if($post['PHONE']){
+            $phone = $this->normalizePhone($post['PHONE']);
+            if ($phone === false) {
+                return [
+                    'success' => false,
+                    'error' => 'Неверный формат номера телефона'
+                ];
+            }
+        }
 
+        $userFields = [];
+
+        $userFields = [
+            'TITLE' => $post['NAME'] ?? '',
+            'PERSONAL_PHONE' => $phone ?? '',
+            'EMAIL' => $post['EMAIL'] ?? ''
+        ];
+
+        global $USER;
+        $userInfo = $this->getUserData($USER->GetID());
+
+        // Проверка даты рождения
+        if(isset($post['DATEB']) && !empty($post['DATEB'])){
+            $birthdayFromDB = $userInfo['BIRTHDAY'];
+
+            // Если в БД есть дата
+            if(!empty($birthdayFromDB) && $birthdayFromDB !== null && $birthdayFromDB !== ''){
+                // Сравниваем напрямую
+                if($birthdayFromDB !== $post['DATEB']){
+                    return [
+                        'success' => false,
+                        'error' => 'Дата рождения уже указана и не может быть изменена'
+                    ];
+                }
+                // Если даты совпадают - ничего не делаем
+            } else {
+                // Если в БД нет даты - сохраняем
+                $userFields['PERSONAL_BIRTHDAY'] = $post['DATEB'];
+            }
+        }
+
+        $resultUpdate = $this->updateUser($userFields);
+
+        return $resultUpdate;
     }
 
-    public function deleteUserAction($delete){
+    public function deleteUserAction($delete)
+    {
         if($delete == 'Y'){
+            return $this->deleteUser();
+        }
 
+        return ['success' => false, 'error' => 'Неверный параметр'];
+    }
+
+    private function deleteUser()
+    {
+        global $USER;
+
+        if ($USER->GetID() != $this->userId) {
+            return ['success' => false, 'error' => 'Недостаточно прав'];
+        }
+
+        $user = new CUser;
+        $result = $user->Delete($this->userId);
+
+        if ($result) {
+            // Очищаем кеш перед удалением
+            $this->clearUserCache($this->userId);
+            $USER->Logout();
+            return ['success' => true, 'message' => 'Аккаунт удален'];
+        } else {
+            return ['success' => false, 'error' => $user->LAST_ERROR];
         }
     }
 
-    private function delete(){
+    /**
+     * Нормализация номера телефона
+     */
+    private function normalizePhone($phone)
+    {
+        // Удаляем все нецифровые символы
+        $phone = preg_replace('/[^0-9]/', '', $phone);
 
+        // Если номер начинается с 8, заменяем на 7
+        if (strlen($phone) === 11 && $phone[0] === '8') {
+            $phone = '7' . substr($phone, 1);
+            return $phone;
+        }
+
+        // Если номер 10-значный, добавляем 7
+        if (strlen($phone) === 10) {
+            return '7' . $phone;
+        }
+
+        // Если номер уже в международном формате (11-14 цифр)
+        if (strlen($phone) >= 11 && strlen($phone) <= 14) {
+            return $phone;
+        }
+
+        return false;
     }
 
+    /**
+     * Обновление данных пользователя с очисткой кеша
+     */
+    private function updateUser(array $fields)
+    {
+        global $USER;
+        $idUser = $USER->GetID();
 
+        if (!$idUser) {
+            return [
+                'success' => false,
+                'error' => 'Пользователь не авторизован'
+            ];
+        }
 
+        $user = new CUser;
+        $result = $user->Update($idUser, $fields);
 
+        if ($result) {
+            // Очищаем кеш после успешного обновления
+            $this->clearUserCache($idUser);
 
+            return [
+                'success' => true,
+                'message' => 'Данные успешно обновлены',
+                'data' => $fields
+            ];
+        } else {
+            $error = $user->LAST_ERROR ?: 'Ошибка при обновлении данных';
+            return [
+                'success' => false,
+                'error' => $error
+            ];
+        }
+    }
 }
-?>
