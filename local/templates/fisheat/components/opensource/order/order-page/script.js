@@ -137,7 +137,7 @@
                 }
             });
         },
-        // ==============================================
+// ==============================================
 // МЕТОДЫ ДЛЯ ПОДСКАЗОК АДРЕСА (Яндекс.Геокодер)
 // ==============================================
 
@@ -147,28 +147,20 @@
         initAddressSuggest: function() {
             var self = this;
 
-            // Ждем загрузки Яндекс.Карт
             if (typeof ymaps === 'undefined') {
-                this.loadYandexMaps(function() {
-                    self.setupAddressSuggest();
-                });
+                var script = document.createElement('script');
+                script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+                script.onload = function() {
+                    ymaps.ready(function() {
+                        self.setupAddressSuggest();
+                    });
+                };
+                document.head.appendChild(script);
             } else {
                 ymaps.ready(function() {
                     self.setupAddressSuggest();
                 });
             }
-        },
-
-        /**
-         * Загружает скрипт Яндекс.Карт (без API ключа)
-         */
-        loadYandexMaps: function(callback) {
-            var script = document.createElement('script');
-            script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
-            script.onload = function() {
-                ymaps.ready(callback);
-            };
-            document.head.appendChild(script);
         },
 
         /**
@@ -183,27 +175,15 @@
             // Создаем контейнер для подсказок
             var suggestionsContainer = document.createElement('div');
             suggestionsContainer.className = 'address-suggestions';
-            suggestionsContainer.style.cssText = `
-        position: absolute;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1002;
-        display: none;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    `;
+            suggestionsContainer.style.cssText = 'position:absolute;background:white;border:1px solid #ddd;border-radius:4px;max-height:200px;overflow-y:auto;z-index:1002;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.15);';
 
             addressInput.parentNode.style.position = 'relative';
             addressInput.parentNode.appendChild(suggestionsContainer);
 
             var suggestTimeout;
 
-            // Обработчик ввода текста
             addressInput.addEventListener('input', function() {
                 clearTimeout(suggestTimeout);
-
                 var query = this.value.trim();
 
                 if (query.length < 3) {
@@ -216,7 +196,6 @@
                 }, 300);
             });
 
-            // Скрытие подсказок при клике вне
             document.addEventListener('click', function(e) {
                 if (!addressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
                     suggestionsContainer.style.display = 'none';
@@ -224,33 +203,8 @@
             });
 
             addressInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    suggestionsContainer.style.display = 'none';
-                }
+                if (e.key === 'Escape') suggestionsContainer.style.display = 'none';
             });
-
-            // Позиционирование при прокрутке
-            window.addEventListener('scroll', function() {
-                if (suggestionsContainer.style.display === 'block') {
-                    self.positionSuggestionsContainer(addressInput, suggestionsContainer);
-                }
-            });
-
-            window.addEventListener('resize', function() {
-                if (suggestionsContainer.style.display === 'block') {
-                    self.positionSuggestionsContainer(addressInput, suggestionsContainer);
-                }
-            });
-        },
-
-        /**
-         * Позиционирует контейнер с подсказками
-         */
-        positionSuggestionsContainer: function(input, container) {
-            var rect = input.getBoundingClientRect();
-            container.style.top = (rect.bottom + window.scrollY) + 'px';
-            container.style.left = (rect.left + window.scrollX) + 'px';
-            container.style.width = rect.width + 'px';
         },
 
         /**
@@ -258,15 +212,8 @@
          */
         searchAddressSuggestions: function(query, container, input) {
             var self = this;
-
-            // Координаты центра Уфы (можно изменить под ваш город)
-            var center = [54.7355, 55.9587];
-
-            // Ограничиваем поиск областью (радиус ~50 км)
-            var bounds = [
-                [center[0] - 0.5, center[1] - 0.5],
-                [center[0] + 0.5, center[1] + 0.5]
-            ];
+            var center = [54.7355, 55.9587]; // Уфа
+            var bounds = [[center[0] - 0.5, center[1] - 0.5], [center[0] + 0.5, center[1] + 0.5]];
 
             ymaps.geocode(query, {
                 boundedBy: bounds,
@@ -287,55 +234,31 @@
                     var coords = suggestion.geometry.getCoordinates();
 
                     var item = document.createElement('div');
-                    item.className = 'suggestion-item';
                     item.textContent = address;
-                    item.style.cssText = `
-                padding: 8px 12px;
-                cursor: pointer;
-                border-bottom: 1px solid #f0f0f0;
-                font-size: 14px;
-            `;
+                    item.style.cssText = 'padding:8px 12px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:14px;';
 
-                    item.addEventListener('mouseenter', function() {
-                        this.style.backgroundColor = '#f5f5f5';
-                    });
-
-                    item.addEventListener('mouseleave', function() {
-                        this.style.backgroundColor = 'white';
-                    });
-
+                    item.addEventListener('mouseenter', function() { this.style.backgroundColor = '#f5f5f5'; });
+                    item.addEventListener('mouseleave', function() { this.style.backgroundColor = 'white'; });
                     item.addEventListener('click', function() {
-                        self.selectAddressSuggestion(address, coords, input);
+                        input.value = address;
+                        input.setAttribute('data-lat', coords[0]);
+                        input.setAttribute('data-lon', coords[1]);
                         container.style.display = 'none';
                     });
 
                     container.appendChild(item);
                 });
 
-                self.positionSuggestionsContainer(input, container);
+                var rect = input.getBoundingClientRect();
+                container.style.top = (rect.bottom + window.scrollY) + 'px';
+                container.style.left = (rect.left + window.scrollX) + 'px';
+                container.style.width = rect.width + 'px';
                 container.style.display = 'block';
 
             }).catch(function(error) {
                 console.error('Ошибка поиска подсказок:', error);
                 container.style.display = 'none';
             });
-        },
-
-        /**
-         * Выбор подсказки
-         */
-        selectAddressSuggestion: function(address, coords, input) {
-            input.value = address;
-            input.setAttribute('data-lat', coords[0]);
-            input.setAttribute('data-lon', coords[1]);
-
-            // Визуальная индикация
-            input.style.borderColor = '#4caf50';
-            setTimeout(function() {
-                input.style.borderColor = '';
-            }, 2000);
-
-            console.log('Выбран адрес:', address, 'Координаты:', coords);
         },
 
         /**
