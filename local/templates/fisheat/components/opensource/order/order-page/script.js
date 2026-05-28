@@ -172,6 +172,12 @@
 
             if (!addressInput) return;
 
+            // Создаем карту (невидимую) для получения bounds
+            var map = new ymaps.Map(document.createElement('div'), {
+                center: [54.7355, 55.9587],
+                zoom: 11
+            });
+
             // Создаем контейнер для подсказок
             var suggestionsContainer = document.createElement('div');
             suggestionsContainer.className = 'address-suggestions';
@@ -192,7 +198,7 @@
                 }
 
                 suggestTimeout = setTimeout(function() {
-                    self.searchAddressSuggestions(query, suggestionsContainer, addressInput);
+                    self.searchAddressSuggestions(query, suggestionsContainer, addressInput, map);
                 }, 300);
             });
 
@@ -210,10 +216,8 @@
         /**
          * Поиск подсказок через геокодер Яндекса
          */
-        searchAddressSuggestions: function(query, container, input) {
-            var self = this;
-            var center = [54.7355, 55.9587]; // Уфа
-            var bounds = [[center[0] - 0.5, center[1] - 0.5], [center[0] + 0.5, center[1] + 0.5]];
+        searchAddressSuggestions: function(query, container, input, map) {
+            var bounds = map.getBounds();
 
             ymaps.geocode(query, {
                 boundedBy: bounds,
