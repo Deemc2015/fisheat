@@ -434,6 +434,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'deleteAddress' => [
                 'prefilters' => [],
             ],
+            'addAddress' => [
+                'prefilters' => [],
+            ],
             'getBasketItemData' => [
                 'prefilters' => [],
             ],
@@ -844,10 +847,28 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         }
 
+    }
 
+    public function addAddressAction($dataAddress){
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
 
+        if($dataAddress['action'] !='addAddress'){
+            return [
+                'success' => false,
+                'error' => 'Неизвестный тип операции'
+            ];
+        }
+
+        return $dataAddress;
 
     }
+
 
     public function changePromoAction($dataPromo)
     {

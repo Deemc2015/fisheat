@@ -1042,7 +1042,7 @@ section#viewed{
     right: -1px;
     padding-top: 3px;
 }
-.modal-delete{
+.modal-delete,.modal-add-address{
     position: fixed;
     left: 0;
     right: 0;
@@ -1060,6 +1060,9 @@ section#viewed{
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Стандартный синтаксис */
 }
+.modal-add-address.show{
+    display: block;
+}
 .modal-auth{
     position: fixed;
     left: 0;
@@ -1074,7 +1077,7 @@ section#viewed{
     z-index: 6;
     display: none;
 }
-.modal-auth button{
+.modal-auth button,.modal-add-address button{
     background: var(--bg-button);
     font-size: 18px;
     text-align: center;
@@ -1090,6 +1093,32 @@ section#viewed{
     margin-top: 12px;
     transition: all .3s;
     line-height: 1;
+    font-family: 'Blogger Sans', 'Roboto';
+}
+.modal-add-address button{
+    font-weight:normal;
+}
+.modal-add-address .button-modal{
+    display: flex;
+}
+.modal-add-address .close-modal-btn{
+    background: #f1f1f5;
+    color:#000000;
+    font-size: 18px;
+    text-align: center;
+    display: block;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    width: 100%;
+    padding: 17px 0;
+    outline:none;
+    border:none !important;
+    margin-top: 12px;
+    transition: all .3s;
+    line-height: 1;
+    margin-left: 12px;
+    font-weight:normal;
 }
 .modal-auth button:hover {
     opacity: 0.7;
@@ -1109,6 +1138,22 @@ section#viewed{
     inline-size: 100%;
     padding-block: 14px 15px;
     padding-inline: 46px 14px;
+    font-size: 18px;
+    line-height: 1;
+    transition: all .3s;
+    position: relative;
+    font-family: 'Blogger Sans', 'Roboto';
+}
+.modal-add-address input{
+    color: #242424;
+    z-index: 1;
+    background-color: #f1f1f5;
+    border: 1px solid #f1f1f5;
+    border-radius: 6px;
+    block-size: 52px;
+    inline-size: 100%;
+    padding-block: 14px 15px;
+    padding-inline: 14px 14px;
     font-size: 18px;
     line-height: 1;
     transition: all .3s;
@@ -1137,7 +1182,7 @@ section#viewed{
     top: 15px;
     left: 15px;
 }
-.modal-auth .close-modal{
+.modal-auth .close-modal,.modal-add-address .close-modal{
     background: url('../images/close-modal.png') no-repeat;
     position: absolute;
     width: 26px;

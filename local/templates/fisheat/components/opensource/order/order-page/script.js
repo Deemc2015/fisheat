@@ -73,8 +73,515 @@
             this.initPersonCount();                  // Инициализация блока персон
             this.initAddressDelete();                // Удаление адреса доставки
             this.initPromoType();
+            this.initAddAddressModal(); //Модальное окно добавления адреса
+            this.initAddressSuggest(); //Подсказки адреса
+        },
+        /**
+         * Инициализация модального окна добавления адреса
+         */
+        initAddAddressModal: function() {
+            var self = this;
+
+            // Находим кнопку открытия модального окна
+            var addAddressBtn = document.querySelector('.addAdress-user');
+            var modal = document.querySelector('.modal-add-address');
+            var wrp = document.querySelector('.wrp');
+
+            if (!addAddressBtn || !modal || !wrp) return;
+
+            // Обработчик открытия модального окна
+            BX.unbindAll(addAddressBtn);
+            BX.bind(addAddressBtn, 'click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                self.openAddAddressModal();
+            });
+
+            // Обработчики закрытия
+            var closeBtn = modal.querySelector('.close-modal');
+            var closeModalBtn = modal.querySelector('.close-modal-btn');
+
+            if (closeBtn) {
+                BX.unbindAll(closeBtn);
+                BX.bind(closeBtn, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self.closeAddAddressModal();
+                });
+            }
+
+            if (closeModalBtn) {
+                BX.unbindAll(closeModalBtn);
+                BX.bind(closeModalBtn, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self.closeAddAddressModal();
+                });
+            }
+
+            // Обработчик отправки формы
+            var form = modal.querySelector('form');
+            if (form) {
+                BX.unbindAll(form);
+                BX.bind(form, 'submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    self.addAddress(form);
+                });
+            }
+
+            // Закрытие по клику на подложку
+            BX.bind(wrp, 'click', function(event) {
+                if (event.target === wrp) {
+                    self.closeAddAddressModal();
+                }
+            });
+        },
+        // ==============================================
+// МЕТОДЫ ДЛЯ ПОДСКАЗОК АДРЕСА (Яндекс.Геокодер)
+// ==============================================
+
+        /**
+         * Инициализация подсказок адреса
+         */
+        initAddressSuggest: function() {
+            var self = this;
+
+            // Ждем загрузки Яндекс.Карт
+            if (typeof ymaps === 'undefined') {
+                this.loadYandexMaps(function() {
+                    self.setupAddressSuggest();
+                });
+            } else {
+                ymaps.ready(function() {
+                    self.setupAddressSuggest();
+                });
+            }
         },
 
+        /**
+         * Загружает скрипт Яндекс.Карт (без API ключа)
+         */
+        loadYandexMaps: function(callback) {
+            var script = document.createElement('script');
+            script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+            script.onload = function() {
+                ymaps.ready(callback);
+            };
+            document.head.appendChild(script);
+        },
+
+        /**
+         * Настройка подсказок для поля ввода адреса
+         */
+        setupAddressSuggest: function() {
+            var self = this;
+            var addressInput = document.querySelector('.modal-add-address input[name="ADDRESS"]');
+
+            if (!addressInput) return;
+
+            // Создаем контейнер для подсказок
+            var suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'address-suggestions';
+            suggestionsContainer.style.cssText = `
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1002;
+        display: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    `;
+
+            addressInput.parentNode.style.position = 'relative';
+            addressInput.parentNode.appendChild(suggestionsContainer);
+
+            var suggestTimeout;
+
+            // Обработчик ввода текста
+            addressInput.addEventListener('input', function() {
+                clearTimeout(suggestTimeout);
+
+                var query = this.value.trim();
+
+                if (query.length < 3) {
+                    suggestionsContainer.style.display = 'none';
+                    return;
+                }
+
+                suggestTimeout = setTimeout(function() {
+                    self.searchAddressSuggestions(query, suggestionsContainer, addressInput);
+                }, 300);
+            });
+
+            // Скрытие подсказок при клике вне
+            document.addEventListener('click', function(e) {
+                if (!addressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
+
+            addressInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    suggestionsContainer.style.display = 'none';
+                }
+            });
+
+            // Позиционирование при прокрутке
+            window.addEventListener('scroll', function() {
+                if (suggestionsContainer.style.display === 'block') {
+                    self.positionSuggestionsContainer(addressInput, suggestionsContainer);
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (suggestionsContainer.style.display === 'block') {
+                    self.positionSuggestionsContainer(addressInput, suggestionsContainer);
+                }
+            });
+        },
+
+        /**
+         * Позиционирует контейнер с подсказками
+         */
+        positionSuggestionsContainer: function(input, container) {
+            var rect = input.getBoundingClientRect();
+            container.style.top = (rect.bottom + window.scrollY) + 'px';
+            container.style.left = (rect.left + window.scrollX) + 'px';
+            container.style.width = rect.width + 'px';
+        },
+
+        /**
+         * Поиск подсказок через геокодер Яндекса
+         */
+        searchAddressSuggestions: function(query, container, input) {
+            var self = this;
+
+            // Координаты центра Уфы (можно изменить под ваш город)
+            var center = [54.7355, 55.9587];
+
+            // Ограничиваем поиск областью (радиус ~50 км)
+            var bounds = [
+                [center[0] - 0.5, center[1] - 0.5],
+                [center[0] + 0.5, center[1] + 0.5]
+            ];
+
+            ymaps.geocode(query, {
+                boundedBy: bounds,
+                strictBounds: true,
+                results: 5
+            }).then(function(res) {
+                var suggestions = res.geoObjects;
+
+                if (suggestions.length === 0) {
+                    container.style.display = 'none';
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                suggestions.each(function(suggestion) {
+                    var address = suggestion.getAddressLine();
+                    var coords = suggestion.geometry.getCoordinates();
+
+                    var item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.textContent = address;
+                    item.style.cssText = `
+                padding: 8px 12px;
+                cursor: pointer;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 14px;
+            `;
+
+                    item.addEventListener('mouseenter', function() {
+                        this.style.backgroundColor = '#f5f5f5';
+                    });
+
+                    item.addEventListener('mouseleave', function() {
+                        this.style.backgroundColor = 'white';
+                    });
+
+                    item.addEventListener('click', function() {
+                        self.selectAddressSuggestion(address, coords, input);
+                        container.style.display = 'none';
+                    });
+
+                    container.appendChild(item);
+                });
+
+                self.positionSuggestionsContainer(input, container);
+                container.style.display = 'block';
+
+            }).catch(function(error) {
+                console.error('Ошибка поиска подсказок:', error);
+                container.style.display = 'none';
+            });
+        },
+
+        /**
+         * Выбор подсказки
+         */
+        selectAddressSuggestion: function(address, coords, input) {
+            input.value = address;
+            input.setAttribute('data-lat', coords[0]);
+            input.setAttribute('data-lon', coords[1]);
+
+            // Визуальная индикация
+            input.style.borderColor = '#4caf50';
+            setTimeout(function() {
+                input.style.borderColor = '';
+            }, 2000);
+
+            console.log('Выбран адрес:', address, 'Координаты:', coords);
+        },
+
+        /**
+         * Открывает модальное окно добавления адреса
+         */
+        openAddAddressModal: function() {
+            var modal = document.querySelector('.modal-add-address');
+            var wrp = document.querySelector('.wrp');
+
+            if (!modal || !wrp) return;
+
+            // Очищаем форму
+            var form = modal.querySelector('form');
+            if (form) {
+                form.reset();
+            }
+
+            // Убираем предыдущие ошибки
+            var errorDiv = modal.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+
+            // Показываем модальное окно
+            BX.addClass(wrp, 'show');
+            BX.addClass(modal, 'show');
+
+            // Фокус на поле ввода
+            var addressInput = modal.querySelector('input[name="ADDRESS"]');
+            if (addressInput) {
+                setTimeout(function() {
+                    addressInput.focus();
+                }, 100);
+            }
+        },
+
+        /**
+         * Закрывает модальное окно добавления адреса
+         */
+        closeAddAddressModal: function() {
+            var modal = document.querySelector('.modal-add-address');
+            var wrp = document.querySelector('.wrp');
+
+            if (modal && wrp) {
+                BX.removeClass(wrp, 'show');
+                BX.removeClass(modal, 'show');
+            }
+        },
+
+        /**
+         * Добавляет новый адрес через AJAX
+         * @param {HTMLFormElement} form - форма с данными адреса
+         */
+        addAddress: function(form) {
+            var self = this;
+            var addressInput = form.querySelector('input[name="ADDRESS"]');
+            var address = addressInput ? addressInput.value.trim() : '';
+
+            // Получаем координаты из data-атрибутов (если были выбраны через подсказки)
+            var lat = addressInput ? addressInput.getAttribute('data-lat') : null;
+            var lon = addressInput ? addressInput.getAttribute('data-lon') : null;
+
+            if (!address) {
+                this.showAddressFormError('Пожалуйста, введите адрес');
+                return;
+            }
+
+            var submitBtn = form.querySelector('.add-btn');
+            var originalBtnText = submitBtn ? submitBtn.textContent : 'Добавить';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Добавление...';
+            }
+
+            var sessidInput = form.querySelector('input[name="sessid"]');
+            var sessid = sessidInput ? sessidInput.value : BX.bitrix_sessid();
+
+            var data = {
+                action: 'addAddress',
+                address: address,
+                lat: lat,
+                lon: lon,
+                sessid: sessid
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'addAddress', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataAddress: data }
+            })
+                .then(function(response) {
+                    console.log('Ответ при добавлении адреса:', response);
+
+                    if (response.data && response.data.success) {
+                        self.showSuccessMessage('Адрес успешно добавлен');
+                        self.closeAddAddressModal();
+
+                        // Очищаем data-атрибуты
+                        if (addressInput) {
+                            addressInput.removeAttribute('data-lat');
+                            addressInput.removeAttribute('data-lon');
+                        }
+
+                        if (response.data.addressListHtml) {
+                            self.updateAddressList(response.data.addressListHtml);
+                        } else if (response.data.address) {
+                            self.addAddressToDom(response.data.address, response.data.addressId);
+                        }
+
+                        BX.onCustomEvent('OnAddressAdded', [{
+                            address: response.data.address,
+                            addressId: response.data.addressId,
+                            lat: response.data.lat,
+                            lon: response.data.lon
+                        }]);
+                    } else {
+                        var errorMsg = response.data && response.data.error
+                            ? response.data.error
+                            : 'Ошибка при добавлении адреса';
+                        self.showAddressFormError(errorMsg);
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    }
+                })
+                .catch(function(error) {
+                    console.error('AJAX ошибка при добавлении адреса:', error);
+                    self.showAddressFormError('Ошибка соединения с сервером');
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    }
+                });
+        },
+
+        /**
+         * Показывает ошибку в форме добавления адреса
+         * @param {string} message - текст ошибки
+         */
+        showAddressFormError: function(message) {
+            var modal = document.querySelector('.modal-add-address');
+            if (!modal) return;
+
+            // Удаляем старую ошибку, если есть
+            var oldError = modal.querySelector('.error-message');
+            if (oldError) {
+                oldError.remove();
+            }
+
+            // Создаем элемент с ошибкой
+            var errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.style.color = 'red';
+            errorDiv.style.fontSize = '12px';
+            errorDiv.style.marginTop = '5px';
+            errorDiv.style.marginBottom = '10px';
+            errorDiv.textContent = message;
+
+            // Вставляем ошибку после поля ввода
+            var formBlock = modal.querySelector('.form-block-address');
+            if (formBlock) {
+                formBlock.appendChild(errorDiv);
+            }
+
+            // Подсвечиваем поле ввода
+            var addressInput = modal.querySelector('input[name="ADDRESS"]');
+            if (addressInput) {
+                BX.addClass(addressInput, 'error');
+                setTimeout(function() {
+                    BX.removeClass(addressInput, 'error');
+                }, 3000);
+            }
+        },
+
+        /**
+         * Обновляет список адресов на странице
+         * @param {string} html - HTML-код нового списка адресов
+         */
+        updateAddressList: function(html) {
+            var addressListContainer = document.querySelector('.adress-user-list');
+            if (addressListContainer && html) {
+                addressListContainer.innerHTML = html;
+                // Переинициализируем обработчики для новых адресов
+                this.initAddressDelete();
+            }
+        },
+
+        /**
+         * Добавляет новый адрес в DOM вручную (если сервер не вернул готовый HTML)
+         * @param {string} address - текст адреса
+         * @param {number|string} addressId - ID адреса
+         */
+        addAddressToDom: function(address, addressId) {
+            var addressList = document.querySelector('.adress-user-list');
+            if (!addressList) return;
+
+            // Создаем новый элемент адреса
+            var addressItem = document.createElement('div');
+            addressItem.className = 'adress-user-list__item';
+
+            // Создаем радио-кнопку
+            var radioId = 'address_' + addressId;
+            var radioHtml = '<label class="adress-user-list__label">' +
+                '<input type="radio" name="address_id" value="' + addressId + '" data-id="' + addressId + '">' +
+                '<span class="adress-user-list__text">' + this.escapeHtml(address) + '</span>' +
+                '</label>' +
+                '<div class="adress-user-list__item-btn-delete"></div>';
+
+            addressItem.innerHTML = radioHtml;
+
+            // Добавляем в конец списка
+            addressList.appendChild(addressItem);
+
+            // Инициализируем обработчик удаления для нового адреса
+            this.initAddressDelete();
+
+            // Автоматически выбираем добавленный адрес
+            var radio = addressItem.querySelector('input[name="address_id"]');
+            if (radio) {
+                radio.checked = true;
+                // Триггер события выбора адреса, если нужно
+                BX.onCustomEvent('OnAddressSelected', [{
+                    addressId: addressId,
+                    address: address
+                }]);
+            }
+        },
+
+        /**
+         * Экранирует HTML-спецсимволы для безопасной вставки
+         * @param {string} str - строка для экранирования
+         * @returns {string} - экранированная строка
+         */
+        escapeHtml: function(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        },
 
         //
         // * Инициализация блока с граммами

@@ -498,7 +498,22 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         <div class="cancel">Отмена</div>
         <div class="delete">Да</div>
     </div>
-    <?=bitrix_sessid_post()?>"
+    <?=bitrix_sessid_post()?>
 
+</div>
+
+<div class="modal-add-address">
+    <span class="close-modal"></span>
+    <div class="top-title">Добавление адреса</div>
+    <form action="#" method="POST">
+        <div class="form-block-address">
+            <input type="text" name="ADDRESS" placeholder="Введите адрес">
+        </div>
+        <div class="button-modal">
+            <button type="submit" class="add-btn">Добавить</button>
+            <div class="close-modal-btn">Закрыть</div>
+        </div>
+        <?=bitrix_sessid_post()?>
+    </form>
 </div>
 
