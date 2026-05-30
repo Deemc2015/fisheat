@@ -25,6 +25,7 @@ use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Engine\ActionFilter;
 use \Ldo\Develop\Hlblock;
 
+
 class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerable
 {
     /**
@@ -818,7 +819,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
-        if($dataAddress['action'] !='deleteAddress'){
+        if($dataAddress['action'] != 'deleteAddress'){
             return [
                 'success' => false,
                 'error' => 'Неизвестный тип операции'
@@ -834,19 +835,26 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         $addressId = (int)$dataAddress['addressId'];
 
-        if(Loader::includeModule('ldo.develop')){
-
-            $deleteResult = Hlblock::deleteAddress($addressId);
-
-            if($deleteResult){
-                return [
-                    'success' => true,
-                    'message' => 'Адрес успешно удален'
-                ];
-            }
-
+        if(!Loader::includeModule('ldo.develop')){
+            return [
+                'success' => false,
+                'error' => 'Модуль ldo.develop не найден'
+            ];
         }
 
+        $deleteResult = Hlblock::deleteAddress($addressId);
+
+        if($deleteResult){
+            return [
+                'success' => true,
+                'message' => 'Адрес успешно удален'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'error' => 'Не удалось удалить адрес'
+            ];
+        }
     }
 
     public function addAddressAction($dataAddress){
@@ -865,7 +873,25 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
-        return $dataAddress;
+        global $USER;
+
+        $fields = [
+            'UF_ADDRESS' => $dataAddress['address'],
+            'UF_SHIRINA' => 321312,
+            'UF_DOLGOTA' => 123123,
+            'UF_MINIMAL_SUM' => 323212,
+            'UF_PRICE' => 321,
+            'UF_FREE_DELIVERY' => 500,
+            'UF_USER_ID' => $USER->GetID(), // ID пользователя
+        ];
+
+        if(Loader::includeModule('ldo.develop')){
+            $addAddres = Hlblock::add($fields, 'adress_user');
+
+            return $addAddres;
+        }
+
+
 
     }
 

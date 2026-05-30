@@ -407,3 +407,10 @@ $arResult['SUM_DISPLAY'] = SaleFormatCurrency(
     $arResult['SUM'],
     $arResult['CURRENCY']
 );
+
+
+/*Тестовые данные*/
+$arResult['RESTORAN_ADRESS'] = [
+    ["ID" =>1, "NAME"=> "Название ресторана","CHECKED" => "Y"],
+    ["ID" =>2, "NAME"=> "Название второго ресторана"]
+];

@@ -44,6 +44,35 @@ class Iblock
 
     }
 
+
+    public static function add(string $iblockName, array $fields): int|false
+    {
+        try {
+            if(!$iblockName){
+                throw new SystemException('Инфоблок не передан');
+            }
+
+            // Формируем полное имя класса
+            $className = '\\Bitrix\\Iblock\\Elements\\Element' . ucfirst($iblockName) . 'Table';
+
+            if (!class_exists($className)) {
+                throw new \Exception("Класс для инфоблока {$iblockName} не найден");
+            }
+
+            $result = $className::add($fields);
+
+            if(!$result->isSuccess()){
+                throw new SystemException('Ошибка при добавлении элемента: ' . implode(', ', $result->getErrorMessages()));
+            }
+
+            return $result->getId();
+
+        } catch (Exception $e){
+            echo 'Ошибка: ' . $e->getMessage();
+            return false;
+        }
+    }
+
 }
 
 

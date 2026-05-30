@@ -194,7 +194,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endif?>
 
 
+
                 <?if($arResult['USER_ADRESS']):?>
+
+
+
                     <div class="adress-user-list">
 
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
@@ -350,9 +354,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <? endforeach;?>
                 <?if($arResult['DELIVERY_LIST']):?>
                     <div class="delivery-block__butons">
-                <?
-                $i == 1;
-                foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
+                <? foreach($arResult['DELIVERY_LIST'] as $itemDelivery):
                     ?>
                         <label for="code-<?=$itemDelivery['ID']?>">
                             <input <?if($arParams['DEFAULT_DELIVERY_ID'] == $itemDelivery['ID']){echo 'checked';}?>  type="radio" id="code-<?=$itemDelivery['ID']?>" name="delivery_id" value="<?=$itemDelivery['ID']?>" <?=$itemDelivery['CHECKED'] ? 'checked' : ''?>>
@@ -362,26 +364,45 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endforeach;?>
                     </div>
                 <?endif?>
-            <?if($arResult['USER_ADRESS']):?>
-            <div class="adress-user-list">
-
-                    <?foreach($arResult['USER_ADRESS'] as $adress):?>
-                    <?//print_r($adress);?>
-                        <div class="adress-user-list__item">
-                            <label for="adress-user-list__item-name-<?=$adress['ID']?>">
-                                <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
-                                <span></span>
-                                <?=$adress['ADRESS_NAME']?>
-                            </label>
-                            <div class="adress-user-list__item-btn">
-                                <div class="adress-user-list__item-btn-edit"></div>
-                                <div class="adress-user-list__item-btn-delete"></div>
+            <div class="dostavka-block">
+                <?if($arResult['USER_ADRESS']):?>
+                    <div class="adress-user-list">
+                        <?foreach($arResult['USER_ADRESS'] as $adress):?>
+                            <div class="adress-user-list__item">
+                                <label for="adress-user-list__item-name-<?=$adress['ID']?>">
+                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                    <span></span>
+                                    <?=$adress['ADRESS_NAME']?>
+                                </label>
+                                <div class="adress-user-list__item-btn">
+                                    <div class="adress-user-list__item-btn-edit"></div>
+                                    <div class="adress-user-list__item-btn-delete"></div>
+                                </div>
                             </div>
-                        </div>
-                    <?endforeach?>
+                        <?endforeach?>
+                    </div>
+                <?endif?>
+                <div class="addAdress-user">Добавить адрес</div>
             </div>
-            <?endif?>
-            <div class="addAdress-user">Добавить адрес</div>
+            <div class="samovivoz-block">
+                <div class="restorans-list">
+                <?if($arResult['RESTORAN_ADRESS']):?>
+                        <?foreach($arResult['RESTORAN_ADRESS'] as $restoran):?>
+                        <div class="restorans-list__item">
+                            <label for="restorans-list__item-name-<?=$restoran['ID']?>">
+                                <input data-id="<?=$restoran['ID']?>"  name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
+                                <span></span>
+                                <?=$restoran['NAME']?>
+                            </label>
+                        </div>
+                        <?endforeach?>
+
+                    <?endif?>
+                </div>
+
+                <div class="view-map-restotans">Показать на карте</div>
+            </div>
+
         </div>
         <?endif?>
         <div class="total-order-block">
@@ -505,7 +526,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 <div class="modal-add-address">
     <span class="close-modal"></span>
     <div class="top-title">Добавление адреса</div>
-    <form action="#" method="POST">
+    <form type="" action="#" method="POST">
         <div class="form-block-address">
             <input type="text" name="ADDRESS" placeholder="Введите адрес">
         </div>

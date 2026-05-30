@@ -43,7 +43,9 @@ AcritBonusInOrderOpensourceIntegration::init();
 		"DEFAULT_PERSON_TYPE_ID" => "1",
 		"DEFAULT_DELIVERY_ID" => "2",
 		"DEFAULT_PAY_SYSTEM_ID" => "3",
-		"PATH_TO_BASKET" => "/personal/cart/"
+		"PATH_TO_BASKET" => "/personal/cart/",
+		"COMPOSITE_FRAME_MODE" => "A",
+		"COMPOSITE_FRAME_TYPE" => "AUTO"
 	),
 	false
 );?>

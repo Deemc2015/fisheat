@@ -2021,7 +2021,7 @@ footer .copyright{
  .delivery-block__butons label:first-child div{
     margin-right: 12px;
 }
- .adress-user-list__item span{
+ .adress-user-list__item span,.restorans-list__item span{
     width: 20px;
     min-width: 20px;
     height: 20px;
@@ -2033,7 +2033,7 @@ footer .copyright{
     margin-right: 13px;
 }
 
- .adress-user-list__item input:checked + span:before{
+ .adress-user-list__item input:checked + span:before,.restorans-list__item input:checked + span:before{
     content:'';
     width: 10px;
     height: 10px;
@@ -2044,14 +2044,14 @@ footer .copyright{
     left: 4px;
     top:4px;
 }
-.adress-user-list__item,.adress-user-list__item label{
+.adress-user-list__item,.adress-user-list__item label ,.restorans-list__item,.restorans-list__item label{
     display: flex;
     cursor:pointer;
     font-size:18px;
 }
  .adress-user-list__item-btn{
     display: flex;
-    margin-left: 74px;
+    margin-left: auto;
 }
  .adress-user-list__item-btn div{
     width: 18px;
@@ -2064,25 +2064,26 @@ footer .copyright{
  .adress-user-list__item-btn-delete{
     background: url('../images/delete-icon.svg') no-repeat;
 }
-.adress-user-list{
+.adress-user-list,.restorans-list{
     margin-top: 36px;
 }
-.adress-user-list__item{
+.adress-user-list__item,.restorans-list__item{
     margin-bottom: 20px;
 }
- .addAdress-user{
-    color: #ffffff;
-    background: #F44336;
-    width: 169px;
-    text-align: center;
-    padding: 16px 0;
-    font-size:18px;
-    border-radius:6px;
-    cursor:pointer;
-    transition:all .3s;
-    margin-top: 23px;
+ .addAdress-user,.view-map-restotans{
+     color: #ffffff;
+     background: #F44336;
+     width: auto;
+     text-align: center;
+     padding: 16px 10px;
+     font-size: 18px;
+     border-radius: 6px;
+     cursor: pointer;
+     transition: all .3s;
+     margin-top: 23px;
+     display: inline-block;
 }
- .addAdress-user:hover{
+ .addAdress-user:hover,.view-map-restotans:hover{
     opacity:0.7;
 }
 .hidden-pk{

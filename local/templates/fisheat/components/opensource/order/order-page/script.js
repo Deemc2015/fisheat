@@ -75,6 +75,49 @@
             this.initPromoType();
             this.initAddAddressModal(); //Модальное окно добавления адреса
             this.initAddressSuggest(); //Подсказки адреса
+
+            // НОВЫЕ МЕТОДЫ
+            this.initDeliveryToggle();      // Переключение доставка/самовывоз
+            this.initAddressSelect();       // Выбор адреса доставки
+            this.initRestaurantSelect();    // Выбор ресторана самовывоза
+            // Устанавливаем правильный заголовок при загрузке страницы
+            this.initTimeDeliveryTitle();
+            // привязка отправки формы
+            this.bindFormSubmit();
+        },
+        /**
+         * Инициализация заголовка блока времени при загрузке страницы
+         */
+        initTimeDeliveryTitle: function() {
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            if (selectedDelivery) {
+                var label = selectedDelivery.closest('label');
+                if (label) {
+                    var nameElement = label.querySelector('.delivery-name');
+                    if (nameElement) {
+                        var deliveryName = nameElement.textContent.trim();
+                        if (deliveryName.toLowerCase() === 'самовывоз') {
+                            this.updateTimeDeliveryTitle('самовывоза');
+                            this.hideDeliveryPrice();
+                        } else {
+                            this.updateTimeDeliveryTitle('доставки');
+                            this.showDeliveryPrice();
+                        }
+                    }
+                }
+            }
+        },
+        /**
+         * Привязывает обработчик отправки формы
+         */
+        bindFormSubmit: function() {
+            var form = document.getElementById('os-order-form');
+            if (form) {
+                BX.unbindAll(form);
+                BX.bind(form, 'submit', BX.proxy(function(event) {
+                    this.saveDeliveryState();
+                }, this));
+            }
         },
         /**
          * Инициализация модального окна добавления адреса
@@ -82,20 +125,37 @@
         initAddAddressModal: function() {
             var self = this;
 
-            // Находим кнопку открытия модального окна
+            // Находим кнопку открытия модального окна (добавление нового адреса)
             var addAddressBtn = document.querySelector('.addAdress-user');
             var modal = document.querySelector('.modal-add-address');
             var wrp = document.querySelector('.wrp');
 
             if (!addAddressBtn || !modal || !wrp) return;
 
-            // Обработчик открытия модального окна
+            // Обработчик открытия для добавления
             BX.unbindAll(addAddressBtn);
-            BX.bind(addAddressBtn, 'click', function(event) {
+            BX.bind(addAddressBtn, 'click', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
-                self.openAddAddressModal();
+                self.openAddAddressModal('add');
             });
+
+            // Обработчики для кнопок редактирования (назначаем через делегирование)
+            self.bindEditAddressButtons();
+
+            // Также отслеживаем появление новых кнопок редактирования при обновлении списка адресов
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.addedNodes.length) {
+                        self.bindEditAddressButtons();
+                    }
+                });
+            });
+
+            var addressList = document.querySelector('.adress-user-list');
+            if (addressList) {
+                observer.observe(addressList, {childList: true, subtree: true});
+            }
 
             // Обработчики закрытия
             var closeBtn = modal.querySelector('.close-modal');
@@ -103,7 +163,7 @@
 
             if (closeBtn) {
                 BX.unbindAll(closeBtn);
-                BX.bind(closeBtn, 'click', function(event) {
+                BX.bind(closeBtn, 'click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     self.closeAddAddressModal();
@@ -112,7 +172,7 @@
 
             if (closeModalBtn) {
                 BX.unbindAll(closeModalBtn);
-                BX.bind(closeModalBtn, 'click', function(event) {
+                BX.bind(closeModalBtn, 'click', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     self.closeAddAddressModal();
@@ -123,7 +183,7 @@
             var form = modal.querySelector('form');
             if (form) {
                 BX.unbindAll(form);
-                BX.bind(form, 'submit', function(event) {
+                BX.bind(form, 'submit', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     self.addAddress(form);
@@ -131,11 +191,52 @@
             }
 
             // Закрытие по клику на подложку
-            BX.bind(wrp, 'click', function(event) {
+            BX.bind(wrp, 'click', function (event) {
                 if (event.target === wrp) {
                     self.closeAddAddressModal();
                 }
             });
+        },
+        /**
+         * Привязывает обработчики ко всем кнопкам редактирования адреса
+         */
+        bindEditAddressButtons: function() {
+            var self = this;
+            var editButtons = document.querySelectorAll('.adress-user-list__item-btn-edit');
+
+            for (var i = 0; i < editButtons.length; i++) {
+                var editBtn = editButtons[i];
+
+                // Сохраняем старую ссылку, чтобы не навешивать повторно
+                if (editBtn.hasAttribute('data-edit-bound')) continue;
+
+                editBtn.setAttribute('data-edit-bound', 'true');
+
+                BX.unbindAll(editBtn);
+                BX.bind(editBtn, 'click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // Находим контейнер адреса
+                    var addressItem = event.target.closest('.adress-user-list__item');
+                    if (!addressItem) return;
+
+                    // Получаем данные адреса
+                    var radioInput = addressItem.querySelector('input[name="address_id"]');
+                    var addressId = radioInput ? radioInput.getAttribute('data-id') : '';
+                    var addressText = radioInput ? radioInput.value : '';
+
+                    console.log('Редактирование адреса ID:', addressId, 'Текст:', addressText);
+
+                    // Открываем модальное окно в режиме редактирования
+                    self.openAddAddressModal('edit', {
+                        id: addressId,
+                        address: addressText,
+                        lat: radioInput ? radioInput.getAttribute('data-lat') : null,
+                        lon: radioInput ? radioInput.getAttribute('data-lon') : null
+                    });
+                });
+            }
         },
 // ==============================================
 // МЕТОДЫ ДЛЯ ПОДСКАЗОК АДРЕСА (Яндекс.Геокодер)
@@ -268,16 +369,65 @@
         /**
          * Открывает модальное окно добавления адреса
          */
-        openAddAddressModal: function() {
+        /**
+         * Открывает модальное окно добавления/редактирования адреса
+         * @param {string} mode - режим: 'add' или 'edit'
+         * @param {object} addressData - данные адреса для редактирования
+         */
+        openAddAddressModal: function(mode, addressData) {
             var modal = document.querySelector('.modal-add-address');
             var wrp = document.querySelector('.wrp');
 
             if (!modal || !wrp) return;
 
-            // Очищаем форму
+            // Находим форму
             var form = modal.querySelector('form');
-            if (form) {
-                form.reset();
+            if (!form) return;
+
+            // Очищаем форму
+            form.reset();
+
+            // Устанавливаем атрибут type в зависимости от режима
+            if (mode === 'edit') {
+                form.setAttribute('type', 'edit');
+
+                // Заполняем поля данными адреса
+                var addressInput = modal.querySelector('input[name="ADDRESS"]');
+                if (addressInput && addressData && addressData.address) {
+                    addressInput.value = addressData.address;
+                }
+
+                // Если есть ID адреса, добавляем скрытое поле
+                var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
+                if (!hiddenIdInput && addressData && addressData.id) {
+                    hiddenIdInput = document.createElement('input');
+                    hiddenIdInput.type = 'hidden';
+                    hiddenIdInput.name = 'ADDRESS_ID';
+                    hiddenIdInput.value = addressData.id;
+                    form.appendChild(hiddenIdInput);
+                } else if (hiddenIdInput && addressData && addressData.id) {
+                    hiddenIdInput.value = addressData.id;
+                }
+
+                // Меняем текст кнопки
+                var submitBtn = modal.querySelector('.add-btn');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Сохранить';
+                }
+            } else {
+                form.setAttribute('type', 'add');
+
+                // Удаляем скрытое поле с ID, если есть
+                var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
+                if (hiddenIdInput) {
+                    hiddenIdInput.remove();
+                }
+
+                // Меняем текст кнопки обратно
+                var submitBtn = modal.querySelector('.add-btn');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Добавить';
+                }
             }
 
             // Убираем предыдущие ошибки
@@ -285,6 +435,9 @@
             if (errorDiv) {
                 errorDiv.remove();
             }
+
+            // Сохраняем текущий режим в data-атрибуте модального окна
+            modal.setAttribute('data-mode', mode);
 
             // Показываем модальное окно
             BX.addClass(wrp, 'show');
@@ -316,10 +469,15 @@
          * Добавляет новый адрес через AJAX
          * @param {HTMLFormElement} form - форма с данными адреса
          */
+        /**
+         * Добавляет или редактирует адрес через AJAX
+         * @param {HTMLFormElement} form - форма с данными адреса
+         */
         addAddress: function(form) {
             var self = this;
             var addressInput = form.querySelector('input[name="ADDRESS"]');
             var address = addressInput ? addressInput.value.trim() : '';
+            var mode = form.getAttribute('type') || 'add';
 
             // Получаем координаты из data-атрибутов (если были выбраны через подсказки)
             var lat = addressInput ? addressInput.getAttribute('data-lat') : null;
@@ -331,34 +489,42 @@
             }
 
             var submitBtn = form.querySelector('.add-btn');
-            var originalBtnText = submitBtn ? submitBtn.textContent : 'Добавить';
+            var originalBtnText = submitBtn ? submitBtn.textContent : (mode === 'edit' ? 'Сохранить' : 'Добавить');
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Добавление...';
+                submitBtn.textContent = mode === 'edit' ? 'Сохранение...' : 'Добавление...';
             }
 
             var sessidInput = form.querySelector('input[name="sessid"]');
             var sessid = sessidInput ? sessidInput.value : BX.bitrix_sessid();
 
             var data = {
-                action: 'addAddress',
+                action: mode === 'edit' ? 'editAddress' : 'addAddress',
                 address: address,
                 lat: lat,
                 lon: lon,
                 sessid: sessid
             };
 
-            BX.ajax.runComponentAction('opensource:order', 'addAddress', {
+            // Если режим редактирования, добавляем ID адреса
+            if (mode === 'edit') {
+                var addressIdInput = form.querySelector('input[name="ADDRESS_ID"]');
+                if (addressIdInput) {
+                    data.addressId = addressIdInput.value;
+                }
+            }
+
+            BX.ajax.runComponentAction('opensource:order', mode === 'edit' ? 'editAddress' : 'addAddress', {
                 mode: 'class',
                 dataType: 'json',
                 data: { dataAddress: data }
             })
                 .then(function(response) {
-                    console.log('Ответ при добавлении адреса:', response);
+                    console.log('Ответ при ' + (mode === 'edit' ? 'редактировании' : 'добавлении') + ' адреса:', response);
 
                     if (response.data && response.data.success) {
-                        self.showSuccessMessage('Адрес успешно добавлен');
+
                         self.closeAddAddressModal();
 
                         // Очищаем data-атрибуты
@@ -367,13 +533,16 @@
                             addressInput.removeAttribute('data-lon');
                         }
 
+                        // Обновляем список адресов
                         if (response.data.addressListHtml) {
                             self.updateAddressList(response.data.addressListHtml);
-                        } else if (response.data.address) {
-                            self.addAddressToDom(response.data.address, response.data.addressId);
+                        } else {
+                            // Если сервер не вернул HTML, перезагружаем страницу или обновляем через AJAX
+                            location.reload();
                         }
 
-                        BX.onCustomEvent('OnAddressAdded', [{
+                        BX.onCustomEvent('OnAddressChanged', [{
+                            mode: mode,
                             address: response.data.address,
                             addressId: response.data.addressId,
                             lat: response.data.lat,
@@ -382,7 +551,7 @@
                     } else {
                         var errorMsg = response.data && response.data.error
                             ? response.data.error
-                            : 'Ошибка при добавлении адреса';
+                            : (mode === 'edit' ? 'Ошибка при редактировании адреса' : 'Ошибка при добавлении адреса');
                         self.showAddressFormError(errorMsg);
                     }
 
@@ -392,7 +561,7 @@
                     }
                 })
                 .catch(function(error) {
-                    console.error('AJAX ошибка при добавлении адреса:', error);
+                    console.error('AJAX ошибка:', error);
                     self.showAddressFormError('Ошибка соединения с сервером');
 
                     if (submitBtn) {
@@ -451,6 +620,8 @@
                 addressListContainer.innerHTML = html;
                 // Переинициализируем обработчики для новых адресов
                 this.initAddressDelete();
+                // Перепривязываем обработчики редактирования
+                this.bindEditAddressButtons();
             }
         },
 
@@ -811,20 +982,532 @@
             }
             return '';
         },
+        // Добавьте эти методы в объект BX.LDO.CustomBasket
 
+// ==============================================
+// МЕТОДЫ УПРАВЛЕНИЯ ДОСТАВКОЙ И САМОВЫВОЗОМ
+// ==============================================
+
+        /**
+         * Инициализация переключения между доставкой и самовывозом
+         */
+        initDeliveryToggle: function() {
+            var self = this;
+
+            // Находим все радио-кнопки доставки
+            var deliveryInputs = document.querySelectorAll('input[name="delivery_id"]');
+
+            if (deliveryInputs.length === 0) return;
+
+            // Определяем текущий выбранный способ доставки
+            var selectedDeliveryId = null;
+            for (var i = 0; i < deliveryInputs.length; i++) {
+                if (deliveryInputs[i].checked) {
+                    selectedDeliveryId = deliveryInputs[i].value;
+                    break;
+                }
+            }
+
+            // Если есть выбранный по умолчанию, показываем соответствующий блок
+            if (selectedDeliveryId) {
+                this.toggleDeliveryBlocks(selectedDeliveryId);
+            }
+
+            // Добавляем обработчики на все радио-кнопки
+            for (var i = 0; i < deliveryInputs.length; i++) {
+                BX.unbindAll(deliveryInputs[i]);
+                BX.bind(deliveryInputs[i], 'click', function(event) {
+                    var target = event.target;
+                    var deliveryId = target.value;
+                    self.toggleDeliveryBlocks(deliveryId);
+                });
+            }
+        },
+
+        /**
+         * Переключает блоки доставки в зависимости от выбранного способа
+         * @param {string} deliveryId - ID выбранного способа доставки
+         */
+        toggleDeliveryBlocks: function(deliveryId) {
+            // Блок с адресами доставки
+            var dostavkaBlock = document.querySelector('.dostavka-block');
+            // Блок с ресторанами для самовывоза
+            var samovivozBlock = document.querySelector('.samovivoz-block');
+
+            // Получаем название выбранного способа доставки
+            var selectedDeliveryLabel = document.querySelector('input[name="delivery_id"]:checked');
+            var deliveryName = '';
+            if (selectedDeliveryLabel) {
+                var label = selectedDeliveryLabel.closest('label');
+                if (label) {
+                    var nameElement = label.querySelector('.delivery-name');
+                    if (nameElement) {
+                        deliveryName = nameElement.textContent.trim();
+                    }
+                }
+            }
+
+            var isPickup = (deliveryName.toLowerCase() === 'самовывоз');
+
+            if (isPickup) {
+                // Показываем блок самовывоза, скрываем блок доставки
+                if (samovivozBlock) {
+                    samovivozBlock.style.display = 'block';
+                }
+                if (dostavkaBlock) {
+                    dostavkaBlock.style.display = 'none';
+                }
+
+                // Скрываем цену доставки
+                this.hideDeliveryPrice();
+
+                // Меняем заголовок блока времени
+                this.updateTimeDeliveryTitle('самовывоза');
+
+            } else {
+                // Показываем блок доставки, скрываем блок самовывоза
+                if (samovivozBlock) {
+                    samovivozBlock.style.display = 'none';
+                }
+                if (dostavkaBlock) {
+                    dostavkaBlock.style.display = 'block';
+                }
+
+                // Показываем цену доставки
+                this.showDeliveryPrice();
+
+                // Меняем заголовок блока времени
+                this.updateTimeDeliveryTitle('доставки');
+            }
+
+            // Обновляем итоговый блок (цену доставки, адрес и т.д.)
+            this.updateTotalsByDelivery(deliveryId);
+
+            // Обновляем отображение адреса/ресторана в итоговом блоке
+            this.updateSelectedInfoDisplay();
+        },
+        /**
+         * Обновляет отображение выбранного адреса/ресторана в итоговом блоке
+         */
+        updateSelectedInfoDisplay: function() {
+            // Проверяем, какая доставка выбрана
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            if (!selectedDelivery) return;
+
+            var label = selectedDelivery.closest('label');
+            var deliveryName = '';
+            if (label) {
+                var nameElement = label.querySelector('.delivery-name');
+                if (nameElement) {
+                    deliveryName = nameElement.textContent.trim();
+                }
+            }
+
+            var isPickup = (deliveryName.toLowerCase() === 'самовывоз');
+
+            if (isPickup) {
+                // Выбран самовывоз - показываем выбранный ресторан
+                var selectedRestaurant = document.querySelector('.restorans-list input[name="restoran_id"]:checked');
+                if (selectedRestaurant && this.totalBlock.addressValueNode) {
+                    this.totalBlock.addressValueNode.textContent = selectedRestaurant.value + ' (самовывоз)';
+
+                    // Обновляем скрытое поле ресторана
+                    var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
+                    if (restaurantIdInput) {
+                        restaurantIdInput.value = selectedRestaurant.getAttribute('data-id') || selectedRestaurant.value;
+                    }
+
+                    // Очищаем поле адреса
+                    var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
+                    if (addressInput) {
+                        addressInput.value = '';
+                    }
+                } else if (this.totalBlock.addressValueNode) {
+                    this.totalBlock.addressValueNode.textContent = 'Не выбран ресторан';
+                }
+            } else {
+                // Выбрана доставка - показываем выбранный адрес
+                var selectedAddress = document.querySelector('.adress-user-list input[name="address_id"]:checked');
+                if (selectedAddress && this.totalBlock.addressValueNode) {
+                    this.totalBlock.addressValueNode.textContent = selectedAddress.value;
+
+                    // Обновляем скрытое поле адреса
+                    var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
+                    if (addressInput) {
+                        addressInput.value = selectedAddress.value;
+                    }
+
+                    // Очищаем поле ресторана
+                    var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
+                    if (restaurantIdInput) {
+                        restaurantIdInput.value = '';
+                    }
+                } else if (this.totalBlock.addressValueNode) {
+                    this.totalBlock.addressValueNode.textContent = 'Не выбран адрес';
+                }
+            }
+        },
+
+        /**
+         * Сбрасывает выбранный адрес доставки
+         */
+        resetSelectedAddress: function() {
+            var addressRadios = document.querySelectorAll('.adress-user-list input[name="address_id"]');
+            for (var i = 0; i < addressRadios.length; i++) {
+                addressRadios[i].checked = false;
+            }
+
+            // Обновляем отображение адреса в итоговом блоке
+            if (this.totalBlock.addressValueNode) {
+                this.totalBlock.addressValueNode.textContent = 'Не выбран';
+            }
+        },
+
+        /**
+         * Сбрасывает выбранный ресторан
+         */
+        resetSelectedRestaurant: function() {
+            var restaurantRadios = document.querySelectorAll('.restorans-list input[name="restoran_id"]');
+            for (var i = 0; i < restaurantRadios.length; i++) {
+                restaurantRadios[i].checked = false;
+            }
+        },
+
+        /**
+         * Обновляет итоговые суммы в зависимости от выбранной доставки
+         * @param {string} deliveryId - ID способа доставки
+         */
+        updateTotalsByDelivery: function(deliveryId) {
+            var self = this;
+
+            // Получаем название выбранного способа доставки
+            var selectedDeliveryLabel = document.querySelector('input[name="delivery_id"]:checked');
+            var deliveryName = '';
+            if (selectedDeliveryLabel) {
+                var label = selectedDeliveryLabel.closest('label');
+                if (label) {
+                    var nameElement = label.querySelector('.delivery-name');
+                    if (nameElement) {
+                        deliveryName = nameElement.textContent.trim();
+                    }
+                }
+            }
+
+            var isPickup = (deliveryName.toLowerCase() === 'самовывоз');
+
+            // Отправляем AJAX запрос для получения актуальных сумм
+            var data = {
+                action: 'updateDelivery',
+                deliveryId: deliveryId,
+                deliveryName: deliveryName,
+                sessid: BX.bitrix_sessid()
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'updateDeliveryPrice', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataDelivery: data }
+            })
+                .then(function(response) {
+                    if (response.data && response.data.success) {
+                        // Обновляем цену доставки (если самовывоз - ставим 0)
+                        var deliveryPrice = isPickup ? 0 : response.data.deliveryPrice;
+                        self.updateDeliveryPrice(deliveryPrice);
+
+                        // Обновляем общую сумму
+                        if (response.data.totalPrice !== undefined) {
+                            self.updateTotalPriceDisplay(response.data.totalPrice);
+                        }
+
+                        // Обновляем итоговые блоки
+                        self.updateAllTotals({
+                            deliveryPrice: deliveryPrice,
+                            baseSum: response.data.baseSum,
+                            discount: response.data.discount,
+                            total: response.data.totalPrice
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Ошибка обновления стоимости доставки:', error);
+                });
+        },
+
+        /**
+         * Инициализация выбора ресторана для самовывоза
+         */
+        initRestaurantSelect: function() {
+            var self = this;
+            var restaurantRadios = document.querySelectorAll('.restorans-list input[name="restoran_id"]');
+
+            for (var i = 0; i < restaurantRadios.length; i++) {
+                BX.unbindAll(restaurantRadios[i]);
+                BX.bind(restaurantRadios[i], 'click', function(event) {
+                    var target = event.target;
+                    var restaurantId = target.getAttribute('data-id');
+                    var restaurantName = target.value;
+
+                    // Обновляем отображение в итоговом блоке
+                    self.updateRestaurantInfo(restaurantId, restaurantName);
+
+                    // Обновляем скрытое поле ресторана
+                    var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
+                    if (restaurantIdInput) {
+                        restaurantIdInput.value = restaurantId || restaurantName;
+                    }
+
+                    // Очищаем поле адреса
+                    var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
+                    if (addressInput) {
+                        addressInput.value = '';
+                    }
+
+                    // Обновляем отображение выбранной информации
+                    self.updateSelectedInfoDisplay();
+                });
+            }
+
+            // Также вызываем обновление для уже выбранного по умолчанию ресторана
+            this.updateSelectedInfoDisplay();
+        },
+
+        /**
+         * Обновляет информацию о выбранном ресторане в итоговом блоке
+         * @param {string} restaurantId - ID ресторана
+         * @param {string} restaurantName - название ресторана
+         */
+        updateRestaurantInfo: function(restaurantId, restaurantName) {
+            if (this.totalBlock.addressValueNode) {
+                this.totalBlock.addressValueNode.textContent = restaurantName + ' (самовывоз)';
+            }
+
+            // Здесь можно отправить AJAX запрос для обновления цен,
+            // если стоимость зависит от выбранного ресторана
+            this.updateRestaurantPrice(restaurantId);
+        },
+
+        /**
+         * Обновляет цены при выборе ресторана
+         * @param {string} restaurantId - ID ресторана
+         */
+        updateRestaurantPrice: function(restaurantId) {
+            var self = this;
+
+            var data = {
+                action: 'updateRestaurant',
+                restaurantId: restaurantId,
+                sessid: BX.bitrix_sessid()
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'updateRestaurantPrice', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataRestaurant: data }
+            })
+                .then(function(response) {
+                    if (response.data && response.data.success) {
+                        if (response.data.totalPrice !== undefined) {
+                            self.updateTotalPriceDisplay(response.data.totalPrice);
+                        }
+
+                        self.updateAllTotals({
+                            deliveryPrice: 0, // При самовывозе доставка бесплатна
+                            baseSum: response.data.baseSum,
+                            discount: response.data.discount,
+                            total: response.data.totalPrice
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Ошибка обновления цен ресторана:', error);
+                });
+        },
+
+        /**
+         * Инициализация выбора адреса доставки
+         */
+        initAddressSelect: function() {
+            var self = this;
+            var addressRadios = document.querySelectorAll('.adress-user-list input[name="address_id"]');
+
+            for (var i = 0; i < addressRadios.length; i++) {
+                BX.unbindAll(addressRadios[i]);
+                BX.bind(addressRadios[i], 'click', function(event) {
+                    var target = event.target;
+                    var addressId = target.getAttribute('data-id');
+                    var addressName = target.value;
+                    var addressPrice = target.getAttribute('data-price') || 0;
+
+                    // Обновляем отображение в итоговом блоке
+                    self.updateAddressInfo(addressId, addressName, addressPrice);
+
+                    // Обновляем скрытое поле
+                    var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
+                    if (addressInput) {
+                        addressInput.value = addressName;
+                    }
+
+                    // Обновляем отображение выбранной информации
+                    self.updateSelectedInfoDisplay();
+                });
+            }
+
+            // Также вызываем обновление для уже выбранного по умолчанию адреса
+            this.updateSelectedInfoDisplay();
+        },
+
+        /**
+         * Обновляет информацию о выбранном адресе в итоговом блоке
+         * @param {string} addressId - ID адреса
+         * @param {string} addressName - адрес
+         * @param {number} addressPrice - стоимость доставки по адресу
+         */
+        updateAddressInfo: function(addressId, addressName, addressPrice) {
+            if (this.totalBlock.addressValueNode) {
+                this.totalBlock.addressValueNode.textContent = addressName;
+            }
+
+            // Обновляем стоимость доставки, если она зависит от адреса
+            if (addressPrice !== undefined && addressPrice != 0) {
+                this.updateDeliveryPrice(parseFloat(addressPrice));
+                this.updateTotalsByAddress(addressId, addressPrice);
+            }
+        },
+
+        /**
+         * Обновляет итоговые суммы при выборе адреса
+         * @param {string} addressId - ID адреса
+         * @param {number} deliveryPrice - стоимость доставки
+         */
+        updateTotalsByAddress: function(addressId, deliveryPrice) {
+            var self = this;
+
+            var data = {
+                action: 'updateAddress',
+                addressId: addressId,
+                deliveryPrice: deliveryPrice,
+                sessid: BX.bitrix_sessid()
+            };
+
+            BX.ajax.runComponentAction('opensource:order', 'updateAddressPrice', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataAddress: data }
+            })
+                .then(function(response) {
+                    if (response.data && response.data.success) {
+                        if (response.data.totalPrice !== undefined) {
+                            self.updateTotalPriceDisplay(response.data.totalPrice);
+                        }
+
+                        self.updateAllTotals({
+                            deliveryPrice: response.data.deliveryPrice,
+                            baseSum: response.data.baseSum,
+                            discount: response.data.discount,
+                            total: response.data.totalPrice
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Ошибка обновления цен по адресу:', error);
+                });
+        },
+
+        /**
+         * Сохраняет состояние выбранного способа доставки для последующей отправки формы
+         */
+        saveDeliveryState: function() {
+            // Получаем выбранный способ доставки
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            if (!selectedDelivery) return;
+
+            var label = selectedDelivery.closest('label');
+            var deliveryName = '';
+            if (label) {
+                var nameElement = label.querySelector('.delivery-name');
+                if (nameElement) {
+                    deliveryName = nameElement.textContent.trim();
+                }
+            }
+
+            var isPickup = (deliveryName.toLowerCase() === 'самовывоз');
+
+            // Находим поля
+            var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
+            var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
+
+            if (isPickup) {
+                // Выбран самовывоз - берем выбранный ресторан (если есть)
+                var selectedRestaurant = document.querySelector('.restorans-list input[name="restoran_id"]:checked');
+                if (selectedRestaurant && restaurantIdInput) {
+                    restaurantIdInput.value = selectedRestaurant.getAttribute('data-id') || selectedRestaurant.value;
+                }
+
+                // Очищаем поле адреса при самовывозе
+                if (addressInput) {
+                    addressInput.value = '';
+                }
+            } else {
+                // Выбрана доставка - берем выбранный адрес (если есть)
+                var selectedAddressRadio = document.querySelector('.adress-user-list input[name="address_id"]:checked');
+                if (selectedAddressRadio && addressInput) {
+                    addressInput.value = selectedAddressRadio.value;
+                }
+
+                // Очищаем поле ресторана при доставке
+                if (restaurantIdInput) {
+                    restaurantIdInput.value = '';
+                }
+            }
+
+            console.log('Сохранение состояния доставки перед отправкой:', {
+                isPickup: isPickup,
+                address: addressInput ? addressInput.value : 'not found',
+                restaurant: restaurantIdInput ? restaurantIdInput.value : 'not found'
+            });
+        },
         /**
          * Действия при выборе доставки
          * @param {number} deliveryId - ID доставки
          * @param {string} deliveryName - название доставки
          */
         onDeliverySelected: function(deliveryId, deliveryName) {
-            if (deliveryId == 3){
-                this.toggleTimeDeliveryBlock(true);
-                this.toggleDeliveryElements('show');
+            // Проверяем по названию, а не по ID
+            if (deliveryName.toLowerCase() === 'самовывоз') {
+                this.updateTimeDeliveryTitle('самовывоза');
+                this.hideDeliveryPrice();  // Скрываем цену доставки
             } else {
-                this.toggleTimeDeliveryBlock(false);
-                this.toggleDeliveryElements();
+                this.updateTimeDeliveryTitle('доставки');
+                this.showDeliveryPrice();   // Показываем цену доставки
             }
+        },
+        /** Показывает блок с ценой доставки */
+        showDeliveryPrice: function() {
+            var deliveryBlocks = document.querySelectorAll('.delivery-text');
+            deliveryBlocks.forEach(function(block) {
+                block.style.display = 'flex';
+            });
+        },
+        /**
+         * Обновляет заголовок блока времени
+         * @param {string} type - тип: 'доставки' или 'самовывоза'
+         */
+        updateTimeDeliveryTitle: function(type) {
+            var timeBlock = document.querySelector('.time-delivery');
+            if (!timeBlock) return;
+
+            var title = timeBlock.querySelector('h2');
+            if (title) {
+                title.textContent = 'Время ' + type;
+            }
+        },
+
+        /** Скрывает блок с ценой доставки */
+        hideDeliveryPrice: function() {
+            var deliveryBlocks = document.querySelectorAll('.delivery-text');
+            deliveryBlocks.forEach(function(block) {
+                block.style.display = 'none';
+            });
         },
 
         /** Показывает/скрывает блок выбора времени доставки */
@@ -2008,12 +2691,21 @@
                 .then(function(response) {
                     console.log('Ответ при удалении адреса:', response);
 
-                    if ( response.success) {
+                    // ИСПРАВЛЕНО: проверяем response.data.success
+                    if (response.data && response.data.success) {
                         // Удаляем элемент из DOM
                         if (addressItem && addressItem.parentNode) {
                             addressItem.parentNode.removeChild(addressItem);
                         }
 
+                        // Показываем сообщение об успехе (опционально)
+                        self.showSuccessMessage('Адрес успешно удален');
+
+                        // Если удален выбранный адрес, сбрасываем отображение
+                        var selectedAddress = document.querySelector('.adress-user-list input[name="address_id"]:checked');
+                        if (!selectedAddress && this.totalBlock.addressValueNode) {
+                            this.totalBlock.addressValueNode.textContent = 'Не выбран';
+                        }
 
                     } else {
                         var errorMsg = response.data && response.data.error
@@ -2021,14 +2713,11 @@
                             : 'Ошибка при удалении адреса';
 
                         self.showErrorMessage(errorMsg);
-
                     }
-                })
+                }.bind(this))  // ДОБАВЛЕНО: привязываем контекст
                 .catch(function(error) {
                     console.error('AJAX ошибка при удалении адреса:', error);
-
                     self.showErrorMessage('Ошибка соединения с сервером');
-
                 });
         },
 

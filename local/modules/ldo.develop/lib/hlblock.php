@@ -212,6 +212,28 @@ class Hlblock
     }
 
 
+    public static function add(array $fields, string $tableName = null): int|false
+    {
+        if (!Loader::includeModule('highloadblock')) {
+            return false;
+        }
+
+        $entity = self::getHLEntity($tableName);
+
+        if (!$entity) {
+            return false;
+        }
+
+        $result = $entity::add($fields);
+
+        if (!$result->isSuccess()) {
+            return false;
+        }
+
+        return $result->getId();
+    }
+
+
 }
 
 
