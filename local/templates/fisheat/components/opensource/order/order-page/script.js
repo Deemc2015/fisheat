@@ -86,6 +86,7 @@
             this.bindFormSubmit();
             this.initCommentToggle();
         },
+
         /**
          * Инициализация заголовка блока времени при загрузке страницы
          */
@@ -825,12 +826,18 @@
          */
         initPersonCount: function() {
             this.personCount.node = document.querySelector('.count-people-block__count');
-            if (!this.personCount.node) return;
+            if (!this.personCount.node) {
+                console.log('personCount.node not found');
+                return;
+            }
 
             this.personCount.input = this.personCount.node.querySelector('input[name="properties[COUNT_PERSON]"]');
 
+            console.log('personCount.input:', this.personCount.input); // Для отладки
+
             if (this.personCount.input) {
                 this.personCount.value = parseInt(this.personCount.input.value) || 1;
+                console.log('personCount.value:', this.personCount.value);
             }
 
             this.bindPersonCountEvents();
@@ -876,6 +883,7 @@
             this.setPersonCount(newValue);
         },
 
+
         /**
          * Устанавливает новое количество персон с валидацией
          * @param {number} newValue - новое значение
@@ -893,12 +901,27 @@
 
             if (newValue === this.personCount.value) return;
 
-            var oldValue = this.personCount.value;
             this.personCount.value = newValue;
 
-            if (this.personCount.input) {
-                this.personCount.input.value = newValue;
+            // Обновляем ВСЕ поля с именем properties[COUNT_PERSON]
+            var allPersonInputs = document.querySelectorAll('input[name="properties[COUNT_PERSON]"]');
+            allPersonInputs.forEach(function(input) {
+                input.value = newValue;
+            });
+
+            // Обновляем поле по ID
+            var inputById = document.querySelector('#property_COUNT_PERSON');
+            if (inputById) {
+                inputById.value = newValue;
             }
+
+            // Обновляем отображение в блоке
+            var countDisplay = document.querySelector('.count-people-block__count-num');
+            if (countDisplay) {
+                countDisplay.value = newValue;
+            }
+
+            console.log('Person count updated to:', newValue, 'Updated fields:', allPersonInputs.length);
         },
 
         // ==============================================
