@@ -359,7 +359,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endforeach;?>
                     </div>
                 <?endif?>
-           <!-- <div class="dostavka-block">
+            <div class="dostavka-block">
                 <?if($arResult['USER_ADRESS']):?>
                     <div class="adress-user-list">
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
@@ -378,7 +378,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </div>
                 <?endif?>
                 <div class="addAdress-user">Добавить адрес</div>
-            </div> -->
+            </div>
             <div class="samovivoz-block">
                 <div class="restorans-list">
                 <?if($arResult['RESTORAN_ADRESS']):?>
