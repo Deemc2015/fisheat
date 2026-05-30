@@ -833,7 +833,7 @@
 
             this.personCount.input = this.personCount.node.querySelector('input[name="properties[COUNT_PERSON]"]');
 
-            console.log('personCount.input:', this.personCount.input); // Для отладки
+
 
             if (this.personCount.input) {
                 this.personCount.value = parseInt(this.personCount.input.value) || 1;
@@ -920,8 +920,6 @@
             if (countDisplay) {
                 countDisplay.value = newValue;
             }
-
-            console.log('Person count updated to:', newValue, 'Updated fields:', allPersonInputs.length);
         },
 
         // ==============================================
@@ -1506,6 +1504,7 @@
                     restaurantIdInput.value = '';
                 }
             }
+
 
             console.log('Сохранение состояния доставки перед отправкой:', {
                 isPickup: isPickup,
@@ -2395,7 +2394,11 @@
             this.selectedGiftId = productId;
             this.selectedGiftNode = giftItem;
 
-            console.log('Выбран подарок:', productId);
+            // ДОБАВИТЬ: присваиваем блоку подарков класс block
+            var promoBlock = document.querySelector('.promo-block');
+            if (promoBlock) {
+                BX.addClass(promoBlock, 'block');
+            }
 
             // TODO: Отправка на сервер
         },
@@ -2422,7 +2425,6 @@
                 data: { dataPromo: data }
             })
                 .then(function(response) {
-                    console.log("Ответ от сервера:", response);
 
                     if (response.data && response.data.success) {
                         // Обновление цен товаров
@@ -2443,7 +2445,15 @@
                             total: response.data.totalPrice
                         });
 
-                        this.showSuccessMessage('Промокод успешно применен');
+
+                        // ДОБАВИТЬ: присваиваем блоку подарков класс block
+                        var giftsBlock = document.querySelector('.gifts-block');
+                        if (giftsBlock) {
+                            BX.addClass(giftsBlock, 'block');
+                        }
+
+
+
                     } else {
                         var errorMsg = response.data && response.data.error
                             ? response.data.error

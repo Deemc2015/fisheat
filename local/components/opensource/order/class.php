@@ -153,6 +153,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 continue;
             }
 
+            addMessage2Log($prop);
+
             $value = $propertyValues[$prop->getField('CODE')] ?? null;
 
             if (empty($value)) {
@@ -229,6 +231,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             /**
              * @var PropertyValue $prop
              */
+
+
             if ($prop->isUtil()) {
                 continue;
             }

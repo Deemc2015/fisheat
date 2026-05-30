@@ -76,35 +76,30 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             </div>
 
         </div>
-        <?
-        //echo "<pre>";
-        //print_r($arResult);
-
-        ?>
         <div class="comments-block">
             <div class="comments-block__top">
                 <div class="comments-block__top-title">Комментарий кухне</div>
                 <div class="comments-block__top-icon"></div>
             </div>
             <textarea id="orderDescription" cols="4" class="form-control bx-soa-customer-textarea bx-ios-fix" name="ORDER_DESCRIPTION"></textarea>
-            <??>
+            <?print_r($arResult['NEAREST_GIFT']);?>
         </div>
         <?php if (!empty($arResult['GIFTS'])): ?>
-        <div class="gifts-block block">
+        <div class="gifts-block">
             <?php if ($arResult['NEAREST_GIFT']): ?>
             <div class="gifts-block__top">
                 <i></i>
                 <p>До подарка <?= $arResult['NEAREST_GIFT']['LEVEL'] ?>  осталось еще <span><?= $arResult['NEAREST_GIFT']['SUM_FREE'] ?> ₽</span></p>
             </div>
             <?php endif; ?>
-            <div class="gifts-block__items">
+            <div class="gifts-block__items <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'block';}?>">
 
                     <!-- Список всех подарков (уже отсортирован) -->
                     <div class="gifts-list">
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>
-                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>">
+                            <div class="gifts-list__item ">
                                 <div class="gifts-list__item-img">
                                     <picture>
                                         <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
@@ -364,7 +359,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?endforeach;?>
                     </div>
                 <?endif?>
-            <div class="dostavka-block">
+           <!-- <div class="dostavka-block">
                 <?if($arResult['USER_ADRESS']):?>
                     <div class="adress-user-list">
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
@@ -383,7 +378,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     </div>
                 <?endif?>
                 <div class="addAdress-user">Добавить адрес</div>
-            </div>
+            </div> -->
             <div class="samovivoz-block">
                 <div class="restorans-list">
                 <?if($arResult['RESTORAN_ADRESS']):?>
