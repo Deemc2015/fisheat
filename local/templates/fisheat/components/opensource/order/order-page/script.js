@@ -84,6 +84,7 @@
             this.initTimeDeliveryTitle();
             // привязка отправки формы
             this.bindFormSubmit();
+            this.initCommentToggle();
         },
         /**
          * Инициализация заголовка блока времени при загрузке страницы
@@ -118,6 +119,29 @@
                     this.saveDeliveryState();
                 }, this));
             }
+        },
+        /**
+         * Инициализация переключения блока комментария кухне
+         */
+        initCommentToggle: function() {
+            var commentIcon = document.querySelector('.comments-block__top-icon');
+            var commentBlock = document.querySelector('.comments-block');
+
+            if (!commentIcon || !commentBlock) return;
+
+            // Добавляем обработчик клика по иконке
+            BX.unbindAll(commentIcon);
+            BX.bind(commentIcon, 'click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Переключаем класс show
+                if (commentBlock.classList.contains('show')) {
+                    BX.removeClass(commentBlock, 'show');
+                } else {
+                    BX.addClass(commentBlock, 'show');
+                }
+            });
         },
         /**
          * Инициализация модального окна добавления адреса

@@ -90,7 +90,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <??>
         </div>
         <?php if (!empty($arResult['GIFTS'])): ?>
-        <div class="gifts-block">
+        <div class="gifts-block block">
             <?php if ($arResult['NEAREST_GIFT']): ?>
             <div class="gifts-block__top">
                 <i></i>
