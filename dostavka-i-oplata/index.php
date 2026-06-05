@@ -3,6 +3,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 $APPLICATION->SetTitle("Доставка и оплата");
 use Bitrix\Main\Loader;
 use Ldo\Rkeeper\Product;
+use Ldo\Iiko\Auth;
 Loader::includeModule("ldo.rkeeper");
 
 ?><p >Наш ресторан осуществляет доставку блюд по всему городу Уфа.</p>
@@ -21,7 +22,11 @@ Loader::includeModule("ldo.rkeeper");
 );?>
 
 <?php
+if(Loader::includeModule("ldo.iiko")){
+    $iikoAuth = new Auth();
 
+    print_r($iikoAuth->getToken('4da1fef4e0c1479097a23c5f509a638b'));
+}
 /*$result = new Product();
 echo "<pre>";
 
