@@ -22,11 +22,7 @@ Loader::includeModule("ldo.rkeeper");
 );?>
 
 <?php
-if(Loader::includeModule("ldo.iiko")){
-    $iikoAuth = new Auth();
 
-    print_r($iikoAuth->getToken());
-}
 /*$result = new Product();
 echo "<pre>";
 
