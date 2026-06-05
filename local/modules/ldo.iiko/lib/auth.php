@@ -6,28 +6,33 @@ use Bitrix\Main\Web\HttpClient;
 class Auth
 {
     const AUTH_URL = 'https://api-ru.iiko.services/api/1/access_token';
+    private $apiLogin = 'be29f89bc57145f8b9ffdd944d7d2136';
 
-    public function getToken($apiLogin) {
+    public function getToken() {
 
-        if(!$apiLogin){
-            return false;
-        }
+        $httpClient = new HttpClient();
 
-       $httpClient = new HttpClient();
-        $httpClient->setHeader('Content-Type', 'application/x-www-form-urlencoded');
+        $httpClient->setHeader('Content-Type', 'application/json');
 
-        $postData = [
-            'apiLogin' => $apiLogin,
-        ];
-        $response = $httpClient->post(self::AUTH_URL, $postData);
+        $response = $httpClient->post(
+            self::AUTH_URL,
+            json_encode(['apiLogin' => $this->apiLogin])
+        );
 
         $result = json_decode($response, true);
 
-        return $result;
+        if($result['errorDescription']){
+            return [
+                'status' => 'error',
+                'message' => $result['errorDescription']
+            ];
+        }
 
-        if (isset($result['token'])) {
+        if($result['token']){
             return $result['token'];
         }
+
+
     }
 
 }

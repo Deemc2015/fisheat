@@ -25,7 +25,7 @@ Loader::includeModule("ldo.rkeeper");
 if(Loader::includeModule("ldo.iiko")){
     $iikoAuth = new Auth();
 
-    print_r($iikoAuth->getToken('4da1fef4e0c1479097a23c5f509a638b'));
+    print_r($iikoAuth->getToken());
 }
 /*$result = new Product();
 echo "<pre>";
