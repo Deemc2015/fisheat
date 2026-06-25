@@ -25,7 +25,7 @@ while ($arSite = $rsSites->Fetch())
 print_r($arSites);
 
 // Получаем текущий ID сайта
-$currentSiteId = $arSites;
+$currentSiteId = 's1';
 
 
 
