@@ -34,7 +34,7 @@ class Ldo_deliverymap extends CModule
         $this->MODULE_NAME = Loc::getMessage("LDO_DELIVERYMAP_INSTALL_NAME") ?: "Зоны доставки на карте";
         $this->MODULE_DESCRIPTION = Loc::getMessage("LDO_DELIVERYMAP_INSTALL_DESCRIPTION") ?: "Визуальное управление зонами доставки";
         $this->PARTNER_NAME = Loc::getMessage('LDO_DELIVERYMAP_PARTNER') ?: "LDO";
-        $this->PARTNER_URI = Loc::getMessage('LDO_DELIVERYMAP_PARTNER_URI') ?: "https://example.com";
+        $this->PARTNER_URI = Loc::getMessage('LDO_DELIVERYMAP_PARTNER_URI') ?: "https://key-up.ru";
     }
 
     public function DoInstall()
