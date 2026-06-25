@@ -13,6 +13,7 @@
             this.deliveryZones = [];
             this.suggestTimeout = null;
             this.isInitialized = false;
+            this.currentCity = null;
 
             this.init();
         }
@@ -69,10 +70,61 @@
                 zoom: this.settings.defaultZoom
             });
 
+            // Получаем город при инициализации карты
+            this.getCurrentCity();
+
             this.map.events.add('click', (e) => {
                 const coords = e.get('coords');
                 console.log('Клик по карте:', coords);
                 this.getAddressByCoords(coords, null);
+            });
+
+            // Обновляем город при перемещении карты
+            this.map.events.add('boundschange', () => {
+                this.getCurrentCity();
+            });
+        }
+
+        /**
+         * Получение текущего города по центру карты
+         */
+        getCurrentCity() {
+            if (!this.map) return;
+
+            const center = this.map.getCenter();
+
+            ymaps.geocode(center, {
+                results: 1
+            }).then((res) => {
+                const firstGeoObject = res.geoObjects.get(0);
+                if (!firstGeoObject) return;
+
+                const metaData = firstGeoObject.properties.get('metaDataProperty');
+                if (!metaData) return;
+
+                const addressDetails = metaData.GeocoderMetaData?.AddressDetails;
+                if (!addressDetails) return;
+
+                // Пробуем получить город из разных уровней
+                let city = null;
+                const country = addressDetails.Country;
+
+                if (country?.AdministrativeArea?.SubAdministrativeArea?.Locality?.LocalityName) {
+                    city = country.AdministrativeArea.SubAdministrativeArea.Locality.LocalityName;
+                } else if (country?.AdministrativeArea?.Locality?.LocalityName) {
+                    city = country.AdministrativeArea.Locality.LocalityName;
+                } else if (country?.Locality?.LocalityName) {
+                    city = country.Locality.LocalityName;
+                } else if (country?.AdministrativeArea?.AdministrativeAreaName) {
+                    city = country.AdministrativeArea.AdministrativeAreaName;
+                }
+
+                if (city && city !== this.currentCity) {
+                    this.currentCity = city;
+                    console.log('Текущий город:', city);
+                }
+            }).catch((error) => {
+                console.warn('Не удалось определить город:', error);
             });
         }
 
@@ -124,32 +176,40 @@
                 return;
             }
 
-            // Ограничиваем поиск областью карты + небольшой запас
+            // Формируем запрос с городом
+            let searchQuery = query;
+            if (this.currentCity && !query.toLowerCase().includes(this.currentCity.toLowerCase())) {
+                // Если город не указан в запросе, добавляем его
+                // Но не переопределяем если пользователь уже ввел город
+                searchQuery = `${query}, ${this.currentCity}`;
+                console.log('Поиск с городом:', searchQuery);
+            }
+
+            // Получаем bounds для ограничения области (но с большим запасом)
             let bounds;
             try {
                 bounds = this.map.getBounds();
-                // Расширяем границы на 20% для более удобного поиска
+                // Расширяем границы в 3 раза, чтобы охватить весь город
                 const latSpan = bounds[1][0] - bounds[0][0];
                 const lngSpan = bounds[1][1] - bounds[0][1];
                 bounds = [
-                    [bounds[0][0] - latSpan * 0.2, bounds[0][1] - lngSpan * 0.2],
-                    [bounds[1][0] + latSpan * 0.2, bounds[1][1] + lngSpan * 0.2]
+                    [bounds[0][0] - latSpan * 1.5, bounds[0][1] - lngSpan * 1.5],
+                    [bounds[1][0] + latSpan * 1.5, bounds[1][1] + lngSpan * 1.5]
                 ];
             } catch (e) {
-                console.warn('Не удалось получить bounds, используем центр с запасом');
+                console.warn('Не удалось получить bounds, используем центр');
                 const lat = this.settings.defaultLat;
                 const lng = this.settings.defaultLng;
                 bounds = [
-                    [lat - 0.5, lng - 0.5],
-                    [lat + 0.5, lng + 0.5]
+                    [lat - 1, lng - 1],
+                    [lat + 1, lng + 1]
                 ];
             }
 
-            // Используем boundedBy для ограничения области поиска
-            ymaps.geocode(query, {
+            ymaps.geocode(searchQuery, {
                 results: 5,
                 boundedBy: bounds,
-                strictBounds: true, // Строгое ограничение, ищем только в этой области
+                strictBounds: false // Не строгое, чтобы найти даже если немного за пределами
             }).then((res) => {
                 console.log('Результат геокодирования:', res);
 
