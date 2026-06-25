@@ -1,6 +1,9 @@
 .delivery-block{
     margin-top: 36px;
 }
+#page-delivery.delivery-block{
+    padding: 0;
+}
 .delivery-block__form{
     margin-top: 25px;
 }
