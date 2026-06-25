@@ -295,6 +295,9 @@ if ($action === 'delete' && $ID > 0 && $permission >= "W" && check_bitrix_sessid
 
 $APPLICATION->SetTitle("Зоны доставки");
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
+
+\Bitrix\Main\UI\Extension::load("ui.buttons.icons");
+\Bitrix\Main\UI\Extension::load("ui.buttons");
 ?>
     <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap/zones.css">
 
@@ -307,9 +310,9 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
             <div class="delivery-map" id="delivery-map"></div>
 
             <div class="map-controls">
-                <button class="adm-btn adm-btn-save" id="addZoneBtn">➕ Добавить зону</button>
-                <button type="submit" id="save_btn" class="adm-btn adm-btn-save" style="display:none;">💾 Сохранить</button>
-                <button type="button" id="cancel_btn" class="adm-btn" style="display:none;">✖ Отмена</button>
+                <button class="ui-btn ui-btn-success ui-btn-icon-add" id="addZoneBtn">Добавить зону</button>
+                <button type="submit" id="save_btn" class="ui-btn  ui-btn-success ui-btn-icon-done" style="display:none;">Сохранить</button>
+                <button type="button" id="cancel_btn" class="ui-btn  ui-btn-danger" style="display:none;">Отмена</button>
             </div>
         </div>
 
