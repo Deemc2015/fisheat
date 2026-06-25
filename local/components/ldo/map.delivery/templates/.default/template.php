@@ -47,7 +47,7 @@ use Bitrix\Main\Localization\Loc;
     </div>
 </div>
 <?php
-print_r($arResult['YANDEX_API_KEY']);
+print_r($arResult);
 ?>
 <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars($arResult['YANDEX_API_KEY']) ?>&lang=ru_RU" type="text/javascript"></script>
 
