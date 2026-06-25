@@ -124,38 +124,40 @@
                 return;
             }
 
-            // Просто ограничиваем поиск областью карты с большим запасом
+            // Получаем границы карты и расширяем их
             let bounds;
             try {
                 bounds = this.map.getBounds();
-                // Расширяем границы в 2 раза, чтобы охватить весь город
+                // Расширяем границы на 30% для более удобного поиска
                 const latSpan = bounds[1][0] - bounds[0][0];
                 const lngSpan = bounds[1][1] - bounds[0][1];
                 bounds = [
-                    [bounds[0][0] - latSpan * 2, bounds[0][1] - lngSpan * 2],
-                    [bounds[1][0] + latSpan * 2, bounds[1][1] + lngSpan * 2]
+                    [bounds[0][0] - latSpan * 0.3, bounds[0][1] - lngSpan * 0.3],
+                    [bounds[1][0] + latSpan * 0.3, bounds[1][1] + lngSpan * 0.3]
                 ];
+                console.log('Границы поиска:', bounds);
             } catch (e) {
                 console.warn('Не удалось получить bounds, используем центр');
                 const lat = this.settings.defaultLat;
                 const lng = this.settings.defaultLng;
                 bounds = [
-                    [lat - 1.5, lng - 1.5],
-                    [lat + 1.5, lng + 1.5]
+                    [lat - 0.5, lng - 0.5],
+                    [lat + 0.5, lng + 0.5]
                 ];
             }
 
+            // Используем boundedBy и strictBounds: true для жесткого ограничения
             ymaps.geocode(query, {
                 results: 5,
                 boundedBy: bounds,
-                strictBounds: false // Ищем в пределах области, но не строго
+                strictBounds: true // Жесткое ограничение области поиска!
             }).then((res) => {
                 console.log('Результат геокодирования:', res);
 
                 const suggestions = res.geoObjects;
 
                 if (suggestions.length === 0) {
-                    console.log('Подсказок не найдено');
+                    console.log('Подсказок не найдено в заданной области');
                     container.style.display = 'none';
                     return;
                 }
