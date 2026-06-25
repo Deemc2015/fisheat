@@ -96,12 +96,10 @@ class DeliveryZonesManager {
             addBtn.addEventListener('click', () => this.showAddForm());
         }
 
-        // Обработка клика по кнопке Сохранить под картой
         const saveBtn = document.getElementById('save_btn');
         if (saveBtn) {
             saveBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Сначала завершаем рисование, если оно активно
                 if (this.currentMode === this.modes.DRAW) {
                     this.finishDrawing();
                 }
@@ -152,13 +150,12 @@ class DeliveryZonesManager {
         document.getElementById('zone_name').value = '';
         document.getElementById('zone_price').value = 0;
         document.getElementById('zone_free_from').value = 0;
-        document.getElementById('zone_delivery_time').value = '';
+        document.getElementById('zone_delivery_time').value = 0;
         document.getElementById('zone_min_price').value = 0;
         document.getElementById('zone_active').value = 'Y';
         document.getElementById('zone_color').value = '#00FF00';
         document.getElementById('zone_coordinates').value = '';
 
-        // ПОКАЗЫВАЕМ КНОПКИ СРАЗУ
         document.getElementById('cancel_btn').style.display = 'inline-block';
         document.getElementById('save_btn').style.display = 'inline-block';
 
@@ -166,7 +163,6 @@ class DeliveryZonesManager {
         this.deselectZone();
         document.getElementById('zone-list').style.display = 'none';
 
-        // Автоматически запускаем рисование с задержкой
         setTimeout(() => {
             this.startDrawing();
         }, 300);
@@ -411,7 +407,7 @@ class DeliveryZonesManager {
             const statusText = isActive ? 'активна' : 'неактивна';
             const freeText = zone.FREE_FROM > 0 ? this.formatPrice(zone.FREE_FROM) + ' руб.' : 'нет';
             const minOrderText = zone.MIN_ORDER_PRICE > 0 ? this.formatPrice(zone.MIN_ORDER_PRICE) + ' руб.' : 'нет';
-            const deliveryTime = zone.DELIVERY_TIME || 'не указано';
+            const deliveryTime = zone.DELIVERY_TIME > 0 ? zone.DELIVERY_TIME + ' мин.' : 'не указано';
             const zoneId = parseInt(zone.ID);
 
             html += `
@@ -561,8 +557,6 @@ class DeliveryZonesManager {
         this.currentZoneData = zone;
         this.originalCoordinates = JSON.parse(JSON.stringify(zone.COORDINATES));
 
-        document.getElementById('editModeHint').classList.add('show');
-
         const found = this.polygons.find(p => parseInt(p.zone.ID) === parseInt(zone.ID));
         if (!found) {
             console.error('Polygon not found for zone:', zone.ID);
@@ -595,16 +589,10 @@ class DeliveryZonesManager {
         this.map.geoObjects.add(this.editPolygon);
         this.editPolygon.editor.startEditing();
 
+        // Только обновляем координаты в поле, без автосохранения
         this.editPolygon.events.add('geometrychange', () => {
             const newCoords = this.editPolygon.geometry.getCoordinates()[0];
             document.getElementById('zone_coordinates').value = JSON.stringify(newCoords);
-
-            if (this.autoSaveTimer) {
-                clearTimeout(this.autoSaveTimer);
-            }
-            this.autoSaveTimer = setTimeout(() => {
-                this.autoSaveZone();
-            }, 1000);
         });
 
         const wrapper = document.getElementById('zoneFormWrapper');
@@ -617,66 +605,21 @@ class DeliveryZonesManager {
         document.getElementById('zone_name').value = zone.NAME;
         document.getElementById('zone_price').value = zone.PRICE;
         document.getElementById('zone_free_from').value = zone.FREE_FROM || 0;
-        document.getElementById('zone_delivery_time').value = zone.DELIVERY_TIME || '';
+        document.getElementById('zone_delivery_time').value = zone.DELIVERY_TIME || 0;
         document.getElementById('zone_color').value = zone.COLOR;
         document.getElementById('zone_min_price').value = zone.MIN_ORDER_PRICE;
         document.getElementById('zone_active').value = zone.ACTIVE;
         document.getElementById('zone_coordinates').value = JSON.stringify(coords);
 
-        // ПОКАЗЫВАЕМ КНОПКИ
         document.getElementById('cancel_btn').style.display = 'inline-block';
         document.getElementById('save_btn').style.display = 'inline-block';
 
         this.closeAllAccordions();
-        this.showNotification('Перетаскивайте точки зоны для редактирования', 'info');
-    }
-
-    autoSaveZone() {
-        console.log('autoSaveZone called');
-
-        const coords = document.getElementById('zone_coordinates').value;
-        if (!coords) return;
-
-        try {
-            const parsed = JSON.parse(coords);
-            if (!Array.isArray(parsed) || parsed.length < 3) {
-                return;
-            }
-        } catch (e) {
-            return;
-        }
-
-        const formData = new FormData(document.getElementById('zoneForm'));
-        formData.append('ajax_action', 'save_zone');
-
-        fetch(window.location.href, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Zone auto-saved');
-                    this.showNotification('Зона автоматически сохранена', 'success');
-                } else {
-                    console.error('Auto-save error:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Auto-save error:', error);
-            });
+        this.showNotification('Режим редактирования: перетаскивайте точки зоны', 'info');
     }
 
     exitEditMode() {
         console.log('exitEditMode called');
-
-        if (this.autoSaveTimer) {
-            clearTimeout(this.autoSaveTimer);
-            this.autoSaveTimer = null;
-        }
 
         if (this.editPolygon) {
             this.editPolygon.editor.stopEditing();
@@ -748,7 +691,6 @@ class DeliveryZonesManager {
         console.log('saveZone called');
         e.preventDefault();
 
-        // Если мы в режиме рисования, завершаем его
         if (this.currentMode === this.modes.DRAW) {
             this.finishDrawing();
         }
@@ -831,17 +773,14 @@ class DeliveryZonesManager {
         });
         this.map.geoObjects.add(this.tempPolygon);
 
-        // Удаляем старые обработчики
         if (this.mapClickHandler) {
             this.map.events.remove('click', this.mapClickHandler);
         }
 
         this.mapClickHandler = (e) => this.onMapClick(e);
-
         this.map.events.add('click', this.mapClickHandler);
 
         this.setCursor('crosshair');
-        this.showNotification('Кликайте на карте для добавления точек', 'info');
 
         const pointsSpan = document.getElementById('pointsCount');
         if (pointsSpan) {

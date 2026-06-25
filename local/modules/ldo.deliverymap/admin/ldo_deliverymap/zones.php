@@ -14,20 +14,16 @@ if (!Loader::includeModule($moduleId)) {
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
     die();
 }
-$arSites = [];
 
-$rsSites = CSite::GetList($by="sort", $order="desc", array("DOMAIN"=>$_SERVER['SERVER_NAME']));
-while ($arSite = $rsSites->Fetch())
-{
-    $arSites[] = $arSite;
+$permission = $APPLICATION->GetGroupRight($moduleId);
+if ($permission < "R") {
+    ShowError("Доступ запрещен");
+    require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
+    die();
 }
-
-print_r($arSites);
 
 // Получаем текущий ID сайта
 $currentSiteId = 's1';
-
-
 
 function validateCoordinates($coordinates) {
     if (!is_array($coordinates) || count($coordinates) < 3) {
@@ -91,7 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
         $ajaxAction = $_POST['ajax_action'] ?? '';
         $response = ['success' => false, 'error' => 'Неизвестное действие'];
 
-        if ($ajaxAction === 'save_zone' && $permission >= "U") {
+        if ($ajaxAction === 'save_zone') {
+            if ($permission < "U") {
+                throw new Exception('Недостаточно прав');
+            }
+
             if (!check_bitrix_sessid()) {
                 throw new Exception('Ошибка сессии безопасности');
             }
@@ -144,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 
             try {
                 if ($zoneId > 0) {
-                    // Проверяем существование зоны и принадлежность к текущему сайту
                     $exists = DeliveryZoneTable::getList([
                         'filter' => [
                             '=ID' => $zoneId,
@@ -177,9 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                 $connection->rollbackTransaction();
                 throw $e;
             }
-        }
+        } elseif ($ajaxAction === 'delete_zone') {
+            if ($permission < "W") {
+                throw new Exception('Недостаточно прав');
+            }
 
-        if ($ajaxAction === 'delete_zone' && $permission >= "W") {
             if (!check_bitrix_sessid()) {
                 throw new Exception('Ошибка сессии безопасности');
             }
@@ -189,7 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                 throw new Exception('Неверный ID зоны');
             }
 
-            // Проверяем принадлежность зоны к текущему сайту
             $exists = DeliveryZoneTable::getList([
                 'filter' => [
                     '=ID' => $zoneId,
@@ -207,11 +207,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
             }
 
             $response = ['success' => true, 'message' => 'Зона удалена'];
-        }
-
-        if ($ajaxAction === 'get_zones') {
+        } elseif ($ajaxAction === 'get_zones') {
             try {
-                // Получаем зоны только для текущего сайта
                 $zones = DeliveryZoneTable::getList([
                     'filter' => [
                         '=SITE_ID' => $currentSiteId
@@ -279,7 +276,6 @@ $action = $_REQUEST['action'] ?? '';
 
 if ($action === 'delete' && $ID > 0 && $permission >= "W" && check_bitrix_sessid()) {
     try {
-        // Проверяем принадлежность зоны к текущему сайту
         $exists = DeliveryZoneTable::getList([
             'filter' => [
                 '=ID' => $ID,
@@ -310,7 +306,6 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
         <div class="delivery-map-wrapper">
             <div class="delivery-map" id="delivery-map"></div>
 
-            <!-- Кнопки под картой -->
             <div class="map-controls">
                 <button class="adm-btn adm-btn-save" id="addZoneBtn">➕ Добавить зону</button>
                 <button type="submit" id="save_btn" class="adm-btn adm-btn-save" style="display:none;">💾 Сохранить</button>
