@@ -14,7 +14,7 @@ if (!Loader::includeModule($moduleId)) {
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
     die();
 }
-
+$arSites = [];
 
 $rsSites = CSite::GetList($by="sort", $order="desc", array("DOMAIN"=>$_SERVER['SERVER_NAME']));
 while ($arSite = $rsSites->Fetch())
