@@ -52,6 +52,9 @@ use Bitrix\Main\Localization\Loc;
             <span><?= Loc::getMessage('LDO_DELIVERY_NOT_CALCULATED') ?: 'не рассчитана' ?></span>
         </div>
     </div>
+    <div class="delivery-block__out-of-zone" style="display:none; margin-top:15px; padding:12px 15px; background:#fff3cd; border:1px solid #ffc107; border-radius:4px; color:#856404; font-size:14px; line-height:1.5;">
+        <span class="delivery-block__out-of-zone-text"></span>
+    </div>
 </div>
 
 <div id="map"></div>
@@ -63,7 +66,8 @@ use Bitrix\Main\Localization\Loc;
         defaultLat: <?= (float)$arResult['DEFAULT_LAT'] ?>,
         defaultLng: <?= (float)$arResult['DEFAULT_LNG'] ?>,
         defaultZoom: <?= (int)$arResult['DEFAULT_ZOOM'] ?>,
-        siteId: '<?= htmlspecialchars($arResult['SITE_ID']) ?>'
+        siteId: '<?= htmlspecialchars($arResult['SITE_ID']) ?>',
+        linkRestorans: '<?= htmlspecialchars($arResult['LINK_RESTORANS']) ?>'
     };
 </script>
 

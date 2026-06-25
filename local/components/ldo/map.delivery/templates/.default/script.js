@@ -257,18 +257,37 @@
             if (foundZone) {
                 console.log('Найдена зона:', foundZone.name);
                 document.getElementById('zoneIdInput').value = foundZone.id;
+
+                // Скрываем сообщение "вне зоны"
+                const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
+                if (outOfZoneBlock) {
+                    outOfZoneBlock.style.display = 'none';
+                }
+
                 this.showDeliveryInfo(foundZone);
                 return true;
             } else {
                 console.log('Зона не найдена');
                 document.getElementById('zoneIdInput').value = 'не в зоне доставки';
+
+                // Скрываем блок с информацией о доставке
                 const infoBlock = document.querySelector('.delivery-block__info');
-                const totalSpan = document.querySelector('.delivery-block__total-sum span');
                 if (infoBlock) {
                     infoBlock.style.display = 'none';
                 }
-                if (totalSpan) {
-                    totalSpan.innerHTML = 'Адрес вне зоны доставки';
+
+                // Показываем сообщение "вне зоны"
+                const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
+                const outOfZoneText = document.querySelector('.delivery-block__out-of-zone-text');
+
+                if (outOfZoneBlock && outOfZoneText) {
+                    const link = this.settings.linkRestorans || '/restorans';
+                    outOfZoneText.innerHTML = `
+                Введенный адрес, к сожалению, не входит в зону нашей доставки, 
+                но вы можете самостоятельно забрать заказ в одном из 
+                <a href="${link}" target="_blank">наших ресторанов</a>.
+            `;
+                    outOfZoneBlock.style.display = 'block';
                 }
                 return false;
             }
@@ -430,6 +449,12 @@
         showDeliveryInfo(zone) {
             console.log('Показ информации о доставке для зоны:', zone.name);
 
+            // Скрываем сообщение "вне зоны"
+            const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
+            if (outOfZoneBlock) {
+                outOfZoneBlock.style.display = 'none';
+            }
+
             const infoBlock = document.querySelector('.delivery-block__info');
             const totalSpan = document.querySelector('.delivery-block__total-sum span');
             const timeSpan = document.querySelector('.delivery-block__time-delivery span');
@@ -476,14 +501,33 @@
                 const data = response.data;
 
                 if (data.error) {
-                    const totalSpan = document.querySelector('.delivery-block__total-sum span');
                     const infoBlock = document.querySelector('.delivery-block__info');
-                    if (infoBlock) infoBlock.style.display = 'none';
-                    if (totalSpan) totalSpan.innerHTML = data.error;
+                    const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
+                    const outOfZoneText = document.querySelector('.delivery-block__out-of-zone-text');
+
+                    if (infoBlock) {
+                        infoBlock.style.display = 'none';
+                    }
+
+                    if (data.error === 'Адрес вне зоны доставки' && outOfZoneBlock && outOfZoneText) {
+                        const link = this.settings.linkRestorans || '/restorans';
+                        outOfZoneText.innerHTML = `
+                    Введенный адрес, к сожалению, не входит в зону нашей доставки, 
+                    но вы можете самостоятельно забрать заказ в одном из 
+                    <a href="${link}" target="_blank">наших ресторанов</a>.
+                `;
+                        outOfZoneBlock.style.display = 'block';
+                    }
                     return;
                 }
 
                 if (data.success) {
+                    // Скрываем сообщение "вне зоны"
+                    const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
+                    if (outOfZoneBlock) {
+                        outOfZoneBlock.style.display = 'none';
+                    }
+
                     const zone = this.deliveryZones.find(z => z.id === data.zone_id);
                     if (zone) {
                         this.showDeliveryInfo(zone);
@@ -492,7 +536,9 @@
             }).catch((error) => {
                 console.error('Ошибка расчета доставки:', error);
                 const totalSpan = document.querySelector('.delivery-block__total-sum span');
-                if (totalSpan) totalSpan.innerHTML = 'Ошибка расчета';
+                if (totalSpan) {
+                    totalSpan.innerHTML = 'Ошибка расчета';
+                }
             });
         }
     }

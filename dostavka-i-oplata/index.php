@@ -16,9 +16,15 @@ Loader::includeModule("ldo.rkeeper");
 <p>Оплатить заказ можно любым удобным для вас способом.</p>
 
 <?$APPLICATION->IncludeComponent(
-    "ldo:map.delivery",
-    "",
-    Array()
+	"ldo:map.delivery", 
+	".default", 
+	array(
+		"COMPONENT_TEMPLATE" => ".default",
+		"COMPOSITE_FRAME_MODE" => "A",
+		"COMPOSITE_FRAME_TYPE" => "AUTO",
+		"LINK_RESTORANS" => "/o-restorane/"
+	),
+	false
 );?>
 
 <?php

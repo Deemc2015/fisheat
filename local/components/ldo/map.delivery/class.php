@@ -23,13 +23,14 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
     public function executeComponent()
     {
         // Получаем ID сайта
-        $this->siteId = $this->arParams['SITE_ID'] ?? Context::getCurrent()->getSite();
+        //$this->siteId = $this->arParams['SITE_ID'] ?? Context::getCurrent()->getSite();
 
         $this->arResult['YANDEX_API_KEY'] = Option::get(self::MODULE_ID, 'yandex_api_key', '');
         $this->arResult['DEFAULT_LAT'] = (float)Option::get(self::MODULE_ID, 'default_lat', '54.7355');
         $this->arResult['DEFAULT_LNG'] = (float)Option::get(self::MODULE_ID, 'default_lng', '55.9587');
         $this->arResult['DEFAULT_ZOOM'] = (int)Option::get(self::MODULE_ID, 'default_zoom', '11');
         $this->arResult['SITE_ID'] = $this->siteId;
+        $this->arResult['LINK_RESTORANS'] = $this->arParams['LINK_RESTORANS'] ?? '/restorans';
 
         $this->includeComponentTemplate();
     }

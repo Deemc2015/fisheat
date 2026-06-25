@@ -7,8 +7,8 @@ $arComponentParameters = [
         ],
     ],
     'PARAMETERS' => [
-        'OUT_ZONES' => [
-            'NAME' => 'Текст, если адрес вне зон доставок',
+        'LINK_RESTORANS' => [
+            'NAME' => 'Ссылка на список ресторанов',
             'TYPE' => 'TEXT',
             'PARENT' => 'USER_CARD',
         ]
