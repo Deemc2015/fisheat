@@ -1,39 +1,51 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
-use \Bitrix\Main\Data\Cache;
-use Bitrix\Main\Loader;
-use Bitrix\Main\Engine\Contract\Controllerable;
-use Bitrix\Main\Localization\Loc;
-use Bitrix\Main\Engine\ActionFilter;
-use Bitrix\Main\Config\Option;
-use Bitrix\Main\Context;
+use \Bitrix\Main\Loader;
+use \Bitrix\Main\Engine\Contract\Controllerable;
+use \Bitrix\Main\Engine\ActionFilter;
+use \Bitrix\Main\Config\Option;
+use \Bitrix\Main\Context;
+use \Bitrix\Main\Localization\Loc;
 use Ldo\Deliverymap\DeliveryZoneTable;
 
 class CDeliveryMap extends \CBitrixComponent implements Controllerable
 {
+    /** @var string ID модуля */
+    const MODULE_ID = 'ldo.deliverymap';
+
+    /** @var string ID текущего сайта */
+    public $siteId = 's1'; // Значение по умолчанию
+
+    /**
+     * {@inheritdoc}
+     */
     public function executeComponent()
     {
-        $moduleId = 'ldo.deliverymap';
+        // Получаем ID сайта
+        $this->siteId = $this->arParams['SITE_ID'] ?? Context::getCurrent()->getSite();
 
-        // Получаем настройки модуля
-        $this->arResult['YANDEX_API_KEY'] = Option::get($moduleId, 'yandex_api_key', '');
-        $this->arResult['DEFAULT_LAT'] = Option::get($moduleId, 'default_lat', '54.7355');
-        $this->arResult['DEFAULT_LNG'] = Option::get($moduleId, 'default_lng', '55.9587');
-        $this->arResult['DEFAULT_ZOOM'] = (int)Option::get($moduleId, 'default_zoom', '11');
+        $this->arResult['YANDEX_API_KEY'] = Option::get(self::MODULE_ID, 'yandex_api_key', '');
+        $this->arResult['DEFAULT_LAT'] = (float)Option::get(self::MODULE_ID, 'default_lat', '54.7355');
+        $this->arResult['DEFAULT_LNG'] = (float)Option::get(self::MODULE_ID, 'default_lng', '55.9587');
+        $this->arResult['DEFAULT_ZOOM'] = (int)Option::get(self::MODULE_ID, 'default_zoom', '11');
+        $this->arResult['SITE_ID'] = $this->siteId;
 
         $this->includeComponentTemplate();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureActions()
     {
         return [
-            'sendForm' => [
+            'getZones' => [
                 '-prefilters' => [
                     ActionFilter\Authentication::class
                 ],
             ],
-            'getZones' => [
+            'calculateDelivery' => [
                 '-prefilters' => [
                     ActionFilter\Authentication::class
                 ],
@@ -42,84 +54,56 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Получение зон доставки из БД
+     * Получение зон доставки
+     *
+     * @return array
      */
     public function getZonesAction()
     {
-        $zones = [];
-
         try {
-            if (!Loader::includeModule('ldo.deliverymap')) {
-                return ['success' => false, 'error' => 'Модуль доставки не установлен'];
+            if (!$this->isModuleLoaded()) {
+                return $this->errorResponse('Модуль доставки не установлен');
             }
 
-            $siteId = Context::getCurrent()->getSite();
+            $zones = $this->fetchZonesFromDatabase();
 
-            $dbZones = DeliveryZoneTable::getList([
-                'filter' => [
-                    '=ACTIVE' => 'Y',
-                    '=SITE_ID' => $siteId
-                ],
-                'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
-            ]);
-
-            while ($zone = $dbZones->fetch()) {
-                $coordinates = $zone['COORDINATES'];
-                if (is_string($coordinates)) {
-                    $coordinates = json_decode($coordinates, true);
-                }
-
-                if (!is_array($coordinates) || count($coordinates) < 3) {
-                    continue;
-                }
-
-                $ymapsCoords = [];
-                foreach ($coordinates as $point) {
-                    $ymapsCoords[] = [(float)$point[0], (float)$point[1]];
-                }
-
-                $zones[] = [
-                    'ID' => (int)$zone['ID'],
-                    'NAME' => $zone['NAME'],
-                    'PRICE' => (float)$zone['PRICE'],
-                    'FREE_DELIVERY_PRICE' => (float)$zone['FREE_DELIVERY_PRICE'],
-                    'DELIVERY_TIME' => (int)$zone['DELIVERY_TIME'],
-                    'MIN_ORDER_PRICE' => (float)$zone['MIN_ORDER_PRICE'],
-                    'COLOR' => $zone['COLOR'],
-                    'COORDINATES' => $ymapsCoords
-                ];
-            }
+            return [
+                'success' => true,
+                'zones' => $zones,
+                'total' => count($zones)
+            ];
 
         } catch (Exception $e) {
-            AddMessage2Log('Ошибка получения зон доставки: ' . $e->getMessage(), 'ldo.deliverymap');
-            return ['success' => false, 'error' => $e->getMessage()];
+            $this->logError('Ошибка получения зон доставки', $e);
+            return $this->errorResponse($e->getMessage());
         }
-
-        return ['success' => true, 'zones' => $zones];
     }
 
-    public function sendFormAction($post)
+    /**
+     * Расчет стоимости доставки по координатам
+     *
+     * @param array $post Параметры запроса
+     * @return array
+     */
+    public function calculateDeliveryAction($post)
     {
-        $lat = $post['arParams']['lat'] ?? null;
-        $lon = $post['arParams']['lon'] ?? null;
+        $lat = (float)($post['arParams']['lat'] ?? 0);
+        $lon = (float)($post['arParams']['lon'] ?? 0);
 
-        $lat = htmlspecialchars($lat, ENT_QUOTES, 'UTF-8');
-        $lon = htmlspecialchars($lon, ENT_QUOTES, 'UTF-8');
-
-        if (!$lat || !$lon) {
-            return ['error' => 'Не указаны координаты'];
+        if ($lat == 0 || $lon == 0) {
+            return $this->errorResponse('Не указаны координаты');
         }
 
         try {
-            if (!Loader::includeModule('ldo.deliverymap')) {
-                return ['error' => 'Модуль доставки не установлен'];
+            if (!$this->isModuleLoaded()) {
+                return $this->errorResponse('Модуль доставки не установлен');
             }
 
-            // Ищем зону по координатам
-            $zone = $this->findZoneByCoordinates((float)$lat, (float)$lon);
+            $zone = $this->findZoneByCoordinates($lat, $lon);
 
             if (!$zone) {
                 return [
+                    'success' => false,
                     'error' => 'Адрес вне зоны доставки',
                     'in_zone' => false
                 ];
@@ -128,30 +112,109 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
             return [
                 'success' => true,
                 'in_zone' => true,
-                'zone_id' => $zone['ID'],
-                'zone_name' => $zone['NAME'],
-                'price' => $zone['PRICE'],
-                'deliveryTime' => $zone['DELIVERY_TIME'],
-                'minPrice' => $zone['MIN_ORDER_PRICE'],
-                'priceFreeDelivery' => $zone['FREE_DELIVERY_PRICE']
+                'zone_id' => $zone['id'],
+                'zone_name' => $zone['name'],
+                'price' => $zone['price'],
+                'delivery_time' => $zone['delivery_time'],
+                'min_order_price' => $zone['min_order_price'],
+                'free_delivery_price' => $zone['free_delivery_price']
             ];
 
         } catch (Exception $e) {
-            AddMessage2Log('Ошибка расчета доставки: ' . $e->getMessage(), 'ldo.deliverymap');
-            return ['error' => 'Ошибка расчета доставки'];
+            $this->logError('Ошибка расчета доставки', $e);
+            return $this->errorResponse('Ошибка расчета доставки');
         }
     }
 
-    private function findZoneByCoordinates($lat, $lon)
+    /**
+     * Проверка загрузки модуля
+     *
+     * @return bool
+     */
+    protected function isModuleLoaded()
     {
-        $zones = $this->getZonesAction();
-        if (!$zones['success']) {
-            return null;
+        return Loader::includeModule(self::MODULE_ID);
+    }
+
+    /**
+     * Получение зон из базы данных
+     *
+     * @return array
+     */
+    protected function fetchZonesFromDatabase()
+    {
+        $zones = [];
+
+        $dbZones = DeliveryZoneTable::getList([
+            'filter' => [
+                '=ACTIVE' => 'Y',
+                '=SITE_ID' => $this->siteId // Используем свойство класса
+            ],
+            'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
+        ]);
+
+        while ($zone = $dbZones->fetch()) {
+            $coordinates = $this->prepareCoordinates($zone['COORDINATES']);
+
+            if (empty($coordinates)) {
+                continue;
+            }
+
+            $zones[] = [
+                'id' => (int)$zone['ID'],
+                'name' => $zone['NAME'],
+                'price' => (float)$zone['PRICE'],
+                'free_delivery_price' => (float)$zone['FREE_DELIVERY_PRICE'],
+                'delivery_time' => (int)$zone['DELIVERY_TIME'],
+                'min_order_price' => (float)$zone['MIN_ORDER_PRICE'],
+                'color' => $zone['COLOR'],
+                'coordinates' => $coordinates
+            ];
         }
 
-        foreach ($zones['zones'] as $zone) {
-            $coords = $zone['COORDINATES'];
-            if ($this->isPointInPolygon([$lat, $lon], $coords)) {
+        return $zones;
+    }
+
+    /**
+     * Подготовка координат для Яндекс.Карт
+     *
+     * @param mixed $coordinates
+     * @return array
+     */
+    protected function prepareCoordinates($coordinates)
+    {
+        if (is_string($coordinates)) {
+            $coordinates = json_decode($coordinates, true);
+        }
+
+        if (!is_array($coordinates) || count($coordinates) < 3) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($coordinates as $point) {
+            if (is_array($point) && count($point) === 2) {
+                $result[] = [(float)$point[0], (float)$point[1]];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Поиск зоны по координатам
+     *
+     * @param float $lat
+     * @param float $lon
+     * @return array|null
+     */
+    protected function findZoneByCoordinates($lat, $lon)
+    {
+        $zones = $this->fetchZonesFromDatabase();
+        $point = [$lat, $lon];
+
+        foreach ($zones as $zone) {
+            if ($this->isPointInPolygon($point, $zone['coordinates'])) {
                 return $zone;
             }
         }
@@ -159,7 +222,14 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
         return null;
     }
 
-    private function isPointInPolygon($point, $polygon)
+    /**
+     * Проверка принадлежности точки полигону (алгоритм Ray Casting)
+     *
+     * @param array $point [lat, lng]
+     * @param array $polygon [[lat, lng], ...]
+     * @return bool
+     */
+    protected function isPointInPolygon($point, $polygon)
     {
         $x = $point[0];
         $y = $point[1];
@@ -183,5 +253,33 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
 
         return $inside;
     }
+
+    /**
+     * Формирование ответа с ошибкой
+     *
+     * @param string $message
+     * @return array
+     */
+    protected function errorResponse($message)
+    {
+        return [
+            'success' => false,
+            'error' => $message
+        ];
+    }
+
+    /**
+     * Логирование ошибки
+     *
+     * @param string $message
+     * @param Exception $e
+     * @return void
+     */
+    protected function logError($message, $e)
+    {
+        AddMessage2Log(
+            sprintf('%s: %s in %s:%d', $message, $e->getMessage(), $e->getFile(), $e->getLine()),
+            self::MODULE_ID
+        );
+    }
 }
-?>
