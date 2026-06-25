@@ -86,12 +86,12 @@ class Ldo_deliverymap extends CModule
     {
         $modulePath = dirname(__DIR__);
 
-        // Копируем ВСЮ нашу папку в /bitrix/admin/
+        // Копируем папку в /bitrix/admin/
         CopyDirFiles(
             $modulePath . '/admin/ldo_deliverymap',
             $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/ldo_deliverymap',
-            true,  // перезаписывать
-            true   // рекурсивно
+            true,
+            true
         );
 
         // Копируем assets
@@ -109,16 +109,12 @@ class Ldo_deliverymap extends CModule
 
     public function UnInstallFiles()
     {
-        // Удаляем ТОЛЬКО нашу папку
         DeleteDirFilesEx('/bitrix/admin/ldo_deliverymap');
-
-        // Удаляем assets
         DeleteDirFilesEx('/bitrix/assets/' . $this->MODULE_ID);
 
         return true;
     }
 
-    // Вспомогательный метод для получения пути к модулю
     public function GetPath($notDocumentRoot = false)
     {
         if (defined('BX_PERSONAL_ROOT') && !$notDocumentRoot) {
@@ -148,10 +144,12 @@ class Ldo_deliverymap extends CModule
                 `SORT` int(11) NOT NULL DEFAULT '500',
                 `MIN_ORDER_PRICE` int(11) NOT NULL DEFAULT '0',
                 `FREE_DELIVERY_PRICE` int(11) NOT NULL DEFAULT '0',
+                `DELIVERY_TIME` int(11) NOT NULL DEFAULT '0',
                 `ACTIVE` char(1) NOT NULL DEFAULT 'Y',
+                `SITE_ID` varchar(2) NOT NULL DEFAULT '',
                 PRIMARY KEY (`ID`),
-                KEY `IX_SORT` (`SORT`),
-                KEY `IX_ACTIVE` (`ACTIVE`)
+                KEY `IX_ACTIVE` (`ACTIVE`),
+                KEY `IX_SITE_ID` (`SITE_ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ";
 
@@ -174,8 +172,6 @@ class Ldo_deliverymap extends CModule
 
     private function addEventHandlers()
     {
-        // Временно отключаем хук меню, чтобы не дублировалось
-        // Позже можно включить, но пока используем admin/menu.php
         return true;
     }
 }

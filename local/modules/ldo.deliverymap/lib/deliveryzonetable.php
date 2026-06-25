@@ -28,6 +28,18 @@ class DeliveryZoneTable extends Entity\DataManager
                 'required' => true,
                 'default_value' => 0
             ]),
+            new Entity\IntegerField('SORT', [
+                'required' => false,
+                'default_value' => 500
+            ]),
+            new Entity\IntegerField('DELIVERY_TIME', [
+                'required' => false,
+                'default_value' => 0
+            ]),
+            new Entity\IntegerField('FREE_DELIVERY_PRICE', [
+                'required' => true,
+                'default_value' => 0
+            ]),
             new Entity\StringField('COLOR', [
                 'required' => true,
                 'default_value' => '#00FF00'
@@ -36,8 +48,12 @@ class DeliveryZoneTable extends Entity\DataManager
                 'required' => true,
                 'serialized' => true
             ]),
-            new Entity\IntegerField('SORT', [
-                'default_value' => 500
+            new Entity\StringField('SITE_ID', [
+                'required' => true,
+                'default_value' => '',
+                'validation' => function() {
+                    return [new Entity\Validator\Length(null, 2)];
+                }
             ]),
             new Entity\IntegerField('MIN_ORDER_PRICE', [
                 'default_value' => 0

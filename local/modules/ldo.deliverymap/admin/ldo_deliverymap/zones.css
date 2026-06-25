@@ -1,0 +1,351 @@
+/* Общие стили */
+.delivery-map-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.delivery-map-wrapper {
+    flex: 3;
+    min-width: 500px;
+    position: relative;
+}
+
+.delivery-map {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Кнопки под картой */
+.map-controls {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.map-controls .adm-btn {
+    padding: 8px 20px;
+    font-size: 13px;
+}
+
+.delivery-sidebar {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.delivery-sidebar h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Форма */
+.zone-form-wrapper {
+    display: none;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.zone-form-wrapper.show {
+    display: block;
+}
+
+.zone-form-wrapper h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+.zone-form-group {
+    margin-bottom: 15px;
+}
+
+.zone-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.zone-form-group .hint {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    font-weight: normal;
+    margin-top: 3px;
+}
+
+.zone-form-group input,
+.zone-form-group select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.zone-form-group input[type="color"] {
+    height: 35px;
+    padding: 2px;
+}
+
+/* Аккордеон */
+.zone-accordion {
+    margin-top: 10px;
+}
+
+.zone-accordion-item {
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.zone-accordion-item.active {
+    border-color: #1e88e5;
+    box-shadow: 0 2px 8px rgba(30, 136, 229, 0.15);
+}
+
+.zone-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    cursor: pointer;
+    background: #fafafa;
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.zone-accordion-header:hover {
+    background: #f0f0f0;
+}
+
+.zone-accordion-item.active .zone-accordion-header {
+    background: #e8f0fe;
+}
+
+.zone-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.zone-color-circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.zone-name-text {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.zone-name-text.inactive {
+    color: #a9a9a9;
+}
+
+.zone-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.zone-status-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #d4edda;
+    color: #155724;
+}
+
+.zone-status-badge.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.zone-accordion-icon {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    color: #888;
+}
+
+.zone-accordion-item.active .zone-accordion-icon {
+    transform: rotate(180deg);
+}
+
+.zone-accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #fff;
+}
+
+.zone-accordion-body.open {
+    max-height: 800px;
+}
+
+.zone-accordion-content {
+    padding: 15px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.zone-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 13px;
+}
+
+.zone-detail-row .label {
+    color: #666;
+}
+
+.zone-detail-row .value {
+    font-weight: 500;
+}
+
+.zone-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.zone-actions button {
+    flex: 1;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.button-danger {
+    background: #e74c3c !important;
+    border-color: #c0392b !important;
+    color: #fff !important;
+}
+
+.button-danger:hover {
+    background: #c0392b !important;
+}
+
+/* Статусы и индикаторы */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1e88e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.zone-label {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    pointer-events: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    transition: all 0.3s;
+}
+
+.zone-label.active {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-color: #1e88e5;
+}
+
+/* Хинты */
+.edit-mode-hint {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    text-align: center;
+    font-size: 14px;
+}
+
+.edit-mode-hint.show {
+    display: block;
+}
+
+.edit-mode-hint small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .delivery-map-container {
+        flex-direction: column;
+    }
+    .delivery-map-wrapper {
+        min-width: auto;
+    }
+    .delivery-map {
+        height: 400px;
+    }
+    .delivery-sidebar {
+        max-width: 100%;
+        max-height: none;
+    }
+}
