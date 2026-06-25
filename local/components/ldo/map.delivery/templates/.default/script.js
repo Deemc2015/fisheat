@@ -124,22 +124,32 @@
                 return;
             }
 
-            // Пробуем получить bounds, если не получается - используем центр
+            // Ограничиваем поиск областью карты + небольшой запас
             let bounds;
             try {
                 bounds = this.map.getBounds();
-            } catch (e) {
-                console.warn('Не удалось получить bounds, используем центр');
+                // Расширяем границы на 20% для более удобного поиска
+                const latSpan = bounds[1][0] - bounds[0][0];
+                const lngSpan = bounds[1][1] - bounds[0][1];
                 bounds = [
-                    [this.settings.defaultLat - 0.5, this.settings.defaultLng - 0.5],
-                    [this.settings.defaultLat + 0.5, this.settings.defaultLng + 0.5]
+                    [bounds[0][0] - latSpan * 0.2, bounds[0][1] - lngSpan * 0.2],
+                    [bounds[1][0] + latSpan * 0.2, bounds[1][1] + lngSpan * 0.2]
+                ];
+            } catch (e) {
+                console.warn('Не удалось получить bounds, используем центр с запасом');
+                const lat = this.settings.defaultLat;
+                const lng = this.settings.defaultLng;
+                bounds = [
+                    [lat - 0.5, lng - 0.5],
+                    [lat + 0.5, lng + 0.5]
                 ];
             }
 
-            // Упрощаем запрос - убираем strictBounds для большей вероятности результатов
+            // Используем boundedBy для ограничения области поиска
             ymaps.geocode(query, {
                 results: 5,
-                // Не используем boundedBy и strictBounds для отладки
+                boundedBy: bounds,
+                strictBounds: true, // Строгое ограничение, ищем только в этой области
             }).then((res) => {
                 console.log('Результат геокодирования:', res);
 
