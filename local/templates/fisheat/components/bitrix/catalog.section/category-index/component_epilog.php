@@ -35,51 +35,6 @@ if (!empty($templateData['TEMPLATE_LIBRARY']))
 	}
 }
 
-static $scriptAdded = false;
-
-if (!$scriptAdded && !empty($arResult['BASKET_IDS']) && is_array($arResult['BASKET_IDS'])) {
-    $scriptAdded = true;
-    $ids = CUtil::PhpToJSObject($arResult['BASKET_IDS']);
-    ?>
-    <script>
-        (function() {
-            window.BASKET_IDS = <?= $ids ?>;
-
-            function updateCartButtons() {
-                if (!window.BASKET_IDS || !Array.isArray(window.BASKET_IDS)) {
-                    return;
-                }
-
-                document.querySelectorAll('.addCart').forEach(function(btn) {
-                    var id = parseInt(btn.getAttribute('data-id'));
-                    if (window.BASKET_IDS.indexOf(id) !== -1) {
-                        btn.classList.add('in_cart');
-                    }
-                });
-            }
-
-            // Обновляем после загрузки DOM
-            if (document.readyState === 'complete') {
-                setTimeout(updateCartButtons, 500);
-            } else {
-                document.addEventListener('readystatechange', function() {
-                    if (document.readyState === 'complete') {
-                        setTimeout(updateCartButtons, 500);
-                    }
-                });
-            }
-
-            // Обновляем после инициализации слайдеров
-            if (typeof $ !== 'undefined' && $.fn.slick) {
-                $(document).on('init', '.product-item-container', function() {
-                    setTimeout(updateCartButtons, 300);
-                });
-            }
-        })();
-    </script>
-    <?php
-}
-
 
 
 //	lazy load and big data json answers

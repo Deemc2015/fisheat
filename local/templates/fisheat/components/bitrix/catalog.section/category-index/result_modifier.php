@@ -9,28 +9,7 @@ $component = $this->getComponent();
 $arParams = $component->applyTemplateModifications();
 
 
-$arBasketItems = [];
 
-$dbBasketItems = CSaleBasket::GetList(
-    ["ID" => "ASC"],
-    [
-        "FUSER_ID" => CSaleBasket::GetBasketUserID(),
-        "LID" => SITE_ID,
-        "ORDER_ID" => "NULL"
-    ],
-    false,
-    false,
-    ["PRODUCT_ID"]
-);
-while ($arItems = $dbBasketItems->Fetch())
-{
-    $arBasketItems[] = $arItems['PRODUCT_ID'];
-}
-
-// Сохраняем для component_epilog.php
-$arResult['BASKET_IDS'] = $arBasketItems;
-
-$this->__component->setResultCacheKeys(['BASKET_IDS']);
 
 $categoryId = $arResult['ORIGINAL_PARAMETERS']['SECTION_ID'];
 
@@ -68,3 +47,57 @@ if($categoryId){
 }
 
 
+// Добавляем скрипт через AddBufferContent
+global $APPLICATION;
+$APPLICATION->AddBufferContent(function() {
+    return '<script>
+    (function() {
+        // Флаг, чтобы скрипт выполнился только один раз
+        if (window._basketScriptLoaded) return;
+        window._basketScriptLoaded = true;
+        
+        // Получаем ID из localStorage или запрашиваем
+        function updateButtons(ids) {
+            if (!ids || !Array.isArray(ids)) return;
+            
+            var buttons = document.querySelectorAll(".addCart");
+            for (var i = 0; i < buttons.length; i++) {
+                var id = parseInt(buttons[i].getAttribute("data-id"));
+                if (ids.indexOf(id) !== -1) {
+                    buttons[i].classList.add("in_cart");
+                }
+            }
+        }
+        
+        // Проверяем localStorage
+        var cached = localStorage.getItem("basket_ids");
+        if (cached) {
+            try {
+                var ids = JSON.parse(cached);
+                if (Array.isArray(ids) && ids.length > 0) {
+                    updateButtons(ids);
+                }
+            } catch(e) {}
+        }
+        
+        // Запрашиваем актуальные данные
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/local/ajax/get_basket_ids.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data && data.ids) {
+                        localStorage.setItem("basket_ids", JSON.stringify(data.ids));
+                        updateButtons(data.ids);
+                    }
+                } catch(e) {
+                    console.error("Basket error:", e);
+                }
+            }
+        };
+        xhr.send("action=getBasketIds&sessid=" + BX.bitrix_sessid());
+    })();
+    </script>';
+});
