@@ -207,7 +207,7 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
 		?>
         <?php
 // Создаем фрейм
-        $frame = $this->createFrame('basket_buttons_status'.$arParams['SECTION_ID'], false)->begin();
+        $frame = $this->createFrame('basket_buttons_status_index', false)->begin();
         ?>
         <script>
             (function() {
