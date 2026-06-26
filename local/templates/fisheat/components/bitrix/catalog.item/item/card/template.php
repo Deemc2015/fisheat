@@ -60,7 +60,12 @@ if(!$actualItem['CAN_BUY']){
 $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 
 ?>
-
+<?php
+if (!empty($arResult['BASKET_IDS'])): ?>
+    <script>
+        window.BASKET_IDS = <?= CUtil::PhpToJSObject($arResult['BASKET_IDS']) ?>;
+    </script>
+<?php endif; ?>
 
 	<? if ($itemHasDetailUrl): ?>
 	<a class="<?=$disabledClass?>"  href="<?=$item['DETAIL_PAGE_URL']?>" title="<?=$imgTitle?>"

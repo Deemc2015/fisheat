@@ -24,4 +24,4 @@ while ($arItems = $dbBasketItems->Fetch())
     $arBasketItems[] = $arItems['PRODUCT_ID'];
 }
 
-$arResult['IN_CART'] = $arBasketItems;
+$arResult['BASKET_IDS'] = $arBasketItems;

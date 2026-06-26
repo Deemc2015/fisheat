@@ -437,6 +437,8 @@
 				this.obSecondPict = BX(this.visual.SECOND_PICT_ID);
 			}
 
+			this.checkBasketStatus();
+
 			this.obPictSlider = BX(this.visual.PICT_SLIDER_ID);
 			this.obPictSliderIndicator = BX(this.visual.PICT_SLIDER_ID + '_indicator');
 			this.obPictSliderProgressBar = BX(this.visual.PICT_SLIDER_ID + '_progress_bar');
@@ -657,9 +659,6 @@
 						BX.bind(this.obBuyBtn, 'click', BX.proxy(this.buyBasket, this));
 					}
 				}
-
-				this.loadBasketData();
-
 				if (this.useCompare)
 				{
 					this.obCompare = BX(this.visual.COMPARE_LINK_ID);
@@ -669,6 +668,23 @@
 					}
 
 					BX.addCustomEvent('onCatalogDeleteCompare', BX.proxy(this.checkDeletedCompare, this));
+				}
+			}
+		},
+
+		// Добавьте этот метод вместо loadBasketData
+		checkBasketStatus: function() {
+			var buyButton = this.obBuyBtn;
+			if (!buyButton) return;
+
+			var productId = this.product.id;
+
+			// Проверяем наличие ID в глобальном массиве
+			if (window.BASKET_IDS && Array.isArray(window.BASKET_IDS)) {
+				if (window.BASKET_IDS.indexOf(productId) !== -1) {
+					BX.addClass(buyButton, 'in_cart');
+				} else {
+					BX.removeClass(buyButton, 'in_cart');
 				}
 			}
 		},
@@ -1647,44 +1663,6 @@
 				}
 			}
 		},
-		/*Получение информации о нахождении в корзине*/
-		loadBasketData: function() {
-			var self = this;
-			var productId = this.product.id;
-
-			if (!productId) return;
-
-			// Используем стандартный AJAX Bitrix
-			BX.ajax({
-				url: '/bitrix/components/bitrix/sale.basket.basket/ajax.php',
-				method: 'POST',
-				data: {
-					action: 'getBasketItemData',
-					productId: productId
-				},
-				dataType: 'json',
-				onsuccess: function(data) {
-					if (data && data.success) {
-						self.updateBasketUI(data);
-					}
-				},
-				onfailure: function() {
-					console.warn('Не удалось загрузить данные корзины');
-				}
-			});
-		},
-		/*Добавляем класс к кнопке, если товар в корзине*/
-		updateBasketUI: function(data) {
-			var buyButton = this.obBuyBtn;
-			if (!buyButton) return;
-
-			if (data.inCart) {
-				BX.addClass(buyButton, 'in_cart');
-			} else {
-				BX.removeClass(buyButton, 'in_cart');
-			}
-		},
-
 		getRowValues: function(arFilter, index)
 		{
 			var i = 0,
