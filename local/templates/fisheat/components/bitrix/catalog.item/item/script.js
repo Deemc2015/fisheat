@@ -437,7 +437,7 @@
 				this.obSecondPict = BX(this.visual.SECOND_PICT_ID);
 			}
 
-			this.checkBasketStatus();
+
 
 			this.obPictSlider = BX(this.visual.PICT_SLIDER_ID);
 			this.obPictSliderIndicator = BX(this.visual.PICT_SLIDER_ID + '_indicator');
@@ -669,22 +669,29 @@
 
 					BX.addCustomEvent('onCatalogDeleteCompare', BX.proxy(this.checkDeletedCompare, this));
 				}
+
+
+				this.checkBasketStatus();
 			}
 		},
 
-		// Добавьте этот метод вместо loadBasketData
 		checkBasketStatus: function() {
-			var buyButton = this.obBuyBtn;
-			if (!buyButton) return;
+			// Проверяем, что кнопка существует
+			if (!this.obBuyBtn) {
+				return;
+			}
 
 			var productId = this.product.id;
+			if (!productId) {
+				return;
+			}
 
 			// Проверяем наличие ID в глобальном массиве
 			if (window.BASKET_IDS && Array.isArray(window.BASKET_IDS)) {
 				if (window.BASKET_IDS.indexOf(productId) !== -1) {
-					BX.addClass(buyButton, 'in_cart');
+					BX.addClass(this.obBuyBtn, 'in_cart');
 				} else {
-					BX.removeClass(buyButton, 'in_cart');
+					BX.removeClass(this.obBuyBtn, 'in_cart');
 				}
 			}
 		},

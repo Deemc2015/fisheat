@@ -316,7 +316,17 @@ if (isset($arResult['ITEM']))
 			$templateData['ITEM']['OFFERS_SELECTED'] = $item['OFFERS_SELECTED'];
 			$templateData['ITEM']['JS_OFFERS'] = $item['JS_OFFERS'];
 		}
+
 		?>
+
+        <?php
+        if (!empty($arResult['BASKET_IDS'])): ?>
+            <script>
+                window.BASKET_IDS = <?= CUtil::PhpToJSObject($arResult['BASKET_IDS']) ?>;
+            </script>
+        <?php endif; ?>
+
+
 		<script>
 			var <?=$obName?> = new JCCatalogItem(<?=CUtil::PhpToJSObject($jsParams, false, true)?>);
 		</script>
