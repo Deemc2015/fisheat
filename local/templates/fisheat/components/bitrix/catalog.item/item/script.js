@@ -1652,19 +1652,26 @@
 			var self = this;
 			var productId = this.product.id;
 
-			BX.ajax.runComponentAction('opensource:order', 'getBasketItemData', {
-				mode: 'class',
+			if (!productId) return;
+
+			// Используем стандартный AJAX Bitrix
+			BX.ajax({
+				url: '/bitrix/components/bitrix/sale.basket.basket/ajax.php',
+				method: 'POST',
+				data: {
+					action: 'getBasketItemData',
+					productId: productId
+				},
 				dataType: 'json',
-				data: { productId: productId }
-			})
-				.then(function(response) {
-					if (response.data && response.data.success) {
-						self.updateBasketUI(response.data);
+				onsuccess: function(data) {
+					if (data && data.success) {
+						self.updateBasketUI(data);
 					}
-				})
-				.catch(function(error) {
-					console.error('Ошибка загрузки данных корзины:', error);
-				});
+				},
+				onfailure: function() {
+					console.warn('Не удалось загрузить данные корзины');
+				}
+			});
 		},
 		/*Добавляем класс к кнопке, если товар в корзине*/
 		updateBasketUI: function(data) {
