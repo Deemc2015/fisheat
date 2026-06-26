@@ -205,7 +205,49 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
 			];
 		}
 		?>
-
+        <?php
+// Создаем фрейм
+        $frame = $this->createFrame('basket_buttons_status', false)->begin();
+        ?>
+        <script>
+            (function() {
+                // Получаем данные через AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/local/ajax/get_basket_ids.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data && data.ids) {
+                                document.querySelectorAll('.addCart').forEach(function(btn) {
+                                    var id = parseInt(btn.getAttribute('data-id'));
+                                    if (data.ids.indexOf(id) !== -1) {
+                                        btn.classList.add('in_cart');
+                                    } else {
+                                        btn.classList.remove('in_cart');
+                                    }
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                };
+                xhr.send('action=getBasketIds&sessid=<?= bitrix_sessid() ?>');
+            })();
+        </script>
+    <?php
+    // Заглушка
+    $frame->beginStub();
+    ?>
+        <script>
+            // Заглушка - данные из кеша
+            (function() {
+                // Пустой скрипт
+            })();
+        </script>
+    <?php
+    $frame->end();
+    ?>
 		<!-- items-container -->
 		<?php
 
@@ -249,37 +291,7 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
         }
         ?>
 
-            <?php
-            // ... ваш код ...
 
-            // Создаем фрейм для скрипта корзины
-            $frame = $this->createFrame('basket_status_' . $this->randString(), false)->begin();
-
-            // Этот блок будет обновляться при каждом запросе
-            if (!empty($arResult['BASKET_IDS'])) {
-
-            ?>
-        <script>
-            (function() {
-                var basketIds = <?= CUtil::PhpToJSObject($arResult['BASKET_IDS']) ?>;
-                if (basketIds && Array.isArray(basketIds)) {
-                    console.log(basketIds);
-                    document.querySelectorAll('.addCart').forEach(function(btn) {
-                        var id = parseInt(btn.getAttribute('data-id'));
-                        if (basketIds.indexOf(id) !== -1) {
-                            btn.classList.add('in_cart');
-                        } else {
-                            btn.classList.remove('in_cart');
-                        }
-                    });
-                }
-            })();
-        </script>
-        <?php
-    }
-
-        $frame->end();
-        ?>
 
 			<?
 
