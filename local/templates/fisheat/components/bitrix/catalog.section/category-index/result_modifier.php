@@ -9,6 +9,28 @@ $component = $this->getComponent();
 $arParams = $component->applyTemplateModifications();
 
 
+$arBasketItems = [];
+
+$dbBasketItems = CSaleBasket::GetList(
+    ["ID" => "ASC"],
+    [
+        "FUSER_ID" => CSaleBasket::GetBasketUserID(),
+        "LID" => SITE_ID,
+        "ORDER_ID" => "NULL"
+    ],
+    false,
+    false,
+    ["PRODUCT_ID"]
+);
+while ($arItems = $dbBasketItems->Fetch())
+{
+    $arBasketItems[] = $arItems['PRODUCT_ID'];
+}
+
+// Сохраняем для component_epilog.php
+$arResult['BASKET_IDS'] = $arBasketItems;
+
+$this->__component->setResultCacheKeys(['BASKET_IDS']);
 
 $categoryId = $arResult['ORIGINAL_PARAMETERS']['SECTION_ID'];
 

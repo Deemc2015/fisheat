@@ -11,24 +11,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
  * @var array $templateData
  */
 
-// Выполняется при каждом хите, после кеширования
-if (!empty($arResult['BASKET_IDS']) && is_array($arResult['BASKET_IDS'])) {
-    ?>
-    <script>
-        (function() {
-            var basketIds = <?= CUtil::PhpToJSObject($arResult['BASKET_IDS']) ?>;
-            if (basketIds && Array.isArray(basketIds)) {
-                document.querySelectorAll('.addCart').forEach(function(btn) {
-                    var id = parseInt(btn.getAttribute('data-id'));
-                    if (basketIds.indexOf(id) !== -1) {
-                        btn.classList.add('in_cart');
-                    }
-                });
-            }
-        })();
-    </script>
-    <?php
-}
+
 
 
 // check compared state

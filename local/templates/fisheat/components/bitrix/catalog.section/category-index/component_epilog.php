@@ -35,6 +35,11 @@ if (!empty($templateData['TEMPLATE_LIBRARY']))
 	}
 }
 
+// Выполняется при каждом хите, после кеширования
+print_r($arResult['BASKET_IDS']);
+
+
+
 //	lazy load and big data json answers
 $request = \Bitrix\Main\Context::getCurrent()->getRequest();
 if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $request->get('action') === 'deferredLoad'))
