@@ -185,7 +185,49 @@ $containerName = 'container-'.$navParams['NavNum'];?>
 			];
 		}
 		?>
-		<!-- items-container -->
+        <?php
+// Создаем фрейм
+        $frame = $this->createFrame('basket_buttons_status', false)->begin();
+        ?>
+        <script>
+            (function() {
+                // Получаем данные через AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/local/ajax/get_basket_ids.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data && data.ids) {
+                                document.querySelectorAll('.addCart').forEach(function(btn) {
+                                    var id = parseInt(btn.getAttribute('data-id'));
+                                    if (data.ids.indexOf(id) !== -1) {
+                                        btn.classList.add('in_cart');
+                                    } else {
+                                        btn.classList.remove('in_cart');
+                                    }
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                };
+                xhr.send('action=getBasketIds&sessid=<?= bitrix_sessid() ?>');
+            })();
+        </script>
+    <?php
+    // Заглушка
+    $frame->beginStub();
+    ?>
+        <script>
+            // Заглушка - данные из кеша
+            (function() {
+                // Пустой скрипт
+            })();
+        </script>
+    <?php
+    $frame->end();
+    ?>
 		<?php
 
         foreach ($arResult['ITEM_ROWS'] as $rowData)
