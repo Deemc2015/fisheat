@@ -41,7 +41,8 @@ if($categoryId){
         
         
     }
-    
-    
+
     unset($arSect,$categoryInfo,$categoryParams,$categoryId);
 }
+
+

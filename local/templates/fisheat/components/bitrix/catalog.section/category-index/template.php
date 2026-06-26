@@ -239,6 +239,7 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
                             array('HIDE_ICONS' => 'Y')
                         );
                         ?>
+
                         <?
                     }
                     ?>

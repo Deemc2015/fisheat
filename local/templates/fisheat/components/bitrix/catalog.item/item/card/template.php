@@ -58,7 +58,6 @@ if(!$actualItem['CAN_BUY']){
     $disabledClass = 'not-avaliable';
 }
 $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
-
 ?>
 
 
