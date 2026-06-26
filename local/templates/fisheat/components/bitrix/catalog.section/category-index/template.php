@@ -249,6 +249,61 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
         }
         ?>
 
+        <script>
+            (function() {
+                // Флаг, чтобы не дублировать
+                if (window._basketInited) return;
+                window._basketInited = true;
+
+                function updateButtons(ids) {
+                    if (!ids || !Array.isArray(ids)) return;
+
+                    document.querySelectorAll('.addCart').forEach(function(btn) {
+                        var id = parseInt(btn.getAttribute('data-id'));
+                        if (ids.indexOf(id) !== -1) {
+                            btn.classList.add('in_cart');
+                        }
+                    });
+                }
+
+                // Проверяем localStorage
+                var cached = localStorage.getItem('basket_ids');
+                var cacheTime = localStorage.getItem('basket_ids_time');
+
+                if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < 30000)) {
+                    // Данные актуальны (менее 30 секунд)
+                    updateButtons(JSON.parse(cached));
+                }
+
+                // Запрашиваем актуальные данные
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/local/ajax/get_basket_ids.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data && data.ids) {
+                                localStorage.setItem('basket_ids', JSON.stringify(data.ids));
+                                localStorage.setItem('basket_ids_time', String(Date.now()));
+                                updateButtons(data.ids);
+                            }
+                        } catch(e) {
+                            console.error('Basket error:', e);
+                        }
+                    }
+                };
+                xhr.send('sessid=' + BX.bitrix_sessid());
+
+                // Обновляем при добавлении в корзину
+                BX.addCustomEvent('OnBasketChange', function() {
+                    // Очищаем кеш и запрашиваем заново
+                    localStorage.removeItem('basket_ids');
+                    xhr.send('sessid=' + BX.bitrix_sessid());
+                });
+            })();
+        </script>
+
 			<?
 
 		unset($rowItems);
