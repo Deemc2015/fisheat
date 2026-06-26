@@ -658,6 +658,8 @@
 					}
 				}
 
+				this.loadBasketData();
+
 				if (this.useCompare)
 				{
 					this.obCompare = BX(this.visual.COMPARE_LINK_ID);
@@ -1643,6 +1645,36 @@
 						}
 					}
 				}
+			}
+		},
+		/*Получение информации о нахождении в корзине*/
+		loadBasketData: function() {
+			var self = this;
+			var productId = this.product.id;
+
+			BX.ajax.runComponentAction('opensource:order', 'getBasketItemData', {
+				mode: 'class',
+				dataType: 'json',
+				data: { productId: productId }
+			})
+				.then(function(response) {
+					if (response.data && response.data.success) {
+						self.updateBasketUI(response.data);
+					}
+				})
+				.catch(function(error) {
+					console.error('Ошибка загрузки данных корзины:', error);
+				});
+		},
+		/*Добавляем класс к кнопке, если товар в корзине*/
+		updateBasketUI: function(data) {
+			var buyButton = this.obBuyBtn;
+			if (!buyButton) return;
+
+			if (data.inCart) {
+				BX.addClass(buyButton, 'in_cart');
+			} else {
+				BX.removeClass(buyButton, 'in_cart');
 			}
 		},
 
