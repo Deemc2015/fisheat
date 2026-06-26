@@ -368,7 +368,7 @@
                     return;
                 }
 
-                console.log(`Отрисовка зоны: ${zoneData.name}, точек: ${coordinates.length}`);
+
 
                 const polygon = new ymaps.Polygon([coordinates], {
                     hintContent: zoneData.name
@@ -447,7 +447,7 @@
         }
 
         showDeliveryInfo(zone) {
-            console.log('Показ информации о доставке для зоны:', zone.name);
+
 
             // Скрываем сообщение "вне зоны"
             const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
@@ -484,8 +484,6 @@
                 return;
             }
 
-            console.log('Расчет доставки для координат:', lat, lon);
-
             BX.ajax.runComponentAction('ldo:map.delivery', 'calculateDelivery', {
                 mode: 'class',
                 data: {
@@ -497,7 +495,7 @@
                     }
                 }
             }).then((response) => {
-                console.log('Ответ расчета доставки:', response);
+
                 const data = response.data;
 
                 if (data.error) {
@@ -534,7 +532,7 @@
                     }
                 }
             }).catch((error) => {
-                console.error('Ошибка расчета доставки:', error);
+
                 const totalSpan = document.querySelector('.delivery-block__total-sum span');
                 if (totalSpan) {
                     totalSpan.innerHTML = 'Ошибка расчета';
