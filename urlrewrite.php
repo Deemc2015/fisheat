@@ -8,7 +8,7 @@ $arUrlRewrite=array (
     'PATH' => '/personal/moi-zakazy/index.php',
     'SORT' => 100,
   ),
-  13 => 
+  16 => 
   array (
     'CONDITION' => '#^([^/]+?)\\??(.*)#',
     'RULE' => 'SECTION_CODE=$1&$2',
