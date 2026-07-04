@@ -403,7 +403,7 @@ if(Loader::IncludeModule('ldo.favorites')){
                             $basket = \Bitrix\Sale\Basket::loadItemsForFUser(\Bitrix\Sale\Fuser::getId(), \Bitrix\Main\Context::getCurrent()->getSite());
                             $isInBasket = false;
 
-                            print_r($basket);
+                            print_r($basketItem->getProductId());
 
                             foreach ($basket as $basketItem) {
                                 if ($basketItem->getProductId() == $actualItem['ID']) {
