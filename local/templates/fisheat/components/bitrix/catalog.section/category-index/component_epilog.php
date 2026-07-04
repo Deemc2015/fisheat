@@ -69,6 +69,7 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 	));
 }
 
+// Получаем корзину
 $arInBasket = [];
 try {
     $basket = Bitrix\Sale\Basket::loadItemsForFUser(
@@ -78,10 +79,22 @@ try {
     foreach ($basket->getBasketItems() as $basketItem) {
         $arInBasket[] = (int)$basketItem->getProductId();
     }
-} catch (Exception $e) {
+} catch (Exception $e) {}
 
-}
+// Формируем скрипт
+$script = '<script>
+    (function() {
+        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . ';
+        var buttons = document.querySelectorAll(".addCart");
+        buttons.forEach(function(button) {
+            var productId = parseInt(button.dataset.id);
+            if (basketIds.indexOf(productId) !== -1) {
+                button.classList.add("in_cart");
+            }
+        });
+    })();
+</script>';
 
-addMessage2Log($arInBasket);
+echo $script;
 
 
