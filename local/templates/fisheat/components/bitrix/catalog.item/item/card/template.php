@@ -394,49 +394,6 @@ if(Loader::IncludeModule('ldo.favorites')){
                                         </svg>
                                     </button>
                                 </div>
-
-                            <?php
-                            // Открываем композитную рамку для динамической проверки корзины
-                            $frame = $this->createFrame()->begin("");
-
-                            // Подгружаем корзину текущего пользователя (вызов кешируется Битриксом на хите)
-                            $basket = \Bitrix\Sale\Basket::loadItemsForFUser(\Bitrix\Sale\Fuser::getId(), \Bitrix\Main\Context::getCurrent()->getSite());
-                            $isInBasket = false;
-
-
-
-                            foreach ($basket as $basketItem) {
-
-                                echo $basketItem->getProductId();
-
-
-
-                                if ($basketItem->getProductId() == $actualItem['ID']) {
-
-                                    $isInBasket = true;
-                                    break;
-                                }
-                            }
-
-                            // Если товар действительно в корзине у этого юзера, добавляем класс через JS
-                            if ($isInBasket) {
-                            ?>
-                                <script>
-                                    BX.ready(function() {
-                                        // Ищем кнопку по её уникальному ID, генерируемому Битриксом
-                                        var btn = document.getElementById("<?=$itemIds['BUY_LINK']?>");
-                                        if (btn) {
-                                            btn.classList.add("in_cart");
-                                        }
-                                    });
-                                </script>
-                            <?php
-                            }
-
-
-                            // Закрываем композитную рамку
-                            $frame->end();
-                            ?>
                             <?
                             }
 							else

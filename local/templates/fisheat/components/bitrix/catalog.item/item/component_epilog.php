@@ -65,3 +65,57 @@ if ($arParams['DISPLAY_COMPARE'])
 		<?php
 	}
 }
+
+use Bitrix\Main\Loader;
+use Bitrix\Sale\Basket;
+use Bitrix\Sale\Fuser;
+
+
+$productId = $arResult['ITEM']['ID'];
+
+if ($productId && Loader::includeModule('sale')) {
+
+    // Включаем поддержку композита, чтобы Битрикс понимал, что этот эпилог динамический
+    if (is_object($this)) {
+        $this->setFrameMode(true);
+    }
+
+    // Запрашиваем корзину пользователя
+    $basket = Basket::loadItemsForFUser(Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
+
+
+
+    $isInBasket = false;
+
+    foreach ($basket as $basketItem) {
+        if ($basketItem->getProductId() == $productId) {
+            $isInBasket = true;
+            break;
+        }
+    }
+
+    if ($isInBasket) {
+        global $APPLICATION;
+
+        // Формируем чистый JS-код без вывода на экран
+        $scriptContent = '
+        <script>
+            (function() {
+                var productId = "' . CUtil::JSEscape($productId) . '";
+                // Ищем по data-id, чтобы не завязываться на динамические ID Битрикса
+                var btn = document.querySelector(\'.addCart[data-id="\' + productId + \'"]\');
+                if (btn) {
+                    btn.classList.add("in_cart");
+                } else {
+                    BX.ready(function() {
+                        var btnRetry = document.querySelector(\'.addCart[data-id="\' + productId + \'"]\');
+                        if (btnRetry) btnRetry.classList.add("in_cart");
+                    });
+                }
+            })();
+        </script>';
+
+        // Отправляем скрипт в специальную именованную область "dynamic_basket_classes"
+        $APPLICATION->AddViewContent('dynamic_basket_classes', $scriptContent);
+    }
+}

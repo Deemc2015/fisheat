@@ -334,3 +334,7 @@ $signedParams = $signer->sign(base64_encode(serialize($arResult['ORIGINAL_PARAME
 	});
 </script>
 <!-- component-end -->
+<?php
+// Выводим все собранные из эпилогов скрипты в самом низу списка товаров
+echo $APPLICATION->GetViewContent('dynamic_basket_classes');
+?>
