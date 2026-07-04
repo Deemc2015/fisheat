@@ -323,6 +323,5 @@ if (isset($arResult['ITEM']))
 	unset($item, $actualItem, $minOffer, $itemIds, $jsParams);
 }
 
-
 $this->__component->arResult["CACHED_TPL"] = @ob_get_contents();
 ob_get_clean();
