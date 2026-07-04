@@ -7,6 +7,11 @@
  * @var CatalogSectionComponent $component
  */
 
+use Bitrix\Main\Loader;
+use Bitrix\Sale\Basket;
+use Bitrix\Sale\Fuser;
+
+
 global $APPLICATION;
 
 if (isset($templateData['TEMPLATE_THEME']))
@@ -63,3 +68,13 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 		'epilogue' => $epilogue,
 	));
 }
+
+
+//Добавляем классы к кнопкам у товаров в корзине
+// Запрашиваем корзину пользователя
+$basket = Basket::loadItemsForFUser(Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
+foreach ($basket as $basketItem) {
+    $arrInCart[] = $basketItem->getProductId();
+}
+
+addMessage2Log($arrInCart);
