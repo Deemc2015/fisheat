@@ -399,12 +399,11 @@ if(Loader::IncludeModule('ldo.favorites')){
                             // Открываем композитную рамку для динамической проверки корзины
                             $frame = $this->createFrame()->begin("");
 
-                            echo \Bitrix\Sale\Fuser::getId();
-
-
                             // Подгружаем корзину текущего пользователя (вызов кешируется Битриксом на хите)
                             $basket = \Bitrix\Sale\Basket::loadItemsForFUser(\Bitrix\Sale\Fuser::getId(), \Bitrix\Main\Context::getCurrent()->getSite());
                             $isInBasket = false;
+
+                            print_r($basket);
 
                             foreach ($basket as $basketItem) {
                                 if ($basketItem->getProductId() == $actualItem['ID']) {
