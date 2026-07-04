@@ -16,11 +16,8 @@ use Bitrix\Main;
  * @var string $componentPath
  * @var string $templateFolder
  */
-
-$this->setFrameMode(true);
-
 ob_start();
-
+$this->setFrameMode(true);
 
 if (isset($arResult['ITEM']))
 {
@@ -310,6 +307,7 @@ if (isset($arResult['ITEM']))
 			$templateData['ITEM']['OFFERS_SELECTED'] = $item['OFFERS_SELECTED'];
 			$templateData['ITEM']['JS_OFFERS'] = $item['JS_OFFERS'];
 		}
+
 		?>
 
 

@@ -67,43 +67,43 @@ if ($arParams['DISPLAY_COMPARE'])
 }
 
 
-// Проверяем, определена ли функция
-if (!function_exists('set_buttons_callback')) {
-    function set_buttons_callback($matches) {
-        static $arInBasket = null;
 
-        // Получаем корзину один раз
-        if ($arInBasket === null) {
-            $arInBasket = [];
-            try {
-                $basket = Bitrix\Sale\Basket::loadItemsForFUser(
-                    Bitrix\Sale\Fuser::getId(),
-                    Bitrix\Main\Context::getCurrent()->getSite()
-                );
-                foreach ($basket->getBasketItems() as $basketItem) {
-                    $arInBasket[] = (int)$basketItem->getProductId();
-                }
-            } catch (Exception $e) {
-                // Обработка ошибки
-            }
-        }
 
-        // Получаем ID товара из маски
-        $productId = (int)$matches[1];
 
-        // Возвращаем класс
-        return in_array($productId, $arInBasket) ? ' in_cart' : '';
-    }
-}
-
-// Заменяем маски в кешированном HTML
-if (!empty($arResult["CACHED_TPL"])) {
-    echo preg_replace_callback(
-        "/#BUY_CLASS_([\d]+)#/is",
-        'set_buttons_callback',
-        $arResult["CACHED_TPL"]
+// Получаем корзину
+$arInBasket = [];
+try {
+    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+        Bitrix\Sale\Fuser::getId(),
+        Bitrix\Main\Context::getCurrent()->getSite()
     );
+    foreach ($basket->getBasketItems() as $basketItem) {
+        $arInBasket[] = (int)$basketItem->getProductId();
+    }
+} catch (Exception $e) {}
+
+// Передаем JS массив
+?>
+    <script>
+        var basketProductIds = <?= CUtil::PhpToJSObject($arInBasket) ?>;
+
+        BX.ready(function() {
+            // Добавляем класс in_cart для товаров в корзине
+            document.querySelectorAll('.addCart').forEach(function(button) {
+                var productId = parseInt(button.dataset.id);
+                if (basketProductIds.indexOf(productId) !== -1) {
+                    button.classList.add('in_cart');
+                }
+            });
+        });
+    </script>
+<?php
+
+// Выводим кешированный HTML (если есть)
+if (!empty($arResult["CACHED_TPL"])) {
+    echo $arResult["CACHED_TPL"];
 } else {
-    // Если кеша нет - выводим как есть
     echo $arResult["CACHED_TPL"] ?? '';
 }
+
+
