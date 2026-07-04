@@ -89,20 +89,45 @@ $script = '
         var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
        
         function addBasketClass() {
-            document.querySelectorAll(".addCart").forEach(function(button) {
+            var buttons = document.querySelectorAll(".addCart");
+            if (buttons.length === 0) return false; // Если кнопок еще нет, выходим
+            
+            buttons.forEach(function(button) {
                 var productId = String(button.dataset.id);
                 if (basketIds.includes(productId)) {
                     button.classList.add("in_cart");
                 }
             });
+            return true;
         }
         
-        // В композите этот скрипт прилетит позже загрузки DOM, поэтому выполняем сразу
-        addBasketClass();
+        // 1. Пытаемся выполнить сразу (если кнопки уже успели отрендериться)
+        var success = addBasketClass();
         
-        // На всякий случай дублируем при полной загрузке
+        // 2. Если кнопок еще нет или каталог догружается динамически, включаем слежку за DOM
+        if (!success || document.readyState === "loading") {
+            var observer = new MutationObserver(function(mutations, obs) {
+                // Как только на странице появились нужные кнопки — красим их
+                if (document.querySelectorAll(".addCart").length > 0) {
+                    addBasketClass();
+                    // Отключаем слежку, чтобы не тратить ресурсы браузера
+                    obs.disconnect(); 
+                }
+            });
+            
+            // Начинаем следить за всем документом
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // Страховочное отключение обсервера через 3 секунды, чтобы он не висел вечно
+            setTimeout(function() { observer.disconnect(); }, 3000);
+        }
+        
+        // 3. Железный таймаут для старых браузеров
         window.addEventListener("load", function() {
-            setTimeout(addBasketClass, 100);
+            setTimeout(addBasketClass, 200);
         });
     })();
 </script>';
