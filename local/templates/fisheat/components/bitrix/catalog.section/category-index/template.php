@@ -24,7 +24,7 @@ use Bitrix\Catalog\ProductTable;
 
 
 $this->setFrameMode(true);
-
+print_r($arResult['BASKET_IDS']);
 if (!empty($arResult['NAV_RESULT']))
 {
 	$navParams =  array(

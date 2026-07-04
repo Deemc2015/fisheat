@@ -58,6 +58,8 @@ if(!$actualItem['CAN_BUY']){
     $disabledClass = 'not-avaliable';
 }
 $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
+
+
 ?>
 
 
@@ -380,19 +382,56 @@ if(Loader::IncludeModule('ldo.favorites')){
 						<?
 						if (!$haveOffers)
 						{
-							if ($actualItem['CAN_BUY'])
-							{
-								?>
-								<div class="product-item-button-container" id="<?=$itemIds['BASKET_ACTIONS']?>">
-									<button data-id="<?=$actualItem['ID']?>"  class="btn btn-primary addCart <?=$buttonSizeClass?>" id="<?=$itemIds['BUY_LINK']?>"
-											href="javascript:void(0)" rel="nofollow"><svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            if ($actualItem['CAN_BUY'])
+                            {
+                                ?>
+                                <div class="product-item-button-container" id="<?=$itemIds['BASKET_ACTIONS']?>">
+                                    <!-- В классе убираем php-проверку, оставляем только базовые классы -->
+                                    <button data-id="<?=$actualItem['ID']?>" class="btn btn-primary addCart" id="<?=$itemIds['BUY_LINK']?>" href="javascript:void(0)" rel="nofollow">
+                                        <svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M4.88622 6.17594V5.28917C4.88622 3.23221 6.54093 1.21183 8.59788 1.01985C11.0479 0.782153 13.114 2.71112 13.114 5.11547V6.37707M6.25739 19.2764H11.7426C15.4177 19.2764 16.0759 17.8046 16.2679 16.0127L16.9536 10.5275C17.2004 8.29686 16.5604 6.47759 12.6568 6.47759H5.34319C1.43955 6.47759 0.79961 8.29686 1.04644 10.5275L1.7321 16.0127C1.92408 17.8046 2.5823 19.2764 6.25739 19.2764Z" stroke="#F44336" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                                             <path d="M12.1958 10.1343H12.204M5.79541 10.1343H5.80362" stroke="#F44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>
-									</button>
-								</div>
-								<?
-							}
+                                    </button>
+                                </div>
+
+                            <?php
+                            // Открываем композитную рамку для динамической проверки корзины
+                            $frame = $this->createFrame()->begin("");
+
+
+                            // Подгружаем корзину текущего пользователя (вызов кешируется Битриксом на хите)
+                            $basket = \Bitrix\Sale\Basket::loadItemsForFUser(\Bitrix\Sale\Fuser::getId(), \Bitrix\Main\Context::getCurrent()->getSite());
+                            $isInBasket = false;
+
+                            foreach ($basket as $basketItem) {
+                                if ($basketItem->getProductId() == $actualItem['ID']) {
+                                    $isInBasket = true;
+                                    break;
+                                }
+                            }
+
+                            // Если товар действительно в корзине у этого юзера, добавляем класс через JS
+                            if ($isInBasket) {
+                            ?>
+                                <script>
+                                    BX.ready(function() {
+                                        // Ищем кнопку по её уникальному ID, генерируемому Битриксом
+                                        var btn = document.getElementById("<?=$itemIds['BUY_LINK']?>");
+                                        if (btn) {
+                                            btn.classList.add("in_cart");
+                                        }
+                                    });
+                                </script>
+                            <?php
+                            }
+
+
+                            // Закрываем композитную рамку
+                            $frame->end();
+                            ?>
+                            <?
+                            }
 							else
 							{
 								?>
@@ -402,52 +441,7 @@ if(Loader::IncludeModule('ldo.favorites')){
 						}
 						else
 						{
-							if ($arParams['PRODUCT_DISPLAY_MODE'] === 'Y')
-							{
-								?>
-								<div class="product-item-button-container">
-									<?
-									if ($showSubscribe)
-									{
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.product.subscribe',
-											'',
-											array(
-												'PRODUCT_ID' => $item['ID'],
-												'BUTTON_ID' => $itemIds['SUBSCRIBE_LINK'],
-												'BUTTON_CLASS' => 'btn btn-primary '.$buttonSizeClass,
-												'DEFAULT_DISPLAY' => !$actualItem['CAN_BUY'],
-												'MESS_BTN_SUBSCRIBE' => $arParams['~MESS_BTN_SUBSCRIBE'],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-									}
-									?>
-									<button class="btn btn-link <?=$buttonSizeClass?>"
-											id="<?=$itemIds['NOT_AVAILABLE_MESS']?>" href="javascript:void(0)" rel="nofollow"
-										<?=($actualItem['CAN_BUY'] ? 'style="display: none;"' : '')?>>
-										<?=$arParams['MESS_NOT_AVAILABLE']?>
-									</button>
-									<div id="<?=$itemIds['BASKET_ACTIONS']?>" <?=($actualItem['CAN_BUY'] ? '' : 'style="display: none;"')?>>
-										<button class="btn btn-primary <?=$buttonSizeClass?>" id="<?=$itemIds['BUY_LINK']?>"
-												href="javascript:void(0)" rel="nofollow">
-											<?=($arParams['ADD_TO_BASKET_ACTION'] === 'BUY' ? $arParams['MESS_BTN_BUY'] : $arParams['MESS_BTN_ADD_TO_BASKET'])?>
-										</button>
-									</div>
-								</div>
-								<?
-							}
-							else
-							{
-								?>
-								<div class="product-item-button-container">
-									<a class="btn btn-primary <?=$buttonSizeClass?>" href="<?=$item['DETAIL_PAGE_URL']?>">
-										<?=$arParams['MESS_BTN_DETAIL']?>
-									</a>
-								</div>
-								<?
-							}
+							/*Тут логика вывода кнопки, если у товара есть ТП*/
 						}
 						?>
 					</div>

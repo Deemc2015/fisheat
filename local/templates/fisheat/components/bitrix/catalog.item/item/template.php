@@ -20,9 +20,6 @@ use Bitrix\Main;
 $this->setFrameMode(true);
 
 
-
-
-
 if (isset($arResult['ITEM']))
 {
 	$item = $arResult['ITEM'];
