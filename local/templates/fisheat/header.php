@@ -366,13 +366,13 @@ use \Ldo\Develop\Pages;
 <? endif; ?>
 
     <? endif; ?>
-<?$APPLICATION->IncludeComponent(
+<?/*$APPLICATION->IncludeComponent(
 	"ldo:user.auth", 
 	".default", 
 	array(
-		"COMPOSITE_FRAME_MODE" => "N",
+		"COMPOSITE_FRAME_MODE" => "Y",
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
 		"COMPONENT_TEMPLATE" => ".default"
 	),
 	false
-);?>
+);*/?>

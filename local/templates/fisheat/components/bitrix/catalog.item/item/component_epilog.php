@@ -12,21 +12,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
  */
 
 
-// В начале файла
-if (defined('BX_COMP_MANAGED_CACHE')) {
-    file_put_contents(
-        $_SERVER['DOCUMENT_ROOT'] . '/debug_cache.txt',
-        date('Y-m-d H:i:s') . " - CACHED_TPL: " . (isset($arResult["CACHED_TPL"]) ? strlen($arResult["CACHED_TPL"]) : 'empty') . "\n",
-        FILE_APPEND
-    );
-}
-
-
-
-
-
-
-
 
 
 // check compared state
