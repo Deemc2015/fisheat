@@ -69,7 +69,9 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 	));
 }
 
-// Получаем корзину
+use Bitrix\Main\Page\Asset;
+
+// Получаем корзину (этот кусок кода работает без кэша, тут все ок)
 $arInBasket = [];
 try {
     $basket = Bitrix\Sale\Basket::loadItemsForFUser(
@@ -81,42 +83,42 @@ try {
     }
 } catch (Exception $e) {}
 
-
-addMessage2Log($arInBasket);
-
+// Ограничиваем повторное добавление скрипта на страницу, если компонент вызван несколько раз
 global $basketScriptAdded;
 if (!isset($basketScriptAdded) || !$basketScriptAdded) {
     $basketScriptAdded = true;
-     $script = '
-        <script>
-        // Преобразуем все элементы массива JS в строки для гарантированного совпадения типов
-        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
-       
-        function addBasketClass() {
-            document.querySelectorAll(".addCart").forEach(function(button) {
-                // Приводим ID кнопки к строке
-                var productId = String(button.dataset.id);
 
-                // Проверяем наличие через modern-метод includes
-                if (basketIds.includes(productId)) {
-                    button.classList.add("in_cart");
-                }
+    // Формируем JS-скрипт
+    $script = '
+    <script>
+        (function() {
+            // Приводим все ID из PHP к строкам
+            var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
+           
+            function addBasketClass() {
+                document.querySelectorAll(".addCart").forEach(function(button) {
+                    var productId = String(button.dataset.id);
+                    if (basketIds.includes(productId)) {
+                        button.classList.add("in_cart");
+                    }
+                });
+            }
+            
+            // Запускаем сразу или по готовности DOM
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", addBasketClass);
+            } else {
+                addBasketClass();
+            }
+            
+            // Страховочный перезапуск после полной загрузки страницы
+            window.addEventListener("load", function() {
+                setTimeout(addBasketClass, 200);
             });
-        }
-        
-        // Запускаем после загрузки DOM
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", addBasketClass);
-        } else {
-            addBasketClass();
-        }
-        
-        // Дополнительная проверка после полной загрузки
-        window.addEventListener("load", function() {
-            setTimeout(addBasketClass, 200);
-        });
+        })();
     </script>';
 
-    echo $script;
+    // ВАЖНО: Регистрируем скрипт в буфере Битрикса вместо обычного echo
+    Asset::getInstance()->addString($script);
 }
 
