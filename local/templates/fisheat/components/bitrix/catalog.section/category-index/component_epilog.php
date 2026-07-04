@@ -7,10 +7,7 @@
  * @var CatalogSectionComponent $component
  */
 
-use Bitrix\Main\Loader;
-use Bitrix\Sale\Basket;
-use Bitrix\Sale\Fuser;
-
+use Bitrix\Main\Page\Asset;
 
 global $APPLICATION;
 
@@ -69,7 +66,7 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 	));
 }
 
-use Bitrix\Main\Page\Asset;
+
 
 // Получаем корзину (этот кусок кода работает без кэша, тут все ок)
 $arInBasket = [];
@@ -83,42 +80,62 @@ try {
     }
 } catch (Exception $e) {}
 
-// Ограничиваем повторное добавление скрипта на страницу, если компонент вызван несколько раз
+
 global $basketScriptAdded;
 if (!isset($basketScriptAdded) || !$basketScriptAdded) {
     $basketScriptAdded = true;
 
-    // Формируем JS-скрипт
     $script = '
     <script>
         (function() {
-            // Приводим все ID из PHP к строкам
-            var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
-           
             function addBasketClass() {
+                // Пытаемся получить данные о корзине из стандартного JS-хранилища Битрикса
+                var localData = localStorage.getItem("saleInternalData");
+                var basketIds = [];
+
+                if (localData) {
+                    try {
+                        var parsed = JSON.parse(localData);
+                        // Проверяем наличие товаров в объекте корзины Битрикса
+                        if (parsed && parsed.BASKET && parsed.BASKET.ITEMS) {
+                            basketIds = parsed.BASKET.ITEMS.map(function(item) {
+                                return String(item.PRODUCT_ID);
+                            });
+                        }
+                    } catch(e) {
+                        console.error("Ошибка парсинга корзины Битрикса:", e);
+                    }
+                }
+
+                // Расставляем классы кнопок
                 document.querySelectorAll(".addCart").forEach(function(button) {
                     var productId = String(button.dataset.id);
                     if (basketIds.includes(productId)) {
                         button.classList.add("in_cart");
+                    } else {
+                        button.classList.remove("in_cart"); // Очищаем класс, если товара нет
                     }
                 });
             }
-            
-            // Запускаем сразу или по готовности DOM
+
+            // Подписываемся на стандартное событие изменения корзины в Битриксе
+            if (typeof BX !== "undefined" && BX.addCustomEvent) {
+                BX.addCustomEvent("OnBasketChange", addBasketClass);
+            }
+
+            // Запускаем проверку при загрузке
             if (document.readyState === "loading") {
                 document.addEventListener("DOMContentLoaded", addBasketClass);
             } else {
                 addBasketClass();
             }
-            
-            // Страховочный перезапуск после полной загрузки страницы
+
             window.addEventListener("load", function() {
-                setTimeout(addBasketClass, 200);
+                setTimeout(addBasketClass, 300);
             });
         })();
     </script>';
 
-    // ВАЖНО: Регистрируем скрипт в буфере Битрикса вместо обычного echo
     Asset::getInstance()->addString($script);
 }
 
