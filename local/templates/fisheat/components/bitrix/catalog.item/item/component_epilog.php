@@ -65,3 +65,46 @@ if ($arParams['DISPLAY_COMPARE'])
 		<?php
 	}
 }
+
+
+// Проверяем, определена ли функция, чтобы избежать повторного объявления
+if (!function_exists('set_buttons_callback')) {
+    function set_buttons_callback($matches) {
+        static $arInBasket = null;
+
+        // Получаем корзину один раз при первом вызове
+        if ($arInBasket === null) {
+            $arInBasket = [];
+            try {
+                $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+                    Bitrix\Sale\Fuser::getId(),
+                    Bitrix\Main\Context::getCurrent()->getSite()
+                );
+                foreach ($basket->getBasketItems() as $basketItem) {
+                    $arInBasket[] = (int)$basketItem->getProductId();
+                }
+            } catch (Exception $e) {
+                // Обработка ошибки
+            }
+        }
+
+        // Получаем ID товара из маски
+        $productId = (int)$matches[1];
+
+        // Возвращаем класс с пробелом, если товар в корзине
+        return in_array($productId, $arInBasket) ? ' in_cart' : '';
+    }
+}
+
+// Проверяем, есть ли кешированный HTML для замены
+if (!empty($arResult["CACHED_TPL"])) {
+    // Заменяем маски на класс
+    echo preg_replace_callback(
+        "/#BUY_CLASS_([\d]+)#/is",
+        'set_buttons_callback',
+        $arResult["CACHED_TPL"]
+    );
+} else {
+    // Если кеша нет, выводим то, что есть
+    echo $arResult["CACHED_TPL"] ?? '';
+}
