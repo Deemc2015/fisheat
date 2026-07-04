@@ -6,7 +6,7 @@
  * @var string $templateFolder
  * @var CatalogSectionComponent $component
  */
-
+use Bitrix\Main\Page\Asset;
 global $APPLICATION;
 
 if (isset($templateData['TEMPLATE_THEME']))
@@ -61,3 +61,74 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 		'epilogue' => $epilogue,
 	));
 }
+
+
+// Обязательно подключаем механизм динамических зон
+$compositeFrame = new \Bitrix\Main\Page\FrameHelper("products_buttons_frame");
+$compositeFrame->begin();
+
+$arInBasket = [];
+try {
+    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+        Bitrix\Sale\Fuser::getId(),
+        Bitrix\Main\Context::getCurrent()->getSite()
+    );
+    foreach ($basket->getBasketItems() as $basketItem) {
+        $arInBasket[] = (int)$basketItem->getProductId();
+    }
+} catch (Exception $e) {}
+
+$script = '
+<script>
+    (function() {
+        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
+       
+        function addBasketClass() {
+            var buttons = document.querySelectorAll(".addCart");
+            if (buttons.length === 0) return false;
+            
+            buttons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (basketIds.includes(productId)) {
+                    button.classList.add("in_cart");
+                }
+            });
+            return true;
+        }
+        
+        // 1. Пробуем выполнить сразу
+        var success = addBasketClass();
+        
+        // 2. Если кнопок нет, запускаем обсервер
+        if (!success) {
+            var observer = new MutationObserver(function(mutations, obs) {
+                if (addBasketClass()) {
+                    obs.disconnect(); // Отключаем, как только успешно покрасили кнопки
+                }
+            });
+            
+            // Защита от null: следим за document.documentElement (тег <html>), он есть всегда
+            var targetNode = document.body || document.documentElement;
+            
+            observer.observe(targetNode, {
+                childList: true,
+                subtree: true
+            });
+            
+            // На всякий случай гасим через 4 секунды
+            setTimeout(function() { observer.disconnect(); }, 4000);
+        }
+        
+        // 3. Страховка по событиям загрузки
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", addBasketClass);
+        }
+        window.addEventListener("load", function() {
+            setTimeout(addBasketClass, 200);
+        });
+    })();
+</script>';
+
+Asset::getInstance()->addString($script);
+
+$compositeFrame->end(); // Конец динамической зоны
