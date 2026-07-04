@@ -366,7 +366,7 @@ use \Ldo\Develop\Pages;
 <? endif; ?>
 
     <? endif; ?>
-<?/*$APPLICATION->IncludeComponent(
+<?$APPLICATION->IncludeComponent(
 	"ldo:user.auth", 
 	".default", 
 	array(
@@ -375,4 +375,4 @@ use \Ldo\Develop\Pages;
 		"COMPONENT_TEMPLATE" => ".default"
 	),
 	false
-);*/?>
+);?>

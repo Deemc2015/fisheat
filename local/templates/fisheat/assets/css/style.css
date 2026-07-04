@@ -453,6 +453,7 @@ h1.title-page{
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
+    margin-bottom: 24px;
 }
 .product-item-container a .image-product{
     height: 225px;
