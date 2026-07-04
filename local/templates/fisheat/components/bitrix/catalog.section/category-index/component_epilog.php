@@ -90,7 +90,7 @@ $script = '
        
         function addBasketClass() {
             var buttons = document.querySelectorAll(".addCart");
-            if (buttons.length === 0) return false; // Если кнопок еще нет, выходим
+            if (buttons.length === 0) return false;
             
             buttons.forEach(function(button) {
                 var productId = String(button.dataset.id);
@@ -101,31 +101,33 @@ $script = '
             return true;
         }
         
-        // 1. Пытаемся выполнить сразу (если кнопки уже успели отрендериться)
+        // 1. Пробуем выполнить сразу
         var success = addBasketClass();
         
-        // 2. Если кнопок еще нет или каталог догружается динамически, включаем слежку за DOM
-        if (!success || document.readyState === "loading") {
+        // 2. Если кнопок нет, запускаем обсервер
+        if (!success) {
             var observer = new MutationObserver(function(mutations, obs) {
-                // Как только на странице появились нужные кнопки — красим их
-                if (document.querySelectorAll(".addCart").length > 0) {
-                    addBasketClass();
-                    // Отключаем слежку, чтобы не тратить ресурсы браузера
-                    obs.disconnect(); 
+                if (addBasketClass()) {
+                    obs.disconnect(); // Отключаем, как только успешно покрасили кнопки
                 }
             });
             
-            // Начинаем следить за всем документом
-            observer.observe(document.body, {
+            // Защита от null: следим за document.documentElement (тег <html>), он есть всегда
+            var targetNode = document.body || document.documentElement;
+            
+            observer.observe(targetNode, {
                 childList: true,
                 subtree: true
             });
             
-            // Страховочное отключение обсервера через 3 секунды, чтобы он не висел вечно
-            setTimeout(function() { observer.disconnect(); }, 3000);
+            // На всякий случай гасим через 4 секунды
+            setTimeout(function() { observer.disconnect(); }, 4000);
         }
         
-        // 3. Железный таймаут для старых браузеров
+        // 3. Страховка по событиям загрузки
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", addBasketClass);
+        }
         window.addEventListener("load", function() {
             setTimeout(addBasketClass, 200);
         });
