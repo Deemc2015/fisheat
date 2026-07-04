@@ -16,9 +16,8 @@ use Bitrix\Main;
  * @var string $componentPath
  * @var string $templateFolder
  */
-ob_start();
-$this->setFrameMode(true);
 
+$this->setFrameMode(true);
 if (isset($arResult['ITEM']))
 {
 	$item = $arResult['ITEM'];
@@ -321,5 +320,3 @@ if (isset($arResult['ITEM']))
 	unset($item, $actualItem, $minOffer, $itemIds, $jsParams);
 }
 
-$this->__component->arResult["CACHED_TPL"] = @ob_get_contents();
-ob_get_clean();
