@@ -81,20 +81,42 @@ try {
     }
 } catch (Exception $e) {}
 
-// Формируем скрипт
-$script = '<script>
-    (function() {
-        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . ';
-        var buttons = document.querySelectorAll(".addCart");
-        buttons.forEach(function(button) {
-            var productId = parseInt(button.dataset.id);
-            if (basketIds.indexOf(productId) !== -1) {
-                button.classList.add("in_cart");
-            }
+
+addMessage2Log($arInBasket);
+
+global $basketScriptAdded;
+if (!isset($basketScriptAdded) || !$basketScriptAdded) {
+    $basketScriptAdded = true;
+     $script = '
+        <script>
+        // Преобразуем все элементы массива JS в строки для гарантированного совпадения типов
+        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
+       
+        function addBasketClass() {
+            document.querySelectorAll(".addCart").forEach(function(button) {
+                // Приводим ID кнопки к строке
+                var productId = String(button.dataset.id);
+
+                // Проверяем наличие через modern-метод includes
+                if (basketIds.includes(productId)) {
+                    button.classList.add("in_cart");
+                }
+            });
+        }
+        
+        // Запускаем после загрузки DOM
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", addBasketClass);
+        } else {
+            addBasketClass();
+        }
+        
+        // Дополнительная проверка после полной загрузки
+        window.addEventListener("load", function() {
+            setTimeout(addBasketClass, 200);
         });
-    })();
-</script>';
+    </script>';
 
-echo $script;
-
+    echo $script;
+}
 
