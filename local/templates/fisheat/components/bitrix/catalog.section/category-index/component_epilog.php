@@ -68,46 +68,81 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 
 
 
-// Обязательно подключаем механизм динамических зон
-$compositeFrame = new \Bitrix\Main\Page\FrameHelper("basket_buttons_frame");
-$compositeFrame->begin(); // Всё, что ниже, НЕ будет кэшироваться композитом
+global $basketScriptAdded;
+if (!isset($basketScriptAdded) || !$basketScriptAdded) {
+    $basketScriptAdded = true;
 
-$arInBasket = [];
-try {
-    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
-        Bitrix\Sale\Fuser::getId(),
-        Bitrix\Main\Context::getCurrent()->getSite()
-    );
-    foreach ($basket->getBasketItems() as $basketItem) {
-        $arInBasket[] = (int)$basketItem->getProductId();
-    }
-} catch (Exception $e) {}
+    $script = '
+    <script>
+        (function() {
+            function updateCartButtons() {
+                var basketIds = [];
+                
+                // Исправлено: передаем ключ как СТРОКУ "saleInternalData"
+                var localData = localStorage.getItem("saleInternalData");
 
-$script = '
-<script>
-    (function() {
-        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
-       
-        function addBasketClass() {
-            document.querySelectorAll(".addCart").forEach(function(button) {
-                var productId = String(button.dataset.id);
-                if (basketIds.includes(productId)) {
-                    button.classList.add("in_cart");
+                if (localData) {
+                    try {
+                        var parsed = JSON.parse(localData);
+                        if (parsed && parsed.BASKET && parsed.BASKET.ITEMS) {
+                            basketIds = parsed.BASKET.ITEMS.map(function(item) {
+                                return String(item.PRODUCT_ID);
+                            });
+                        }
+                    } catch(e) {
+                        console.error("Ошибка чтения корзины:", e);
+                    }
                 }
+
+                // Расставляем классы на кнопки
+                document.querySelectorAll(".addCart").forEach(function(button) {
+                    var productId = String(button.dataset.id);
+                    if (basketIds.includes(productId)) {
+                        button.classList.add("in_cart");
+                    } else {
+                        button.classList.remove("in_cart");
+                    }
+                });
+            }
+
+            // Альтернативный и самый надежный перехват данных для Битрикса:
+            // Ловим событие OnBasketChange и вытаскиваем актуальные ID прямо из параметров события,
+            // не дожидаясь записи в localStorage.
+            if (typeof BX !== "undefined" && BX.addCustomEvent) {
+                BX.addCustomEvent("OnBasketChange", function(currentBasketData) {
+                    // Если Битрикс передал объект с данными в событие
+                    if (currentBasketData && currentBasketData.ITEMS) {
+                        var basketIds = currentBasketData.ITEMS.map(function(item) {
+                            return String(item.PRODUCT_ID);
+                        });
+                        
+                        document.querySelectorAll(".addCart").forEach(function(button) {
+                            var productId = String(button.dataset.id);
+                            if (basketIds.includes(productId)) {
+                                button.classList.add("in_cart");
+                            } else {
+                                button.classList.remove("in_cart");
+                            }
+                        });
+                    } else {
+                        // Если событие пустое (старая версия ядра), дергаем функцию с localStorage
+                        setTimeout(updateCartButtons, 150);
+                    }
+                });
+            }
+
+            // Проверки при загрузке страницы
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", updateCartButtons);
+            } else {
+                updateCartButtons();
+            }
+
+            window.addEventListener("load", function() {
+                setTimeout(updateCartButtons, 300);
             });
-        }
-        
-        // В композите этот скрипт прилетит позже загрузки DOM, поэтому выполняем сразу
-        addBasketClass();
-        
-        // На всякий случай дублируем при полной загрузке
-        window.addEventListener("load", function() {
-            setTimeout(addBasketClass, 100);
-        });
-    })();
-</script>';
+        })();
+    </script>';
 
-Asset::getInstance()->addString($script);
-
-$compositeFrame->end(); // Конец динамической зоны
-
+    Asset::getInstance()->addString($script, false, \Bitrix\Main\Page\AssetLocation::AFTER_JS_KERNEL);
+}
