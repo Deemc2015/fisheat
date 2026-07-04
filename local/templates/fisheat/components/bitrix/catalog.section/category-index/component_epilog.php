@@ -70,11 +70,38 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 }
 
 
-//Добавляем классы к кнопкам у товаров в корзине
-// Запрашиваем корзину пользователя
-$basket = Basket::loadItemsForFUser(Fuser::getId(), Bitrix\Main\Context::getCurrent()->getSite());
-foreach ($basket as $basketItem) {
-    $arrInCart[] = $basketItem->getProductId();
-}
+// Получаем корзину
+$arInBasket = [];
+try {
+    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+        Bitrix\Sale\Fuser::getId(),
+        Bitrix\Main\Context::getCurrent()->getSite()
+    );
+    foreach ($basket->getBasketItems() as $basketItem) {
+        $arInBasket[] = (int)$basketItem->getProductId();
+    }
+} catch (Exception $e) {}
 
-addMessage2Log($arrInCart);
+// Передаем JS массив
+?>
+    <script>
+        var basketProductIds = <?= CUtil::PhpToJSObject($arInBasket) ?>;
+
+        BX.ready(function() {
+            // Добавляем класс in_cart для товаров в корзине
+            document.querySelectorAll('.addCart').forEach(function(button) {
+                var productId = parseInt(button.dataset.id);
+                if (basketProductIds.indexOf(productId) !== -1) {
+                    button.classList.add('in_cart');
+                }
+            });
+        });
+    </script>
+<?php
+
+// Выводим кешированный HTML (если есть)
+if (!empty($arResult["CACHED_TPL"])) {
+    echo $arResult["CACHED_TPL"];
+} else {
+    echo $arResult["CACHED_TPL"] ?? '';
+}
