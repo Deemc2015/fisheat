@@ -68,7 +68,10 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 
 
 
-// Получаем корзину (этот кусок кода работает без кэша, тут все ок)
+// Обязательно подключаем механизм динамических зон
+$compositeFrame = new \Bitrix\Main\Page\FrameHelper("basket_buttons_frame");
+$compositeFrame->begin(); // Всё, что ниже, НЕ будет кэшироваться композитом
+
 $arInBasket = [];
 try {
     $basket = Bitrix\Sale\Basket::loadItemsForFUser(
@@ -80,62 +83,31 @@ try {
     }
 } catch (Exception $e) {}
 
-
-global $basketScriptAdded;
-if (!isset($basketScriptAdded) || !$basketScriptAdded) {
-    $basketScriptAdded = true;
-
-    $script = '
-    <script>
-        (function() {
-            function addBasketClass() {
-                // Пытаемся получить данные о корзине из стандартного JS-хранилища Битрикса
-                var localData = localStorage.getItem("saleInternalData");
-                var basketIds = [];
-
-                if (localData) {
-                    try {
-                        var parsed = JSON.parse(localData);
-                        // Проверяем наличие товаров в объекте корзины Битрикса
-                        if (parsed && parsed.BASKET && parsed.BASKET.ITEMS) {
-                            basketIds = parsed.BASKET.ITEMS.map(function(item) {
-                                return String(item.PRODUCT_ID);
-                            });
-                        }
-                    } catch(e) {
-                        console.error("Ошибка парсинга корзины Битрикса:", e);
-                    }
+$script = '
+<script>
+    (function() {
+        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
+       
+        function addBasketClass() {
+            document.querySelectorAll(".addCart").forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (basketIds.includes(productId)) {
+                    button.classList.add("in_cart");
                 }
-
-                // Расставляем классы кнопок
-                document.querySelectorAll(".addCart").forEach(function(button) {
-                    var productId = String(button.dataset.id);
-                    if (basketIds.includes(productId)) {
-                        button.classList.add("in_cart");
-                    } else {
-                        button.classList.remove("in_cart"); // Очищаем класс, если товара нет
-                    }
-                });
-            }
-
-            // Подписываемся на стандартное событие изменения корзины в Битриксе
-            if (typeof BX !== "undefined" && BX.addCustomEvent) {
-                BX.addCustomEvent("OnBasketChange", addBasketClass);
-            }
-
-            // Запускаем проверку при загрузке
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", addBasketClass);
-            } else {
-                addBasketClass();
-            }
-
-            window.addEventListener("load", function() {
-                setTimeout(addBasketClass, 300);
             });
-        })();
-    </script>';
+        }
+        
+        // В композите этот скрипт прилетит позже загрузки DOM, поэтому выполняем сразу
+        addBasketClass();
+        
+        // На всякий случай дублируем при полной загрузке
+        window.addEventListener("load", function() {
+            setTimeout(addBasketClass, 100);
+        });
+    })();
+</script>';
 
-    Asset::getInstance()->addString($script);
-}
+Asset::getInstance()->addString($script);
+
+$compositeFrame->end(); // Конец динамической зоны
 
