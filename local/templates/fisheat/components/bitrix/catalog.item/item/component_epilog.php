@@ -82,12 +82,12 @@ if ($arParams['DISPLAY_COMPARE'])
 }
 
 
-// Проверяем, определена ли функция, чтобы избежать повторного объявления
+// Проверяем, определена ли функция
 if (!function_exists('set_buttons_callback')) {
     function set_buttons_callback($matches) {
         static $arInBasket = null;
 
-        // Получаем корзину один раз при первом вызове
+        // Получаем корзину один раз
         if ($arInBasket === null) {
             $arInBasket = [];
             try {
@@ -106,20 +106,19 @@ if (!function_exists('set_buttons_callback')) {
         // Получаем ID товара из маски
         $productId = (int)$matches[1];
 
-        // Возвращаем класс с пробелом, если товар в корзине
+        // Возвращаем класс
         return in_array($productId, $arInBasket) ? ' in_cart' : '';
     }
 }
 
-// Проверяем, есть ли кешированный HTML для замены
+// Заменяем маски в кешированном HTML
 if (!empty($arResult["CACHED_TPL"])) {
-    // Заменяем маски на класс
     echo preg_replace_callback(
         "/#BUY_CLASS_([\d]+)#/is",
         'set_buttons_callback',
         $arResult["CACHED_TPL"]
     );
 } else {
-    // Если кеша нет, выводим то, что есть
+    // Если кеша нет - выводим как есть
     echo $arResult["CACHED_TPL"] ?? '';
 }
