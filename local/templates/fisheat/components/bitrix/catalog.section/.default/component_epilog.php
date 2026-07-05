@@ -65,7 +65,7 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 
 
 // Обязательно подключаем механизм динамических зон
-$compositeFrame = new \Bitrix\Main\Page\FrameHelper("products_buttons_frame");
+$compositeFrame = new \Bitrix\Main\Page\FrameHelper("products_buttons_frame_razdel");
 $compositeFrame->begin();
 
 $arInBasket = [];
