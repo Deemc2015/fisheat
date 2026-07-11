@@ -98,6 +98,7 @@
     }
 }
 @media (max-width:992px) {
+
     .container {
         max-width: 760px;
     }
@@ -127,6 +128,14 @@
 }
 
 @media (max-width:768px) {
+    /*Раздел Доставка и оплата*/
+    #page-delivery.delivery-block{
+        background: transparent;
+    }
+    #page-delivery.delivery-block__form input{
+        width: 500px;
+    }
+    /**/
     /*Фильтр*/
     .smart-filter{
         flex-wrap:wrap;
