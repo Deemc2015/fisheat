@@ -133,7 +133,11 @@
         background: transparent;
     }
     #page-delivery .delivery-block__form input#addressInput{
-        width: 90%;
+        width: 100%;
+        margin-right: 5px;
+    }
+    .delivery-block__form .form-line{
+        width: 100%;
     }
     /**/
     /*Фильтр*/
