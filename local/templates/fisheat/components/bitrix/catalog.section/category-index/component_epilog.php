@@ -8,7 +8,7 @@
  */
 
 use Bitrix\Main\Page\Asset;
-
+use Bitrix\Main\Loader;
 global $APPLICATION;
 
 if (isset($templateData['TEMPLATE_THEME']))
@@ -73,15 +73,25 @@ $compositeFrame = new \Bitrix\Main\Page\FrameHelper("products_buttons_frame");
 $compositeFrame->begin();
 
 $arInBasket = [];
-try {
-    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
-        Bitrix\Sale\Fuser::getId(),
-        Bitrix\Main\Context::getCurrent()->getSite()
-    );
-    foreach ($basket->getBasketItems() as $basketItem) {
-        $arInBasket[] = (int)$basketItem->getProductId();
+
+// ===== ИСПРАВЛЕННАЯ ЧАСТЬ =====
+// Проверяем, загружен ли модуль sale перед использованием Basket
+if (Loader::includeModule('sale'))
+{
+    try {
+        $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+            Bitrix\Sale\Fuser::getId(),
+            Bitrix\Main\Context::getCurrent()->getSite()
+        );
+        foreach ($basket->getBasketItems() as $basketItem) {
+            $arInBasket[] = (int)$basketItem->getProductId();
+        }
+    } catch (Exception $e) {
+        // Логируем ошибку, если нужно
+        // AddMessage2Log('Ошибка при загрузке корзины: ' . $e->getMessage(), 'catalog.section');
     }
-} catch (Exception $e) {}
+}
+// ===== КОНЕЦ ИСПРАВЛЕННОЙ ЧАСТИ =====
 
 $script = '
 <script>
