@@ -15,15 +15,14 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
     const MODULE_ID = 'ldo.deliverymap';
 
     /** @var string ID текущего сайта */
-    public $siteId = 's1'; // Значение по умолчанию
+    public $siteId = 's1';
 
     /**
      * {@inheritdoc}
      */
     public function executeComponent()
     {
-        // Получаем ID сайта
-        //$this->siteId = $this->arParams['SITE_ID'] ?? Context::getCurrent()->getSite();
+        $this->siteId = $this->arParams['SITE_ID'] ?? 's1';
 
         $this->arResult['YANDEX_API_KEY'] = Option::get(self::MODULE_ID, 'yandex_api_key', '');
         $this->arResult['DEFAULT_LAT'] = (float)Option::get(self::MODULE_ID, 'default_lat', '54.7355');
@@ -116,7 +115,8 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
                 'zone_id' => $zone['id'],
                 'zone_name' => $zone['name'],
                 'price' => $zone['price'],
-                'delivery_time' => $zone['delivery_time'],
+                'delivery_time_start' => $zone['delivery_time_start'],
+                'delivery_time_end' => $zone['delivery_time_end'],
                 'min_order_price' => $zone['min_order_price'],
                 'free_delivery_price' => $zone['free_delivery_price']
             ];
@@ -149,7 +149,7 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
         $dbZones = DeliveryZoneTable::getList([
             'filter' => [
                 '=ACTIVE' => 'Y',
-                '=SITE_ID' => $this->siteId // Используем свойство класса
+                '=SITE_ID' => $this->siteId
             ],
             'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
         ]);
@@ -166,7 +166,8 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
                 'name' => $zone['NAME'],
                 'price' => (float)$zone['PRICE'],
                 'free_delivery_price' => (float)$zone['FREE_DELIVERY_PRICE'],
-                'delivery_time' => (int)$zone['DELIVERY_TIME'],
+                'delivery_time_start' => (int)$zone['DELIVERY_TIME_START'],
+                'delivery_time_end' => (int)$zone['DELIVERY_TIME_END'],
                 'min_order_price' => (float)$zone['MIN_ORDER_PRICE'],
                 'color' => $zone['COLOR'],
                 'coordinates' => $coordinates

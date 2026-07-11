@@ -109,7 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                 'NAME' => trim($_POST['NAME'] ?? ''),
                 'PRICE' => (float)($_POST['PRICE'] ?? 0),
                 'FREE_DELIVERY_PRICE' => (float)($_POST['FREE_FROM'] ?? 0),
-                'DELIVERY_TIME' => (int)($_POST['DELIVERY_TIME'] ?? 0),
+                'DELIVERY_TIME_START' => (int)($_POST['DELIVERY_TIME_START'] ?? 0),
+                'DELIVERY_TIME_END' => (int)($_POST['DELIVERY_TIME_END'] ?? 0),
                 'COLOR' => preg_match('/^#[a-fA-F0-9]{6}$/', $_POST['COLOR'] ?? '') ? $_POST['COLOR'] : '#00FF00',
                 'SORT' => (int)($_POST['SORT'] ?? 500),
                 'MIN_ORDER_PRICE' => (float)($_POST['MIN_ORDER_PRICE'] ?? 0),
@@ -232,7 +233,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                     }
 
                     $zone['FREE_FROM'] = $zone['FREE_DELIVERY_PRICE'] ?? 0;
-                    $zone['DELIVERY_TIME'] = $zone['DELIVERY_TIME'] ?? 0;
+                    $zone['DELIVERY_TIME_START'] = (int)($zone['DELIVERY_TIME_START'] ?? 0);
+                    $zone['DELIVERY_TIME_END'] = (int)($zone['DELIVERY_TIME_END'] ?? 0);
 
                     $zone['ID'] = (int)$zone['ID'];
                     $zone['PRICE'] = (float)$zone['PRICE'];
@@ -301,18 +303,37 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
 ?>
     <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap/zones.css">
 
+    <div class="top-line-map">
+        <!-- Блок высокой нагрузки -->
+        <div class="high-load-container">
+            <label>
+                <input type="checkbox" id="highLoadToggle">
+                <span>⚠️ Высокая нагрузка</span>
+            </label>
+
+            <div id="highLoadSettings">
+                <label>Время доставки (минут):</label>
+                <input type="number" id="highLoadMinutes" value="20" min="1" max="1440" step="5">
+                <button id="saveHighLoadBtn" class="ui-btn ui-btn-success ui-btn-sm">Сохранить</button>
+                <span id="highLoadStatus" class="status-hidden">✓ Сохранено</span>
+            </div>
+        </div>
+
+        <!-- Блок загрузки из файла -->
+        <div class="load-file">Загрузить из файла</div>
+    </div>
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
     </div>
-
     <div class="delivery-map-container">
         <div class="delivery-map-wrapper">
             <div class="delivery-map" id="delivery-map"></div>
 
             <div class="map-controls">
                 <button class="ui-btn ui-btn-success ui-btn-icon-add" id="addZoneBtn">Добавить зону</button>
-                <button type="submit" id="save_btn" class="ui-btn  ui-btn-success ui-btn-icon-done" style="display:none;">Сохранить</button>
-                <button type="button" id="cancel_btn" class="ui-btn  ui-btn-danger" style="display:none;">Отмена</button>
+                <button type="submit" id="save_btn" class="ui-btn ui-btn-success ui-btn-icon-done" style="display:none;">Сохранить</button>
+                <button type="button" id="cancel_btn" class="ui-btn ui-btn-danger" style="display:none;">Отмена</button>
             </div>
         </div>
 
@@ -345,8 +366,17 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
 
                     <div class="zone-form-group">
                         <label>Время доставки (минут)</label>
-                        <input type="number" id="zone_delivery_time" name="DELIVERY_TIME" value="0" min="0" step="5">
-                        <span class="hint">Примерное время доставки в минутах</span>
+                        <div class="delivery-time-range">
+                            <div class="time-field">
+                                <span class="time-label">от</span>
+                                <input type="number" id="zone_delivery_time_start" name="DELIVERY_TIME_START" value="" min="0" step="5" placeholder="мин">
+                            </div>
+                            <div class="time-field">
+                                <span class="time-label">до</span>
+                                <input type="number" id="zone_delivery_time_end" name="DELIVERY_TIME_END" value="" min="0" step="5" placeholder="мин">
+                            </div>
+                        </div>
+                        <span class="hint">Примерное время доставки в минутах (диапазон)</span>
                     </div>
 
                     <div class="zone-form-group">

@@ -356,7 +356,6 @@
                 console.error('Ошибка загрузки зон доставки:', error);
             });
         }
-
         renderZones(zones) {
             console.log('Отрисовка зон:', zones.length);
 
@@ -367,8 +366,6 @@
                     console.warn('Некорректные координаты для зоны:', zoneData.name);
                     return;
                 }
-
-
 
                 const polygon = new ymaps.Polygon([coordinates], {
                     hintContent: zoneData.name
@@ -387,7 +384,8 @@
                     name: zoneData.name,
                     price: zoneData.price,
                     free_delivery_price: zoneData.free_delivery_price,
-                    delivery_time: zoneData.delivery_time,
+                    delivery_time_start: zoneData.delivery_time_start,
+                    delivery_time_end: zoneData.delivery_time_end,
                     min_order_price: zoneData.min_order_price,
                     color: zoneData.color,
                     coordinates: coordinates
@@ -401,7 +399,7 @@
                     this.getAddressByCoords(coords, zoneInfo);
                 });
 
-                // Метка с названием зоны
+                // Метка только с названием зоны
                 const center = this.getPolygonCenter(coordinates);
                 const label = new ymaps.Placemark(center, {
                     iconContent: zoneData.name
@@ -447,8 +445,6 @@
         }
 
         showDeliveryInfo(zone) {
-
-
             // Скрываем сообщение "вне зоны"
             const outOfZoneBlock = document.querySelector('.delivery-block__out-of-zone');
             if (outOfZoneBlock) {
@@ -464,15 +460,29 @@
             if (infoBlock) {
                 infoBlock.style.display = 'block';
             }
+
             if (totalSpan) {
                 totalSpan.innerHTML = zone.price + ' рублей';
             }
-            if (timeSpan) {
-                timeSpan.innerHTML = (zone.delivery_time || 0) + ' минут';
+
+            // Форматируем время доставки
+            let deliveryTimeText = 'не указано';
+            if (zone.delivery_time_start > 0 && zone.delivery_time_end > 0) {
+                deliveryTimeText = `от ${zone.delivery_time_start} до ${zone.delivery_time_end} минут`;
+            } else if (zone.delivery_time_start > 0) {
+                deliveryTimeText = `от ${zone.delivery_time_start} минут`;
+            } else if (zone.delivery_time_end > 0) {
+                deliveryTimeText = `до ${zone.delivery_time_end} минут`;
             }
+
+            if (timeSpan) {
+                timeSpan.innerHTML = deliveryTimeText;
+            }
+
             if (minSpan) {
                 minSpan.innerHTML = (zone.min_order_price || 0) + ' рублей';
             }
+
             if (freeSpan) {
                 freeSpan.innerHTML = (zone.free_delivery_price || 0) + ' рублей';
             }

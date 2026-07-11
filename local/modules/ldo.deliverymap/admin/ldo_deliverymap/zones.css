@@ -1,3 +1,219 @@
+
+/* Стили для диапазона времени доставки */
+.delivery-time-range {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.time-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.time-field .time-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    min-width: 20px;
+}
+
+.time-field input {
+    width: 100px;
+    padding: 6px 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.time-field input:focus {
+    border-color: #1e88e5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+}
+
+.time-field input::placeholder {
+    color: #999;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .delivery-time-range {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    .time-field {
+        width: 100%;
+    }
+
+    .time-field input {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+
+/* ===== Блок верхней панели ===== */
+.top-line-map {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ===== Блок высокой нагрузки ===== */
+.high-load-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    height: 26px;
+}
+
+.high-load-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.high-load-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #f39c12;
+    margin: 0;
+}
+
+.high-load-container input[type="checkbox"]:checked + span {
+    color: #e67e22;
+    font-weight: 700;
+}
+
+/* Настройки высокой нагрузки */
+#highLoadSettings {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    border-left: 2px solid #e0e0e0;
+    padding-left: 15px;
+    transition: all 0.3s ease;
+}
+
+#highLoadSettings.is-visible {
+    display: flex !important;
+}
+
+#highLoadSettings label {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+
+#highLoadSettings input {
+    width: 80px;
+    padding: 5px 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+#highLoadSettings input:focus {
+    border-color: #f39c12;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2);
+}
+
+#highLoadSettings .ui-btn-sm {
+    font-size: 13px;
+    padding: 5px 15px;
+}
+
+/* Статус сохранения */
+#highLoadStatus {
+    font-size: 13px;
+    color: #888;
+    animation: fadeIn 0.3s ease;
+}
+
+.status-visible {
+    display: inline-block !important;
+}
+
+.status-hidden {
+    display: none !important;
+}
+
+/* ===== Блок загрузки из файла ===== */
+.load-file {
+    background: #55a554;
+    padding: 19px 21px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.load-file:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Анимации ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Адаптивность ===== */
+@media (max-width: 768px) {
+    .top-line-map {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .high-load-container {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding: 10px 15px !important;
+    }
+
+    #highLoadSettings.is-visible {
+        flex-wrap: wrap;
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-top: 2px solid #e0e0e0;
+        padding-top: 10px;
+        width: 100%;
+    }
+
+    #highLoadSettings input {
+        width: 100%;
+        max-width: 80px;
+    }
+}
+
 /* Общие стили */
 .delivery-map-container {
     display: flex;

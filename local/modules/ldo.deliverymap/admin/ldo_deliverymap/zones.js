@@ -39,10 +39,7 @@ class DeliveryZonesManager {
     }
 
     init() {
-        console.log('DeliveryZonesManager init started');
-
         if (typeof ymaps === 'undefined') {
-            console.log('ymaps not loaded, retrying...');
             setTimeout(() => this.init(), 500);
             return;
         }
@@ -52,7 +49,7 @@ class DeliveryZonesManager {
                 this.initMap();
                 this.loadZones();
                 this.bindEvents();
-                console.log('DeliveryZonesManager initialized successfully');
+                this.initHighLoadFeature();
             } catch (error) {
                 console.error('Init error:', error);
                 this.showNotification('Ошибка инициализации карты', 'error');
@@ -150,7 +147,8 @@ class DeliveryZonesManager {
         document.getElementById('zone_name').value = '';
         document.getElementById('zone_price').value = 0;
         document.getElementById('zone_free_from').value = 0;
-        document.getElementById('zone_delivery_time').value = 0;
+        document.getElementById('zone_delivery_time_start').value = '';
+        document.getElementById('zone_delivery_time_end').value = '';
         document.getElementById('zone_min_price').value = 0;
         document.getElementById('zone_active').value = 'Y';
         document.getElementById('zone_color').value = '#00FF00';
@@ -407,7 +405,19 @@ class DeliveryZonesManager {
             const statusText = isActive ? 'активна' : 'неактивна';
             const freeText = zone.FREE_FROM > 0 ? this.formatPrice(zone.FREE_FROM) + ' руб.' : 'нет';
             const minOrderText = zone.MIN_ORDER_PRICE > 0 ? this.formatPrice(zone.MIN_ORDER_PRICE) + ' руб.' : 'нет';
-            const deliveryTime = zone.DELIVERY_TIME > 0 ? zone.DELIVERY_TIME + ' мин.' : 'не указано';
+
+            let deliveryTimeText = 'не указано';
+            const timeStart = parseInt(zone.DELIVERY_TIME_START) || 0;
+            const timeEnd = parseInt(zone.DELIVERY_TIME_END) || 0;
+
+            if (timeStart > 0 && timeEnd > 0) {
+                deliveryTimeText = `от ${timeStart} до ${timeEnd} мин.`;
+            } else if (timeStart > 0) {
+                deliveryTimeText = `от ${timeStart} мин.`;
+            } else if (timeEnd > 0) {
+                deliveryTimeText = `до ${timeEnd} мин.`;
+            }
+
             const zoneId = parseInt(zone.ID);
 
             html += `
@@ -434,7 +444,7 @@ class DeliveryZonesManager {
                             </div>
                             <div class="zone-detail-row">
                                 <span class="label">⏱ Время доставки:</span>
-                                <span class="value">${deliveryTime}</span>
+                                <span class="value">${deliveryTimeText}</span>
                             </div>
                             <div class="zone-detail-row">
                                 <span class="label">🛒 Мин. заказ:</span>
@@ -453,6 +463,96 @@ class DeliveryZonesManager {
         html += '</div>';
         container.innerHTML = html;
         console.log('Zone list updated, zones count:', zones.length);
+    }
+
+    initHighLoadFeature() {
+        console.log('initHighLoadFeature called');
+
+        const toggle = document.getElementById('highLoadToggle');
+        const settings = document.getElementById('highLoadSettings');
+        const saveBtn = document.getElementById('saveHighLoadBtn');
+        const minutesInput = document.getElementById('highLoadMinutes');
+        const status = document.getElementById('highLoadStatus');
+
+        if (!toggle) {
+            console.error('highLoadToggle not found');
+            return;
+        }
+
+        if (!settings) {
+            console.error('highLoadSettings not found');
+            return;
+        }
+
+        console.log('High load elements found, initializing...');
+
+        toggle.addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            console.log('Toggle changed:', isChecked);
+
+            if (isChecked) {
+                settings.classList.add('is-visible');
+            } else {
+                settings.classList.remove('is-visible');
+            }
+
+            const mapContainer = document.getElementById('delivery-map');
+            if (mapContainer) {
+                if (isChecked) {
+                    mapContainer.classList.add('high-load-active');
+                } else {
+                    mapContainer.classList.remove('high-load-active');
+                }
+            }
+        });
+
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                console.log('Save button clicked');
+
+                const minutes = parseInt(minutesInput.value) || 60;
+                if (minutes < 1 || minutes > 1440) {
+                    this.showNotification('Введите значение от 1 до 1440 минут (24 часа)', 'error');
+                    return;
+                }
+
+                status.classList.remove('status-hidden');
+                status.classList.add('status-visible');
+
+                let timeText = '';
+                if (minutes >= 60) {
+                    const hours = Math.floor(minutes / 60);
+                    const mins = minutes % 60;
+                    timeText = mins > 0 ? `${hours} ч ${mins} мин` : `${hours} ч`;
+                } else {
+                    timeText = `${minutes} мин`;
+                }
+
+                status.textContent = `✓ Сохранено (${timeText})`;
+
+                setTimeout(() => {
+                    status.classList.remove('status-visible');
+                    status.classList.add('status-hidden');
+                }, 3000);
+
+                this.showNotification(`Время доставки установлено: ${timeText}`, 'success');
+            });
+        }
+
+        if (minutesInput) {
+            minutesInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (saveBtn) saveBtn.click();
+                }
+            });
+
+            minutesInput.addEventListener('change', () => {
+                let val = parseInt(minutesInput.value) || 60;
+                if (val < 1) minutesInput.value = 1;
+                if (val > 1440) minutesInput.value = 1440;
+            });
+        }
     }
 
     toggleAccordion(zoneId) {
@@ -589,7 +689,6 @@ class DeliveryZonesManager {
         this.map.geoObjects.add(this.editPolygon);
         this.editPolygon.editor.startEditing();
 
-        // Только обновляем координаты в поле, без автосохранения
         this.editPolygon.events.add('geometrychange', () => {
             const newCoords = this.editPolygon.geometry.getCoordinates()[0];
             document.getElementById('zone_coordinates').value = JSON.stringify(newCoords);
@@ -605,7 +704,8 @@ class DeliveryZonesManager {
         document.getElementById('zone_name').value = zone.NAME;
         document.getElementById('zone_price').value = zone.PRICE;
         document.getElementById('zone_free_from').value = zone.FREE_FROM || 0;
-        document.getElementById('zone_delivery_time').value = zone.DELIVERY_TIME || 0;
+        document.getElementById('zone_delivery_time_start').value = zone.DELIVERY_TIME_START || 0;
+        document.getElementById('zone_delivery_time_end').value = zone.DELIVERY_TIME_END || 0;
         document.getElementById('zone_color').value = zone.COLOR;
         document.getElementById('zone_min_price').value = zone.MIN_ORDER_PRICE;
         document.getElementById('zone_active').value = zone.ACTIVE;
@@ -713,6 +813,12 @@ class DeliveryZonesManager {
         }
 
         const formData = new FormData(document.getElementById('zoneForm'));
+
+        const timeStart = parseInt(document.getElementById('zone_delivery_time_start').value) || 0;
+        const timeEnd = parseInt(document.getElementById('zone_delivery_time_end').value) || 0;
+
+        formData.append('DELIVERY_TIME_START', timeStart);
+        formData.append('DELIVERY_TIME_END', timeEnd);
         formData.append('ajax_action', 'save_zone');
 
         this.showLoading(true);

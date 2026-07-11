@@ -32,11 +32,19 @@ class DeliveryZoneTable extends Entity\DataManager
                 'required' => false,
                 'default_value' => 500
             ]),
-            new Entity\IntegerField('DELIVERY_TIME', [
+            new Entity\IntegerField('DELIVERY_TIME_START', [
+                'required' => false,
+                'default_value' => 0
+            ]),
+            new Entity\IntegerField('DELIVERY_TIME_END', [
                 'required' => false,
                 'default_value' => 0
             ]),
             new Entity\IntegerField('FREE_DELIVERY_PRICE', [
+                'required' => true,
+                'default_value' => 0
+            ]),
+            new Entity\IntegerField('HIGH_TYPE', [
                 'required' => true,
                 'default_value' => 0
             ]),
