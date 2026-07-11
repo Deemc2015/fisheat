@@ -836,6 +836,9 @@
         width: 100% !important;
         margin-top: 10px;
     }
+    #suggestions{
+        width: 100% !important;
+    }
     /**/
     /*Пустая корзина*/
     .center-empty-cart{
