@@ -283,6 +283,7 @@
         font-size:18px;
         padding: 12px;
         display: inline-block;
+        line-height: 1;
     }
     .product-menu-line{
         display: flex;
