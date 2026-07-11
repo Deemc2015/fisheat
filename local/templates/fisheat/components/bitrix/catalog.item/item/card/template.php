@@ -212,7 +212,7 @@ if(Loader::IncludeModule('ldo.favorites')){
     }
     ?>
     <?if($shortDescription ):?>
-    <div class=" <?=$disabledClass?> desc-product">
+    <div title="<?=$shortDescription ?>" class=" <?=$disabledClass?> desc-product">
         <?=$shortDescription ?>
     </div>
     <?endif;?>
