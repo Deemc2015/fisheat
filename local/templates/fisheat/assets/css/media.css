@@ -132,7 +132,7 @@
     #page-delivery.delivery-block{
         background: transparent;
     }
-    #page-delivery.delivery-block__form input{
+    #page-delivery .delivery-block__form input{
         width: 500px;
     }
     /**/
