@@ -3,6 +3,9 @@
     .container {
         max-width: 1650px;
     }
+    .product-item-container{
+        width: 246px;
+    }
 }
 
 
@@ -19,6 +22,9 @@
     #image-product-block {
         height: 205px;
     }
+    .product-item-container {
+        width: 251px;
+    }
 }
 
 
@@ -31,7 +37,7 @@
         position: relative;
     }
     #image-product-block {
-        height: 165px;
+        height: 270px;
     }
     .container-detail-page .product-item-detail-pay-block{
         margin-top: 24px;
@@ -58,12 +64,18 @@
     .bread-link{
         margin-top: 12px;
     }
+    .product-item-container {
+        width: 276px;
+    }
 }
 
 
 @media (max-width:1200px) {
     .container {
         max-width: 992px;
+    }
+    .product-item-container {
+        width: 322px;
     }
     .slider-index__item {
         height: 170px;
@@ -73,7 +85,7 @@
     }
 
     #image-product-block{
-        height: 160px;
+        height: 325px;
     }
     .slider-index-product{
         height: 330px;
@@ -128,6 +140,12 @@
 }
 
 @media (max-width:768px) {
+    /*Слайдер акций*/
+    section#slider-index{
+        height: 211px;
+    }
+
+    /**/
     /*Раздел Доставка и оплата*/
     #page-delivery.delivery-block{
         background: transparent;
