@@ -831,8 +831,10 @@
     #page-delivery .delivery-block__form form{
         display: block;
     }
-    #page-delivery .delivery-block__form form input{
+
+    .delivery-block__form button{
         width: 100%;
+        margin-top: 10px;
     }
     /**/
     /*Пустая корзина*/
