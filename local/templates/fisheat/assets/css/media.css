@@ -827,6 +827,14 @@
 }
 
 @media (max-width:440px) {
+    /*Раздел Доставка и оплата*/
+    #page-delivery .delivery-block__form form{
+        display: block;
+    }
+    #page-delivery .delivery-block__form form input{
+        width: 100%;
+    }
+    /**/
     /*Пустая корзина*/
     .center-empty-cart{
         width: 100%;
