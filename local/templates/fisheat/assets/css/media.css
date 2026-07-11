@@ -839,6 +839,9 @@
     #suggestions{
         width: 100% !important;
     }
+    #map {
+        height: 320px !important;
+    }
     /**/
     /*Пустая корзина*/
     .center-empty-cart{
