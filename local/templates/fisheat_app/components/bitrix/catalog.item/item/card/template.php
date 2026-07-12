@@ -4,8 +4,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
 {
 	die();
 }
-use \Ldo\Favorites\Favorites;
-use \Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Ldo\Develop\Pict;
 /**
@@ -168,10 +166,9 @@ if(!$actualItem['CAN_BUY']){
 	</span>
 <? endif; ?>
 <?
-if(Loader::IncludeModule('ldo.favorites')){
-    if(Favorites::isOnList($actualItem['ID'])){
-        $class = 'active';
-    }
+if (in_array($actualItem['ID'], $arResult['IN_FAVORITES']))
+{
+    $class = 'active';
 }
 
 ?>
