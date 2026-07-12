@@ -143,19 +143,19 @@ use \Ldo\Develop\Pages;
                         );?>
                     </div>
                     <div class="button-header">
-                        <?
-                        $wishFrame = new \Bitrix\Main\Page\FrameHelper("wish_count_header");
-                        $wishFrame->begin();
-                        $wishCountItems = 0;
-                        if (\Bitrix\Main\Loader::includeModule('ldo.favorites')) {
-                            $wishCountItems = \Ldo\Favorites\Favorites::getCount();
-                        }
-                        ?>
                         <a href="/izbrannye-tovary/" class="wish-page">
+                            <?
+                            $wishFrame = new \Bitrix\Main\Page\FrameHelper("wish_count_header");
+                            $wishFrame->begin();
+                            $wishCountItems = 0;
+                            if (\Bitrix\Main\Loader::includeModule('ldo.favorites')) {
+                                $wishCountItems = \Ldo\Favorites\Favorites::getCount();
+                            }
+                            ?>
                             <span class="count-wish" <?if($wishCountItems == 0){echo "style='display:none;'";}?>><?=$wishCountItems?></span>
-                        <?php
-                        $wishFrame->end();
-                        ?><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <?php
+                            $wishFrame->end();
+                            ?><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.275391 8.10603C0.275391 4.47745 2.92383 1.375 6.37957 1.375C8.24943 1.375 9.89384 2.29469 11.0004 3.70532C12.1069 2.29474 13.7511 1.375 15.62 1.375C19.0769 1.375 21.7254 4.47884 21.7254 8.10603C21.7254 9.56485 21.1742 10.9684 20.378 12.2412C19.5801 13.5171 18.5056 14.7106 17.382 15.7659C15.1355 17.8759 12.6052 19.5137 11.4295 20.2297C11.1658 20.3902 10.8346 20.3902 10.571 20.2294C9.39559 19.513 6.86526 17.8751 4.61875 15.7654C3.49519 14.7102 2.42075 13.5168 1.62276 12.2411C0.826642 10.9684 0.275391 9.56486 0.275391 8.10603ZM6.37957 3.025C4.0042 3.025 1.92539 5.20988 1.92539 8.10603C1.92539 9.14968 2.32268 10.2487 3.02163 11.3661C3.71869 12.4804 4.68581 13.5648 5.7483 14.5626C7.63512 16.3346 9.75367 17.7701 11.0005 18.5546C12.2472 17.7707 14.3657 16.3352 16.2525 14.5631C17.3149 13.5653 18.2821 12.4808 18.9791 11.3663C19.6781 10.2488 20.0754 9.14969 20.0754 8.10603C20.0754 5.21126 17.9966 3.025 15.62 3.025C13.9927 3.025 12.5231 4.03204 11.7395 5.61171C11.6001 5.89247 11.3138 6.07006 11.0004 6.07006C10.687 6.07006 10.4006 5.89247 10.2613 5.61171C9.47772 4.03215 8.00817 3.025 6.37957 3.025Z" fill="white"/>
                                 </svg>
                             </i>Избранное</a>
