@@ -64,80 +64,26 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 }
 
 
-// Обязательно подключаем механизм динамических зон
-$compositeFrame = new \Bitrix\Main\Page\FrameHelper("products_buttons_frame");
-$compositeFrame->begin();
+// ===== ОБЩАЯ ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ КОРЗИНЫ И ИЗБРАННОГО =====
+$commonFrame = new \Bitrix\Main\Page\FrameHelper("products_common_frame");
+$commonFrame->begin();
 
+// Данные корзины
 $arInBasket = [];
-try {
-    $basket = Bitrix\Sale\Basket::loadItemsForFUser(
-        Bitrix\Sale\Fuser::getId(),
-        Bitrix\Main\Context::getCurrent()->getSite()
-    );
-    foreach ($basket->getBasketItems() as $basketItem) {
-        $arInBasket[] = (int)$basketItem->getProductId();
-    }
-} catch (Exception $e) {}
-
-$script = '
-<script>
-    (function() {
-        var basketIds = ' . CUtil::PhpToJSObject($arInBasket) . '.map(String);
-       
-        function addBasketClass() {
-            var buttons = document.querySelectorAll(".addCart");
-            if (buttons.length === 0) return false;
-            
-            buttons.forEach(function(button) {
-                var productId = String(button.dataset.id);
-                if (basketIds.includes(productId)) {
-                    button.classList.add("in_cart");
-                }
-            });
-            return true;
+if (Loader::includeModule('sale'))
+{
+    try {
+        $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+            Bitrix\Sale\Fuser::getId(),
+            Bitrix\Main\Context::getCurrent()->getSite()
+        );
+        foreach ($basket->getBasketItems() as $basketItem) {
+            $arInBasket[] = (int)$basketItem->getProductId();
         }
-        
-        // 1. Пробуем выполнить сразу
-        var success = addBasketClass();
-        
-        // 2. Если кнопок нет, запускаем обсервер
-        if (!success) {
-            var observer = new MutationObserver(function(mutations, obs) {
-                if (addBasketClass()) {
-                    obs.disconnect(); // Отключаем, как только успешно покрасили кнопки
-                }
-            });
-            
-            // Защита от null: следим за document.documentElement (тег <html>), он есть всегда
-            var targetNode = document.body || document.documentElement;
-            
-            observer.observe(targetNode, {
-                childList: true,
-                subtree: true
-            });
-            
-            // На всякий случай гасим через 4 секунды
-            setTimeout(function() { observer.disconnect(); }, 4000);
-        }
-        
-        // 3. Страховка по событиям загрузки
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", addBasketClass);
-        }
-        window.addEventListener("load", function() {
-            setTimeout(addBasketClass, 200);
-        });
-    })();
-</script>';
+    } catch (Exception $e) {}
+}
 
-Asset::getInstance()->addString($script);
-
-$compositeFrame->end(); // Конец динамической зоны
-
-// ===== ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ ИЗБРАННОГО =====
-$wishFrame = new \Bitrix\Main\Page\FrameHelper("products_wish_frame");
-$wishFrame->begin();
-
+// Данные избранного
 $arInFavorites = [];
 if (Loader::includeModule('ldo.favorites'))
 {
@@ -145,51 +91,60 @@ if (Loader::includeModule('ldo.favorites'))
 }
 ?>
 <script>
-    (function() {
-        var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
+(function() {
+    var basketIds = <?=CUtil::PhpToJSObject($arInBasket)?>.map(String);
+    var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
+    
+    function addClasses() {
+        var found = false;
         
-        function addWishClass() {
-            var buttons = document.querySelectorAll(".wish-add");
-            
-            if (buttons.length === 0) return false;
-            
-            buttons.forEach(function(button) {
+        // Добавляем класс корзины
+        var cartButtons = document.querySelectorAll(".addCart");
+        if (cartButtons.length > 0) {
+            found = true;
+            cartButtons.forEach(function(button) {
                 var productId = String(button.dataset.id);
-                var isInFav = wishIds.includes(productId);
-                if (isInFav) {
+                if (basketIds.includes(productId)) {
+                    button.classList.add("in_cart");
+                }
+            });
+        }
+        
+        // Добавляем класс избранного
+        var wishButtons = document.querySelectorAll(".wish-add");
+        if (wishButtons.length > 0) {
+            found = true;
+            wishButtons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (wishIds.includes(productId)) {
                     button.classList.add("active");
                 }
             });
-            return true;
         }
         
-        var success = addWishClass();
-        
-        if (!success) {
-            var observer = new MutationObserver(function(mutations, obs) {
-                if (addWishClass()) {
-                    obs.disconnect();
-                }
-            });
-            
-            var targetNode = document.body || document.documentElement;
-            observer.observe(targetNode, { childList: true, subtree: true });
-            setTimeout(function() {
-                observer.disconnect();
-            }, 4000);
-        }
-        
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", function() {
-                addWishClass();
-            });
-        }
-        window.addEventListener("load", function() {
-            setTimeout(function() {
-                addWishClass();
-            }, 200);
+        return found;
+    }
+    
+    // Пробуем выполнить сразу (скрипт выполняется при вставке динамической зоны)
+    if (!addClasses()) {
+        // MutationObserver — если кнопок ещё нет в DOM
+        var observer = new MutationObserver(function(mutations, obs) {
+            if (addClasses()) {
+                obs.disconnect();
+            }
         });
-    })();
+        var targetNode = document.body || document.documentElement;
+        observer.observe(targetNode, { childList: true, subtree: true });
+        setTimeout(function() { observer.disconnect(); }, 5000);
+    }
+    
+    // Подписываемся на обновление композитных динамических зон
+    if (window.BX && window.frameCacheVars !== undefined) {
+        BX.addCustomEvent("onFrameDataReceived", function() {
+            addClasses();
+        });
+    }
+})();
 </script>
 <?php
-$wishFrame->end();
+$commonFrame->end();
