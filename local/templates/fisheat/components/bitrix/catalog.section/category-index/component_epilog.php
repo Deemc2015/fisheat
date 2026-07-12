@@ -161,18 +161,15 @@ if (Loader::includeModule('ldo.favorites'))
 <script>
     (function() {
         var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
-        console.log('[Favorites] IDs from server:', wishIds);
-       
+        
         function addWishClass() {
             var buttons = document.querySelectorAll(".wish-add");
-            console.log('[Favorites] Found .wish-add buttons:', buttons.length);
             
             if (buttons.length === 0) return false;
             
             buttons.forEach(function(button) {
                 var productId = String(button.dataset.id);
                 var isInFav = wishIds.includes(productId);
-                console.log('[Favorites] Product ' + productId + ' in favorites:', isInFav);
                 if (isInFav) {
                     button.classList.add("active");
                 }
@@ -181,34 +178,28 @@ if (Loader::includeModule('ldo.favorites'))
         }
         
         var success = addWishClass();
-        console.log('[Favorites] Initial addWishClass success:', success);
         
         if (!success) {
-            console.log('[Favorites] Starting MutationObserver');
             var observer = new MutationObserver(function(mutations, obs) {
                 if (addWishClass()) {
-                    console.log('[Favorites] Observer: classes applied, disconnecting');
                     obs.disconnect();
                 }
             });
             
             var targetNode = document.body || document.documentElement;
             observer.observe(targetNode, { childList: true, subtree: true });
-            setTimeout(function() { 
-                console.log('[Favorites] Observer timeout, disconnecting');
-                observer.disconnect(); 
+            setTimeout(function() {
+                observer.disconnect();
             }, 4000);
         }
         
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", function() {
-                console.log('[Favorites] DOMContentLoaded, retrying');
                 addWishClass();
             });
         }
         window.addEventListener("load", function() {
             setTimeout(function() {
-                console.log('[Favorites] Window load, retrying');
                 addWishClass();
             }, 200);
         });
