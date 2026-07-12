@@ -13,10 +13,13 @@
 $this->setFrameMode(true);
 ?>
 <section id="slider-index" class="disabled">
+<?$first = true;?>
 <?foreach($arResult["ITEMS"] as $arItem):?>
 	<?
 	$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 	$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
+	$loading = $first ? 'eager' : 'lazy';
+	$fetchpriority = $first ? 'high' : 'auto';
 	?>
     <div id="<?=$this->GetEditAreaId($arItem['ID']);?>" class="slider-index__item">
         <a href="<?=$arItem['PROPERTIES']['ATT_LINK']['VALUE']?>">
@@ -24,12 +27,13 @@ $this->setFrameMode(true);
                 <?if($arItem['WEBP']):?>
                     <source srcset="<?=$arItem['WEBP']?>" />
                 <?endif;?>
-                <img  src="<?=$arItem['IMG']['src']?>" alt="<?=$arItem['NAME']?>" title="<?=$arItem['NAME']?>">
+                <img src="<?=$arItem['IMG']['src']?>" alt="<?=$arItem['NAME']?>" title="<?=$arItem['NAME']?>" loading="<?=$loading?>" fetchpriority="<?=$fetchpriority?>">
             </picture>
 
         </a>
 
     </div>
 
+<?$first = false;?>
 <?endforeach;?>
 </section>
