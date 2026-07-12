@@ -37,7 +37,26 @@ if (!empty($templateData['TEMPLATE_LIBRARY']))
 	}
 }
 
+// ===== Получаем данные корзины и избранного ДО AJAX-блока =====
+$arInBasket = [];
+if (Loader::includeModule('sale'))
+{
+    try {
+        $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+            Bitrix\Sale\Fuser::getId(),
+            Bitrix\Main\Context::getCurrent()->getSite()
+        );
+        foreach ($basket->getBasketItems() as $basketItem) {
+            $arInBasket[] = (int)$basketItem->getProductId();
+        }
+    } catch (Exception $e) {}
+}
 
+$arInFavorites = [];
+if (Loader::includeModule('ldo.favorites'))
+{
+    $arInFavorites = array_values(\Ldo\Favorites\Favorites::getItems());
+}
 
 //	lazy load and big data json answers
 $request = \Bitrix\Main\Context::getCurrent()->getRequest();
@@ -63,6 +82,10 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 		'items' => $itemsContainer,
 		'pagination' => $paginationContainer,
 		'epilogue' => $epilogue,
+		'productStates' => array(
+			'basketIds' => $arInBasket,
+			'wishIds' => $arInFavorites,
+		),
 	));
 }
 
@@ -71,28 +94,6 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 // ===== ОБЩАЯ ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ КОРЗИНЫ И ИЗБРАННОГО =====
 $commonFrame = new \Bitrix\Main\Page\FrameHelper("products_common_frame_cat_index");
 $commonFrame->begin();
-
-// Данные корзины
-$arInBasket = [];
-if (Loader::includeModule('sale'))
-{
-    try {
-        $basket = Bitrix\Sale\Basket::loadItemsForFUser(
-            Bitrix\Sale\Fuser::getId(),
-            Bitrix\Main\Context::getCurrent()->getSite()
-        );
-        foreach ($basket->getBasketItems() as $basketItem) {
-            $arInBasket[] = (int)$basketItem->getProductId();
-        }
-    } catch (Exception $e) {}
-}
-
-// Данные избранного
-$arInFavorites = [];
-if (Loader::includeModule('ldo.favorites'))
-{
-    $arInFavorites = array_values(\Ldo\Favorites\Favorites::getItems());
-}
 ?>
 <script>
 (function() {

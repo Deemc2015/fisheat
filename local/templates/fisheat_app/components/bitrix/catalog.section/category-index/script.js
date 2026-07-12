@@ -191,6 +191,40 @@
 				this.processPagination(result.pagination);
 				this.processEpilogue(result.epilogue);
 				this.checkButton();
+
+				// Проставляем классы корзины и избранного на новых товарах
+				if (result.productStates)
+				{
+					this.applyProductStates(result.productStates);
+				}
+			}
+		},
+
+		applyProductStates: function(states)
+		{
+			var basketIds = (states.basketIds || []).map(String);
+			var wishIds = (states.wishIds || []).map(String);
+
+			// Класс корзины
+			var cartButtons = document.querySelectorAll(".addCart:not(.in_cart)");
+			if (cartButtons.length > 0) {
+				cartButtons.forEach(function(button) {
+					var productId = String(button.dataset.id);
+					if (basketIds.indexOf(productId) !== -1) {
+						button.classList.add("in_cart");
+					}
+				});
+			}
+
+			// Класс избранного
+			var wishButtons = document.querySelectorAll(".wish-add:not(.active)");
+			if (wishButtons.length > 0) {
+				wishButtons.forEach(function(button) {
+					var productId = String(button.dataset.id);
+					if (wishIds.indexOf(productId) !== -1) {
+						button.classList.add("active");
+					}
+				});
 			}
 		},
 
