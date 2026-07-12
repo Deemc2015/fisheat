@@ -85,20 +85,37 @@ class Ldo_deliverymap extends CModule
     public function InstallFiles()
     {
         $modulePath = dirname(__DIR__);
+        $docRoot = $_SERVER['DOCUMENT_ROOT'];
+        $adminSource = $modulePath . '/admin/ldo_deliverymap';
 
-        // Копируем папку в /bitrix/admin/
-        CopyDirFiles(
-            $modulePath . '/admin/ldo_deliverymap',
-            $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/ldo_deliverymap',
-            true,
-            true
-        );
+        // Удаляем старые файлы (и подпапку, и корневые)
+        DeleteDirFilesEx('/bitrix/admin/ldo_deliverymap');
+        foreach (['zones.php', 'zones.js', 'zones.css'] as $file) {
+            $path = '/bitrix/admin/ldo_deliverymap_' . $file;
+            if (file_exists($docRoot . $path)) {
+                unlink($docRoot . $path);
+            }
+        }
+
+        // Копируем файлы с префиксом на уровень /bitrix/admin/ (НЕ в подпапку)
+        // Это критически важно для корректной работы админ-ссылок Битрикса
+        if (is_dir($adminSource)) {
+            $files = scandir($adminSource);
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') continue;
+                $sourcePath = $adminSource . '/' . $file;
+                $targetName = 'ldo_deliverymap_' . $file;
+                $targetPath = $docRoot . '/bitrix/admin/' . $targetName;
+                copy($sourcePath, $targetPath);
+            }
+        }
 
         // Копируем assets
         if (is_dir($modulePath . '/assets')) {
+            DeleteDirFilesEx('/bitrix/assets/' . $this->MODULE_ID);
             CopyDirFiles(
                 $modulePath . '/assets',
-                $_SERVER['DOCUMENT_ROOT'] . '/bitrix/assets/' . $this->MODULE_ID,
+                $docRoot . '/bitrix/assets/' . $this->MODULE_ID,
                 true,
                 true
             );
@@ -109,6 +126,17 @@ class Ldo_deliverymap extends CModule
 
     public function UnInstallFiles()
     {
+        $docRoot = $_SERVER['DOCUMENT_ROOT'];
+
+        // Удаляем файлы с префиксом
+        foreach (['zones.php', 'zones.js', 'zones.css'] as $file) {
+            $path = '/bitrix/admin/ldo_deliverymap_' . $file;
+            if (file_exists($docRoot . $path)) {
+                unlink($docRoot . $path);
+            }
+        }
+
+        // На всякий случай удаляем и старую подпапку
         DeleteDirFilesEx('/bitrix/admin/ldo_deliverymap');
         DeleteDirFilesEx('/bitrix/assets/' . $this->MODULE_ID);
 

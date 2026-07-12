@@ -12,7 +12,7 @@ if ($request->isPost() && check_bitrix_sessid()) {
     Option::set($module_id, 'default_lng', $request->getPost('default_lng'));
     Option::set($module_id, 'default_zoom', $request->getPost('default_zoom'));
 
-    LocalRedirect($APPLICATION->GetCurPage() . '?mid=' . $module_id . '&lang=' . LANGUAGE_ID);
+    LocalRedirect('/bitrix/admin/settings.php?mid=' . $module_id . '&lang=' . LANGUAGE_ID);
 }
 
 $tabs = [

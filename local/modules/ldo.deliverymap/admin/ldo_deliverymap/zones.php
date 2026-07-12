@@ -289,7 +289,7 @@ if ($action === 'delete' && $ID > 0 && $permission >= "W" && check_bitrix_sessid
             DeliveryZoneTable::delete($ID);
         }
 
-        LocalRedirect("/bitrix/admin/ldo_deliverymap/zones.php?lang=" . LANG);
+        LocalRedirect("/bitrix/admin/ldo_deliverymap_zones.php?lang=" . LANG);
     } catch (Exception $e) {
         ShowError('Ошибка удаления: ' . $e->getMessage());
     }
@@ -301,7 +301,7 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
 ?>
-    <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap/zones.css">
+    <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap_zones.css">
 
     <div class="top-line-map">
         <!-- Блок высокой нагрузки -->
@@ -427,7 +427,7 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
     </div>
 
     <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars(Option::get($moduleId, 'yandex_api_key')) ?>&lang=ru_RU"></script>
-    <script src="/bitrix/admin/ldo_deliverymap/zones.js"></script>
+    <script src="/bitrix/admin/ldo_deliverymap_zones.js"></script>
 
 <?
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
