@@ -52,10 +52,6 @@
 			BX.bind(this.showMoreButton, 'click', BX.proxy(this.showMore, this));
 		}
 
-		if (params.loadOnScroll)
-		{
-			BX.bind(window, 'scroll', BX.proxy(this.loadOnScroll, this));
-		}
 	};
 
 	window.JCCatalogSectionComponent.prototype =
@@ -90,17 +86,6 @@
 			{
 				BX.addClass(this.showMoreButton, 'disabled');
 				this.showMoreButton.innerHTML = BX.message('BTN_MESSAGE_LAZY_LOAD_WAITER');
-			}
-		},
-
-		loadOnScroll: function()
-		{
-			var scrollTop = BX.GetWindowScrollPos().scrollTop,
-				containerBottom = BX.pos(this.container).bottom;
-
-			if (scrollTop + window.innerHeight > containerBottom)
-			{
-				//this.showMore();
 			}
 		},
 

@@ -269,15 +269,6 @@ if (isset($arResult['ITEM']))
 			}
 		}
 
-		if ($arParams['DISPLAY_COMPARE'])
-		{
-			$jsParams['COMPARE'] = array(
-				'COMPARE_URL_TEMPLATE' => $arParams['~COMPARE_URL_TEMPLATE'],
-				'COMPARE_DELETE_URL_TEMPLATE' => $arParams['~COMPARE_DELETE_URL_TEMPLATE'],
-				'COMPARE_PATH' => $arParams['COMPARE_PATH']
-			);
-		}
-
 		if ($item['BIG_DATA'])
 		{
 			$jsParams['PRODUCT']['RCM_ID'] = $item['RCM_ID'];
