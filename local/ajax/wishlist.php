@@ -19,14 +19,18 @@ if(Loader::IncludeModule('ldo.favorites')){
     if($idProduct){
         /*Добавляем в избранное, если уже есть - удаляем*/
         $isFavorites = Favorites::setItems($idProduct);
+
+        // Сбрасываем HTML-кеш текущей страницы
         $currentUrl = $_SERVER['HTTP_REFERER'];
         $cache = \Bitrix\Main\Data\StaticHtmlCache::getInstance();
         $cache->delete($currentUrl);
-
-        // Очищаем HTML-кеш
         if (method_exists($cache, 'deleteHtmlCache')) {
             $cache->deleteHtmlCache($currentUrl);
         }
+
+        // Сбрасываем управляемый кеш с тегом каталога, чтобы обновились страницы списков
+        $taggedCache = \Bitrix\Main\Application::getInstance()->getTaggedCache();
+        $taggedCache->clearByTag('iblock_id_4');
     }
 
     echo Favorites::getCount();

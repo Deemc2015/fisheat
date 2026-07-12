@@ -11,7 +11,6 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
-use \Ldo\Favorites\Favorites;
 use \Bitrix\Main\Loader;
 use Ldo\Develop\Pict;
 
@@ -19,26 +18,11 @@ $this->setFrameMode(true);
 
 // Загружаем модули
 $developLoaded = Loader::includeModule('ldo.develop');
-$favoritesLoaded = Loader::includeModule('ldo.favorites');
 
 // Подпись для JS
 $signer = new \Bitrix\Main\Security\Sign\Signer();
 $signedTemplate = $signer->sign($templateName, 'catalog.section.top');
 $signedParams = $signer->sign(base64_encode(serialize($arParams)), 'catalog.section.top');
-
-// Собираем ID элементов для избранного
-$allElementIds = [];
-foreach ($arResult["SECTIONS"] as $arSection) {
-    foreach ($arSection["ITEMS"] as $arElement) {
-        $allElementIds[] = $arElement['ID'];
-    }
-}
-
-// Карта избранного
-$favoritesMap = [];
-if ($favoritesLoaded && method_exists(Favorites::class, 'getItems')) {
-    $favoritesMap = array_flip(Favorites::getItems());
-}
 ?>
 <div class="container">
     <div class="row">
@@ -65,9 +49,6 @@ if ($favoritesLoaded && method_exists(Favorites::class, 'getItems')) {
                             $hot = ($arElement['PROPERTIES']['ATT_OSTRO']['VALUE'] == 'да');
                             $vegan = ($arElement['PROPERTIES']['ATT_VEGAN']['VALUE'] == 'да');
                             $disabledClass = $arElement['CAN_BUY'] ? '' : 'not-avaliable';
-
-                            // Избранное
-                            $favoriteClass = ($favoritesLoaded && isset($favoritesMap[$arElement['ID']])) ? 'active' : '';
 
                             $this->AddEditAction($arElement['ID'], $arElement['EDIT_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_EDIT"));
                             $this->AddDeleteAction($arElement['ID'], $arElement['DELETE_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BCST_ELEMENT_DELETE_CONFIRM')));
@@ -114,7 +95,7 @@ if ($favoritesLoaded && method_exists(Favorites::class, 'getItems')) {
                                         <?endif;?>
                                     </div>
                                 </a>
-                                <div class="wish-add <?=$favoriteClass?>" data-id="<?=$arElement['ID']?>">
+                                <div class="wish-add" data-id="<?=$arElement['ID']?>">
                                     <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9.99999 16C9.90893 16 9.81792 15.9773 9.73635 15.9319C9.64776 15.8827 7.54293 14.7052 5.4079 12.9309C4.14249 11.8793 3.13238 10.8363 2.4057 9.83094C1.46535 8.52996 0.992463 7.27858 1.00009 6.1115C1.00902 4.75348 1.51383 3.47635 2.42163 2.51533C3.34476 1.53813 4.5767 1 5.89059 1C7.57446 1 9.11398 1.90885 10 3.34858C10.8861 1.90888 12.4256 1 14.1095 1C15.3508 1 16.5351 1.48555 17.4443 2.36724C18.4422 3.33479 19.0092 4.70189 18.9999 6.11794C18.9922 7.28298 18.5105 8.53247 17.568 9.83165C16.8391 10.8365 15.8304 11.8791 14.57 12.9303C12.4427 14.7044 10.353 15.8819 10.2651 15.9312C10.1846 15.9763 10.0931 16 9.99999 16Z" fill="white" stroke="#2B2D2F"></path>
                                     </svg>

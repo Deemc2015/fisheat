@@ -61,3 +61,84 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 		'epilogue' => $epilogue,
 	));
 }
+
+// ===== ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ КОРЗИНЫ И ИЗБРАННОГО =====
+use Bitrix\Main\Loader;
+$commonFrame = new \Bitrix\Main\Page\FrameHelper("products_common_frame_category_index");
+$commonFrame->begin();
+
+// Данные корзины
+$arInBasket = [];
+if (Loader::includeModule('sale'))
+{
+    try {
+        $basket = Bitrix\Sale\Basket::loadItemsForFUser(
+            Bitrix\Sale\Fuser::getId(),
+            Bitrix\Main\Context::getCurrent()->getSite()
+        );
+        foreach ($basket->getBasketItems() as $basketItem) {
+            $arInBasket[] = (int)$basketItem->getProductId();
+        }
+    } catch (Exception $e) {}
+}
+
+// Данные избранного
+$arInFavorites = [];
+if (Loader::includeModule('ldo.favorites'))
+{
+    $arInFavorites = array_values(\Ldo\Favorites\Favorites::getItems());
+}
+?>
+<script>
+(function() {
+    var basketIds = <?=CUtil::PhpToJSObject($arInBasket)?>.map(String);
+    var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
+    
+    function addClasses() {
+        var found = false;
+        
+        var cartButtons = document.querySelectorAll(".addCart");
+        if (cartButtons.length > 0) {
+            found = true;
+            cartButtons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (basketIds.includes(productId)) {
+                    button.classList.add("in_cart");
+                }
+            });
+        }
+        
+        var wishButtons = document.querySelectorAll(".wish-add");
+        if (wishButtons.length > 0) {
+            found = true;
+            wishButtons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (wishIds.includes(productId)) {
+                    button.classList.add("active");
+                }
+            });
+        }
+        
+        return found;
+    }
+    
+    if (!addClasses()) {
+        var observer = new MutationObserver(function(mutations, obs) {
+            if (addClasses()) {
+                obs.disconnect();
+            }
+        });
+        var targetNode = document.body || document.documentElement;
+        observer.observe(targetNode, { childList: true, subtree: true });
+        setTimeout(function() { observer.disconnect(); }, 5000);
+    }
+    
+    if (window.BX && window.frameCacheVars !== undefined) {
+        BX.addCustomEvent("onFrameDataReceived", function() {
+            addClasses();
+        });
+    }
+})();
+</script>
+<?php
+$commonFrame->end();

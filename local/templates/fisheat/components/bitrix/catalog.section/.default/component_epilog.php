@@ -66,7 +66,7 @@ if ($request->isAjaxRequest() && ($request->get('action') === 'showMore' || $req
 
 
 // ===== ОБЩАЯ ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ КОРЗИНЫ И ИЗБРАННОГО =====
-$commonFrame = new \Bitrix\Main\Page\FrameHelper("products_common_frame");
+$commonFrame = new \Bitrix\Main\Page\FrameHelper("products_common_frame_default");
 $commonFrame->begin();
 
 // Данные корзины

@@ -15,6 +15,9 @@ class ClientStorage
         $_SESSION[$strName] = $mixValue;
 
         $cookie = new Cookie($strName, $mixValue);
+        $cookie->setPath('/');
+        $cookie->setHttpOnly(true);
+        $cookie->setExpires(time() + 86400 * 30); // 30 дней
         Application::getInstance()->getContext()->getResponse()->addCookie($cookie);
 
         if ($isAjax) Application::getInstance()->getContext()->getResponse()->flush();

@@ -5,8 +5,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true)
 }
 
 use \Bitrix\Main\Loader;
-use \Ldo\Favorites\Favorites;
-
 
 $arBasketItems = [];
 
@@ -27,10 +25,3 @@ while ($arItems = $dbBasketItems->Fetch())
 }
 
 $arResult['IN_CART'] = $arBasketItems;
-
-// Получаем список ID товаров в избранном (аналогично корзине)
-$arResult['IN_FAVORITES'] = [];
-if (Loader::includeModule('ldo.favorites'))
-{
-    $arResult['IN_FAVORITES'] = Favorites::getItems();
-}
