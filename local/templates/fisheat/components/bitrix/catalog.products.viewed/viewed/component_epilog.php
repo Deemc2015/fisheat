@@ -4,33 +4,8 @@
  * @var array $arParams
  * @var array $templateData
  * @var string $templateFolder
- * @var CatalogSectionComponent $component
+ * @var CatalogProductsViewedComponent $component
  */
 
-global $APPLICATION;
-
-if (isset($templateData['TEMPLATE_THEME']))
-{
-	$APPLICATION->SetAdditionalCSS($templateFolder.'/themes/'.$templateData['TEMPLATE_THEME'].'/style.css');
-	$APPLICATION->SetAdditionalCSS('/bitrix/css/main/themes/'.$templateData['TEMPLATE_THEME'].'/style.css', true);
-}
-
-if (!empty($templateData['TEMPLATE_LIBRARY']))
-{
-	$loadCurrency = false;
-	if (!empty($templateData['CURRENCIES']))
-	{
-		$loadCurrency = \Bitrix\Main\Loader::includeModule('currency');
-	}
-
-	CJSCore::Init($templateData['TEMPLATE_LIBRARY']);
-
-	if ($loadCurrency)
-	{
-		?>
-		<script>
-			BX.Currency.setCurrencies(<?=$templateData['CURRENCIES']?>);
-		</script>
-		<?
-	}
-}
+$frameId = 'products_viewed_frame';
+include $_SERVER['DOCUMENT_ROOT'] . '/local/php_interface/include/catalog_section_common_epilog.php';
