@@ -85,18 +85,7 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         </div>
         <div class="mobile-footer__right">
             <a href="/mobile_app/personal/" class="personal-link-footer <?if($APPLICATION->GetCurPage(false) == '/mobile_app/personal/'){echo 'active';}?>"></a>
-            <a href="/mobile_app/izbrannye-tovary/" class="wish-link-footer <?if($APPLICATION->GetCurPage(false) == '/mobile_app/izbrannye-tovary/'){echo 'active';}?>">
-                <?
-                $wishFrameMobile = new \Bitrix\Main\Page\FrameHelper("wish_count_mobile_footer");
-                $wishFrameMobile->begin();
-                $wishCountMobile = 0;
-                if (\Bitrix\Main\Loader::includeModule('ldo.favorites')) {
-                    $wishCountMobile = \Ldo\Favorites\Favorites::getCount();
-                }
-                ?>
-                <span class="count-wish-mobile" <?=$wishCountMobile == 0 ? "style='display:none;'" : ""?>><?=$wishCountMobile?></span>
-                <?php $wishFrameMobile->end(); ?>
-            </a>
+            <a href="/mobile_app/izbrannye-tovary/" class="wish-link-footer <?if($APPLICATION->GetCurPage(false) == '/mobile_app/izbrannye-tovary/'){echo 'active';}?>"></a>
         </div>
     </div>
 
