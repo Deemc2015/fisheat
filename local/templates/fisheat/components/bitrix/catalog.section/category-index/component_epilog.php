@@ -148,3 +148,58 @@ Asset::getInstance()->addString($script);
 
 $compositeFrame->end(); // Конец динамической зоны
 
+// ===== ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ ИЗБРАННОГО =====
+$wishFrame = new \Bitrix\Main\Page\FrameHelper("products_wish_frame");
+$wishFrame->begin();
+
+$arInFavorites = [];
+if (Loader::includeModule('ldo.favorites'))
+{
+    $arInFavorites = \Ldo\Favorites\Favorites::getItems();
+}
+
+$wishScript = '
+<script>
+    (function() {
+        var wishIds = ' . CUtil::PhpToJSObject($arInFavorites) . '.map(String);
+       
+        function addWishClass() {
+            var buttons = document.querySelectorAll(".wish-add");
+            if (buttons.length === 0) return false;
+            
+            buttons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                if (wishIds.includes(productId)) {
+                    button.classList.add("active");
+                }
+            });
+            return true;
+        }
+        
+        var success = addWishClass();
+        
+        if (!success) {
+            var observer = new MutationObserver(function(mutations, obs) {
+                if (addWishClass()) {
+                    obs.disconnect();
+                }
+            });
+            
+            var targetNode = document.body || document.documentElement;
+            observer.observe(targetNode, { childList: true, subtree: true });
+            setTimeout(function() { observer.disconnect(); }, 4000);
+        }
+        
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", addWishClass);
+        }
+        window.addEventListener("load", function() {
+            setTimeout(addWishClass, 200);
+        });
+    })();
+</script>';
+
+Asset::getInstance()->addString($wishScript);
+
+$wishFrame->end();
+
