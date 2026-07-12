@@ -143,11 +143,10 @@ if (Loader::includeModule('ldo.favorites'))
 {
     $arInFavorites = \Ldo\Favorites\Favorites::getItems();
 }
-
-$wishScript = '
+?>
 <script>
     (function() {
-        var wishIds = ' . CUtil::PhpToJSObject($arInFavorites) . '.map(String);
+        var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
        
         function addWishClass() {
             var buttons = document.querySelectorAll(".wish-add");
@@ -183,8 +182,6 @@ $wishScript = '
             setTimeout(addWishClass, 200);
         });
     })();
-</script>';
-
-Asset::getInstance()->addString($wishScript);
-
+</script>
+<?php
 $wishFrame->end();
