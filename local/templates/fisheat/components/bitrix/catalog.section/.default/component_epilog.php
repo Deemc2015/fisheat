@@ -7,6 +7,7 @@
  * @var CatalogSectionComponent $component
  */
 use Bitrix\Main\Page\Asset;
+use Bitrix\Main\Loader;
 global $APPLICATION;
 
 if (isset($templateData['TEMPLATE_THEME']))
@@ -133,3 +134,72 @@ $script = '
 Asset::getInstance()->addString($script);
 
 $compositeFrame->end(); // Конец динамической зоны
+
+// ===== ДИНАМИЧЕСКАЯ ЗОНА ДЛЯ ИЗБРАННОГО =====
+$wishFrame = new \Bitrix\Main\Page\FrameHelper("products_wish_frame");
+$wishFrame->begin();
+
+$arInFavorites = [];
+if (Loader::includeModule('ldo.favorites'))
+{
+    $arInFavorites = array_values(\Ldo\Favorites\Favorites::getItems());
+}
+?>
+<script>
+    (function() {
+        var wishIds = <?=CUtil::PhpToJSObject($arInFavorites)?>.map(String);
+        console.log('[Favorites] IDs from server:', wishIds);
+       
+        function addWishClass() {
+            var buttons = document.querySelectorAll(".wish-add");
+            console.log('[Favorites] Found .wish-add buttons:', buttons.length);
+            
+            if (buttons.length === 0) return false;
+            
+            buttons.forEach(function(button) {
+                var productId = String(button.dataset.id);
+                var isInFav = wishIds.includes(productId);
+                console.log('[Favorites] Product ' + productId + ' in favorites:', isInFav);
+                if (isInFav) {
+                    button.classList.add("active");
+                }
+            });
+            return true;
+        }
+        
+        var success = addWishClass();
+        console.log('[Favorites] Initial addWishClass success:', success);
+        
+        if (!success) {
+            console.log('[Favorites] Starting MutationObserver');
+            var observer = new MutationObserver(function(mutations, obs) {
+                if (addWishClass()) {
+                    console.log('[Favorites] Observer: classes applied, disconnecting');
+                    obs.disconnect();
+                }
+            });
+            
+            var targetNode = document.body || document.documentElement;
+            observer.observe(targetNode, { childList: true, subtree: true });
+            setTimeout(function() { 
+                console.log('[Favorites] Observer timeout, disconnecting');
+                observer.disconnect(); 
+            }, 4000);
+        }
+        
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", function() {
+                console.log('[Favorites] DOMContentLoaded, retrying');
+                addWishClass();
+            });
+        }
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                console.log('[Favorites] Window load, retrying');
+                addWishClass();
+            }, 200);
+        });
+    })();
+</script>
+<?php
+$wishFrame->end();
