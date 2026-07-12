@@ -1,10 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();?>
 <? if ($APPLICATION->GetCurPage(false) !== '/'): ?>
-
 </section>
 <?endif;?>
-
-
 <?
 $viewed_product = $APPLICATION->GetProperty("viewed-product");
 ?>
@@ -114,8 +111,6 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
         false
     );?>
 
-
-
     <?else:?>
     <div class="top-line hidden-mobile">
         <div class="left-footer">
@@ -155,9 +150,6 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
     </div>
 
     <?endif?>
-
-
-
 </footer>
 </div>
 </div>

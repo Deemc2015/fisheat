@@ -14,6 +14,9 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
+    .gifts-block {
+        width: 990px;
+    }
 }
 
 
@@ -24,8 +27,8 @@
     .slider-index__item{
         height: 180px;
     }
-    #slider-index .slick-slide {
-        height: 182px;
+    #slider-index .slick-dots {
+        margin-top: -47px;
     }
     #image-product-block {
         height: 205px;
@@ -33,10 +36,22 @@
     .product-item-container {
         width: 251px;
     }
+    section#slider-index{
+        height: 216px;
+    }
+    .gifts-block {
+        width: 840px;
+    }
 }
 
 
 @media (max-width:1440px) {
+    .price-product{
+        margin-left: 0;
+    }
+    .gifts-block {
+        width: 720px;
+    }
     .product-item-detail-slider-container {
         width: 500px;
         height: 500px;
@@ -45,7 +60,7 @@
         position: relative;
     }
     #image-product-block {
-        height: 270px;
+        height: 190px;
     }
     .container-detail-page .product-item-detail-pay-block{
         margin-top: 24px;
@@ -54,11 +69,8 @@
         font-size: 36px;
         margin-bottom: 18px;
     }
-    .slider-index__item {
-        height: 148px;
-    }
-    #slider-index .slick-slide {
-        height: 148px;
+    section#slider-index {
+        height: 180px;
     }
     .container {
         max-width: 1200px;
@@ -73,12 +85,41 @@
         margin-top: 12px;
     }
     .product-item-container {
-        width: 276px;
+        width: 201px;
     }
 }
 
 
 @media (max-width:1200px) {
+    .top-menu nav {
+        width: 500px;
+    }
+    .gifts-block {
+        width: 595.19px;
+    }
+    /*Корзина*/
+    .left-order-page .name-product{
+        font-size:18px;
+    }
+    .left-order-page .price-product__sum{
+        font-size:15px;
+    }
+    .amount-product-block .quantity-product {
+        font-size: 15px;
+        width: 40px;
+    }
+    .left-order-page .name-product{
+        min-width:260px;
+    }
+    .left-order-page .image-product {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+    }
+    .amount-product-block{
+        width: 90px;
+    }
+    /**/
     .container {
         max-width: 992px;
     }
@@ -118,6 +159,33 @@
     }
 }
 @media (max-width:992px) {
+
+
+    /*Корзина*/
+    .order-page{
+        display: block;
+    }
+    .left-order-page{
+        width: 100%;
+        margin-right: 0;
+    }
+    .gifts-block{
+        width: 760px;
+        overflow:hidden;
+    }
+    .wrapper {
+        display: flex;
+        flex-direction: row;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    .right-order-page{
+        width: 100%;
+    }
+    .left-order-page .promo-block{
+        margin-bottom: 24px;
+    }
+    /**/
 
     .container {
         max-width: 760px;
