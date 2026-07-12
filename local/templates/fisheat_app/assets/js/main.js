@@ -40,7 +40,7 @@ $(document).on('click', '.sort-block-product div', function(event) {
 $(document).ready(function(){
     $(".mycustom-scroll").mCustomScrollbar();
 
-    $('.addCart').click(function(){
+    $(document).on('click', '.addCart', function(){
         $(this).addClass('in_cart');
     })
 

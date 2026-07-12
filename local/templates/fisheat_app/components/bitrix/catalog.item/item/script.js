@@ -2615,7 +2615,7 @@
 				this.obPopupWin.setTitleBar(successful ? BX.message('TITLE_SUCCESSFUL') : BX.message('TITLE_ERROR'));
 				this.obPopupWin.setContent(strContent);
 				this.obPopupWin.setButtons(buttons);
-				//$('.addCart[data-id='+this.product.id+']').addClass('in_cart');
+				$('.addCart[data-id="'+this.product.id+'"]').addClass('in_cart');
 			}
 		},
 
