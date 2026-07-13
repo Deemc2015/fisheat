@@ -565,3 +565,254 @@
         max-height: none;
     }
 }
+
+/* ===== Стили табов ===== */
+.admin-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #dce1e6;
+    background: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: #1e88e5;
+    background: #f5f9ff;
+}
+
+.tab-btn.active {
+    color: #1e88e5;
+    border-bottom-color: #1e88e5;
+}
+
+.tab-btn:focus {
+    outline: none;
+}
+
+.tab-content {
+    display: none;
+    animation: tabFadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes tabFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Стили вкладки Настройки ===== */
+.settings-container {
+    background: #fff;
+    border: 1px solid #dce1e6;
+    border-radius: 4px;
+    padding: 25px 30px;
+    max-width: 900px;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section:last-child {
+    margin-bottom: 0;
+}
+
+.settings-section h3 {
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+    color: #333;
+}
+
+.settings-section h4 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    color: #444;
+}
+
+.settings-group {
+    margin-bottom: 20px;
+}
+
+.settings-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+}
+
+.settings-group input[type="text"],
+.settings-group input[type="number"] {
+    padding: 7px 12px;
+    border: 1px solid #c6cdd3;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.settings-group input[type="text"]:focus,
+.settings-group input[type="number"]:focus {
+    border-color: #1e88e5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.15);
+}
+
+.settings-group .hint {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.settings-group .hint a {
+    color: #1e88e5;
+}
+
+.settings-coords {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.settings-coords span {
+    font-size: 13px;
+    color: #555;
+}
+
+.high-load-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #f39c12;
+}
+
+.high-load-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
+}
+
+.high-load-time label {
+    font-weight: normal !important;
+    font-size: 13px !important;
+    margin-bottom: 0 !important;
+}
+
+.high-load-time input[type="number"] {
+    width: 80px;
+    padding: 5px 10px;
+    border: 1px solid #c6cdd3;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+#settingsStatus {
+    font-size: 13px;
+    color: #27ae60;
+    margin-left: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+#settings-map {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#getCenterBtn {
+    margin-top: 10px;
+}
+
+/* ===== Стили вкладки Рестораны ===== */
+.restaurants-container {
+    background: #fff;
+    border: 1px solid #dce1e6;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.restaurants-map {
+    width: 100%;
+    height: 600px;
+    border-radius: 3px;
+}
+
+/* Адаптив для табов и настроек */
+@media (max-width: 768px) {
+    .admin-tabs {
+        flex-direction: column;
+        border-bottom: none;
+    }
+
+    .tab-btn {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 0;
+    }
+
+    .tab-btn.active {
+        border-bottom-color: #1e88e5;
+    }
+
+    .settings-container {
+        padding: 15px;
+    }
+
+    .settings-coords {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .high-load-time {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .restaurants-map {
+        height: 400px;
+    }
+}

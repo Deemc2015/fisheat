@@ -1077,12 +1077,6 @@ class DeliveryZonesManager {
 // Создаем глобальный экземпляр менеджера
 let deliveryManager;
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded event fired');
-    deliveryManager = new DeliveryZonesManager();
-    console.log('deliveryManager created:', deliveryManager);
-});
-
 window.onerror = function(msg, url, line, col, error) {
     console.error('Global error:', msg, error);
     if (msg.includes('ymaps')) {
@@ -1092,3 +1086,342 @@ window.onerror = function(msg, url, line, col, error) {
     }
     return false;
 };
+
+// =====================================================================
+// Переключение табов
+// =====================================================================
+function initTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    if (!tabBtns.length) return;
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabName = this.dataset.tab;
+
+            // Переключаем кнопки
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Переключаем контент
+            document.querySelectorAll('.tab-content').forEach(tc => {
+                tc.classList.remove('active');
+                tc.style.display = 'none';
+            });
+            const targetTab = document.getElementById('tab-' + tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                targetTab.style.display = 'block';
+            }
+
+            // Если переключились на таб настроек — инициализируем карту
+            if (tabName === 'settings' && window.settingsManager) {
+                window.settingsManager.onTabShown();
+            }
+        });
+    });
+}
+
+// =====================================================================
+// Менеджер настроек
+// =====================================================================
+class SettingsManager {
+    constructor() {
+        this.map = null;
+        this.placemark = null;
+        this.apiKey = '';
+        this.defaultLat = 55.751574;
+        this.defaultLng = 37.573856;
+        this.defaultZoom = 10;
+
+        const mapData = document.getElementById('map-data');
+        if (mapData) {
+            this.apiKey = mapData.dataset.apiKey || '';
+            this.defaultLat = parseFloat(mapData.dataset.defaultLat) || 55.751574;
+            this.defaultLng = parseFloat(mapData.dataset.defaultLng) || 37.573856;
+            this.defaultZoom = parseInt(mapData.dataset.defaultZoom) || 10;
+        }
+
+        this.init();
+    }
+
+    init() {
+        // Форма настроек
+        const form = document.getElementById('settingsForm');
+        if (form) {
+            form.addEventListener('submit', (e) => this.saveSettings(e));
+        }
+
+        // Кнопка "Взять центр с карты"
+        const getCenterBtn = document.getElementById('getCenterBtn');
+        if (getCenterBtn) {
+            getCenterBtn.addEventListener('click', () => this.getCenterFromMap());
+        }
+
+        // Карта настроек инициализируется lazily при показе таба
+        this._settingsMapInitialized = false;
+    }
+
+    /**
+     * Вызывается при переключении на таб настроек.
+     * Инициализирует карту только один раз, когда контейнер видим.
+     */
+    onTabShown() {
+        if (this._settingsMapInitialized) {
+            // Если карта уже создана, обновляем размер
+            if (this.map) {
+                setTimeout(() => this.map.container.fitToViewport(), 100);
+            }
+            return;
+        }
+
+        const container = document.getElementById('settings-map');
+        if (!container) return;
+
+        if (!this.apiKey) {
+            console.warn('SettingsManager: API key is empty, map not available');
+            container.innerHTML = '<div style="padding:30px;text-align:center;color:#999;font-size:14px;">' +
+                'Укажите API-ключ Яндекс.Карт в поле выше для отображения карты</div>';
+            return;
+        }
+
+        this._settingsMapInitialized = true;
+        this.initSettingsMap();
+    }
+
+    initSettingsMap() {
+        if (typeof ymaps === 'undefined') {
+            setTimeout(() => this.initSettingsMap(), 500);
+            return;
+        }
+
+        ymaps.ready(() => {
+            try {
+                const settingsMapContainer = document.getElementById('settings-map');
+                if (!settingsMapContainer) return;
+
+                this.map = new ymaps.Map('settings-map', {
+                    center: [this.defaultLat, this.defaultLng],
+                    zoom: this.defaultZoom,
+                    controls: ['zoomControl', 'fullscreenControl', 'geolocationControl']
+                });
+
+                // Ставим метку на центр по умолчанию
+                this.placemark = new ymaps.Placemark([this.defaultLat, this.defaultLng], {}, {
+                    preset: 'islands#redDotIcon',
+                    draggable: true
+                });
+                this.map.geoObjects.add(this.placemark);
+
+                // При перемещении метки обновляем поля
+                this.placemark.events.add('dragend', () => {
+                    const coords = this.placemark.geometry.getCoordinates();
+                    this.updateCoordFields(coords[0], coords[1]);
+                });
+
+                // Клик по карте — перемещаем метку
+                this.map.events.add('click', (e) => {
+                    const coords = e.get('coords');
+                    this.placemark.geometry.setCoordinates(coords);
+                    this.updateCoordFields(coords[0], coords[1]);
+                });
+
+                // Если поля координат пустые — заполняем из метки
+                const latInput = document.getElementById('settings_lat');
+                const lngInput = document.getElementById('settings_lng');
+                if (latInput && !latInput.value) {
+                    latInput.value = this.defaultLat;
+                }
+                if (lngInput && !lngInput.value) {
+                    lngInput.value = this.defaultLng;
+                }
+
+                console.log('Settings map initialized');
+            } catch (error) {
+                console.error('Settings map init error:', error);
+            }
+        });
+    }
+
+    updateCoordFields(lat, lng) {
+        const latInput = document.getElementById('settings_lat');
+        const lngInput = document.getElementById('settings_lng');
+        if (latInput) latInput.value = lat.toFixed(6);
+        if (lngInput) lngInput.value = lng.toFixed(6);
+    }
+
+    getCenterFromMap() {
+        if (!this.map || !this.placemark) {
+            this.showSettingsNotification('Карта ещё не загружена', 'error');
+            return;
+        }
+        const coords = this.placemark.geometry.getCoordinates();
+        this.updateCoordFields(coords[0], coords[1]);
+        this.showSettingsNotification('Координаты центра обновлены', 'success');
+    }
+
+    saveSettings(e) {
+        e.preventDefault();
+
+        const form = document.getElementById('settingsForm');
+        const submitBtn = document.getElementById('saveSettingsBtn');
+        const status = document.getElementById('settingsStatus');
+
+        if (!form || !submitBtn) return;
+
+        // Блокируем кнопку
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Сохранение...';
+
+        const formData = new FormData(form);
+        formData.append('ajax_action', 'save_settings');
+        formData.append('sessid', BX.bitrix_sessid());
+
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Сохранить настройки';
+
+                if (data.success) {
+                    if (status) {
+                        status.classList.remove('status-hidden');
+                        status.classList.add('status-visible');
+                        status.textContent = '✓ Сохранено';
+                        setTimeout(() => {
+                            status.classList.remove('status-visible');
+                            status.classList.add('status-hidden');
+                        }, 3000);
+                    }
+                    this.showSettingsNotification('Настройки сохранены', 'success');
+                } else {
+                    this.showSettingsNotification('Ошибка: ' + (data.error || 'Неизвестная ошибка'), 'error');
+                }
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Сохранить настройки';
+                this.showSettingsNotification('Ошибка сохранения: ' + error.message, 'error');
+            });
+    }
+
+    showSettingsNotification(message, type) {
+        if (deliveryManager && deliveryManager.showNotification) {
+            deliveryManager.showNotification(message, type);
+            return;
+        }
+
+        // Fallback если deliveryManager недоступен
+        const colors = {
+            success: '#d4edda',
+            error: '#f8d7da',
+            warning: '#fff3cd',
+            info: '#d1ecf1'
+        };
+        const textColors = {
+            success: '#155724',
+            error: '#721c24',
+            warning: '#856404',
+            info: '#0c5460'
+        };
+
+        const notification = document.createElement('div');
+        notification.style.cssText = [
+            'position: fixed',
+            'bottom: 80px',
+            'left: 50%',
+            'transform: translateX(-50%)',
+            'padding: 12px 20px',
+            'background: ' + (colors[type] || colors.info),
+            'color: ' + (textColors[type] || textColors.info),
+            'border-radius: 4px',
+            'box-shadow: 0 2px 10px rgba(0,0,0,0.1)',
+            'z-index: 10000',
+            'max-width: 400px',
+            'font-size: 14px',
+            'text-align: center'
+        ].join(';');
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+}
+
+// =====================================================================
+// Менеджер карты ресторанов
+// =====================================================================
+class RestaurantsMapManager {
+    constructor() {
+        this.map = null;
+        this.apiKey = '';
+        this.defaultLat = 55.751574;
+        this.defaultLng = 37.573856;
+        this.defaultZoom = 10;
+
+        const mapData = document.getElementById('map-data');
+        if (mapData) {
+            this.apiKey = mapData.dataset.apiKey || '';
+            this.defaultLat = parseFloat(mapData.dataset.defaultLat) || 55.751574;
+            this.defaultLng = parseFloat(mapData.dataset.defaultLng) || 37.573856;
+            this.defaultZoom = parseInt(mapData.dataset.defaultZoom) || 10;
+        }
+
+        this.init();
+    }
+
+    init() {
+        if (!document.getElementById('restaurants-map')) return;
+
+        if (typeof ymaps === 'undefined') {
+            setTimeout(() => this.init(), 500);
+            return;
+        }
+
+        ymaps.ready(() => {
+            try {
+                const container = document.getElementById('restaurants-map');
+                if (!container) return;
+
+                this.map = new ymaps.Map('restaurants-map', {
+                    center: [this.defaultLat, this.defaultLng],
+                    zoom: this.defaultZoom,
+                    controls: ['zoomControl', 'fullscreenControl', 'geolocationControl']
+                });
+
+                console.log('Restaurants map initialized');
+            } catch (error) {
+                console.error('Restaurants map init error:', error);
+            }
+        });
+    }
+}
+
+// =====================================================================
+// Инициализация при загрузке DOM
+// =====================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded event fired');
+
+    // Менеджер зон доставки
+    deliveryManager = new DeliveryZonesManager();
+    console.log('deliveryManager created:', deliveryManager);
+
+    // Переключение табов
+    initTabs();
+
+    // Менеджер настроек
+    window.settingsManager = new SettingsManager();
+
+    // Менеджер карты ресторанов
+    window.restaurantsMapManager = new RestaurantsMapManager();
+});

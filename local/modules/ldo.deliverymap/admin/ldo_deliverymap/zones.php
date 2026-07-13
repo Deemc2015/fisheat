@@ -6,6 +6,7 @@ use Bitrix\Main\Config\Option;
 use Bitrix\Main\Application;
 use Bitrix\Main\Context;
 use Ldo\Deliverymap\DeliveryZoneTable;
+use Ldo\Deliverymap\SettingsTable;
 
 $moduleId = 'ldo.deliverymap';
 
@@ -208,6 +209,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
             }
 
             $response = ['success' => true, 'message' => 'Зона удалена'];
+        } elseif ($ajaxAction === 'save_settings') {
+            if ($permission < "U") {
+                throw new Exception('Недостаточно прав');
+            }
+            if (!check_bitrix_sessid()) {
+                throw new Exception('Ошибка сессии безопасности');
+            }
+
+            $siteId = $_POST['SITE_ID'] ?? $currentSiteId;
+
+            $fields = [
+                'yandex_api_key' => $_POST['yandex_api_key'] ?? '',
+                'default_lat' => $_POST['default_lat'] ?? '55.751574',
+                'default_lng' => $_POST['default_lng'] ?? '37.573856',
+                'default_zoom' => $_POST['default_zoom'] ?? '10',
+                'high_load_enabled' => ($_POST['high_load_enabled'] ?? 'N') === 'Y' ? 'Y' : 'N',
+                'high_load_add_time' => (string)((int)($_POST['high_load_add_time'] ?? 20)),
+            ];
+
+            foreach ($fields as $name => $value) {
+                SettingsTable::set($siteId, $name, $value);
+            }
+
+            $response = ['success' => true, 'message' => 'Настройки сохранены'];
+
         } elseif ($ajaxAction === 'get_zones') {
             try {
                 $zones = DeliveryZoneTable::getList([
@@ -300,133 +326,187 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_a
 
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
 \Bitrix\Main\UI\Extension::load("ui.buttons");
+
+// Получаем настройки для текущего сайта
+$settings = [];
+$settingsRows = SettingsTable::getList(['filter' => ['=SITE_ID' => $currentSiteId]])->fetchAll();
+foreach ($settingsRows as $row) {
+    $settings[$row['NAME']] = $row['VALUE'];
+}
+$yandexApiKey = $settings['yandex_api_key'] ?? '';
+$defaultLat = $settings['default_lat'] ?? '55.751574';
+$defaultLng = $settings['default_lng'] ?? '37.573856';
+$defaultZoom = $settings['default_zoom'] ?? '10';
+$highLoadEnabled = $settings['high_load_enabled'] ?? 'N';
+$highLoadAddTime = $settings['high_load_add_time'] ?? '20';
 ?>
     <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap_zones.css">
 
-    <div class="top-line-map">
-        <!-- Блок высокой нагрузки -->
-        <div class="high-load-container">
-            <label>
-                <input type="checkbox" id="highLoadToggle">
-                <span>⚠️ Высокая нагрузка</span>
-            </label>
-
-            <div id="highLoadSettings">
-                <label>Время доставки (минут):</label>
-                <input type="number" id="highLoadMinutes" value="20" min="1" max="1440" step="5">
-                <button id="saveHighLoadBtn" class="ui-btn ui-btn-success ui-btn-sm">Сохранить</button>
-                <span id="highLoadStatus" class="status-hidden">✓ Сохранено</span>
-            </div>
-        </div>
-
-        <!-- Блок загрузки из файла -->
-        <div class="load-file">Загрузить из файла</div>
+    <!-- Табы -->
+    <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="zones">Зоны доставки</button>
+        <button class="tab-btn" data-tab="restaurants">Рестораны</button>
+        <button class="tab-btn" data-tab="settings">Настройки</button>
     </div>
 
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
-    <div class="delivery-map-container">
-        <div class="delivery-map-wrapper">
-            <div class="delivery-map" id="delivery-map"></div>
+    <!-- ===== ВКЛАДКА: ЗОНЫ ДОСТАВКИ ===== -->
+    <div class="tab-content active" id="tab-zones">
+        <div class="top-line-map">
+            <!-- Блок высокой нагрузки -->
+            <div class="high-load-container">
+                <label>
+                    <input type="checkbox" id="highLoadToggle" <?= $highLoadEnabled === 'Y' ? 'checked' : '' ?>>
+                    <span>⚠️ Высокая нагрузка</span>
+                </label>
 
-            <div class="map-controls">
-                <button class="ui-btn ui-btn-success ui-btn-icon-add" id="addZoneBtn">Добавить зону</button>
-                <button type="submit" id="save_btn" class="ui-btn ui-btn-success ui-btn-icon-done" style="display:none;">Сохранить</button>
-                <button type="button" id="cancel_btn" class="ui-btn ui-btn-danger" style="display:none;">Отмена</button>
+                <div id="highLoadSettings" class="<?= $highLoadEnabled === 'Y' ? 'is-visible' : '' ?>">
+                    <label>Доп. время доставки (минут):</label>
+                    <input type="number" id="highLoadMinutes" value="<?= (int)$highLoadAddTime ?>" min="1" max="1440" step="5">
+                    <button id="saveHighLoadBtn" class="ui-btn ui-btn-success ui-btn-sm">Сохранить</button>
+                    <span id="highLoadStatus" class="status-hidden">✓ Сохранено</span>
+                </div>
             </div>
+            <div class="load-file">Загрузить из файла</div>
         </div>
 
-        <div class="delivery-sidebar">
-            <h3>Зоны доставки <span style="font-size:12px;color:#888;font-weight:normal;">(сайт: <?= htmlspecialchars($currentSiteId) ?>)</span></h3>
-
-            <div class="zone-form-wrapper" id="zoneFormWrapper">
-                <h4 id="formTitle">Новая зона</h4>
-                <form id="zoneForm">
-                    <input type="hidden" id="zone_id" name="ID" value="0">
-                    <input type="hidden" id="zone_site_id" name="SITE_ID" value="<?= htmlspecialchars($currentSiteId) ?>">
-                    <?= bitrix_sessid_post() ?>
-
-                    <div class="zone-form-group">
-                        <label>Название зоны *</label>
-                        <input type="text" id="zone_name" name="NAME" required placeholder="Например: Центр города">
-                    </div>
-
-                    <div class="zone-form-group">
-                        <label>Цена доставки (руб)</label>
-                        <input type="number" id="zone_price" name="PRICE" value="0" step="0.01" min="0">
-                        <span class="hint">Стоимость доставки в эту зону. 0 - бесплатно</span>
-                    </div>
-
-                    <div class="zone-form-group">
-                        <label>Бесплатная доставка от (руб)</label>
-                        <input type="number" id="zone_free_from" name="FREE_FROM" value="0" step="0.01" min="0">
-                        <span class="hint">При сумме заказа от этой суммы доставка бесплатна</span>
-                    </div>
-
-                    <div class="zone-form-group">
-                        <label>Время доставки (минут)</label>
-                        <div class="delivery-time-range">
-                            <div class="time-field">
-                                <span class="time-label">от</span>
-                                <input type="number" id="zone_delivery_time_start" name="DELIVERY_TIME_START" value="" min="0" step="5" placeholder="мин">
-                            </div>
-                            <div class="time-field">
-                                <span class="time-label">до</span>
-                                <input type="number" id="zone_delivery_time_end" name="DELIVERY_TIME_END" value="" min="0" step="5" placeholder="мин">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="delivery-map-container">
+            <div class="delivery-map-wrapper">
+                <div class="delivery-map" id="delivery-map"></div>
+                <div class="map-controls">
+                    <button class="ui-btn ui-btn-success ui-btn-icon-add" id="addZoneBtn">Добавить зону</button>
+                    <button type="submit" id="save_btn" class="ui-btn ui-btn-success ui-btn-icon-done" style="display:none;">Сохранить</button>
+                    <button type="button" id="cancel_btn" class="ui-btn ui-btn-danger" style="display:none;">Отмена</button>
+                </div>
+            </div>
+            <div class="delivery-sidebar">
+                <h3>Зоны доставки <span style="font-size:12px;color:#888;font-weight:normal;">(сайт: <?= htmlspecialchars($currentSiteId) ?>)</span></h3>
+                <div class="zone-form-wrapper" id="zoneFormWrapper">
+                    <h4 id="formTitle">Новая зона</h4>
+                    <form id="zoneForm">
+                        <input type="hidden" id="zone_id" name="ID" value="0">
+                        <input type="hidden" id="zone_site_id" name="SITE_ID" value="<?= htmlspecialchars($currentSiteId) ?>">
+                        <?= bitrix_sessid_post() ?>
+                        <div class="zone-form-group">
+                            <label>Название зоны *</label>
+                            <input type="text" id="zone_name" name="NAME" required placeholder="Например: Центр">
+                        </div>
+                        <div class="zone-form-group">
+                            <label>Цена доставки (руб)</label>
+                            <input type="number" id="zone_price" name="PRICE" value="0" step="0.01" min="0">
+                            <span class="hint">0 - бесплатно</span>
+                        </div>
+                        <div class="zone-form-group">
+                            <label>Бесплатная доставка от (руб)</label>
+                            <input type="number" id="zone_free_from" name="FREE_FROM" value="0" step="0.01" min="0">
+                        </div>
+                        <div class="zone-form-group">
+                            <label>Время доставки (минут)</label>
+                            <div class="delivery-time-range">
+                                <div class="time-field">
+                                    <span class="time-label">от</span>
+                                    <input type="number" id="zone_delivery_time_start" name="DELIVERY_TIME_START" value="" min="0" step="5" placeholder="мин">
+                                </div>
+                                <div class="time-field">
+                                    <span class="time-label">до</span>
+                                    <input type="number" id="zone_delivery_time_end" name="DELIVERY_TIME_END" value="" min="0" step="5" placeholder="мин">
+                                </div>
                             </div>
                         </div>
-                        <span class="hint">Примерное время доставки в минутах (диапазон)</span>
+                        <div class="zone-form-group">
+                            <label>Цвет зоны</label>
+                            <input type="color" id="zone_color" name="COLOR" value="#00FF00">
+                        </div>
+                        <div class="zone-form-group">
+                            <label>Минимальная сумма заказа (руб)</label>
+                            <input type="number" id="zone_min_price" name="MIN_ORDER_PRICE" value="0" step="0.01" min="0">
+                        </div>
+                        <div class="zone-form-group">
+                            <label>Активность</label>
+                            <select id="zone_active" name="ACTIVE">
+                                <option value="Y">Активна</option>
+                                <option value="N">Неактивна</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="zone_coordinates" name="COORDINATES">
+                    </form>
+                </div>
+                <div id="zone-list" style="display: none;">
+                    <div id="zone-list-items"></div>
+                </div>
+            </div>
+        </div>
+        <div id="draw-hint" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px 20px; border-radius:5px; z-index:1000; text-align:center;">
+            ⚡ Режим рисования: кликайте на карте для добавления точек
+            <br><small>Добавлено точек: <span id="pointsCount">0</span></small>
+        </div>
+        <div class="edit-mode-hint" id="editModeHint">
+            ✏️ Режим редактирования: перетаскивайте точки зоны мышью
+            <small>Изменения сохранятся автоматически</small>
+        </div>
+    </div>
+
+    <!-- ===== ВКЛАДКА: РЕСТОРАНЫ ===== -->
+    <div class="tab-content" id="tab-restaurants" style="display:none;">
+        <div class="restaurants-container">
+            <div class="restaurants-map" id="restaurants-map" style="width:100%; height:600px;"></div>
+        </div>
+    </div>
+
+    <!-- ===== ВКЛАДКА: НАСТРОЙКИ ===== -->
+    <div class="tab-content" id="tab-settings" style="display:none;">
+        <div class="settings-container">
+            <div class="settings-section">
+                <h3>Настройки карты (сайт: <?= htmlspecialchars($currentSiteId) ?>)</h3>
+                <form id="settingsForm" method="post">
+                    <input type="hidden" name="site_id" value="<?= htmlspecialchars($currentSiteId) ?>">
+                    <?= bitrix_sessid_post() ?>
+
+                    <div class="settings-group">
+                        <label>API ключ Яндекс.Карт:</label>
+                        <input type="text" id="settings_api_key" name="yandex_api_key"
+                               value="<?= htmlspecialchars($yandexApiKey) ?>" size="60">
+                        <span class="hint">Получить в <a href="https://developer.tech.yandex.ru/" target="_blank">кабинете разработчика</a></span>
                     </div>
 
-                    <div class="zone-form-group">
-                        <label>Цвет зоны</label>
-                        <input type="color" id="zone_color" name="COLOR" value="#00FF00">
+                    <div class="settings-group">
+                        <label>Центр карты по умолчанию:</label>
+                        <div class="settings-coords">
+                            <span>Широта:</span>
+                            <input type="text" id="settings_lat" name="default_lat" value="<?= htmlspecialchars($defaultLat) ?>" size="12">
+                            <span>Долгота:</span>
+                            <input type="text" id="settings_lng" name="default_lng" value="<?= htmlspecialchars($defaultLng) ?>" size="12">
+                            <span>Зум:</span>
+                            <input type="number" id="settings_zoom" name="default_zoom" value="<?= (int)$defaultZoom ?>" min="1" max="19" size="4">
+                        </div>
+                        <span class="hint">Переместите карту ниже в нужное место и нажмите "Взять центр с карты"</span>
                     </div>
 
-                    <div class="zone-form-group">
-                        <label>Минимальная сумма заказа (руб)</label>
-                        <input type="number" id="zone_min_price" name="MIN_ORDER_PRICE" value="0" step="0.01" min="0">
-                        <span class="hint">Заказ на меньшую сумму не будет доставляться в эту зону</span>
-                    </div>
-
-                    <div class="zone-form-group">
-                        <label>Активность</label>
-                        <select id="zone_active" name="ACTIVE">
-                            <option value="Y">Активна</option>
-                            <option value="N">Неактивна</option>
-                        </select>
-                    </div>
-
-                    <input type="hidden" id="zone_coordinates" name="COORDINATES">
+                    <button type="submit" class="adm-btn-save" id="saveSettingsBtn">Сохранить настройки</button>
+                    <span id="settingsStatus" class="status-hidden">✓ Сохранено</span>
                 </form>
             </div>
 
-            <div id="zone-list" style="display: none;">
-                <div id="zone-list-items"></div>
+            <div class="settings-section">
+                <h4>Выбор центра карты</h4>
+                <div id="settings-map" style="width:100%; height:450px;"></div>
+                <br>
+                <button type="button" class="adm-btn" id="getCenterBtn">📌 Взять центр с карты</button>
             </div>
         </div>
     </div>
 
-    <div id="draw-hint" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px 20px; border-radius:5px; z-index:1000; text-align:center;">
-        ⚡ Режим рисования: кликайте на карте для добавления точек
-        <br><small>Добавлено точек: <span id="pointsCount">0</span></small>
-    </div>
-
-    <div class="edit-mode-hint" id="editModeHint">
-        ✏️ Режим редактирования: перетаскивайте точки зоны мышью
-        <small>Изменения сохранятся автоматически</small>
-    </div>
-
     <div id="map-data"
-         data-api-key="<?= htmlspecialchars(Option::get($moduleId, 'yandex_api_key')) ?>"
-         data-default-lat="<?= htmlspecialchars(Option::get($moduleId, 'default_lat', '55.751574')) ?>"
-         data-default-lng="<?= htmlspecialchars(Option::get($moduleId, 'default_lng', '37.573856')) ?>"
-         data-default-zoom="<?= htmlspecialchars(Option::get($moduleId, 'default_zoom', '10')) ?>"
+         data-api-key="<?= htmlspecialchars($yandexApiKey) ?>"
+         data-default-lat="<?= htmlspecialchars($defaultLat) ?>"
+         data-default-lng="<?= htmlspecialchars($defaultLng) ?>"
+         data-default-zoom="<?= htmlspecialchars($defaultZoom) ?>"
          data-site-id="<?= htmlspecialchars($currentSiteId) ?>">
     </div>
 
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars(Option::get($moduleId, 'yandex_api_key')) ?>&lang=ru_RU"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars($yandexApiKey) ?>&lang=ru_RU"></script>
     <script src="/bitrix/admin/ldo_deliverymap_zones.js"></script>
 
 <?

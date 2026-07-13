@@ -4,6 +4,7 @@ use Bitrix\Main\ModuleManager;
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\EventManager;
 use Bitrix\Main\IO\Directory;
+use Ldo\Deliverymap\SettingsTable;
 
 global $DOCUMENT_ROOT, $MESS;
 Loc::loadMessages(__FILE__);
@@ -162,7 +163,7 @@ class Ldo_deliverymap extends CModule
     {
         global $DB;
 
-        $sql = "
+        $DB->Query("
             CREATE TABLE IF NOT EXISTS `ldo_delivery_zones` (
                 `ID` int(11) NOT NULL AUTO_INCREMENT,
                 `NAME` varchar(255) NOT NULL,
@@ -181,23 +182,42 @@ class Ldo_deliverymap extends CModule
                 KEY `IX_ACTIVE` (`ACTIVE`),
                 KEY `IX_SITE_ID` (`SITE_ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        ";
+        ");
 
-        $DB->Query($sql);
+        $DB->Query("
+            CREATE TABLE IF NOT EXISTS `ldo_delivery_settings` (
+                `ID` int(11) NOT NULL AUTO_INCREMENT,
+                `SITE_ID` varchar(2) NOT NULL,
+                `NAME` varchar(50) NOT NULL,
+                `VALUE` text,
+                PRIMARY KEY (`ID`),
+                UNIQUE KEY `IX_SITE_NAME` (`SITE_ID`, `NAME`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
     }
 
     private function dropTables()
     {
         global $DB;
         $DB->Query("DROP TABLE IF EXISTS `ldo_delivery_zones`");
+        $DB->Query("DROP TABLE IF EXISTS `ldo_delivery_settings`");
     }
 
     private function setOptions()
     {
-        Option::set($this->MODULE_ID, 'yandex_api_key', '');
-        Option::set($this->MODULE_ID, 'default_lat', '55.751574');
-        Option::set($this->MODULE_ID, 'default_lng', '37.573856');
-        Option::set($this->MODULE_ID, 'default_zoom', '10');
+        // Миграция из Option в БД (таблица ldo_delivery_settings)
+        $optionKeys = ['yandex_api_key', 'default_lat', 'default_lng', 'default_zoom'];
+        $siteIds = ['s1']; // при необходимости расширить список сайтов
+
+        foreach ($siteIds as $siteId) {
+            foreach ($optionKeys as $key) {
+                $oldValue = Option::get($this->MODULE_ID, $key, null);
+                if ($oldValue !== null) {
+                    SettingsTable::set($siteId, $key, $oldValue);
+                    Option::delete($this->MODULE_ID, $key);
+                }
+            }
+        }
     }
 
     private function addEventHandlers()
