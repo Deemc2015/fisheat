@@ -4,8 +4,6 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 use \Bitrix\Main\Loader;
 use \Bitrix\Main\Engine\Contract\Controllerable;
 use \Bitrix\Main\Engine\ActionFilter;
-use \Bitrix\Main\Config\Option;
-use \Bitrix\Main\Context;
 use \Bitrix\Main\Localization\Loc;
 use Ldo\Deliverymap\DeliveryZoneTable;
 use Ldo\Deliverymap\SettingsTable;
@@ -25,18 +23,22 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
     {
         $this->siteId = $this->arParams['SITE_ID'] ?? 's1';
 
-        $this->arResult['YANDEX_API_KEY'] = Option::get(self::MODULE_ID, 'yandex_api_key', '');
-        $this->arResult['DEFAULT_LAT'] = (float)Option::get(self::MODULE_ID, 'default_lat', '54.7355');
-        $this->arResult['DEFAULT_LNG'] = (float)Option::get(self::MODULE_ID, 'default_lng', '55.9587');
-        $this->arResult['DEFAULT_ZOOM'] = (int)Option::get(self::MODULE_ID, 'default_zoom', '11');
         $this->arResult['SITE_ID'] = $this->siteId;
         $this->arResult['LINK_RESTORANS'] = $this->arParams['LINK_RESTORANS'] ?? '/restorans';
 
-        // Настройки высокой нагрузки
+        // Настройки модуля (теперь хранятся в БД через SettingsTable)
         if (Loader::includeModule(self::MODULE_ID)) {
+            $this->arResult['YANDEX_API_KEY'] = SettingsTable::get($this->siteId, 'yandex_api_key', '');
+            $this->arResult['DEFAULT_LAT'] = (float)SettingsTable::get($this->siteId, 'default_lat', '54.7355');
+            $this->arResult['DEFAULT_LNG'] = (float)SettingsTable::get($this->siteId, 'default_lng', '55.9587');
+            $this->arResult['DEFAULT_ZOOM'] = (int)SettingsTable::get($this->siteId, 'default_zoom', '11');
             $this->arResult['HIGH_LOAD_ENABLED'] = SettingsTable::get($this->siteId, 'high_load_enabled', 'N');
             $this->arResult['HIGH_LOAD_ADD_TIME'] = (int)SettingsTable::get($this->siteId, 'high_load_add_time', '0');
         } else {
+            $this->arResult['YANDEX_API_KEY'] = '';
+            $this->arResult['DEFAULT_LAT'] = 54.7355;
+            $this->arResult['DEFAULT_LNG'] = 55.9587;
+            $this->arResult['DEFAULT_ZOOM'] = 11;
             $this->arResult['HIGH_LOAD_ENABLED'] = 'N';
             $this->arResult['HIGH_LOAD_ADD_TIME'] = 0;
         }
