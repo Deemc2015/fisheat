@@ -73,7 +73,9 @@ function prepareCoordinates($coordinates) {
 }
 
 // === ОБРАБОТКА AJAX ЗАПРОСОВ ===
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+$isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ajax_action']))
+    || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
+if ($isAjax) {
     if (defined('BX_DEBUG') && BX_DEBUG) {
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
@@ -219,17 +221,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 
             $siteId = $_POST['SITE_ID'] ?? $currentSiteId;
 
-            $fields = [
-                'yandex_api_key' => $_POST['yandex_api_key'] ?? '',
-                'default_lat' => $_POST['default_lat'] ?? '55.751574',
-                'default_lng' => $_POST['default_lng'] ?? '37.573856',
-                'default_zoom' => $_POST['default_zoom'] ?? '10',
-                'high_load_enabled' => ($_POST['high_load_enabled'] ?? 'N') === 'Y' ? 'Y' : 'N',
-                'high_load_add_time' => (string)((int)($_POST['high_load_add_time'] ?? 20)),
+            // Сохраняем только те поля, которые реально переданы
+            $knownFields = [
+                'yandex_api_key', 'default_lat', 'default_lng', 'default_zoom',
+                'high_load_enabled', 'high_load_add_time'
             ];
 
-            foreach ($fields as $name => $value) {
-                SettingsTable::set($siteId, $name, $value);
+            foreach ($knownFields as $name) {
+                if (array_key_exists($name, $_POST)) {
+                    $value = $_POST[$name];
+                    // Нормализация известных полей
+                    if ($name === 'high_load_enabled') {
+                        $value = ($value === 'Y') ? 'Y' : 'N';
+                    } elseif (in_array($name, ['high_load_add_time', 'default_zoom'])) {
+                        $value = (string)((int)$value);
+                    }
+                    SettingsTable::set($siteId, $name, $value);
+                }
             }
 
             $response = ['success' => true, 'message' => 'Настройки сохранены'];
@@ -274,7 +282,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                     'success' => true,
                     'zones' => $zones,
                     'total' => count($zones),
-                    'site_id' => $currentSiteId
+                    'site_id' => $currentSiteId,
+                    'high_load_enabled' => $highLoadEnabled,
+                    'high_load_add_time' => (int)$highLoadAddTime
                 ];
 
             } catch (Exception $e) {
@@ -338,7 +348,7 @@ $defaultLat = $settings['default_lat'] ?? '55.751574';
 $defaultLng = $settings['default_lng'] ?? '37.573856';
 $defaultZoom = $settings['default_zoom'] ?? '10';
 $highLoadEnabled = $settings['high_load_enabled'] ?? 'N';
-$highLoadAddTime = $settings['high_load_add_time'] ?? '20';
+$highLoadAddTime = $settings['high_load_add_time'] ?? '0';
 ?>
     <link rel="stylesheet" href="/bitrix/admin/ldo_deliverymap_zones.css">
 

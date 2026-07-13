@@ -29,6 +29,9 @@ class DeliveryZonesManager {
         this.selectedZoneId = null;
         this.currentZoneData = null;
 
+        this.highLoadEnabled = false;
+        this.highLoadAddTime = 0;
+
         const mapData = document.getElementById('map-data');
         this.defaultLat = parseFloat(mapData.dataset.defaultLat) || 55.751574;
         this.defaultLng = parseFloat(mapData.dataset.defaultLng) || 37.573856;
@@ -237,6 +240,12 @@ class DeliveryZonesManager {
                 if (data.success && data.zones) {
                     console.log(`Zones loaded: ${data.zones.length}`);
 
+                    // Сохраняем настройки высокой нагрузки из ответа (для расчёта времени)
+                    if (data.high_load_enabled !== undefined) {
+                        this.highLoadEnabled = data.high_load_enabled === 'Y';
+                        this.highLoadAddTime = parseInt(data.high_load_add_time) || 0;
+                    }
+
                     data.zones.forEach(zone => {
                         this.addPolygonToMap(zone);
                     });
@@ -410,12 +419,29 @@ class DeliveryZonesManager {
             const timeStart = parseInt(zone.DELIVERY_TIME_START) || 0;
             const timeEnd = parseInt(zone.DELIVERY_TIME_END) || 0;
 
-            if (timeStart > 0 && timeEnd > 0) {
-                deliveryTimeText = `от ${timeStart} до ${timeEnd} мин.`;
-            } else if (timeStart > 0) {
-                deliveryTimeText = `от ${timeStart} мин.`;
-            } else if (timeEnd > 0) {
-                deliveryTimeText = `до ${timeEnd} мин.`;
+            // Учитываем высокую нагрузку
+            const isHighLoad = this.highLoadEnabled || document.getElementById('highLoadToggle')?.checked;
+            const addTime = this.highLoadAddTime || parseInt(document.getElementById('highLoadMinutes')?.value) || 0;
+
+            let adjustedStart = timeStart;
+            let adjustedEnd = timeEnd;
+            let highLoadSuffix = '';
+
+            if (isHighLoad && addTime > 0) {
+                if (timeStart > 0) adjustedStart = timeStart + addTime;
+                if (timeEnd > 0) adjustedEnd = timeEnd + addTime;
+                highLoadSuffix = ' <span class="high-load-badge">+выс.нагр.</span>';
+            }
+
+            if (adjustedStart > 0 && adjustedEnd > 0) {
+                deliveryTimeText = `от ${adjustedStart} до ${adjustedEnd} мин.${highLoadSuffix}`;
+            } else if (adjustedStart > 0) {
+                deliveryTimeText = `от ${adjustedStart} мин.${highLoadSuffix}`;
+            } else if (adjustedEnd > 0) {
+                deliveryTimeText = `до ${adjustedEnd} мин.${highLoadSuffix}`;
+            } else if (isHighLoad && addTime > 0 && timeStart === 0 && timeEnd === 0) {
+                // Если время не указано, но высокая нагрузка включена — показываем только доп. время
+                deliveryTimeText = `+${addTime} мин. (выс.нагрузка)`;
             }
 
             const zoneId = parseInt(zone.ID);
@@ -486,23 +512,45 @@ class DeliveryZonesManager {
 
         console.log('High load elements found, initializing...');
 
+        // При загрузке страницы применяем визуальное выделение
+        this.updateHighLoadVisual(toggle.checked);
+
         toggle.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
             console.log('Toggle changed:', isChecked);
 
             if (isChecked) {
                 settings.classList.add('is-visible');
+                this.updateHighLoadVisual(true);
             } else {
+                // При снятии галки сразу отключаем режим (без кнопки)
                 settings.classList.remove('is-visible');
-            }
+                this.updateHighLoadVisual(false);
 
-            const mapContainer = document.getElementById('delivery-map');
-            if (mapContainer) {
-                if (isChecked) {
-                    mapContainer.classList.add('high-load-active');
-                } else {
-                    mapContainer.classList.remove('high-load-active');
+                const formData = new FormData();
+                formData.append('ajax_action', 'save_settings');
+                formData.append('high_load_enabled', 'N');
+                formData.append('high_load_add_time', '0');
+                let sessid = '';
+                if (typeof BX !== 'undefined' && typeof BX.bitrix_sessid === 'function') {
+                    sessid = BX.bitrix_sessid();
                 }
+                formData.append('sessid', sessid);
+
+                fetch(window.location.href, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.showNotification('Высокая нагрузка отключена', 'success');
+                    }
+                })
+                .catch(error => {
+                    this.showNotification('Ошибка: ' + error.message, 'error');
+                });
             }
         });
 
@@ -510,32 +558,71 @@ class DeliveryZonesManager {
             saveBtn.addEventListener('click', () => {
                 console.log('Save button clicked');
 
-                const minutes = parseInt(minutesInput.value) || 60;
-                if (minutes < 1 || minutes > 1440) {
-                    this.showNotification('Введите значение от 1 до 1440 минут (24 часа)', 'error');
+                const minutes = parseInt(minutesInput.value) || 0;
+                if (minutes < 0 || minutes > 1440) {
+                    this.showNotification('Введите значение от 0 до 1440 минут (24 часа)', 'error');
                     return;
                 }
 
-                status.classList.remove('status-hidden');
-                status.classList.add('status-visible');
+                const isChecked = toggle.checked;
+                console.log('Preparing fetch... isChecked:', isChecked, 'minutes:', minutes);
 
-                let timeText = '';
-                if (minutes >= 60) {
-                    const hours = Math.floor(minutes / 60);
-                    const mins = minutes % 60;
-                    timeText = mins > 0 ? `${hours} ч ${mins} мин` : `${hours} ч`;
-                } else {
-                    timeText = `${minutes} мин`;
+                const formData = new FormData();
+                formData.append('ajax_action', 'save_settings');
+                formData.append('high_load_enabled', isChecked ? 'Y' : 'N');
+                formData.append('high_load_add_time', minutes);
+
+                let sessid = '';
+                if (typeof BX !== 'undefined' && typeof BX.bitrix_sessid === 'function') {
+                    sessid = BX.bitrix_sessid();
                 }
+                formData.append('sessid', sessid);
+                console.log('sessid:', sessid);
+                console.log('Fetching URL:', window.location.href);
 
-                status.textContent = `✓ Сохранено (${timeText})`;
+                fetch(window.location.href, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            status.classList.remove('status-hidden');
+                            status.classList.add('status-visible');
 
-                setTimeout(() => {
-                    status.classList.remove('status-visible');
-                    status.classList.add('status-hidden');
-                }, 3000);
+                            let timeText = '';
+                            if (minutes >= 60) {
+                                const hours = Math.floor(minutes / 60);
+                                const mins = minutes % 60;
+                                timeText = mins > 0 ? `${hours} ч ${mins} мин` : `${hours} ч`;
+                            } else {
+                                timeText = `${minutes} мин`;
+                            }
 
-                this.showNotification(`Время доставки установлено: ${timeText}`, 'success');
+                            status.textContent = `✓ Сохранено (${timeText})`;
+
+                            setTimeout(() => {
+                                status.classList.remove('status-visible');
+                                status.classList.add('status-hidden');
+                            }, 3000);
+
+                            this.showNotification(`Настройки высокой нагрузки сохранены: ${timeText}`, 'success');
+
+                            // Обновляем классы подсветки
+                            this.updateHighLoadVisual(isChecked);
+
+                            // Перезагружаем зоны, чтобы обновить время доставки в списке
+                            this.loadZones();
+                        } else {
+                            this.showNotification('Ошибка сохранения: ' + (data.error || 'Неизвестная ошибка'), 'error');
+                        }
+                    })
+                    .catch(error => {
+                        this.showNotification('Ошибка: ' + error.message, 'error');
+                    });
             });
         }
 
@@ -552,6 +639,33 @@ class DeliveryZonesManager {
                 if (val < 1) minutesInput.value = 1;
                 if (val > 1440) minutesInput.value = 1440;
             });
+        }
+    }
+
+    /**
+     * Обновление визуального выделения при высокой нагрузке
+     */
+    updateHighLoadVisual(isEnabled) {
+        const mapContainer = document.getElementById('delivery-map');
+        const sidebar = document.querySelector('.delivery-sidebar');
+        const mapWrapper = document.querySelector('.delivery-map-wrapper');
+        const container = document.querySelector('.delivery-map-container');
+        const highLoadContainer = document.querySelector('.high-load-container');
+
+        if (mapContainer) {
+            mapContainer.classList.toggle('high-load-active', isEnabled);
+        }
+        if (sidebar) {
+            sidebar.classList.toggle('high-load-active', isEnabled);
+        }
+        if (mapWrapper) {
+            mapWrapper.classList.toggle('high-load-active', isEnabled);
+        }
+        if (container) {
+            container.classList.toggle('high-load-active', isEnabled);
+        }
+        if (highLoadContainer) {
+            highLoadContainer.classList.toggle('high-load-active', isEnabled);
         }
     }
 

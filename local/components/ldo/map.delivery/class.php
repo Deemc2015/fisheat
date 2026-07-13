@@ -8,6 +8,7 @@ use \Bitrix\Main\Config\Option;
 use \Bitrix\Main\Context;
 use \Bitrix\Main\Localization\Loc;
 use Ldo\Deliverymap\DeliveryZoneTable;
+use Ldo\Deliverymap\SettingsTable;
 
 class CDeliveryMap extends \CBitrixComponent implements Controllerable
 {
@@ -30,6 +31,15 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
         $this->arResult['DEFAULT_ZOOM'] = (int)Option::get(self::MODULE_ID, 'default_zoom', '11');
         $this->arResult['SITE_ID'] = $this->siteId;
         $this->arResult['LINK_RESTORANS'] = $this->arParams['LINK_RESTORANS'] ?? '/restorans';
+
+        // Настройки высокой нагрузки
+        if (Loader::includeModule(self::MODULE_ID)) {
+            $this->arResult['HIGH_LOAD_ENABLED'] = SettingsTable::get($this->siteId, 'high_load_enabled', 'N');
+            $this->arResult['HIGH_LOAD_ADD_TIME'] = (int)SettingsTable::get($this->siteId, 'high_load_add_time', '0');
+        } else {
+            $this->arResult['HIGH_LOAD_ENABLED'] = 'N';
+            $this->arResult['HIGH_LOAD_ADD_TIME'] = 0;
+        }
 
         $this->includeComponentTemplate();
     }
@@ -109,16 +119,34 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
                 ];
             }
 
+            // Учитываем высокую нагрузку
+            $highLoadEnabled = SettingsTable::get($this->siteId, 'high_load_enabled', 'N');
+            $highLoadAddTime = (int)SettingsTable::get($this->siteId, 'high_load_add_time', '0');
+
+            $deliveryTimeStart = (int)$zone['delivery_time_start'];
+            $deliveryTimeEnd = (int)$zone['delivery_time_end'];
+
+            if ($highLoadEnabled === 'Y' && $highLoadAddTime > 0) {
+                if ($deliveryTimeStart > 0) {
+                    $deliveryTimeStart += $highLoadAddTime;
+                }
+                if ($deliveryTimeEnd > 0) {
+                    $deliveryTimeEnd += $highLoadAddTime;
+                }
+            }
+
             return [
                 'success' => true,
                 'in_zone' => true,
                 'zone_id' => $zone['id'],
                 'zone_name' => $zone['name'],
                 'price' => $zone['price'],
-                'delivery_time_start' => $zone['delivery_time_start'],
-                'delivery_time_end' => $zone['delivery_time_end'],
+                'delivery_time_start' => $deliveryTimeStart,
+                'delivery_time_end' => $deliveryTimeEnd,
                 'min_order_price' => $zone['min_order_price'],
-                'free_delivery_price' => $zone['free_delivery_price']
+                'free_delivery_price' => $zone['free_delivery_price'],
+                'high_load_enabled' => $highLoadEnabled,
+                'high_load_add_time' => $highLoadAddTime
             ];
 
         } catch (Exception $e) {
@@ -146,6 +174,10 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
     {
         $zones = [];
 
+        // Получаем настройки высокой нагрузки
+        $highLoadEnabled = SettingsTable::get($this->siteId, 'high_load_enabled', 'N');
+        $highLoadAddTime = (int)SettingsTable::get($this->siteId, 'high_load_add_time', '0');
+
         $dbZones = DeliveryZoneTable::getList([
             'filter' => [
                 '=ACTIVE' => 'Y',
@@ -161,13 +193,26 @@ class CDeliveryMap extends \CBitrixComponent implements Controllerable
                 continue;
             }
 
+            $deliveryTimeStart = (int)$zone['DELIVERY_TIME_START'];
+            $deliveryTimeEnd = (int)$zone['DELIVERY_TIME_END'];
+
+            // Корректируем время с учётом высокой нагрузки
+            if ($highLoadEnabled === 'Y' && $highLoadAddTime > 0) {
+                if ($deliveryTimeStart > 0) {
+                    $deliveryTimeStart += $highLoadAddTime;
+                }
+                if ($deliveryTimeEnd > 0) {
+                    $deliveryTimeEnd += $highLoadAddTime;
+                }
+            }
+
             $zones[] = [
                 'id' => (int)$zone['ID'],
                 'name' => $zone['NAME'],
                 'price' => (float)$zone['PRICE'],
                 'free_delivery_price' => (float)$zone['FREE_DELIVERY_PRICE'],
-                'delivery_time_start' => (int)$zone['DELIVERY_TIME_START'],
-                'delivery_time_end' => (int)$zone['DELIVERY_TIME_END'],
+                'delivery_time_start' => $deliveryTimeStart,
+                'delivery_time_end' => $deliveryTimeEnd,
                 'min_order_price' => (float)$zone['MIN_ORDER_PRICE'],
                 'color' => $zone['COLOR'],
                 'coordinates' => $coordinates
