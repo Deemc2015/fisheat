@@ -26,6 +26,88 @@ if ($permission < "R") {
 // Получаем текущий ID сайта
 $currentSiteId = 's1';
 
+// ID инфоблока ресторанов
+define('LDO_RESTAURANTS_IBLOCK_ID', 7);
+
+/**
+ * Получение списка ресторанов из инфоблока
+ *
+ * @param string $siteId ID сайта для фильтрации
+ * @return array
+ */
+function getRestaurants($siteId)
+{
+    if (!Loader::includeModule('iblock')) {
+        AddMessage2Log('Не удалось загрузить модуль iblock', 'ldo.deliverymap');
+        return [];
+    }
+
+    $restaurants = [];
+
+    $dbItems = CIBlockElement::GetList(
+        ['SORT' => 'ASC', 'NAME' => 'ASC'],
+        [
+            'IBLOCK_ID' => LDO_RESTAURANTS_IBLOCK_ID,
+            'ACTIVE' => 'Y',
+        ],
+        false,
+        false,
+        ['ID', 'IBLOCK_ID', 'NAME', 'PREVIEW_PICTURE', 'PREVIEW_TEXT', 'DETAIL_PAGE_URL']
+    );
+
+    while ($item = $dbItems->GetNext()) {
+        // Получаем свойства элемента
+        $dbProps = CIBlockElement::GetProperty(
+            LDO_RESTAURANTS_IBLOCK_ID,
+            $item['ID'],
+            ['sort' => 'asc'],
+            []
+        );
+
+        $props = [];
+        while ($prop = $dbProps->Fetch()) {
+            $props[$prop['CODE']] = $prop;
+        }
+
+        // Фильтруем по сайту
+        $itemSiteId = trim($props['ATT_SITE']['VALUE'] ?? '');
+        if (!empty($siteId) && $itemSiteId !== $siteId) {
+            continue;
+        }
+
+        // Парсим координаты из свойства ATT_ADDRESS (Яндекс.Карты)
+        $coordinates = '';
+        $lat = 0;
+        $lng = 0;
+        if (!empty($props['ATT_ADDRESS']['VALUE'])) {
+            $coordinates = $props['ATT_ADDRESS']['VALUE'];
+            $coordsParts = explode(',', $coordinates);
+            if (count($coordsParts) === 2) {
+                $lat = (float)trim($coordsParts[0]);
+                $lng = (float)trim($coordsParts[1]);
+            }
+        }
+
+        $restaurants[] = [
+            'ID' => (int)$item['ID'],
+            'NAME' => $item['~NAME'],
+            'PREVIEW_TEXT' => $item['~PREVIEW_TEXT'],
+            'ADDRESS' => $props['ATT_ADDRESS']['VALUE'] ?? '',
+            'LAT' => $lat,
+            'LNG' => $lng,
+            'EMAIL' => $props['ATT_EMAIL']['VALUE'] ?? '',
+            'PHONE' => $props['ATT_PHONE']['VALUE'] ?? '',
+            'REQV' => $props['ATT_REQV']['VALUE'] ?? '',
+            'SITE_ID' => $itemSiteId,
+        ];
+    }
+
+    return $restaurants;
+}
+
+// Получаем рестораны для текущего сайта
+$restaurants = getRestaurants($currentSiteId);
+
 function validateCoordinates($coordinates) {
     if (!is_array($coordinates) || count($coordinates) < 3) {
         return false;
@@ -461,7 +543,35 @@ $highLoadAddTime = $settings['high_load_add_time'] ?? '0';
     <!-- ===== ВКЛАДКА: РЕСТОРАНЫ ===== -->
     <div class="tab-content" id="tab-restaurants" style="display:none;">
         <div class="restaurants-container">
-            <div class="restaurants-map" id="restaurants-map" style="width:100%; height:600px;"></div>
+            <div class="restaurants-toolbar">
+                <h3>Список ресторанов (сайт: <?= htmlspecialchars($currentSiteId) ?>)</h3>
+                <span class="restaurants-count">Всего: <?= count($restaurants) ?></span>
+            </div>
+
+            <?php if (!empty($restaurants)): ?>
+                <div class="restaurants-list">
+                    <?php foreach ($restaurants as $restaurant): ?>
+                        <div class="restaurant-item" data-lat="<?= $restaurant['LAT'] ?>" data-lng="<?= $restaurant['LNG'] ?>" data-id="<?= $restaurant['ID'] ?>">
+                            <div class="restaurant-item__header">
+                                <span class="restaurant-item__name"><?= htmlspecialchars($restaurant['NAME']) ?></span>
+                                <?php if ($restaurant['LAT'] && $restaurant['LNG']): ?>
+                                    <span class="restaurant-item__coords" title="Координаты">📍 <?= $restaurant['LAT'] ?>, <?= $restaurant['LNG'] ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="restaurant-item__actions">
+                                <button type="button" class="ui-btn ui-btn-primary ui-btn-sm btn-bind-zones" data-restaurant-id="<?= $restaurant['ID'] ?>">Привязать зоны</button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="restaurants-empty">
+                    <p>Рестораны не найдены для сайта <strong><?= htmlspecialchars($currentSiteId) ?></strong>.</p>
+                    <p>Проверьте, что в инфоблоке ID <?= LDO_RESTAURANTS_IBLOCK_ID ?> есть активные элементы со свойством ATT_SITE = <strong><?= htmlspecialchars($currentSiteId) ?></strong>.</p>
+                </div>
+            <?php endif; ?>
+
+            <div class="restaurants-map" id="restaurants-map" style="width:100%; height:450px; margin-top:20px;"></div>
         </div>
     </div>
 
@@ -513,7 +623,8 @@ $highLoadAddTime = $settings['high_load_add_time'] ?? '0';
          data-default-lat="<?= htmlspecialchars($defaultLat) ?>"
          data-default-lng="<?= htmlspecialchars($defaultLng) ?>"
          data-default-zoom="<?= htmlspecialchars($defaultZoom) ?>"
-         data-site-id="<?= htmlspecialchars($currentSiteId) ?>">
+         data-site-id="<?= htmlspecialchars($currentSiteId) ?>"
+         data-restaurants='<?= htmlspecialchars(json_encode($restaurants, JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>'>
     </div>
 
     <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars($yandexApiKey) ?>&lang=ru_RU"></script>

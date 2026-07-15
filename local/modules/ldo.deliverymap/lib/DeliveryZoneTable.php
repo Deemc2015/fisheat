@@ -69,7 +69,11 @@ class DeliveryZoneTable extends Entity\DataManager
             new Entity\StringField('ACTIVE', [
                 'values' => ['N', 'Y'],
                 'default_value' => 'Y'
-            ])
+            ]),
+            new Entity\IntegerField('RESTAURANT_ID', [
+                'required' => false,
+                'default_value' => 0
+            ]),
         ];
     }
 }

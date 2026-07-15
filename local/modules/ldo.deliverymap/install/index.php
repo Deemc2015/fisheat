@@ -5,6 +5,7 @@ use Bitrix\Main\Config\Option;
 use Bitrix\Main\EventManager;
 use Bitrix\Main\IO\Directory;
 use Ldo\Deliverymap\SettingsTable;
+use Ldo\Deliverymap\RestaurantsTable;
 
 global $DOCUMENT_ROOT, $MESS;
 Loc::loadMessages(__FILE__);
@@ -178,9 +179,11 @@ class Ldo_deliverymap extends CModule
                 `HIGH_TYPE` int(11) NOT NULL DEFAULT '0',
                 `ACTIVE` char(1) NOT NULL DEFAULT 'Y',
                 `SITE_ID` varchar(2) NOT NULL DEFAULT '',
+                `RESTAURANT_ID` int(11) NOT NULL DEFAULT 0,
                 PRIMARY KEY (`ID`),
                 KEY `IX_ACTIVE` (`ACTIVE`),
-                KEY `IX_SITE_ID` (`SITE_ID`)
+                KEY `IX_SITE_ID` (`SITE_ID`),
+                KEY `IX_RESTAURANT_ID` (`RESTAURANT_ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
 
@@ -194,6 +197,24 @@ class Ldo_deliverymap extends CModule
                 UNIQUE KEY `IX_SITE_NAME` (`SITE_ID`, `NAME`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
+
+        $DB->Query("
+            CREATE TABLE IF NOT EXISTS `ldo_delivery_restaurants` (
+                `ID` int(11) NOT NULL AUTO_INCREMENT,
+                `ACTIVE` char(1) NOT NULL DEFAULT 'Y',
+                `NAME` varchar(255) NOT NULL,
+                `COORDINATES` text NOT NULL,
+                `SITE_ID` varchar(2) NOT NULL,
+                `PHONE` varchar(50) NOT NULL DEFAULT '',
+                `EMAIL` varchar(100) NOT NULL DEFAULT '',
+                `REQUISITES` text,
+                `XML_ID` varchar(255) NOT NULL DEFAULT '',
+                PRIMARY KEY (`ID`),
+                KEY `IX_ACTIVE` (`ACTIVE`),
+                KEY `IX_SITE_ID` (`SITE_ID`),
+                KEY `IX_XML_ID` (`XML_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
     }
 
     private function dropTables()
@@ -201,6 +222,7 @@ class Ldo_deliverymap extends CModule
         global $DB;
         $DB->Query("DROP TABLE IF EXISTS `ldo_delivery_zones`");
         $DB->Query("DROP TABLE IF EXISTS `ldo_delivery_settings`");
+        $DB->Query("DROP TABLE IF EXISTS `ldo_delivery_restaurants`");
     }
 
     private function setOptions()

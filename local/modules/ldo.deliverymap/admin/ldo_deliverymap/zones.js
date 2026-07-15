@@ -1231,6 +1231,11 @@ function initTabs() {
             if (tabName === 'settings' && window.settingsManager) {
                 window.settingsManager.onTabShown();
             }
+
+            // Если переключились на таб ресторанов — инициализируем карту ресторанов
+            if (tabName === 'restaurants' && window.restaurantsMapManager) {
+                window.restaurantsMapManager.onTabShown();
+            }
         });
     });
 }
@@ -1283,7 +1288,13 @@ class SettingsManager {
         if (this._settingsMapInitialized) {
             // Если карта уже создана, обновляем размер
             if (this.map) {
-                setTimeout(() => this.map.container.fitToViewport(), 100);
+                setTimeout(() => {
+                    try {
+                        this.map.container.fitToViewport();
+                    } catch (e) {
+                        console.warn('SettingsManager: fitToViewport failed', e);
+                    }
+                }, 200);
             }
             return;
         }
@@ -1299,7 +1310,9 @@ class SettingsManager {
         }
 
         this._settingsMapInitialized = true;
-        this.initSettingsMap();
+
+        // Даём время браузеру отрендерить контейнер после показа таба
+        setTimeout(() => this.initSettingsMap(), 150);
     }
 
     initSettingsMap() {
@@ -1477,10 +1490,13 @@ class SettingsManager {
 class RestaurantsMapManager {
     constructor() {
         this.map = null;
+        this.placemarks = [];
+        this.restaurants = [];
         this.apiKey = '';
         this.defaultLat = 55.751574;
         this.defaultLng = 37.573856;
         this.defaultZoom = 10;
+        this._initialized = false;
 
         const mapData = document.getElementById('map-data');
         if (mapData) {
@@ -1488,35 +1504,205 @@ class RestaurantsMapManager {
             this.defaultLat = parseFloat(mapData.dataset.defaultLat) || 55.751574;
             this.defaultLng = parseFloat(mapData.dataset.defaultLng) || 37.573856;
             this.defaultZoom = parseInt(mapData.dataset.defaultZoom) || 10;
-        }
 
-        this.init();
+            // Загружаем данные ресторанов из data-атрибута
+            if (mapData.dataset.restaurants) {
+                try {
+                    this.restaurants = JSON.parse(mapData.dataset.restaurants);
+                    console.log('RestaurantsMapManager: loaded restaurants:', this.restaurants.length);
+                } catch (e) {
+                    console.error('RestaurantsMapManager: Error parsing restaurants JSON', e);
+                    this.restaurants = [];
+                }
+            } else {
+                console.warn('RestaurantsMapManager: data-restaurants attribute not found');
+            }
+        } else {
+            console.warn('RestaurantsMapManager: map-data element not found');
+        }
     }
 
-    init() {
-        if (!document.getElementById('restaurants-map')) return;
+    /**
+     * Вызывается при переключении на таб ресторанов.
+     * Инициализирует карту только один раз, когда контейнер видим.
+     */
+    onTabShown() {
+        console.log('RestaurantsMapManager.onTabShown called, initialized:', this._initialized);
 
-        if (typeof ymaps === 'undefined') {
-            setTimeout(() => this.init(), 500);
+        if (this._initialized) {
+            // Если карта уже создана, обновляем размер
+            if (this.map) {
+                setTimeout(() => {
+                    try {
+                        this.map.container.fitToViewport();
+                        console.log('RestaurantsMapManager: viewport updated');
+                    } catch (e) {
+                        console.warn('RestaurantsMapManager: fitToViewport failed', e);
+                    }
+                }, 200);
+            }
             return;
         }
 
-        ymaps.ready(() => {
-            try {
-                const container = document.getElementById('restaurants-map');
-                if (!container) return;
+        const container = document.getElementById('restaurants-map');
+        if (!container) {
+            console.error('RestaurantsMapManager: restaurants-map container not found');
+            return;
+        }
 
-                this.map = new ymaps.Map('restaurants-map', {
-                    center: [this.defaultLat, this.defaultLng],
-                    zoom: this.defaultZoom,
-                    controls: ['zoomControl', 'fullscreenControl', 'geolocationControl']
-                });
+        if (!this.apiKey) {
+            console.warn('RestaurantsMapManager: API key is empty, map not available');
+            container.innerHTML = '<div style="padding:30px;text-align:center;color:#999;font-size:14px;">' +
+                'Укажите API-ключ Яндекс.Карт в настройках для отображения карты</div>';
+            return;
+        }
 
-                console.log('Restaurants map initialized');
-            } catch (error) {
-                console.error('Restaurants map init error:', error);
-            }
+        console.log('RestaurantsMapManager: starting lazy init');
+
+        if (typeof ymaps === 'undefined') {
+            console.warn('RestaurantsMapManager: ymaps not loaded yet, retrying...');
+            setTimeout(() => this.onTabShown(), 500);
+            return;
+        }
+
+        this._initialized = true;
+
+        // Даём время браузеру отрендерить контейнер (таб только что стал видимым)
+        setTimeout(() => {
+            ymaps.ready(() => {
+                try {
+                    this.initMap();
+                    this.addRestaurantPlacemarks();
+                } catch (error) {
+                    console.error('RestaurantsMapManager init error:', error);
+                }
+            });
+        }, 150);
+    }
+
+    initMap() {
+        const container = document.getElementById('restaurants-map');
+        if (!container) return;
+
+        console.log('RestaurantsMapManager: creating map');
+
+        this.map = new ymaps.Map('restaurants-map', {
+            center: [this.defaultLat, this.defaultLng],
+            zoom: this.defaultZoom,
+            controls: ['zoomControl', 'fullscreenControl', 'geolocationControl']
         });
+
+        console.log('RestaurantsMapManager: map created');
+    }
+
+    bindListClickHandlers() {
+        const items = document.querySelectorAll('.restaurant-item');
+        items.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Если клик по кнопке, не обрабатываем
+                if (e.target.closest('.btn-bind-zones')) return;
+
+                const id = parseInt(item.dataset.id);
+                if (!id) return;
+
+                // Подсвечиваем элемент списка
+                this.highlightListItem(id);
+
+                // Находим соответствующий placemark и центрируем карту
+                const restaurant = this.restaurants.find(r => r.ID === id);
+                if (restaurant && restaurant.LAT && restaurant.LNG) {
+                    const lat = parseFloat(restaurant.LAT);
+                    const lng = parseFloat(restaurant.LNG);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        this.map.setCenter([lat, lng], 15, {
+                            checkZoomRange: true,
+                            duration: 300
+                        });
+
+                        // Открываем balloon у соответствующей метки
+                        const placemark = this.placemarks.find((pm, idx) => {
+                            const r = this.restaurants[idx];
+                            return r && r.ID === id;
+                        });
+                        if (placemark) {
+                            placemark.balloon.open();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    addRestaurantPlacemarks() {
+        console.log('RestaurantsMapManager.addRestaurantPlacemarks called');
+        console.log('RestaurantsMapManager: map:', !!this.map, 'restaurants:', this.restaurants.length);
+
+        if (!this.map || !this.restaurants.length) {
+            console.warn('RestaurantsMapManager: cannot add placemarks - map or restaurants missing');
+            return;
+        }
+
+        const hasCoords = this.restaurants.some(r => r.LAT && r.LNG);
+        console.log('RestaurantsMapManager: restaurants with coordinates:', hasCoords);
+
+        if (!hasCoords) {
+            console.warn('RestaurantsMapManager: No restaurants with coordinates found');
+            return;
+        }
+
+        let placemarkCount = 0;
+
+        this.restaurants.forEach((restaurant, index) => {
+            if (!restaurant.LAT || !restaurant.LNG) {
+                console.log('RestaurantsMapManager: skipping', restaurant.NAME, '- no coords');
+                return;
+            }
+
+            const lat = parseFloat(restaurant.LAT);
+            const lng = parseFloat(restaurant.LNG);
+
+            if (isNaN(lat) || isNaN(lng)) {
+                console.log('RestaurantsMapManager: skipping', restaurant.NAME, '- invalid coords:', restaurant.LAT, restaurant.LNG);
+                return;
+            }
+
+            console.log('RestaurantsMapManager: adding placemark for', restaurant.NAME, [lat, lng]);
+
+            // Создаём обычную красную метку без изысков
+            const placemark = new ymaps.Placemark([lat, lng], {
+                hintContent: restaurant.NAME,
+                balloonContent: '<strong>' + restaurant.NAME + '</strong>'
+            });
+
+            // При клике на метку — подсвечиваем соответствующий элемент списка
+            placemark.events.add('click', () => {
+                this.highlightListItem(restaurant.ID);
+            });
+
+            this.map.geoObjects.add(placemark);
+            this.placemarks.push(placemark);
+            placemarkCount++;
+        });
+
+        console.log('RestaurantsMapManager: added', placemarkCount, 'placemarks');
+        console.log('RestaurantsMapManager: geoObjects count:', this.map.geoObjects.getLength());
+
+        // Привязываем обработчики кликов на элементы списка
+        this.bindListClickHandlers();
+    }
+
+    highlightListItem(restaurantId) {
+        // Убираем подсветку со всех элементов
+        document.querySelectorAll('.restaurant-item').forEach(el => {
+            el.classList.remove('restaurant-item--active');
+        });
+
+        // Подсвечиваем нужный элемент
+        const targetItem = document.querySelector('.restaurant-item[data-id="' + restaurantId + '"]');
+        if (targetItem) {
+            targetItem.classList.add('restaurant-item--active');
+            targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 }
 
@@ -1536,6 +1722,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Менеджер настроек
     window.settingsManager = new SettingsManager();
 
-    // Менеджер карты ресторанов
+    // Менеджер карты ресторанов (ленивая инициализация — карта создаётся при показе таба)
     window.restaurantsMapManager = new RestaurantsMapManager();
 });
