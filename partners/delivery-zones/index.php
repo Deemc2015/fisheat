@@ -1401,12 +1401,12 @@ document.getElementById('import-dialog')?.addEventListener('click', function(e) 
     // --- Карта зон доставки (глобальные) ---
     window.zonesMapInitialized = false;
     window.zonesMap = null;
-    var zoneDrawing = false;
-    var zoneTempPoints = [];
-    var zoneTempPolygon = null;
-    var zoneTempPlacemarks = [];
+    window.zoneDrawing = false;
+    window.zoneTempPoints = [];
+    window.zoneTempPolygon = null;
+    window.zoneTempPlacemarks = [];
 
-    function finishZoneDrawing() {
+    window.finishZoneDrawing = function() {
         if (zoneTempPoints.length < 3) return;
 
         var coordsJson = JSON.stringify(zoneTempPoints);
