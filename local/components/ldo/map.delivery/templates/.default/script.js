@@ -399,20 +399,7 @@
                     this.getAddressByCoords(coords, zoneInfo);
                 });
 
-                // Метка только с названием зоны
-                const center = this.getPolygonCenter(coordinates);
-                const label = new ymaps.Placemark(center, {
-                    iconContent: zoneData.name
-                }, {
-                    preset: 'islands#circleIcon',
-                    iconColor: zoneData.color,
-                    iconContentLayout: ymaps.templateLayoutFactory.createClass(
-                        `<div class="zone-label" style="border-color: ${zoneData.color};">$[properties.iconContent]</div>`
-                    )
-                });
-
                 this.map.geoObjects.add(polygon);
-                this.map.geoObjects.add(label);
             });
 
             if (this.deliveryZones.length > 0) {
