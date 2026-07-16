@@ -1,0 +1,531 @@
+/* ============================================
+   Partners Dashboard — дополнительные стили
+   ============================================ */
+
+/* ---------- Табы дашборда ---------- */
+.p-dash-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+    padding: 0 32px;
+    background: transparent;
+}
+.p-dash-tabs .tab-btn {
+    padding: 14px 28px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--color-muted, #969696);
+    font-size: 16px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+.p-dash-tabs .tab-btn:hover {
+    color: var(--bg-white, #FFFFFF);
+}
+.p-dash-tabs .tab-btn.active {
+    color: var(--bg-button, #F44336);
+    border-bottom-color: var(--bg-button, #F44336);
+}
+.p-main {
+    padding-top: 24px;
+}
+
+/* ---------- Модальное окно (общее для зон и ресторанов) ---------- */
+.dz-form-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.dz-form-overlay.open {
+    display: flex;
+}
+.dz-form-modal {
+    background: var(--bg-gray, #2B2D2F);
+    border-radius: 16px;
+    padding: 32px;
+    width: 500px;
+    max-width: 92vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.dz-form-modal h3 {
+    margin: 0 0 20px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 20px;
+}
+.dz-form-group {
+    margin-bottom: 16px;
+}
+.dz-form-group label {
+    display: block;
+    font-size: 14px;
+    color: var(--color-muted, #969696);
+    margin-bottom: 6px;
+}
+.dz-form-group input,
+.dz-form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 15px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+.dz-form-group input:focus,
+.dz-form-group select:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+.dz-form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 15px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    outline: none;
+    resize: vertical;
+}
+.dz-form-group textarea:focus {
+    border-color: var(--bg-button, #F44336);
+}
+.dz-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+.dz-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.dz-btn--primary {
+    background: var(--bg-button, #F44336);
+    color: #fff;
+}
+.dz-btn--primary:hover {
+    background: #d32f2f;
+}
+.dz-btn--secondary {
+    background: var(--bg-btn-secondary, #494C4F);
+    color: #fff;
+}
+.dz-btn--secondary:hover {
+    background: #5a5d60;
+}
+
+/* ---------- Форма настроек ---------- */
+.settings-group {
+    margin-bottom: 24px;
+}
+.settings-group label {
+    display: block;
+    font-size: 14px;
+    color: var(--color-muted, #969696);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.settings-group input[type="text"],
+.settings-group input[type="number"] {
+    width: 100%;
+    max-width: 480px;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 15px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+.settings-group input:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+.settings-hint {
+    display: block;
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    margin-top: 6px;
+}
+.settings-coords {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.settings-coords span {
+    color: var(--color-muted, #969696);
+    font-size: 14px;
+    white-space: nowrap;
+}
+.settings-coords input {
+    max-width: 140px;
+}
+.settings-saved {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(76, 175, 80, 0.15);
+    color: #4CAF50;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+#settings-map {
+    width: 50%;
+    height: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+/* ---------- Рестораны ---------- */
+.rest-item {
+    background: var(--bg-black, #1B1818);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.rest-item__main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+}
+.rest-item__main:hover {
+    background: rgba(255,255,255,0.03);
+}
+.rest-item__info {
+    flex: 1;
+    min-width: 0;
+}
+.rest-item__name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--bg-white, #FFFFFF);
+}
+.rest-item__meta {
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    margin-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rest-item__burger {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+.rest-item__burger:hover {
+    background: rgba(255,255,255,0.08);
+}
+.rest-item__burger span {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-muted, #969696);
+}
+.rest-item__dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-gray, #2B2D2F);
+    border-radius: 8px;
+    padding: 4px 0;
+    z-index: 50;
+    min-width: 140px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.rest-item__dropdown.open {
+    display: block;
+}
+.rest-item__dropdown div {
+    padding: 10px 16px;
+    font-size: 14px;
+    color: var(--bg-white, #FFFFFF);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.rest-item__dropdown div:hover {
+    background: rgba(255,255,255,0.06);
+}
+.rest-item__dropdown-del:hover {
+    color: #F44336 !important;
+}
+.rest-item__edit {
+    display: none;
+    border-top: 1px solid var(--color-divider-light, #ffffff30);
+}
+.rest-item__edit.open {
+    display: block;
+}
+.rest-item__edit-inner {
+    padding: 16px;
+}
+.rest-edit-field {
+    margin-bottom: 12px;
+}
+.rest-edit-field label {
+    display: block;
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    margin-bottom: 4px;
+}
+.rest-edit-field input,
+.rest-edit-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    box-sizing: border-box;
+}
+.rest-edit-field input:focus,
+.rest-edit-field textarea:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+.rest-edit-row {
+    display: flex;
+    gap: 12px;
+}
+.rest-edit-row .rest-edit-field {
+    flex: 1;
+}
+.rest-edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+/* ===== Toggle Switch (чекбокс активности) ===== */
+.toggle-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+.toggle-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-switch__slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--color-border, #868686);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    display: block;
+}
+.toggle-switch__slider::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked + .toggle-switch__slider {
+    background: var(--bg-button, #4CAF50);
+}
+.toggle-switch input:checked + .toggle-switch__slider::before {
+    left: 23px;
+}
+.toggle-switch__label {
+    font-size: 14px;
+    color: var(--bg-white, #FFFFFF);
+}
+
+/* ===== Кастомный селект (Restaurant Picker) ===== */
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+.custom-select__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 15px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    gap: 8px;
+}
+.custom-select__trigger:hover,
+.custom-select.open .custom-select__trigger {
+    border-color: var(--bg-button, #F44336);
+}
+.custom-select__trigger .arrow {
+    width: 10px;
+    height: 10px;
+    border: solid var(--color-muted, #969696);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+    margin-top: -4px;
+    flex-shrink: 0;
+}
+.custom-select.open .custom-select__trigger .arrow {
+    transform: rotate(-135deg);
+    margin-top: 4px;
+}
+.custom-select__trigger .placeholder {
+    color: var(--color-muted, #969696);
+}
+.custom-select__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.custom-select.open .custom-select__dropdown {
+    display: block;
+}
+.custom-select__option {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--bg-white, #FFFFFF);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.custom-select__option:hover {
+    background: rgba(255,255,255,0.06);
+}
+.custom-select__option.selected {
+    color: var(--bg-button, #F44336);
+    font-weight: 500;
+}
+.custom-select__option:first-child {
+    border-radius: 8px 8px 0 0;
+}
+.custom-select__option:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+/* ---------- Блок высокой нагрузки ---------- */
+.zone-highload-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    background: var(--bg-black, #1B1818);
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+.zone-highload-bar.active {
+    border-color: rgba(244, 67, 54, 0.3);
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.08), var(--bg-black, #1B1818));
+}
+.zone-highload-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    user-select: none;
+}
+.zone-highload-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--bg-button, #F44336);
+    cursor: pointer;
+}
+.zone-highload-settings {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+.zone-highload-settings.is-visible {
+    display: flex;
+}
+.zone-highload-settings span {
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    white-space: nowrap;
+}
+.zone-highload-settings input[type="number"] {
+    width: 70px;
+    padding: 6px 8px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    text-align: center;
+}
+.zone-highload-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+    margin-left: 6px;
+}
