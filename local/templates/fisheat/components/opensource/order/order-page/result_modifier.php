@@ -409,8 +409,21 @@ $arResult['SUM_DISPLAY'] = SaleFormatCurrency(
 );
 
 
-/*Тестовые данные*/
-$arResult['RESTORAN_ADRESS'] = [
-    ["ID" =>1, "NAME"=> "Название ресторана","CHECKED" => "Y"],
-    ["ID" =>2, "NAME"=> "Название второго ресторана"]
-];
+/*Рестораны для самовывоза*/
+$arResult['RESTORAN_ADRESS'] = [];
+if (Loader::includeModule('ldo.deliverymap')) {
+    $restaurants = \Ldo\Deliverymap\RestaurantsTable::getActiveList();
+    if (!empty($restaurants)) {
+        $checked = false;
+        foreach ($restaurants as $restaurant) {
+            $arResult['RESTORAN_ADRESS'][] = [
+                'ID' => (int)$restaurant['ID'],
+                'NAME' => $restaurant['NAME'],
+                'CHECKED' => !$checked ? 'Y' : 'N',
+            ];
+            if (!$checked) {
+                $checked = true;
+            }
+        }
+    }
+}
