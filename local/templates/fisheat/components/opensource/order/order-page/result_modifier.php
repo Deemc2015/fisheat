@@ -276,6 +276,10 @@ $arResult['DELIVERY_BASE_PRICE_DISPLAY'] = SaleFormatCurrency(
 //Стоимость доставки с учетом скидок
 $arResult['DELIVERY_PRICE'] = $order->getDeliveryPrice();
 
+// Сохраняем цену доставки в сессию для AJAX-запросов (addQuantityAction и др.)
+$_SESSION['LDO_DELIVERY_PRICE'] = (float)$arResult['DELIVERY_PRICE'];
+$_SESSION['LDO_IS_PICKUP'] = 'N';
+
 
 
 $arResult['DELIVERY_PRICE_DISPLAY'] = SaleFormatCurrency(

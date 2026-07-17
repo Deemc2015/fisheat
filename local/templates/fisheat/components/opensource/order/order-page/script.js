@@ -1240,11 +1240,16 @@
 
             var isPickup = (deliveryName.toLowerCase() === 'самовывоз');
 
+            // Получаем выбранный адрес, если он есть
+            var selectedAddress = document.querySelector('input[name="address_id"]:checked');
+            var addressId = selectedAddress ? selectedAddress.getAttribute('data-id') : '';
+
             // Отправляем AJAX запрос для получения актуальных сумм
             var data = {
                 action: 'updateDelivery',
                 deliveryId: deliveryId,
                 deliveryName: deliveryName,
+                addressId: addressId,
                 sessid: BX.bitrix_sessid()
             };
 

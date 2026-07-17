@@ -23,7 +23,8 @@ use OpenSource\Order\OrderHelper;
 use Bitrix\Sale\PaySystem;
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Engine\ActionFilter;
-use \Ldo\Develop\Hlblock;
+use Ldo\Develop\Hlblock;
+use Ldo\Deliverymap\DeliveryZoneTable;
 
 
 class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerable
@@ -445,7 +446,303 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'getBasketItemData' => [
                 'prefilters' => [],
             ],
+            'updateDeliveryPrice' => [
+                'prefilters' => [],
+            ],
+            'updateAddressPrice' => [
+                'prefilters' => [],
+            ],
         ];
+    }
+
+    /**
+     * Обновление стоимости доставки при смене типа доставки
+     *
+     * @param array $dataDelivery Данные: deliveryId, deliveryName
+     * @return array
+     */
+    public function updateDeliveryPriceAction($dataDelivery)
+    {
+        $deliveryId = (int)($dataDelivery['deliveryId'] ?? 0);
+        $deliveryName = trim($dataDelivery['deliveryName'] ?? '');
+        $addressId = (int)($dataDelivery['addressId'] ?? 0);
+
+        $isPickup = (mb_strtolower($deliveryName) === 'самовывоз');
+
+        $deliveryPrice = 0;
+        $baseSum = 0;
+        $discount = 0;
+        $totalPrice = 0;
+
+        try {
+            $basket = $this->getBasket();
+            if ($basket && $basket->count() > 0) {
+                // Принудительно применяем скидки для получения актуальных цен
+                $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
+                $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
+                $discounts->calculate();
+                $applyResult = $discounts->getApplyResult(true);
+                $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
+
+                foreach ($basket as $item) {
+                    $basketId = $item->getId();
+                    $basePrice = $item->getBasePrice();
+                    $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
+                    $quantity = $item->getQuantity();
+
+                    $baseSum += $basePrice * $quantity;
+                    $discount += ($basePrice - $unitPrice) * $quantity;
+                    $totalPrice += $unitPrice * $quantity;
+                }
+            }
+
+            if (!$isPickup) {
+                // Доставка — получаем цену доставки
+                if (Loader::includeModule('ldo.develop') && Loader::includeModule('highloadblock')) {
+                    $selectedAddress = null;
+
+                    if ($addressId > 0) {
+                        // Если передан ID адреса — загружаем его напрямую
+                        $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getRow([
+                            'filter' => ['=TABLE_NAME' => 'adress_user']
+                        ]);
+                        if ($hlblock) {
+                            $entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hlblock)->getDataClass();
+                            $addressData = $entity::getById($addressId)->fetch();
+                            if ($addressData) {
+                                $selectedAddress = [
+                                    'PRICE' => (float)($addressData['UF_PRICE'] ?? 0),
+                                    'SHIRINA' => (float)($addressData['UF_SHIRINA'] ?? 0),
+                                    'DOLGOTA' => (float)($addressData['UF_DOLGOTA'] ?? 0),
+                                ];
+                            }
+                        }
+                    } else {
+                        // Если ID адреса не передан — берём первый из списка пользователя
+                        $userAddresses = Hlblock::getAdressList();
+                        if (!empty($userAddresses)) {
+                            foreach ($userAddresses as $address) {
+                                if (!empty($address['CHECKED'])) {
+                                    $selectedAddress = $address;
+                                    break;
+                                }
+                            }
+                            if (!$selectedAddress) {
+                                $selectedAddress = reset($userAddresses);
+                            }
+                        }
+                    }
+
+                    if ($selectedAddress) {
+                        $deliveryPrice = (float)($selectedAddress['PRICE'] ?? 0);
+
+                        // Если цена не указана в адресе, ищем зону по координатам
+                        if ($deliveryPrice == 0 && !empty($selectedAddress['SHIRINA']) && !empty($selectedAddress['DOLGOTA'])) {
+                            $deliveryPrice = $this->findDeliveryPriceByCoordinates(
+                                (float)$selectedAddress['SHIRINA'],
+                                (float)$selectedAddress['DOLGOTA']
+                            );
+                        }
+                    }
+                }
+
+                // Если не удалось получить цену через адрес — пробуем через виртуальный заказ
+                if ($deliveryPrice == 0) {
+                    $deliveryPrice = $this->getDeliveryPriceFromOrder($deliveryId, $basket);
+                }
+            }
+            // При самовывозе deliveryPrice остаётся 0
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+
+        // Сохраняем цену доставки в сессию для использования при обновлении корзины
+        $_SESSION['LDO_DELIVERY_PRICE'] = $deliveryPrice;
+        $_SESSION['LDO_IS_PICKUP'] = $isPickup ? 'Y' : 'N';
+
+        $totalWithDelivery = $totalPrice + $deliveryPrice;
+
+        return [
+            'success' => true,
+            'deliveryPrice' => $deliveryPrice,
+            'baseSum' => $baseSum,
+            'discount' => $discount,
+            'totalPrice' => $totalWithDelivery
+        ];
+    }
+
+    /**
+     * Обновление итоговых сумм при выборе адреса доставки
+     *
+     * @param array $dataAddress Данные: addressId, deliveryPrice
+     * @return array
+     */
+    public function updateAddressPriceAction($dataAddress)
+    {
+        $addressId = (int)($dataAddress['addressId'] ?? 0);
+        $deliveryPrice = (float)($dataAddress['deliveryPrice'] ?? 0);
+
+        $baseSum = 0;
+        $discount = 0;
+        $totalPrice = 0;
+
+        try {
+            $basket = $this->getBasket();
+            if ($basket && $basket->count() > 0) {
+                $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
+                $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
+                $discounts->calculate();
+                $applyResult = $discounts->getApplyResult(true);
+                $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
+
+                foreach ($basket as $item) {
+                    $basketId = $item->getId();
+                    $basePrice = $item->getBasePrice();
+                    $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
+                    $quantity = $item->getQuantity();
+
+                    $baseSum += $basePrice * $quantity;
+                    $discount += ($basePrice - $unitPrice) * $quantity;
+                    $totalPrice += $unitPrice * $quantity;
+                }
+            }
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+
+        // Сохраняем цену доставки в сессию
+        $_SESSION['LDO_DELIVERY_PRICE'] = $deliveryPrice;
+        $_SESSION['LDO_IS_PICKUP'] = 'N';
+
+        $totalWithDelivery = $totalPrice + $deliveryPrice;
+
+        return [
+            'success' => true,
+            'deliveryPrice' => $deliveryPrice,
+            'baseSum' => $baseSum,
+            'discount' => $discount,
+            'totalPrice' => $totalWithDelivery
+        ];
+    }
+
+    /**
+     * Поиск цены доставки по координатам (по зонам доставки)
+     *
+     * @param float $lat Широта
+     * @param float $lon Долгота
+     * @return float
+     */
+    private function findDeliveryPriceByCoordinates($lat, $lon)
+    {
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return 0;
+        }
+
+        $point = [$lat, $lon];
+
+        $zones = DeliveryZoneTable::getList([
+            'filter' => ['=ACTIVE' => 'Y'],
+            'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
+        ]);
+
+        while ($zone = $zones->fetch()) {
+            $coordinates = $zone['COORDINATES'];
+            if (is_string($coordinates)) {
+                $coordinates = unserialize($coordinates);
+            }
+            if (!is_array($coordinates) || count($coordinates) < 3) {
+                continue;
+            }
+
+            // Проверка вхождения точки в полигон (Ray Casting)
+            if ($this->isPointInPolygon($point, $coordinates)) {
+                return (float)$zone['PRICE'];
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Проверка принадлежности точки полигону (Ray Casting)
+     *
+     * @param array $point [lat, lng]
+     * @param array $polygon [[lat, lng], ...]
+     * @return bool
+     */
+    private function isPointInPolygon($point, $polygon)
+    {
+        $x = $point[0];
+        $y = $point[1];
+        $inside = false;
+        $j = count($polygon) - 1;
+
+        for ($i = 0; $i < count($polygon); $i++) {
+            $xi = $polygon[$i][0];
+            $yi = $polygon[$i][1];
+            $xj = $polygon[$j][0];
+            $yj = $polygon[$j][1];
+
+            $intersect = (($yi > $y) != ($yj > $y)) &&
+                ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi);
+
+            if ($intersect) {
+                $inside = !$inside;
+            }
+            $j = $i;
+        }
+
+        return $inside;
+    }
+
+    /**
+     * Получение цены доставки через виртуальный заказ
+     *
+     * @param int $deliveryId
+     * @param Basket $basket
+     * @return float
+     */
+    private function getDeliveryPriceFromOrder($deliveryId, $basket)
+    {
+        if ($deliveryId <= 0) {
+            return 0;
+        }
+
+        try {
+            global $USER;
+            $siteId = Context::getCurrent()->getSite();
+            $order = Order::create($siteId, $USER->GetID());
+            $order->setPersonTypeId(1);
+            $order->setBasket($basket);
+
+            $shipmentCollection = $order->getShipmentCollection();
+            $deliveryService = Delivery\Services\Manager::getObjectById($deliveryId);
+            if ($deliveryService) {
+                $shipment = $shipmentCollection->createItem($deliveryService);
+                $shipmentItemCollection = $shipment->getShipmentItemCollection();
+                $shipment->setField('CURRENCY', $order->getCurrency());
+
+                foreach ($basket->getOrderableItems() as $basketItem) {
+                    $shipmentItem = $shipmentItemCollection->createItem($basketItem);
+                    $shipmentItem->setQuantity($basketItem->getQuantity());
+                }
+
+                $calculationResult = $deliveryService->calculate($shipment);
+                if ($calculationResult->isSuccess()) {
+                    return (float)$calculationResult->getPrice();
+                }
+            }
+        } catch (\Exception $e) {
+            addMessage2Log('Ошибка получения цены доставки: ' . $e->getMessage());
+        }
+
+        return 0;
     }
 
     /**
@@ -527,13 +824,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
-     * Получение цены доставки
+     * Получение цены доставки из сессии
      */
     private function getDeliveryPrice()
     {
-        // Здесь должна быть логика получения текущей цены доставки
-        // Например, из сессии или из заказа
-        return 0;
+        return (float)($_SESSION['LDO_DELIVERY_PRICE'] ?? 0);
     }
 
     public function removeCartAction($dataUser)
