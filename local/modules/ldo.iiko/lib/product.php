@@ -27,25 +27,11 @@ class Product
     }
 
     /**
-     * Получить категории товаров (из секции itemCategories ответа API)
+     * Получить категории товаров (из секции productCategories ответа API)
      */
     public function getCategory(): array
     {
-        $itemCategories = $this->makeApiRequest('itemCategories');
-        $categories = [];
-
-        if (is_array($itemCategories)) {
-            foreach ($itemCategories as $category) {
-                $categories[] = [
-                    'id' => $category['id'],
-                    'name' => $category['name'],
-                    'description' => $category['description'] ?? '',
-                    'parentId' => $category['iikoGroupId'] ?? null,
-                ];
-            }
-        }
-
-        return $categories;
+        return $this->makeApiRequest('productCategories');
     }
 
     /**
@@ -154,26 +140,18 @@ class Product
      */
     public function sync(){
         $productList = $this->getList();
-        addMessage2Log('Product::sync: получено товаров: ' . count($productList));
-
         if($productList){
             $i = 0;
             foreach ($productList as $product){
                 $i++;
 
                 $idProduct = $this->isExist($product['itemId']);
-                addMessage2Log('Product::sync: товар #' . $i . ' ' . $product['name'] . ' (itemId: ' . $product['itemId'] . ') isExist: ' . ($idProduct ? $idProduct : 'false'));
 
                 if($idProduct){
                     $this->update($product, $idProduct);
                 }
                 else{
                     $this->add($product);
-                }
-
-                if($i == 5){
-                    addMessage2Log('Product::sync: остановлен после 5 товаров для отладки');
-                    break;
                 }
 
                 if($i == 1000){
@@ -212,8 +190,6 @@ class Product
         $dataProduct = $this->prepareProductData($dataElement);
         $codeElement = $this->generateCode($dataElement['name']);
 
-        addMessage2Log('Product::add: подготовленные данные: NAME=' . $dataProduct['NAME'] . ', CATEGORY_ID=' . var_export($dataProduct['CATEGORY_ID'], true) . ', PRICE=' . $dataProduct['PRICE'] . ', PROPS=' . print_r($dataProduct['PROPS'], true));
-
         $arLoadElementArray = [
             "NAME" => $dataProduct['NAME'],
             "DETAIL_TEXT" => $dataProduct['DESCRIPTION'],
@@ -237,8 +213,6 @@ class Product
             addMessage2Log('Product::add error: ' . $element->LAST_ERROR);
             return false;
         }
-
-        addMessage2Log('Product::add: успешно добавлен ID=' . $idProduct);
 
         if(is_numeric($idProduct)){
             $this->addPrice($idProduct, $dataProduct['PRICE']);
