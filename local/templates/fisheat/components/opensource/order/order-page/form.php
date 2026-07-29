@@ -484,6 +484,158 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         .hidd3en-fields{
             display: none;
         }
+        /* Новый дизайн модального окна адреса */
+        .modal-add-address {
+            width: 900px;
+            max-width: 95vw;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 30px;
+            text-align: left;
+        }
+        .modal-add-address .close-modal {
+            top: 12px;
+            right: 12px;
+            cursor: pointer;
+        }
+        .modal-add-address__inner {
+            display: flex;
+            gap: 24px;
+            min-height: 450px;
+        }
+        .modal-add-address__left {
+            flex: 0 0 380px;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-add-address__left .top-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .modal-add-address__left .form-block-address {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .modal-add-address__left .form-block-address input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-input);
+            background: var(--bg-input);
+            color: var(--color-input);
+            box-sizing: border-box;
+        }
+        #modalSuggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 10;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        #modalSuggestions .suggestion-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+        #modalSuggestions .suggestion-item:hover {
+            background: #f5f5f5;
+        }
+        .form-block-extra {
+            margin-bottom: 12px;
+        }
+        .form-block-extra__row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .form-block-extra__row input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid var(--bg-input);
+            background: var(--bg-input);
+            color: var(--color-input);
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-block-extra__row input:focus {
+            border-color: #F44336;
+        }
+        .modal-delivery-info {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .modal-delivery-info__item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        .modal-delivery-info__label {
+            color: #666;
+        }
+        .modal-delivery-info__value {
+            font-weight: 600;
+            color: #333;
+        }
+        .modal-delivery-info__note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .modal-add-address__left .button-modal {
+            display: block;
+            margin-top: auto;
+        }
+        .modal-add-address__left .add-btn {
+            width: 100%;
+            padding: 14px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            background: var(--bg-button);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: opacity .3s;
+            font-weight: 600;
+        }
+        .modal-add-address__left .add-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal-add-address__left .add-btn:not(:disabled):hover {
+            opacity: 0.8;
+        }
+        .modal-add-address__right {
+            flex: 1;
+            min-height: 400px;
+        }
+        #modalMap {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .modal-add-address .form-block-address input:focus {
+            border-color: #F44336;
+        }
     </style>
 
 
@@ -520,16 +672,62 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 <div class="modal-add-address">
     <span class="close-modal"></span>
-    <div class="top-title">Добавление адреса</div>
-    <form type="" action="#" method="POST">
-        <div class="form-block-address">
-            <input type="text" name="ADDRESS" placeholder="Введите адрес">
+    <div class="modal-add-address__inner">
+        <div class="modal-add-address__left">
+            <div class="top-title">Адрес доставки</div>
+            <form type="" action="#" method="POST">
+                <div class="form-block-address">
+                    <input type="text" name="ADDRESS" id="modalAddressInput" placeholder="Город, улица, дом" autocomplete="off">
+                    <div id="modalSuggestions" style="display:none;"></div>
+                </div>
+
+                <!-- Дополнительные поля (показываются после выбора адреса) -->
+                <div class="form-block-extra" style="display:none;">
+                    <div class="form-block-extra__row">
+                        <input type="text" name="APARTMENT" placeholder="Кв / офис">
+                        <input type="text" name="ENTRANCE" placeholder="Подъезд">
+                    </div>
+                    <div class="form-block-extra__row">
+                        <input type="text" name="FLOOR" placeholder="Этаж">
+                        <input type="text" name="INTERCOM" placeholder="Домофон">
+                    </div>
+                </div>
+
+                <!-- Информация о доставке -->
+                <div class="modal-delivery-info" style="display:none;">
+                    <div class="modal-delivery-info__item">
+                        <span class="modal-delivery-info__label">Время доставки</span>
+                        <span class="modal-delivery-info__value delivery-time">—</span>
+                    </div>
+                    <div class="modal-delivery-info__item">
+                        <span class="modal-delivery-info__label">Бесплатная доставка</span>
+                        <span class="modal-delivery-info__value delivery-free">—</span>
+                    </div>
+                    <div class="modal-delivery-info__item">
+                        <span class="modal-delivery-info__label">Мин. сумма заказа</span>
+                        <span class="modal-delivery-info__value delivery-min-order">—</span>
+                    </div>
+                    <div class="modal-delivery-info__item">
+                        <span class="modal-delivery-info__label">Стоимость доставки</span>
+                        <span class="modal-delivery-info__value delivery-price-zone">—</span>
+                    </div>
+                    <div class="modal-delivery-info__note">При подтверждении заказа мы сообщим точное время</div>
+                </div>
+
+                <!-- Скрытые поля -->
+                <input type="hidden" name="LAT" id="modalLatInput" value="">
+                <input type="hidden" name="LON" id="modalLonInput" value="">
+                <input type="hidden" name="ZONE_ID" id="modalZoneId" value="">
+
+                <div class="button-modal">
+                    <button type="submit" class="add-btn" disabled>Установить адрес</button>
+                </div>
+                <?=bitrix_sessid_post()?>
+            </form>
         </div>
-        <div class="button-modal">
-            <button type="submit" class="add-btn">Добавить</button>
-            <div class="close-modal-btn">Закрыть</div>
+        <div class="modal-add-address__right">
+            <div id="modalMap"></div>
         </div>
-        <?=bitrix_sessid_post()?>
-    </form>
+    </div>
 </div>
 

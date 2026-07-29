@@ -51,6 +51,20 @@ $isMobile = \Bitrix\Main\Loader::includeModule('conversion') && ($md=new \Bitrix
         </div>
     <?php endif; ?>
 
+    <?php
+    // Передаём настройки Яндекс.Карт для модального окна адреса
+    if (!empty($arResult['YANDEX_SETTINGS'])): ?>
+        <script>
+            window.orderMapSettings = {
+                yandexApiKey: '<?= htmlspecialchars($arResult['YANDEX_SETTINGS']['YANDEX_API_KEY']) ?>',
+                defaultLat: <?= (float)$arResult['YANDEX_SETTINGS']['DEFAULT_LAT'] ?>,
+                defaultLng: <?= (float)$arResult['YANDEX_SETTINGS']['DEFAULT_LNG'] ?>,
+                defaultZoom: <?= (int)$arResult['YANDEX_SETTINGS']['DEFAULT_ZOOM'] ?>
+            };
+        </script>
+        <script src="https://api-maps.yandex.ru/2.1/?apikey=<?= htmlspecialchars($arResult['YANDEX_SETTINGS']['YANDEX_API_KEY']) ?>&lang=ru_RU" type="text/javascript"></script>
+    <?php endif; ?>
+
     <?php if (isset($arResult['ID']) && $arResult['ID'] > 0) {
         include 'done.php';
     } elseif ($component->order instanceof Order && count($component->order->getBasket()) > 0) {

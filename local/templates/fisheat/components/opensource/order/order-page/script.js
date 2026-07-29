@@ -399,83 +399,476 @@
          * @param {string} mode - режим: 'add' или 'edit'
          * @param {object} addressData - данные адреса для редактирования
          */
-        openAddAddressModal: function(mode, addressData) {
-            var modal = document.querySelector('.modal-add-address');
-            var wrp = document.querySelector('.wrp');
+       openAddAddressModal: function(mode, addressData) {
+           var self = this;
+           var modal = document.querySelector('.modal-add-address');
+           var wrp = document.querySelector('.wrp');
 
-            if (!modal || !wrp) return;
+           if (!modal || !wrp) return;
 
-            // Находим форму
-            var form = modal.querySelector('form');
-            if (!form) return;
+           // Находим форму
+           var form = modal.querySelector('form');
+           if (!form) return;
 
-            // Очищаем форму
-            form.reset();
+           // Сбрасываем модальное окно
+           form.reset();
+           
+           // Скрываем доп. поля и инфо о доставке
+           var extraFields = modal.querySelector('.form-block-extra');
+           var deliveryInfo = modal.querySelector('.modal-delivery-info');
+           if (extraFields) extraFields.style.display = 'none';
+           if (deliveryInfo) deliveryInfo.style.display = 'none';
+           
+           // Сбрасываем кнопку
+           var submitBtn = modal.querySelector('.add-btn');
+           if (submitBtn) {
+               submitBtn.disabled = true;
+               submitBtn.textContent = 'Установить адрес';
+           }
 
-            // Устанавливаем атрибут type в зависимости от режима
-            if (mode === 'edit') {
-                form.setAttribute('type', 'edit');
+           // Устанавливаем атрибут type в зависимости от режима
+           if (mode === 'edit') {
+               form.setAttribute('type', 'edit');
 
-                // Заполняем поля данными адреса
-                var addressInput = modal.querySelector('input[name="ADDRESS"]');
-                if (addressInput && addressData && addressData.address) {
-                    addressInput.value = addressData.address;
-                }
+               // Заполняем поля данными адреса
+               var addressInput = modal.querySelector('input[name="ADDRESS"]');
+               if (addressInput && addressData && addressData.address) {
+                   addressInput.value = addressData.address;
+               }
 
-                // Если есть ID адреса, добавляем скрытое поле
-                var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
-                if (!hiddenIdInput && addressData && addressData.id) {
-                    hiddenIdInput = document.createElement('input');
-                    hiddenIdInput.type = 'hidden';
-                    hiddenIdInput.name = 'ADDRESS_ID';
-                    hiddenIdInput.value = addressData.id;
-                    form.appendChild(hiddenIdInput);
-                } else if (hiddenIdInput && addressData && addressData.id) {
-                    hiddenIdInput.value = addressData.id;
-                }
+               // Если есть ID адреса, добавляем скрытое поле
+               var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
+               if (!hiddenIdInput && addressData && addressData.id) {
+                   hiddenIdInput = document.createElement('input');
+                   hiddenIdInput.type = 'hidden';
+                   hiddenIdInput.name = 'ADDRESS_ID';
+                   hiddenIdInput.value = addressData.id;
+                   form.appendChild(hiddenIdInput);
+               } else if (hiddenIdInput && addressData && addressData.id) {
+                   hiddenIdInput.value = addressData.id;
+               }
 
-                // Меняем текст кнопки
-                var submitBtn = modal.querySelector('.add-btn');
-                if (submitBtn) {
-                    submitBtn.textContent = 'Сохранить';
-                }
-            } else {
-                form.setAttribute('type', 'add');
+               if (submitBtn) {
+                   submitBtn.textContent = 'Сохранить';
+               }
+           } else {
+               form.setAttribute('type', 'add');
 
-                // Удаляем скрытое поле с ID, если есть
-                var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
-                if (hiddenIdInput) {
-                    hiddenIdInput.remove();
-                }
+               // Удаляем скрытое поле с ID, если есть
+               var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
+               if (hiddenIdInput) {
+                   hiddenIdInput.remove();
+               }
 
-                // Меняем текст кнопки обратно
-                var submitBtn = modal.querySelector('.add-btn');
-                if (submitBtn) {
-                    submitBtn.textContent = 'Добавить';
-                }
-            }
+               if (submitBtn) {
+                   submitBtn.textContent = 'Установить адрес';
+               }
+           }
 
-            // Убираем предыдущие ошибки
-            var errorDiv = modal.querySelector('.error-message');
-            if (errorDiv) {
-                errorDiv.remove();
-            }
+           // Убираем предыдущие ошибки
+           var errorDiv = modal.querySelector('.error-message');
+           if (errorDiv) {
+               errorDiv.remove();
+           }
 
-            // Сохраняем текущий режим в data-атрибуте модального окна
-            modal.setAttribute('data-mode', mode);
+           // Сохраняем текущий режим в data-атрибуте модального окна
+           modal.setAttribute('data-mode', mode);
 
-            // Показываем модальное окно
-            BX.addClass(wrp, 'show');
-            BX.addClass(modal, 'show');
+           // Показываем модальное окно
+           BX.addClass(wrp, 'show');
+           BX.addClass(modal, 'show');
 
-            // Фокус на поле ввода
-            var addressInput = modal.querySelector('input[name="ADDRESS"]');
-            if (addressInput) {
-                setTimeout(function() {
-                    addressInput.focus();
-                }, 100);
-            }
-        },
+           // Фокус на поле ввода
+           var addressInput = modal.querySelector('#modalAddressInput');
+           if (addressInput) {
+               setTimeout(function() {
+                   addressInput.focus();
+               }, 100);
+           }
+
+           // Инициализируем карту в модальном окне
+           this.initModalMap();
+       },
+       
+       /**
+        * Инициализация Яндекс.Карты в модальном окне адреса
+        */
+       initModalMap: function() {
+           if (this.modalMapInitialized) return;
+           
+           var self = this;
+           var settings = window.orderMapSettings;
+           if (!settings || !settings.yandexApiKey) {
+               console.warn('Настройки Яндекс.Карт не найдены');
+               return;
+           }
+           
+           var initMapFn = function() {
+               var modalMapContainer = document.getElementById('modalMap');
+               if (!modalMapContainer) return;
+               
+               // Если карта уже создана — не создаём повторно
+               if (self.modalMapInstance) return;
+               
+               self.modalMapInstance = new ymaps.Map('modalMap', {
+                   center: [settings.defaultLat, settings.defaultLng],
+                   zoom: settings.defaultZoom
+               });
+               
+               self.modalDeliveryZones = [];
+               self.modalSelectedPlacemark = null;
+               
+               // Клик по карте
+               self.modalMapInstance.events.add('click', function(e) {
+                   var coords = e.get('coords');
+                   self.modalGetAddressByCoords(coords, null);
+               });
+               
+               // Загружаем зоны доставки
+               self.modalLoadDeliveryZones();
+               
+               // Инициализируем подсказки адреса
+               self.modalInitAddressSuggest();
+               
+               self.modalMapInitialized = true;
+           };
+           
+           if (typeof ymaps !== 'undefined') {
+               ymaps.ready(initMapFn);
+           } else {
+               var checkInterval = setInterval(function() {
+                   if (typeof ymaps !== 'undefined') {
+                       clearInterval(checkInterval);
+                       ymaps.ready(initMapFn);
+                   }
+               }, 100);
+           }
+       },
+       
+       /**
+        * Загрузка зон доставки на карту модального окна
+        */
+       modalLoadDeliveryZones: function() {
+           var self = this;
+           
+           if (typeof BX === 'undefined' || !BX.ajax) return;
+           
+           BX.ajax.runComponentAction('ldo:map.delivery', 'getZones', {
+               mode: 'class'
+           }).then(function(response) {
+               if (response.data && response.data.success && response.data.zones) {
+                   self.modalRenderZones(response.data.zones);
+               }
+           }).catch(function(error) {
+               console.error('Ошибка загрузки зон доставки:', error);
+           });
+       },
+       
+       /**
+        * Отрисовка зон доставки на карте
+        */
+       modalRenderZones: function(zones) {
+           var self = this;
+           
+           zones.forEach(function(zoneData) {
+               var coordinates = zoneData.coordinates;
+               if (!coordinates || coordinates.length < 3) return;
+               
+               var polygon = new ymaps.Polygon([coordinates], {
+                   hintContent: zoneData.name
+               }, {
+                   fillColor: zoneData.color + '33',
+                   strokeColor: zoneData.color,
+                   strokeWidth: 2,
+                   fillOpacity: 0.3,
+                   strokeOpacity: 0.9
+               });
+               
+               var zoneInfo = {
+                   polygon: polygon,
+                   id: zoneData.id,
+                   name: zoneData.name,
+                   price: zoneData.price,
+                   free_delivery_price: zoneData.free_delivery_price,
+                   delivery_time_start: zoneData.delivery_time_start,
+                   delivery_time_end: zoneData.delivery_time_end,
+                   min_order_price: zoneData.min_order_price,
+                   color: zoneData.color,
+                   coordinates: coordinates
+               };
+               
+               self.modalDeliveryZones.push(zoneInfo);
+               
+               polygon.events.add('click', function(e) {
+                   var coords = e.get('coords');
+                   self.modalGetAddressByCoords(coords, zoneInfo);
+               });
+               
+               self.modalMapInstance.geoObjects.add(polygon);
+           });
+           
+           if (self.modalDeliveryZones.length > 0) {
+               try {
+                   var bounds = self.modalMapInstance.geoObjects.getBounds();
+                   if (bounds) {
+                       self.modalMapInstance.setBounds(bounds);
+                   }
+               } catch (e) {}
+           }
+       },
+       
+       /**
+        * Инициализация подсказок адреса в модальном окне
+        */
+       modalInitAddressSuggest: function() {
+           var self = this;
+           var addressInput = document.getElementById('modalAddressInput');
+           var suggestionsContainer = document.getElementById('modalSuggestions');
+           
+           if (!addressInput || !suggestionsContainer) return;
+           
+           addressInput.addEventListener('input', function() {
+               clearTimeout(self.modalSuggestTimeout);
+               var query = addressInput.value.trim();
+               
+               if (query.length < 3) {
+                   suggestionsContainer.style.display = 'none';
+                   return;
+               }
+               
+               self.modalSuggestTimeout = setTimeout(function() {
+                   self.modalSearchAddressSuggestions(query, suggestionsContainer);
+               }, 300);
+           });
+           
+           document.addEventListener('click', function(e) {
+               if (!addressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                   suggestionsContainer.style.display = 'none';
+               }
+           });
+           
+           addressInput.addEventListener('keydown', function(e) {
+               if (e.key === 'Escape') suggestionsContainer.style.display = 'none';
+           });
+       },
+       
+       /**
+        * Поиск подсказок адреса через геокодер
+        */
+       modalSearchAddressSuggestions: function(query, container) {
+           var self = this;
+           if (!this.modalMapInstance) return;
+           
+           var bounds;
+           try {
+               bounds = this.modalMapInstance.getBounds();
+               var latSpan = bounds[1][0] - bounds[0][0];
+               var lngSpan = bounds[1][1] - bounds[0][1];
+               bounds = [
+                   [bounds[0][0] - latSpan * 0.3, bounds[0][1] - lngSpan * 0.3],
+                   [bounds[1][0] + latSpan * 0.3, bounds[1][1] + lngSpan * 0.3]
+               ];
+           } catch (e) {
+               var settings = window.orderMapSettings || {};
+               bounds = [
+                   [settings.defaultLat - 0.5, settings.defaultLng - 0.5],
+                   [settings.defaultLat + 0.5, settings.defaultLng + 0.5]
+               ];
+           }
+           
+           ymaps.geocode(query, {
+               results: 5,
+               boundedBy: bounds,
+               strictBounds: true
+           }).then(function(res) {
+               var suggestions = res.geoObjects;
+               if (suggestions.length === 0) {
+                   container.style.display = 'none';
+                   return;
+               }
+               
+               container.innerHTML = '';
+               
+               suggestions.each(function(suggestion) {
+                   var address = suggestion.getAddressLine();
+                   var item = document.createElement('div');
+                   item.className = 'suggestion-item';
+                   item.textContent = address;
+                   
+                   item.addEventListener('click', function() {
+                       self.modalSelectSuggestion(suggestion);
+                       container.style.display = 'none';
+                   });
+                   
+                   container.appendChild(item);
+               });
+               
+               container.style.display = 'block';
+           }).catch(function() {
+               container.style.display = 'none';
+           });
+       },
+       
+       /**
+        * Выбор подсказки адреса
+        */
+       modalSelectSuggestion: function(suggestion) {
+           var coords = suggestion.geometry.getCoordinates();
+           var address = suggestion.getAddressLine();
+           
+           document.getElementById('modalAddressInput').value = address;
+           document.getElementById('modalLatInput').value = coords[0].toFixed(6);
+           document.getElementById('modalLonInput').value = coords[1].toFixed(6);
+           
+           this.modalMapInstance.setCenter(coords, 15);
+           this.modalAddPlacemark(coords, address);
+           this.modalCheckDeliveryZone(coords);
+       },
+       
+       /**
+        * Получение адреса по координатам (клик по карте)
+        */
+       modalGetAddressByCoords: function(coords, zone) {
+           var self = this;
+           
+           ymaps.geocode(coords, { results: 1 }).then(function(res) {
+               var firstGeoObject = res.geoObjects.get(0);
+               if (!firstGeoObject) return;
+               
+               var address = firstGeoObject.getAddressLine();
+               
+               document.getElementById('modalAddressInput').value = address;
+               document.getElementById('modalLatInput').value = coords[0].toFixed(6);
+               document.getElementById('modalLonInput').value = coords[1].toFixed(6);
+               
+               if (zone) {
+                   document.getElementById('modalZoneId').value = zone.id;
+                   self.modalAddPlacemark(coords, address, zone.name);
+                   self.modalShowDeliveryInfo(zone);
+               } else {
+                   self.modalAddPlacemark(coords, address);
+                   self.modalCheckDeliveryZone(coords);
+               }
+           });
+       },
+       
+       /**
+        * Проверка вхождения координат в зону доставки
+        */
+       modalCheckDeliveryZone: function(coords) {
+           var self = this;
+           var foundZone = null;
+           
+           for (var i = 0; i < this.modalDeliveryZones.length; i++) {
+               var zone = this.modalDeliveryZones[i];
+               var isInside = this.modalIsPointInPolygon(coords, zone.coordinates);
+               if (isInside) {
+                   foundZone = zone;
+                   break;
+               }
+           }
+           
+           if (foundZone) {
+               document.getElementById('modalZoneId').value = foundZone.id;
+               self.modalShowDeliveryInfo(foundZone);
+           } else {
+               document.getElementById('modalZoneId').value = '';
+               var deliveryInfo = document.querySelector('.modal-delivery-info');
+               if (deliveryInfo) deliveryInfo.style.display = 'none';
+           }
+       },
+       
+       /**
+        * Проверка точки в полигоне (Ray Casting)
+        */
+       modalIsPointInPolygon: function(point, polygon) {
+           var x = point[0], y = point[1];
+           var inside = false;
+           var n = polygon.length;
+           
+           for (var i = 0, j = n - 1; i < n; j = i++) {
+               var xi = polygon[i][0], yi = polygon[i][1];
+               var xj = polygon[j][0], yj = polygon[j][1];
+               
+               if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+                   inside = !inside;
+               }
+           }
+           
+           return inside;
+       },
+       
+       /**
+        * Добавление метки на карту
+        */
+       modalAddPlacemark: function(coords, address, zoneName) {
+           if (this.modalSelectedPlacemark) {
+               this.modalMapInstance.geoObjects.remove(this.modalSelectedPlacemark);
+           }
+           
+           var balloonContent = '<strong>' + address + '</strong>';
+           if (zoneName) {
+               balloonContent += '<br>Зона: ' + zoneName;
+           }
+           
+           this.modalSelectedPlacemark = new ymaps.Placemark(coords, {
+               balloonContent: balloonContent,
+               hintContent: 'Адрес доставки'
+           }, {
+               preset: 'islands#redDotIcon'
+           });
+           
+           this.modalMapInstance.geoObjects.add(this.modalSelectedPlacemark);
+           this.modalSelectedPlacemark.balloon.open();
+       },
+       
+       /**
+        * Отображение информации о доставке
+        */
+       modalShowDeliveryInfo: function(zone) {
+           var deliveryInfo = document.querySelector('.modal-delivery-info');
+           var extraFields = document.querySelector('.form-block-extra');
+           var submitBtn = document.querySelector('.add-btn');
+           
+           if (deliveryInfo) {
+               deliveryInfo.style.display = 'block';
+               
+               var timeEl = deliveryInfo.querySelector('.delivery-time');
+               var freeEl = deliveryInfo.querySelector('.delivery-free');
+               var minOrderEl = deliveryInfo.querySelector('.delivery-min-order');
+               var priceEl = deliveryInfo.querySelector('.delivery-price-zone');
+               
+               // Время доставки
+               var timeText = '—';
+               if (zone.delivery_time_start > 0 && zone.delivery_time_end > 0) {
+                   timeText = zone.delivery_time_start + '–' + zone.delivery_time_end + ' мин';
+               } else if (zone.delivery_time_start > 0) {
+                   timeText = 'от ' + zone.delivery_time_start + ' мин';
+               } else if (zone.delivery_time_end > 0) {
+                   timeText = 'до ' + zone.delivery_time_end + ' мин';
+               }
+               if (timeEl) timeEl.textContent = timeText;
+               
+               // Бесплатная доставка
+               if (freeEl) freeEl.textContent = 'от ' + (zone.free_delivery_price || 0) + ' ₽';
+               
+               // Мин. сумма заказа
+               if (minOrderEl) minOrderEl.textContent = (zone.min_order_price || 0) + ' ₽';
+               
+               // Стоимость доставки
+               if (priceEl) priceEl.textContent = (zone.price || 0) + ' ₽';
+           }
+           
+           // Показываем дополнительные поля
+           if (extraFields) {
+               extraFields.style.display = 'block';
+           }
+           
+           // Активируем кнопку
+           if (submitBtn) {
+               submitBtn.disabled = false;
+           }
+       },
 
         /**
          * Закрывает модальное окно добавления адреса
@@ -500,13 +893,20 @@
          */
         addAddress: function(form) {
             var self = this;
-            var addressInput = form.querySelector('input[name="ADDRESS"]');
+            var addressInput = document.getElementById('modalAddressInput');
             var address = addressInput ? addressInput.value.trim() : '';
             var mode = form.getAttribute('type') || 'add';
 
-            // Получаем координаты из data-атрибутов (если были выбраны через подсказки)
-            var lat = addressInput ? addressInput.getAttribute('data-lat') : null;
-            var lon = addressInput ? addressInput.getAttribute('data-lon') : null;
+            // Получаем координаты из скрытых полей
+            var lat = document.getElementById('modalLatInput') ? document.getElementById('modalLatInput').value : '';
+            var lon = document.getElementById('modalLonInput') ? document.getElementById('modalLonInput').value : '';
+            var zoneId = document.getElementById('modalZoneId') ? document.getElementById('modalZoneId').value : '';
+
+            // Дополнительные поля
+            var apartment = form.querySelector('input[name="APARTMENT"]') ? form.querySelector('input[name="APARTMENT"]').value.trim() : '';
+            var entrance = form.querySelector('input[name="ENTRANCE"]') ? form.querySelector('input[name="ENTRANCE"]').value.trim() : '';
+            var floor = form.querySelector('input[name="FLOOR"]') ? form.querySelector('input[name="FLOOR"]').value.trim() : '';
+            var intercom = form.querySelector('input[name="INTERCOM"]') ? form.querySelector('input[name="INTERCOM"]').value.trim() : '';
 
             if (!address) {
                 this.showAddressFormError('Пожалуйста, введите адрес');
@@ -514,21 +914,29 @@
             }
 
             var submitBtn = form.querySelector('.add-btn');
-            var originalBtnText = submitBtn ? submitBtn.textContent : (mode === 'edit' ? 'Сохранить' : 'Добавить');
+            var originalBtnText = submitBtn ? submitBtn.textContent : (mode === 'edit' ? 'Сохранить' : 'Установить адрес');
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.textContent = mode === 'edit' ? 'Сохранение...' : 'Добавление...';
+                submitBtn.textContent = 'Сохранение...';
             }
 
             var sessidInput = form.querySelector('input[name="sessid"]');
             var sessid = sessidInput ? sessidInput.value : BX.bitrix_sessid();
 
+            // Формируем полный адрес с доп. полями
+            var fullAddress = address;
+            if (apartment) fullAddress += ', кв ' + apartment;
+            if (entrance) fullAddress += ', подъезд ' + entrance;
+            if (floor) fullAddress += ', этаж ' + floor;
+            if (intercom) fullAddress += ', домофон ' + intercom;
+
             var data = {
                 action: mode === 'edit' ? 'editAddress' : 'addAddress',
-                address: address,
+                address: fullAddress,
                 lat: lat,
                 lon: lon,
+                zoneId: zoneId,
                 sessid: sessid
             };
 

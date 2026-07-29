@@ -431,3 +431,14 @@ if (Loader::includeModule('ldo.deliverymap')) {
         }
     }
 }
+
+/* Настройки Яндекс.Карт для модального окна добавления адреса */
+$arResult['YANDEX_SETTINGS'] = [];
+if (Loader::includeModule('ldo.deliverymap')) {
+    $arResult['YANDEX_SETTINGS'] = [
+        'YANDEX_API_KEY' => \Ldo\Deliverymap\SettingsTable::get('s1', 'yandex_api_key', ''),
+        'DEFAULT_LAT' => (float)\Ldo\Deliverymap\SettingsTable::get('s1', 'default_lat', '54.7355'),
+        'DEFAULT_LNG' => (float)\Ldo\Deliverymap\SettingsTable::get('s1', 'default_lng', '55.9587'),
+        'DEFAULT_ZOOM' => (int)\Ldo\Deliverymap\SettingsTable::get('s1', 'default_zoom', '11'),
+    ];
+}
