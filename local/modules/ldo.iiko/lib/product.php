@@ -136,9 +136,12 @@ class Product
     }
 
     /**
-     * Основной метод синхронизации товаров
+     * Основной метод синхронизации товаров.
+     * Предварительно синхронизирует категории (productCategories).
      */
     public function sync(){
+        $this->syncCategory();
+
         $productList = $this->getList();
         if($productList){
             $i = 0;
