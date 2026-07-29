@@ -33,7 +33,7 @@ Loader::includeModule("ldo.iiko");
 $result = new Product();
 echo "<pre>";
 
-print_r($result->getCategory());
+print_r($result->sync());
 echo "</pre>"
 ?>
 
