@@ -6,13 +6,31 @@ use Bitrix\Main\Web\HttpClient;
 class Auth
 {
     const AUTH_URL = 'https://api-ru.iiko.services/api/v2/access_token';
-    private $apiLogin = '1629c4e76ce643568091465ff902cb4e';
 
-    private $secret = 'Nscw0U-2au7YnHATgdA7UAnR_xnCW7Eg1rrzEz9Q4es=';
+    private $apiLogin;
 
-    private $appId = '0a7af56f-40db-4fba-9aa9-fffe383d232b';
+    private $secret;
+
+    private $appId;
+
+    /**
+     * @param string $siteId ID сайта, для которого читаются настройки
+     */
+    public function __construct($siteId = 's1')
+    {
+        $row = SettingsTable::getRow($siteId);
+
+        $this->apiLogin = $row['API_LOGIN'] ?? '';
+        $this->secret   = $row['SECRET'] ?? '';
+        $this->appId    = $row['APP_ID'] ?? '';
+    }
 
     public function getToken() {
+
+
+        if ($this->apiLogin === '' || $this->secret === '' || $this->appId === '') {
+            return null;
+        }
 
         $httpClient = new HttpClient();
 

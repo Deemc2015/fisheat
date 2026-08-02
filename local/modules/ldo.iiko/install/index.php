@@ -41,9 +41,9 @@ class Ldo_iiko extends CModule
     public function DoInstall()
     {
         RegisterModule($this->MODULE_ID);
+        $this->InstallDB();
         //$this->RegisterModuleHandlers();
         //$this->addAgents();
-        //$this->InstallDB();
         //$this->InstallFiles();
        /* $this->InstallEvents();
         $this->registerModuleHandlers();
@@ -63,9 +63,9 @@ class Ldo_iiko extends CModule
     public function DoUninstall()
     {
         UnRegisterModule($this->MODULE_ID);
+        $this->UnInstallDB();
         //$this->unRegisterModuleHandlers();
         //$this->removeAgents();
-        //$this->UnInstallDB();
         //$this->UnInstallFiles();
         //$this->deleteHlBlock($this->name);
         //$this->deleteHlBlock('BlackIpList');
@@ -135,6 +135,48 @@ class Ldo_iiko extends CModule
         return true;
     }
 
-      
+    public function InstallDB()
+    {
+        global $DB;
+
+        $this->createTables();
+
+        return true;
+    }
+
+    public function UnInstallDB()
+    {
+        global $DB;
+
+        $this->dropTables();
+
+        return true;
+    }
+
+    private function createTables()
+    {
+        global $DB;
+
+        $DB->Query("
+            CREATE TABLE IF NOT EXISTS `ldo_iiko_settings` (
+                `ID` int(11) NOT NULL AUTO_INCREMENT,
+                `SITE_ID` varchar(2) NOT NULL,
+                `API_LOGIN` varchar(255) NOT NULL DEFAULT '',
+                `SECRET` varchar(255) NOT NULL DEFAULT '',
+                `APP_ID` varchar(255) NOT NULL DEFAULT '',
+                `CHECK_STATUS` varchar(10) NOT NULL DEFAULT 'N',
+                `CHECK_DATE` datetime DEFAULT NULL,
+                PRIMARY KEY (`ID`),
+                UNIQUE KEY `IX_SITE_ID` (`SITE_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+    }
+
+    private function dropTables()
+    {
+        global $DB;
+        $DB->Query("DROP TABLE IF EXISTS `ldo_iiko_settings`");
+    }
+
 }
 ?>

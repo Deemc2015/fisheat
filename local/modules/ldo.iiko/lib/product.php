@@ -3,54 +3,88 @@
 namespace Ldo\Iiko;
 
 use Ldo\Iiko\Auth;
-use Bitrix\Main\Web\HttpClient;
+use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
-
-
-Loader::includeModule("iblock");
-Loader::includeModule('catalog');
+use Bitrix\Main\Web\HttpClient;
 
 class Product
 {
     const DATA_URL = 'https://api-ru.iiko.services/api/2/menu/by_id';
     const IBLOCK_ID = 4;
+    const PROGRESS_DIR = '/upload/iiko_sync';
 
-    private $externalMenuId = "82646";
+    private $externalMenuId = '82646';
 
-    private $restoranId = "415f7533-6201-4d69-b387-dfa7daa954bf";
+    private $restoranId = '415f7533-6201-4d69-b387-dfa7daa954bf';
 
     private $token;
 
-    public function __construct() {
-        $tokenData = new Auth();
+    private $lastProgressPercent = -1;
+
+    public function __construct($siteId = 's1') {
+        $tokenData = new Auth($siteId);
         $this->token = $tokenData->getToken();
     }
 
     /**
-     * Получить категории товаров (из секции productCategories ответа API)
+     * Получить разделы (категории) меню из itemCategories.
+     * У каждого раздела сохраняется его iikoGroupId.
+     *
+     * @return array
      */
-    public function getCategory(): array
+    public function getCategories(): array
     {
-        return $this->makeApiRequest('productCategories');
+        $categories = $this->makeApiRequest('itemCategories');
+
+        if (!is_array($categories)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($categories as $category) {
+            $result[] = [
+                'id'             => $category['id'] ?? '',
+                'name'           => $category['name'] ?? '',
+                'description'    => $category['description'] ?? '',
+                'buttonImageUrl' => $category['buttonImageUrl'] ?? null,
+                'headerImageUrl' => $category['headerImageUrl'] ?? null,
+                'iikoGroupId'    => $category['iikoGroupId'] ?? '',
+            ];
+        }
+
+        return $result;
     }
 
     /**
-     * Получить плоский список всех товаров, собрав их из вложенных items внутри itemCategories
+     * Получить все товары меню (items внутри itemCategories).
+     * В каждый товар добавляется iikoGroupId его родительского раздела,
+     * а также id и название раздела (categoryId, categoryName).
+     *
+     * @return array
      */
-    public function getList(): array
+    public function getItems(): array
     {
-        $itemCategories = $this->makeApiRequest('itemCategories');
-        $items = [];
+        $categories = $this->makeApiRequest('itemCategories');
 
-        if (is_array($itemCategories)) {
-            foreach ($itemCategories as $category) {
-                if (isset($category['items']) && is_array($category['items'])) {
-                    foreach ($category['items'] as $item) {
-                        $item['_categoryName'] = $category['name'];
-                        $item['_categoryId'] = $category['id'];
-                        $items[] = $item;
-                    }
-                }
+        if (!is_array($categories)) {
+            return [];
+        }
+
+        $items = [];
+        foreach ($categories as $category) {
+            $iikoGroupId = $category['iikoGroupId'] ?? '';
+            $categoryId  = $category['id'] ?? '';
+            $categoryName = $category['name'] ?? '';
+
+            if (empty($category['items']) || !is_array($category['items'])) {
+                continue;
+            }
+
+            foreach ($category['items'] as $item) {
+                $item['iikoGroupId']  = $iikoGroupId;
+                $item['categoryId']   = $categoryId;
+                $item['categoryName'] = $categoryName;
+                $items[] = $item;
             }
         }
 
@@ -58,259 +92,254 @@ class Product
     }
 
     /**
-     * Синхронизация категорий (productCategories)
+     * Синхронизировать разделы и товары из iiko в инфоблок (IBLOCK_ID).
+     * Прогресс (0-100) записывается в файл для отображения через progress.php.
+     *
+     * @param string|null $progressToken
+     * @return array{sections: int, items: int}
      */
-    public function syncCategory(){
-        $categoryList = $this->getCategory();
-        if(is_array($categoryList)){
-            foreach ($categoryList as $category){
-                $checkExist = $this->checkCategoryByIdRk($category['id']);
-                if(!$checkExist){
-                    $this->addCategory($category);
-                }
-            }
+    public function sync($progressToken = null): array
+    {
+        Loader::includeModule('iblock');
+
+        $categories = $this->getCategories();
+        $items = $this->getItems();
+
+        $total = count($categories) + count($items);
+        if ($total === 0) {
+            $this->reportProgress($progressToken, 100);
+            return ['sections' => 0, 'items' => 0];
         }
+
+        $done = 0;
+        $sectionMap = [];
+        $sectionCount = 0;
+
+        // 1. Разделы
+        foreach ($categories as $category) {
+            $iikoGroupId = (string)($category['iikoGroupId'] ?? '');
+            $sectionId = $this->syncSection($category);
+            if ($sectionId) {
+                $sectionMap[$iikoGroupId] = $sectionId;
+                $sectionCount++;
+            }
+            $done++;
+            $this->reportProgress($progressToken, (int)round($done / $total * 100));
+        }
+
+        // 2. Товары
+        $itemCount = 0;
+        foreach ($items as $item) {
+            if ($this->syncItem($item, $sectionMap)) {
+                $itemCount++;
+            }
+            $done++;
+            $this->reportProgress($progressToken, (int)round($done / $total * 100));
+        }
+
+        $this->reportProgress($progressToken, 100);
+
+        return [
+            'sections' => $sectionCount,
+            'items' => $itemCount,
+        ];
     }
 
     /**
-     * Проверить существование категории (секции инфоблока) по UF_ID_RK
+     * Создать или обновить раздел инфоблока.
+     * iikoGroupId хранится в UF_ID_RK.
+     *
+     * @param array $category
+     * @return int|null
      */
-    public function checkCategoryByIdRk(string $idRk)
+    private function syncSection(array $category): ?int
     {
-        $arFilter = [
-            'IBLOCK_ID' => self::IBLOCK_ID,
-            'GLOBAL_ACTIVE' => 'Y',
-            'UF_ID_RK' => $idRk
-        ];
-
-        $objCat = \CIBlockSection::GetList(["SORT"=>"ASC"], $arFilter, false, ['NAME','ID','UF_ID_RK']);
-
-        if($ar_result = $objCat->GetNext())
-        {
-            $isExist = $ar_result;
+        $iikoGroupId = (string)($category['iikoGroupId'] ?? '');
+        if ($iikoGroupId === '') {
+            return null;
         }
 
-        if(isset($isExist)){
-            return $isExist['ID'];
+        $fields = [
+            'IBLOCK_ID' => self::IBLOCK_ID,
+            'NAME'      => (string)($category['name'] ?? ''),
+            'CODE'      => $this->uniqueCode((string)($category['name'] ?? ''), $iikoGroupId),
+            'UF_ID_RK'  => $iikoGroupId,
+            'ACTIVE'    => 'Y',
+        ];
+
+        $sectionId = $this->isSectionExists($iikoGroupId);
+        $section = new \CIBlockSection();
+
+        if ($sectionId) {
+            $section->Update($sectionId, $fields);
+            return $sectionId;
+        }
+
+        $sectionId = $section->Add($fields);
+        if (!$sectionId) {
+            addMessage2Log('Product::syncSection error: ' . $section->LAST_ERROR);
+            return null;
+        }
+
+        return (int)$sectionId;
+    }
+
+    /**
+     * Найти раздел инфоблока по iikoGroupId (UF_ID_RK).
+     *
+     * @param string $iikoGroupId
+     * @return int|null
+     */
+    private function isSectionExists(string $iikoGroupId): ?int
+    {
+        $rs = \CIBlockSection::GetList(
+            [],
+            ['IBLOCK_ID' => self::IBLOCK_ID, '=UF_ID_RK' => $iikoGroupId],
+            false,
+            ['ID', 'NAME', 'UF_ID_RK']
+        );
+
+        if ($row = $rs->Fetch()) {
+            return (int)$row['ID'];
         }
 
         return null;
     }
 
     /**
-     * Добавить категорию (секцию инфоблока)
+     * Создать или обновить товар в инфоблоке.
+     * Уникальный ключ — itemId (свойство ATT_RK_ID), iikoGroupId хранится
+     * в свойстве ATT_RK_CATEGORY_ID, раздел привязывается по iikoGroupId.
+     *
+     * @param array $item
+     * @param array $sectionMap
+     * @return bool
      */
-    public function addCategory(array $dataCategory)
+    private function syncItem(array $item, array $sectionMap): bool
     {
-        if(!$dataCategory){
+        $itemId = (string)($item['itemId'] ?? '');
+        if ($itemId === '') {
             return false;
         }
 
-        $codeElement = $this->generateCode($dataCategory['name']);
+        $iikoGroupId = (string)($item['iikoGroupId'] ?? '');
+        $sectionId = isset($sectionMap[$iikoGroupId]) ? (int)$sectionMap[$iikoGroupId] : null;
 
-        $arFields = [
-            'IBLOCK_ID' => self::IBLOCK_ID,
-            'NAME' => $dataCategory['name'],
-            'UF_ID_RK' => $dataCategory['id'],
-            'CODE' => $codeElement
+        $fields = [
+            'IBLOCK_ID'       => self::IBLOCK_ID,
+            'NAME'            => (string)($item['name'] ?? ''),
+            'DETAIL_TEXT'     => (string)($item['description'] ?? ''),
+            'CODE'            => $this->uniqueCode((string)($item['name'] ?? ''), $itemId),
+            'ACTIVE'          => 'Y',
+            'PROPERTY_VALUES' => [
+                'ATT_RK_ID'          => $itemId,
+                'ATT_RK_CATEGORY_ID' => $iikoGroupId,
+            ],
         ];
 
-        if (isset($dataCategory['parentId'])) {
-            $arFields['UF_PARENT_ID'] = $dataCategory['parentId'];
+        if ($sectionId) {
+            $fields['IBLOCK_SECTION_ID'] = $sectionId;
         }
 
-        $dataObSection = new \CIBlockSection;
+        $existId = $this->isItemExists($itemId);
+        $element = new \CIBlockElement();
 
-        $addResult = $dataObSection->Add($arFields, true);
-
-        if($addResult > 0){
-            return true;
+        if ($existId) {
+            return (bool)$element->Update($existId, $fields);
         }
 
-        $errorMessage = $dataObSection->LAST_ERROR;
-        if ($errorMessage) {
-            addMessage2Log('Product::addCategory error: ' . $errorMessage);
-        }
-
-        return false;
-    }
-
-    /**
-     * Основной метод синхронизации товаров.
-     * Предварительно синхронизирует категории (productCategories).
-     */
-    public function sync(){
-        $this->syncCategory();
-
-        $productList = $this->getList();
-        if($productList){
-            $i = 0;
-            foreach ($productList as $product){
-                $i++;
-
-                $idProduct = $this->isExist($product['itemId']);
-
-                if($idProduct){
-                    $this->update($product, $idProduct);
-                }
-                else{
-                    $this->add($product);
-                }
-
-                if($i == 1000){
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Проверить существование товара по PROPERTY_ATT_RK_ID
-     */
-    public function isExist(string $idRk)
-    {
-        $obCatalog = \CIBlockElement::GetList (
-            ["ID" => "ASC"],
-            ["IBLOCK_ID" => self::IBLOCK_ID, "ACTIVE" => "Y","PROPERTY_ATT_RK_ID" => $idRk],
-            false,
-            false,
-            ['ID','NAME']
-        );
-
-        if($arServ = $obCatalog->GetNext())
-        {
-            return $arServ['ID'];
-        }
-
-        return false;
-    }
-
-    /**
-     * Добавить новый товар
-     */
-    public function add($dataElement){
-        $element = new \CIBlockElement;
-        $dataProduct = $this->prepareProductData($dataElement);
-        $codeElement = $this->generateCode($dataElement['name']);
-
-        $arLoadElementArray = [
-            "NAME" => $dataProduct['NAME'],
-            "DETAIL_TEXT" => $dataProduct['DESCRIPTION'],
-            "PREVIEW_PICTURE" => $dataProduct['IMAGE'],
-            'DETAIL_PICTURE' => $dataProduct['IMAGE'],
-            "IBLOCK_ID" => self::IBLOCK_ID,
-            "CODE" => $codeElement,
-            "IBLOCK_SECTION_ID" => $dataProduct['CATEGORY_ID'],
-            "PROPERTY_VALUES"=> $dataProduct['PROPS'],
-        ];
-
-        // Убираем пустые значения изображений
-        if (!$arLoadElementArray['PREVIEW_PICTURE']) {
-            unset($arLoadElementArray['PREVIEW_PICTURE']);
-            unset($arLoadElementArray['DETAIL_PICTURE']);
-        }
-
-        $idProduct = $element->Add($arLoadElementArray);
-
-        if(!$idProduct){
-            addMessage2Log('Product::add error: ' . $element->LAST_ERROR);
+        $newId = $element->Add($fields);
+        if (!$newId) {
+            addMessage2Log('Product::syncItem error: ' . $element->LAST_ERROR);
             return false;
         }
 
-        if(is_numeric($idProduct)){
-            $this->addPrice($idProduct, $dataProduct['PRICE']);
-            $this->addCount($idProduct);
-        }
+        return true;
     }
 
     /**
-     * Установить/обновить цену товара
+     * Найти товар в инфоблоке по itemId (свойство ATT_RK_ID).
+     *
+     * @param string $itemId
+     * @return int|null
      */
-    public function addPrice(int $idElement, $price){
-        $typePrice = 1;
-
-        $arFields = [
-            "PRODUCT_ID" => $idElement,
-            "CATALOG_GROUP_ID" => $typePrice,
-            "PRICE" => $price,
-            "CURRENCY" => "RUB",
-        ];
-
-        $res = \CPrice::GetList(
+    private function isItemExists(string $itemId): ?int
+    {
+        $rs = \CIBlockElement::GetList(
             [],
-            [
-                "PRODUCT_ID" => $idElement,
-                "CATALOG_GROUP_ID" => $typePrice
-            ]
+            ['IBLOCK_ID' => self::IBLOCK_ID, '=PROPERTY_ATT_RK_ID' => $itemId],
+            false,
+            false,
+            ['ID', 'NAME']
         );
 
-        if ($arr = $res->Fetch())
-        {
-            \CPrice::Update($arr["ID"], $arFields);
-        }
-        else
-        {
-            \CPrice::Add($arFields);
-        }
-    }
-
-    /**
-     * Установить количество товара
-     */
-    private function addCount(int $idElement){
-        return \CCatalogProduct::add(["ID" => $idElement, "QUANTITY" => 1000]);
-    }
-
-    /**
-     * Заглушка для стоп-листа
-     */
-    public function addStopList(int $idElement){
-    }
-
-    /**
-     * Обновить существующий товар
-     */
-    public function update($dataElement, int $idProduct){
-        $element = new \CIBlockElement;
-        $dataProduct = $this->prepareProductData($dataElement);
-
-        $arLoadElementArray = [
-            "NAME" => $dataProduct['NAME'],
-            "DETAIL_TEXT" => $dataProduct['DESCRIPTION'],
-            "PREVIEW_PICTURE" => $dataProduct['IMAGE'],
-            'DETAIL_PICTURE' => $dataProduct['IMAGE'],
-            "IBLOCK_ID" => self::IBLOCK_ID,
-            "IBLOCK_SECTION_ID" => $dataProduct['CATEGORY_ID'],
-            "PROPERTY_VALUES"=> $dataProduct['PROPS'],
-        ];
-
-        // Убираем пустые значения изображений
-        if (!$arLoadElementArray['PREVIEW_PICTURE']) {
-            unset($arLoadElementArray['PREVIEW_PICTURE']);
-            unset($arLoadElementArray['DETAIL_PICTURE']);
+        if ($row = $rs->Fetch()) {
+            return (int)$row['ID'];
         }
 
-        $resultUpdate = $element->Update($idProduct, $arLoadElementArray);
-
-        if($resultUpdate){
-            $this->addPrice($idProduct, $dataProduct['PRICE']);
-            $this->addCount($idProduct);
-        }
+        return null;
     }
 
     /**
-     * Сгенерировать символьный код из названия
+     * Уникальный символьный код из названия (с суффиксом от id).
+     *
+     * @param string $name
+     * @param string $id
+     * @return string
      */
-    public function generateCode($name){
-        $arParamsCode = [
-            "replace_space" => "-", "replace_other" => "-"
-        ];
+    private function uniqueCode(string $name, string $id): string
+    {
+        $base = \CUtil::translit($name, 'ru', [
+            'replace_space' => '-',
+            'replace_other' => '-',
+        ]);
 
-        return \CUtil::translit($name, "ru", $arParamsCode);
+        return $base . '-' . substr(md5($id), 0, 8);
     }
 
     /**
-     * Выполнить запрос к API iiko и вернуть секцию ответа по ключу
+     * Записать процент прогресса синхронизации (пишется только при изменении).
+     *
+     * @param string|null $token
+     * @param int $percent
+     * @return void
+     */
+    private function reportProgress($token, int $percent): void
+    {
+        if ($token === null || $token === '') {
+            return;
+        }
+
+        if ($percent === $this->lastProgressPercent) {
+            return;
+        }
+        $this->lastProgressPercent = $percent;
+
+        $file = self::getProgressFilePath((string)$token);
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0775, true);
+        }
+
+        @file_put_contents($file, $percent, LOCK_EX);
+    }
+
+    /**
+     * Путь к файлу прогресса (совпадает с logic в partners/menu/progress.php).
+     *
+     * @param string $token
+     * @return string
+     */
+    private static function getProgressFilePath(string $token): string
+    {
+        return Application::getDocumentRoot() . self::PROGRESS_DIR . '/' . md5($token) . '.txt';
+    }
+
+    /**
+     * Выполнить запрос к API iiko и вернуть секцию ответа по ключу.
+     *
+     * @param string $dataType
+     * @return array
      */
     private function makeApiRequest(string $dataType): array
     {
@@ -323,7 +352,6 @@ class Product
         $httpClient->setHeader('Content-Type', 'application/json');
 
         try {
-
             $response = $httpClient->post(
                 self::DATA_URL,
                 json_encode([
@@ -344,105 +372,9 @@ class Product
 
             return [];
 
-        } catch (Exception $e) {
-            addMessage2Log("Product::makeApiRequest error: " . $e->getMessage());
+        } catch (\Exception $e) {
+            addMessage2Log('Product::makeApiRequest error: ' . $e->getMessage());
             return [];
         }
     }
-
-    /**
-     * Подготовить данные товара для записи в инфоблок
-     */
-    private function prepareProductData($dataElement): array
-    {
-        // Изображение: сначала на уровне товара, потом в первом размере
-        $imageUrl = $dataElement['buttonImageUrl'] ?? null;
-        if (empty($imageUrl) && !empty($dataElement['itemSizes'][0]['buttonImageUrl'])) {
-            $imageUrl = $dataElement['itemSizes'][0]['buttonImageUrl'];
-        }
-        $image = $this->prepareProductImage($imageUrl);
-
-        // Категория
-        $categoryId = $this->checkCategoryByIdRk($dataElement['productCategoryId'] ?? '');
-
-        // Парсинг описания: строка 1 — описание, строка 2 — состав, строка 3 — рекомендация
-        $textProduct = explode("\n", $dataElement['description'] ?? '');
-        $description = trim($textProduct[0] ?? '');
-        $sostav = trim($textProduct[1] ?? '');
-        $recomendation = trim($textProduct[2] ?? '');
-
-        // Цена из первого размера
-        $price = $dataElement['itemSizes'][0]['prices'][0]['price'] ?? 0;
-
-        // Вес
-        $portionWeight = (float)($dataElement['itemSizes'][0]['portionWeightGrams'] ?? 0);
-        $measureUnit = $dataElement['measureUnit'] ?? 'г';
-        $weightStr = $portionWeight > 0 ? $portionWeight . ' ' . $measureUnit : '';
-
-        // Парсинг БЖУ и калорий из описания (строка вида "55 КАЛЛ, Б-1, Ж-4, У-2")
-        $calories = $this->parseNutritionValue($description, '/(\d+)\s*КАЛЛ/i');
-        $proteins = $this->parseNutritionValue($description, '/Б-([\d.]+)/i');
-        $fats = $this->parseNutritionValue($description, '/Ж-([\d.]+)/i');
-        $carbs = $this->parseNutritionValue($description, '/У-([\d.]+)/i');
-
-        $dataProduct = [
-            'NAME' => $dataElement['name'],
-            'DESCRIPTION' => $description,
-            'IMAGE' => $image,
-            'CATEGORY_ID' => $categoryId,
-            'PRICE' => $price,
-            'PROPS' => [
-                'ATT_RK_ID' => $dataElement['itemId'],
-                'ATT_RK_CATEGORY_ID' => $dataElement['productCategoryId'] ?? '',
-                'ATT_SOSTAV' => $sostav,
-                'ATT_RECOMENDATION' => $recomendation,
-                'ATT_KALLORY' => $calories,
-                'ATT_BELKI' => $proteins,
-                'ATT_GIRY' => $fats,
-                'ATT_YGLEVODY' => $carbs,
-                'ATT_VES' => $weightStr,
-            ]
-        ];
-
-        return $dataProduct;
-    }
-
-    /**
-     * Парсинг числового значения из текста по регулярному выражению
-     */
-    private function parseNutritionValue(string $text, string $pattern): string
-    {
-        if (preg_match($pattern, $text, $matches)) {
-            return $matches[1];
-        }
-        return '';
-    }
-
-    /**
-     * Загрузить изображение по URL в файловую систему Битрикс
-     */
-    private function prepareProductImage($imageUrl){
-        if(!$imageUrl){
-            return false;
-        }
-
-        $dataFile = \CFile::MakeFileArray($imageUrl);
-        if (!$dataFile) {
-            return false;
-        }
-
-        $savedFileId = \CFile::SaveFile($dataFile, 'iiko');
-        if (!$savedFileId) {
-            return false;
-        }
-
-        $savedFileSrc = \CFile::GetPath($savedFileId);
-
-        if($savedFileSrc){
-            return \CFile::MakeFileArray($savedFileSrc);
-        }
-
-        return false;
-    }
-
 }
