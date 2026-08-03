@@ -45,28 +45,7 @@ $statusMap = [
 $statusInfo = $statusMap[$checkStatus] ?? $statusMap['N'];
 ?>
 
-        <!-- Подменю меню -->
-        <div class="p-dash-tabs">
-            <a class="tab-btn active" data-tab="sync" href="/partners/menu/">Синхронизация</a>
-            <a class="tab-btn" data-tab="tovary" href="/partners/menu/tovary/">Настройка товаров</a>
-            <a class="tab-btn" data-tab="razdely" href="/partners/menu/razdely/">Настройка разделов</a>
-        </div>
-<?$APPLICATION->IncludeComponent(
-        "bitrix:menu",
-        "",
-        Array(
-                "ALLOW_MULTI_SELECT" => "N",
-                "CHILD_MENU_TYPE" => "left",
-                "DELAY" => "N",
-                "MAX_LEVEL" => "1",
-                "MENU_CACHE_GET_VARS" => array(""),
-                "MENU_CACHE_TIME" => "3600",
-                "MENU_CACHE_TYPE" => "N",
-                "MENU_CACHE_USE_GROUPS" => "Y",
-                "ROOT_MENU_TYPE" => "personallevel",
-                "USE_EXT" => "N"
-        )
-);?>
+
 
         <div class="p-main">
             <div class="p-section">

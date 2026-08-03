@@ -21,12 +21,7 @@ $partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 
-        <!-- Подменю меню -->
-        <div class="p-dash-tabs">
-            <a class="tab-btn" data-tab="sync" href="/partners/menu/">Синхронизация</a>
-            <a class="tab-btn active" data-tab="tovary" href="/partners/menu/tovary/">Настройка товаров</a>
-            <a class="tab-btn" data-tab="razdely" href="/partners/menu/razdely/">Настройка разделов</a>
-        </div>
+
 
         <div class="p-main">
             <div class="p-section">

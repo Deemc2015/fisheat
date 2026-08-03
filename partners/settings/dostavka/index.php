@@ -53,12 +53,6 @@ $partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 
-        <!-- Подменю настроек -->
-        <div class="p-dash-tabs">
-            <a class="tab-btn" data-tab="iiko" href="/partners/settings/">Синхронизация с iiko</a>
-            <a class="tab-btn active" data-tab="delivery" href="/partners/settings/dostavka/">Доставка</a>
-        </div>
-
         <div class="p-main">
             <div class="p-section">
                 <div class="p-section__header">

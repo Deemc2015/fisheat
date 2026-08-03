@@ -28,6 +28,8 @@ $partnersHeaderActions = isset($partnersHeaderActions) ? (string)$partnersHeader
 $partnersLogoutUrl     = isset($partnersLogoutUrl) && $partnersLogoutUrl !== '' ? (string)$partnersLogoutUrl : rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/?logout=yes';
 $partnersSidebarBottom = isset($partnersSidebarBottom) ? (string)$partnersSidebarBottom : '';
 
+
+
 $partnersNav = function ($key) use ($partnersActivePage) {
     return $partnersActivePage === $key ? ' active' : '';
 };
@@ -99,3 +101,19 @@ $partnersNav = function ($key) use ($partnersActivePage) {
                 <?= $partnersHeaderActions !== '' ? $partnersHeaderActions : '<button class="p-header__action-btn" title="Выйти" onclick="document.location=\'' . htmlspecialchars($partnersLogoutUrl, ENT_QUOTES) . '\'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="white"/></svg></button>' ?>
             </div>
         </div>
+        <?$APPLICATION->IncludeComponent("bitrix:menu", "menu-page", Array(
+            "ALLOW_MULTI_SELECT" => "N",	// Разрешить несколько активных пунктов одновременно
+                "CHILD_MENU_TYPE" => "left",	// Тип меню для остальных уровней
+                "DELAY" => "N",	// Откладывать выполнение шаблона меню
+                "MAX_LEVEL" => "1",	// Уровень вложенности меню
+                "MENU_CACHE_GET_VARS" => array(	// Значимые переменные запроса
+                    0 => "",
+                ),
+                "MENU_CACHE_TIME" => "3600",	// Время кеширования (сек.)
+                "MENU_CACHE_TYPE" => "N",	// Тип кеширования
+                "MENU_CACHE_USE_GROUPS" => "Y",	// Учитывать права доступа
+                "ROOT_MENU_TYPE" => "personallevel",	// Тип меню для первого уровня
+                "USE_EXT" => "N",	// Подключать файлы с именами вида .тип_меню.menu_ext.php
+            ),
+            false
+        );?>

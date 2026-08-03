@@ -96,11 +96,6 @@ $partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 
-        <!-- Подменю доставки -->
-        <div class="p-dash-tabs">
-            <a class="tab-btn" data-tab="zones" href="/partners/delivery-zones/">Зоны доставки</a>
-            <a class="tab-btn active" data-tab="restaurants" href="/partners/delivery-zones/restorany/">Рестораны</a>
-        </div>
 
         <div class="p-main">
             <div class="p-section" style="display:flex; gap:20px; flex-wrap:wrap;">
