@@ -436,12 +436,6 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         $this->arParams['SORT_FIELD'] = $sortField;
         $this->arParams['SORT_ORDER'] = $sortOrder;
 
-        // ДИАГНОСТИКА: что реально приходит в POST при клике "Показать ещё"
-        addMessage2Log('products.getMore: page=' . var_export($request->getPost('page'), true)
-            . ' pageSize=' . var_export($request->getPost('pageSize'), true)
-            . ' sortField=' . var_export($request->getPost('sortField'), true)
-            . ' sortOrder=' . var_export($request->getPost('sortOrder'), true));
-
         $cache = Cache::createInstance();
         // 'v2' — версия ключа: не даём отдавать старый кеш,
         // записанный до исправления навигации (iNumPage).
@@ -466,10 +460,6 @@ class ProductsList extends \CBitrixComponent implements Controllerable
 
                 $total = $this->getTotalCount();
                 $hasMore = ($page * $pageSize) < $total;
-
-                // ДИАГНОСТИКА: итоги страницы
-                addMessage2Log('products.getMore: page=' . $page . ' pageSize=' . $pageSize
-                    . ' items=' . count($items) . ' total=' . $total . ' hasMore=' . var_export($hasMore, true));
 
                 $data = [
                     'html'    => $html,
