@@ -29,15 +29,15 @@ $aMenuLinks = Array(
 		"" 
 	),
 	Array(
-		"Меню", 
-		"/partners/menu/", 
-		Array(), 
-		Array("ICON"=>"<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">                             <path d=\"M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM13 7H11V13H17V11H13V7Z\" fill=\"white\"></path>                         </svg>"), 
-		"" 
+		"Меню",
+		"/partners/menu/",
+		Array(),
+		Array("ICON"=>"<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">                             <path d=\"M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM13 7H11V13H17V11H13V7Z\" fill=\"white\"></path>                         </svg>"),
+		""
 	),
 	Array(
-		"Отчеты", 
-		"/partners/otchety/", 
+		"Отчеты",
+		"/partners/otchety/",
 		Array(), 
 		Array("ICON"=>"<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">                             <path d=\"M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 15H13V17H17V15ZM9 13H7V17H9V13ZM17 9H13V11H17V9ZM9 7H7V11H9V7Z\" fill=\"white\"></path>                         </svg>"), 
 		"" 
