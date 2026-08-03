@@ -30,16 +30,18 @@ use Ldo\Develop\Pict;
  * @var CatalogSectionComponent $component
  */
 
+$noPhotoPath = SITE_TEMPLATE_PATH.'/assets/images/no-photo.jpg';
+
 if($item['PREVIEW_PICTURE']){
     $bgProduct = CFile::ResizeImageGet($item['PREVIEW_PICTURE']['ID'], ['width'=>280, 'height'=>280], BX_RESIZE_IMAGE_PROPORTIONAL, true);
     $bgProduct = $bgProduct['src'];
 }
 else{
-    $bgProduct = SITE_TEMPLATE_PATH.'/images/no_image.png';
+    $bgProduct = $noPhotoPath;
 }
 
 
-if(Loader::includeModule('ldo.develop')){
+if(Loader::includeModule('ldo.develop') && !empty($item['PREVIEW_PICTURE']['ID'])){
     $webP = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 280, 280, true, 65);
     $webP_768 = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 208, 208, true, 65);
     $webP_400 = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 187, 187, true, 65);
@@ -105,6 +107,10 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 			{
 				foreach ($morePhoto as $key => $photo)
 				{
+                    if(!$photo){
+                        $photo['SRC'] = $noPhotoPath;
+                    }
+
 					?>
                     <picture>
                         <?if($webP):?>
@@ -112,7 +118,7 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
                             <source srcset="<?=$webP_768?>" media="(min-width: 768px)">
                             <source srcset="<?=$webP_400?>" media="(min-width: 400px)">
                         <?endif;?>
-                        <img src="<?=$photo['SRC']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                        <img src="<?=$photo['SRC']?>"  alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
                    </picture>
 
 					<?
@@ -120,6 +126,9 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 			}
 			?>
 		</span>
+            <?
+            echo $bgProduct;
+            ?>
             <div id="image-product-block">
                 <picture>
                         <?if($webP):?>
@@ -127,7 +136,12 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
                             <source srcset="<?=$webP_768?>" media="(min-width: 768px)">
                             <source srcset="<?=$webP_400?>" media="(min-width: 400px)">
                         <?endif;?>
-                        <img id="<?=$itemIds['PICT']?>" src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+                        <?
+                        if(!$bgProduct){
+                            $bgProduct = $noPhotoPath;
+                        }
+                        ?>
+                        <img id="<?=$itemIds['PICT']?>"    src="<?=$bgProduct?>" alt="<?=$item['NAME']?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
                 </picture>
 
             </div>
