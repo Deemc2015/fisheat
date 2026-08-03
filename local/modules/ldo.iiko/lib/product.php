@@ -101,6 +101,7 @@ class Product
     public function sync($progressToken = null): array
     {
         Loader::includeModule('iblock');
+        Loader::includeModule('catalog');
 
         $categories = $this->getCategories();
         $items = $this->getItems();
@@ -225,11 +226,13 @@ class Product
         $iikoGroupId = (string)($item['iikoGroupId'] ?? '');
         $sectionId = isset($sectionMap[$iikoGroupId]) ? (int)$sectionMap[$iikoGroupId] : null;
 
+        $price = $this->extractPrice($item);
+
         $fields = [
             'IBLOCK_ID'       => self::IBLOCK_ID,
             'NAME'            => (string)($item['name'] ?? ''),
             'DETAIL_TEXT'     => (string)($item['description'] ?? ''),
-            'CODE'            => $this->uniqueCode((string)($item['name'] ?? ''), $itemId),
+            'CODE'            => $this->uniqueCode((string)$item['name']),
             'ACTIVE'          => 'Y',
             'PROPERTY_VALUES' => [
                 'ATT_RK_ID'          => $itemId,
@@ -245,7 +248,12 @@ class Product
         $element = new \CIBlockElement();
 
         if ($existId) {
-            return (bool)$element->Update($existId, $fields);
+            $updated = (bool)$element->Update($existId, $fields);
+            if ($updated) {
+                $this->registerCatalogProduct($existId);
+                $this->addPrice($existId, $price);
+            }
+            return $updated;
         }
 
         $newId = $element->Add($fields);
@@ -254,7 +262,109 @@ class Product
             return false;
         }
 
+        $this->registerCatalogProduct($newId);
+        $this->addPrice($newId, $price);
+
         return true;
+    }
+
+    /**
+     * Извлечь цену товара из itemSizes[].prices[].
+     * Приоритет: размер с isDefault=true, иначе первый размер с ценой.
+     * Фильтр: organizationId === restoranId.
+     *
+     * @param array $item
+     * @return float|null
+     */
+    private function extractPrice(array $item): ?float
+    {
+        if (empty($item['itemSizes']) || !is_array($item['itemSizes'])) {
+            return null;
+        }
+
+        $fallbackPrice = null;
+
+        foreach ($item['itemSizes'] as $size) {
+            if (empty($size['prices']) || !is_array($size['prices'])) {
+                continue;
+            }
+
+            $sizePrice = null;
+            foreach ($size['prices'] as $priceRow) {
+                if (isset($priceRow['organizationId']) && $priceRow['organizationId'] === $this->restoranId) {
+                    $sizePrice = (float)$priceRow['price'];
+                    break;
+                }
+            }
+
+            if ($sizePrice === null) {
+                continue;
+            }
+
+            if ($fallbackPrice === null) {
+                $fallbackPrice = $sizePrice;
+            }
+
+            // Приоритет — размер по умолчанию
+            if (!empty($size['isDefault'])) {
+                return $sizePrice;
+            }
+        }
+
+        return $fallbackPrice;
+    }
+
+    /**
+     * Зарегистрировать товар в торговом каталоге (b_catalog_product).
+     *
+     * @param int $idElement
+     * @return void
+     */
+    private function registerCatalogProduct(int $idElement): void
+    {
+        $row = \CCatalogProduct::GetByID($idElement);
+        if ($row) {
+            return;
+        }
+
+        \CCatalogProduct::add([
+            'ID' => $idElement,
+            'QUANTITY' => 1000,
+        ]);
+    }
+
+    /**
+     * Добавить или обновить цену товара (тип цены 1, валюта RUB).
+     *
+     * @param int $idElement
+     * @param float|string|null $price
+     * @return void
+     */
+    private function addPrice(int $idElement, $price): void
+    {
+        if ($price === null || $price === '' || !is_numeric($price)) {
+            return;
+        }
+
+        $typePrice = 1;
+
+        $arFields = [
+            'PRODUCT_ID' => $idElement,
+            'CATALOG_GROUP_ID' => $typePrice,
+            'PRICE' => (float)$price,
+            'CURRENCY' => 'RUB',
+        ];
+
+        $res = \CPrice::GetList(
+            [],
+            ['PRODUCT_ID' => $idElement, 'CATALOG_GROUP_ID' => $typePrice]
+        );
+
+        if ($arr = $res->Fetch()) {
+            \CPrice::Update($arr['ID'], $arFields);
+        } else {
+            \CPrice::Add($arFields);
+        }
     }
 
     /**
@@ -281,20 +391,19 @@ class Product
     }
 
     /**
-     * Уникальный символьный код из названия (с суффиксом от id).
+     * Уникальный символьный код из названия.
      *
      * @param string $name
-     * @param string $id
      * @return string
      */
-    private function uniqueCode(string $name, string $id): string
+    private function uniqueCode(string $name): string
     {
         $base = \CUtil::translit($name, 'ru', [
             'replace_space' => '-',
             'replace_other' => '-',
         ]);
 
-        return $base . '-' . substr(md5($id), 0, 8);
+        return $base;
     }
 
     /**

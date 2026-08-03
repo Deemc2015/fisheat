@@ -127,10 +127,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                         <?php endforeach; ?>
                     </div>
-
-                <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
         <div class="promo-block">
             <h2>Применение скидок</h2>
             <div class="promo-block__line">
