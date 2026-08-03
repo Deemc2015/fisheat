@@ -10,9 +10,26 @@
 /** @var CBitrixComponent $component */
 ?>
 
-<? if (empty($arResult['ITEMS'])): ?>
+<? if (empty($arResult['SECTIONS']) && empty($arResult['ITEMS'])): ?>
     <p>Товары не найдены.</p>
 <? else: ?>
+
+<div class="products-toolbar">
+    <label class="products-filter">
+        <span class="products-filter__label">Категория</span>
+        <select id="products-category">
+            <option value="0">Все категории</option>
+            <?php foreach ($arResult['SECTIONS'] as $sid => $sname): ?>
+                <option value="<?= (int)$sid ?>"><?= htmlspecialcharsbx($sname) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </label>
+
+    <label class="products-search">
+        <span class="products-search__label">Поиск по названию</span>
+        <input type="text" id="products-search-input" placeholder="Введите название товара..." autocomplete="off">
+    </label>
+</div>
 
 <div
     id="products-list"

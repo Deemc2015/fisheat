@@ -36,31 +36,51 @@
         }
     }
 
-    // ===== Подгрузка товаров =====
-    function loadMore() {
-        initNodes();
-        if (!moreBtn || !list) {
-            return;
-        }
+    // Выбранная категория (select сверху)
+    function getSectionId() {
+        var el = document.getElementById('products-category');
+        return el ? (parseInt(el.value, 10) || 0) : 0;
+    }
 
-        moreBtn.disabled = true;
-        moreBtn.textContent = 'Загрузка...';
+    // Текст живого поиска
+    function getSearchQuery() {
+        var el = document.getElementById('products-search-input');
+        return el ? (el.value || '').trim() : '';
+    }
+
+    // Универсальный AJAX-запрос списка: page — номер страницы,
+    // replace — true заменяет содержимое списка (фильтр/поиск),
+    // false — добавляет в конец (подгрузка).
+    function requestItems(page, replace) {
+        initNodes();
+        if (!list) {
+            return null;
+        }
 
         // Данные отправляем через FormData (как в saveProduct) —
         // так гарантированно доходят POST-параметры до getPost().
         var formData = new FormData();
-        formData.append('page', nextPage);
+        formData.append('page', page);
         formData.append('pageSize', getPageSize());
         formData.append('sortField', getSortField());
         formData.append('sortOrder', getSortOrder());
+        formData.append('sectionId', getSectionId());
+        formData.append('q', getSearchQuery());
         formData.append('sessid', BX.bitrix_sessid());
 
-        BX.ajax.runComponentAction('ldo:products.list', 'getMore', {
+        if (replace && moreBtn) {
+            moreBtn.disabled = true;
+            moreBtn.textContent = 'Загрузка...';
+        }
+
+        return BX.ajax.runComponentAction('ldo:products.list', 'getMore', {
             mode: 'class',
             data: formData
         }).then(function (response) {
-            moreBtn.disabled = false;
-            moreBtn.textContent = 'Показать ещё';
+            if (moreBtn) {
+                moreBtn.disabled = false;
+                moreBtn.textContent = 'Показать ещё';
+            }
 
             // Обработка ошибок на уровне Битрикса (status: 'error')
             if (!response || response.status === 'error') {
@@ -76,18 +96,49 @@
                 return;
             }
 
-            // Пустой html (товары закончились) — не ошибка, просто скрываем кнопку
-            if (typeof data.html === 'string' && data.html !== '') {
+            if (replace) {
+                if (typeof data.html === 'string' && data.html !== '') {
+                    list.innerHTML = data.html;
+                } else {
+                    list.innerHTML = '<p class="products-empty">Ничего не найдено</p>';
+                }
+            } else if (typeof data.html === 'string' && data.html !== '') {
                 list.insertAdjacentHTML('beforeend', data.html);
             }
-            nextPage++;
 
             setHasMore(!!data.hasMore);
         }).catch(function (error) {
-            moreBtn.disabled = false;
-            moreBtn.textContent = 'Показать ещё';
+            if (moreBtn) {
+                moreBtn.disabled = false;
+                moreBtn.textContent = 'Показать ещё';
+            }
             alert(error && error.errors ? error.errors[0].message : 'Ошибка соединения с сервером');
         });
+    }
+
+    // ===== Подгрузка следующей страницы =====
+    function loadMore() {
+        initNodes();
+        if (!moreBtn || !list || moreBtn.disabled) {
+            return;
+        }
+
+        moreBtn.disabled = true;
+        moreBtn.textContent = 'Загрузка...';
+
+        requestItems(nextPage, false).then(function () {
+            nextPage++;
+        });
+    }
+
+    // ===== Перезагрузка списка при изменении категории / поиска =====
+    function reloadList() {
+        initNodes();
+        if (!list) {
+            return;
+        }
+        nextPage = 2;
+        requestItems(1, true);
     }
 
     // ===== Режим редактирования карточки =====
@@ -207,6 +258,22 @@
             restoreState(item);
         } else if (action === 'save') {
             saveProduct(item, btn);
+        }
+    });
+
+    // ===== Фильтр по категории (select сверху) =====
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.id === 'products-category') {
+            reloadList();
+        }
+    });
+
+    // ===== Живой поиск по названию (debounce 350мс) =====
+    var searchTimer = null;
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.id === 'products-search-input') {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(reloadList, 350);
         }
     });
 })();

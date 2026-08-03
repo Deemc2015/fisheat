@@ -113,14 +113,17 @@ class ProductsList extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Получить список товаров с постраничной навигацией (offset/limit).
+     * Получить список товаров с постраничной навигацией (offset/limit),
+     * с учётом фильтра по разделу (категории) и поиска по названию.
      * Для каждого товара подтягиваются фото, раздел, цена, кол-во и вес.
      *
      * @param int $offset
      * @param int $limit
+     * @param int $sectionId
+     * @param string $search
      * @return array
      */
-    private function getProducts(int $offset, int $limit): array
+    private function getProducts(int $offset, int $limit, int $sectionId = 0, string $search = ''): array
     {
         if (!Loader::includeModule('iblock') || !Loader::includeModule('catalog')) {
             return [];
@@ -130,14 +133,21 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         // используем iNumPage (номер страницы) + nPageSize.
         $pageNum = intdiv($offset, $limit) + 1;
 
+        $filter = ['IBLOCK_ID' => self::IBLOCK_ID];
+        if ($sectionId > 0) {
+            $filter['SECTION_ID'] = $sectionId;
+            $filter['INCLUDE_SUBSECTIONS'] = 'Y';
+        }
+        if ($search !== '') {
+            $filter['?NAME'] = $search;
+        }
+
         $rs = \CIBlockElement::GetList(
             [
                 $this->arParams['SORT_FIELD'] => $this->arParams['SORT_ORDER'],
                 'ID'                          => 'ASC',
             ],
-            [
-                'IBLOCK_ID' => self::IBLOCK_ID,
-            ],
+            $filter,
             false,
             [
                 'iNumPage'  => $pageNum,
@@ -185,33 +195,46 @@ class ProductsList extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Общее количество товаров в инфоблоке.
+     * Общее количество товаров с учётом фильтра по разделу и поиска.
      *
+     * @param int $sectionId
+     * @param string $search
      * @return int
      */
-    private function getTotalCount(): int
+    private function getTotalCount(int $sectionId = 0, string $search = ''): int
     {
         if (!Loader::includeModule('iblock')) {
             return 0;
         }
 
-        try {
-            $count = \Bitrix\Iblock\ElementTable::getCount(['=IBLOCK_ID' => self::IBLOCK_ID]);
-            return (int)$count;
-        } catch (\Throwable $e) {
-            // Фолбэк на классический API, если ORM недоступен
-            $rs = \CIBlockElement::GetList(
-                [],
-                ['IBLOCK_ID' => self::IBLOCK_ID],
-                'IBLOCK_ID',
-                false,
-                ['ID']
-            );
-
-            $row = $rs->Fetch();
-
-            return (int)($row['CNT'] ?? 0);
+        $filter = ['IBLOCK_ID' => self::IBLOCK_ID];
+        if ($sectionId > 0) {
+            $filter['SECTION_ID'] = $sectionId;
+            $filter['INCLUDE_SUBSECTIONS'] = 'Y';
         }
+        if ($search !== '') {
+            $filter['?NAME'] = $search;
+        }
+
+        // Если фильтров нет — быстрый подсчёт через ORM
+        if ($sectionId <= 0 && $search === '') {
+            try {
+                $count = \Bitrix\Iblock\ElementTable::getCount(['=IBLOCK_ID' => self::IBLOCK_ID]);
+                return (int)$count;
+            } catch (\Throwable $e) {
+                // фолбэк ниже
+            }
+        }
+
+        $rs = \CIBlockElement::GetList(
+            [],
+            $filter,
+            false,
+            false,
+            ['ID']
+        );
+
+        return (int)$rs->SelectedRowsCount();
     }
 
     /**
@@ -355,22 +378,47 @@ class ProductsList extends \CBitrixComponent implements Controllerable
 
         return '
         <div class="product-item" data-id="' . $id . '">
-            <div class="product-item__img-wrap">' . $img . '</div>
-            <div class="product-item__name" title="' . $name . '">' . $name . '</div>
+            <div class="product-item__head">
+                <div class="product-item__img-wrap">' . $img . '</div>
+                <div class="product-item__name" title="' . $name . '">' . $name . '</div>
+            </div>
 
-            <label class="toggle-switch product-active-wrap" title="Активность">
-                <input type="checkbox" class="product-active"' . $checkAttr . ' disabled>
-                <span class="toggle-switch__slider"></span>
-            </label>
+            <div class="product-item__fields">
+                <label class="product-field product-field--active" title="Активность">
+                    <span class="product-field__label">Активность</span>
+                    <span class="toggle-switch">
+                        <input type="checkbox" class="product-active"' . $checkAttr . ' disabled>
+                        <span class="toggle-switch__slider"></span>
+                    </span>
+                </label>
 
-            <select class="product-section" disabled>
-                ' . $sectionsHtml . '
-            </select>
+                <label class="product-field">
+                    <span class="product-field__label">Раздел</span>
+                    <select class="product-section" disabled>
+                        ' . $sectionsHtml . '
+                    </select>
+                </label>
 
-            <input type="number" class="product-sort" value="' . $sort . '" disabled title="Сортировка">
-            <input type="number" step="0.01" class="product-price" value="' . number_format($price, 2, '.', '') . '" disabled title="Цена, руб.">
-            <input type="number" step="0.001" class="product-quantity" value="' . number_format($quantity, 3, '.', '') . '" disabled title="Кол-во">
-            <input type="number" step="1" class="product-weight" value="' . $weight . '" disabled title="Вес, г">
+                <label class="product-field">
+                    <span class="product-field__label">Сортировка</span>
+                    <input type="number" class="product-sort" value="' . $sort . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Цена, ₽</span>
+                    <input type="number" step="0.01" class="product-price" value="' . number_format($price, 2, '.', '') . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Кол-во</span>
+                    <input type="number" step="0.001" class="product-quantity" value="' . number_format($quantity, 3, '.', '') . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Вес, г</span>
+                    <input type="number" step="1" class="product-weight" value="' . $weight . '" disabled>
+                </label>
+            </div>
 
             <div class="product-item__actions">
                 <button type="button" class="product-btn product-btn--edit" data-action="edit">Изменить</button>
@@ -431,34 +479,45 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             $sortOrder = 'ASC';
         }
 
+        // Фильтр по категории (разделу)
+        $sectionId = (int)$request->getPost('sectionId');
+        if ($sectionId < 0) {
+            $sectionId = 0;
+        }
+
+        // Поиск по названию
+        $search = trim((string)$request->getPost('q'));
+        $search = substr($search, 0, 100);
+
         // Временные параметры для getProducts()
         $this->arParams['PAGE_SIZE'] = $pageSize;
         $this->arParams['SORT_FIELD'] = $sortField;
         $this->arParams['SORT_ORDER'] = $sortOrder;
 
         $cache = Cache::createInstance();
-        // 'v2' — версия ключа: не даём отдавать старый кеш,
-        // записанный до исправления навигации (iNumPage).
+        // 'v3' — версия ключа: учитывает фильтр категории и поиск.
         $cacheId = implode('|', [
             'more',
-            'v2',
+            'v3',
             $page,
             $pageSize,
             $sortField,
             $sortOrder,
+            $sectionId,
+            $search,
             self::IBLOCK_ID,
         ]);
 
         if ($cache->startDataCache(self::DEFAULT_CACHE_TIME, $cacheId, self::CACHE_DIR)) {
             try {
-                $items = $this->getProducts(($page - 1) * $pageSize, $pageSize);
+                $items = $this->getProducts(($page - 1) * $pageSize, $pageSize, $sectionId, $search);
 
                 $html = '';
                 foreach ($items as $item) {
                     $html .= $this->renderItemHtml($item);
                 }
 
-                $total = $this->getTotalCount();
+                $total = $this->getTotalCount($sectionId, $search);
                 $hasMore = ($page * $pageSize) < $total;
 
                 $data = [
