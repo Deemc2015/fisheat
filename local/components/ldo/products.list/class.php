@@ -104,7 +104,10 @@ class ProductsList extends \CBitrixComponent implements Controllerable
      */
     private function getCacheKey(): string
     {
+        // 'v2' — версия: перезаписываем кеш после расширения набора полей
+        // (детальное описание, свойства БЖУ/калорий).
         return implode('|', [
+            'v2',
             self::IBLOCK_ID,
             $this->arParams['PAGE_SIZE'],
             $this->arParams['SORT_FIELD'],
@@ -162,6 +165,11 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                 'PREVIEW_PICTURE',
                 'DETAIL_PICTURE',
                 'DETAIL_PAGE_URL',
+                'DETAIL_TEXT',
+                'PROPERTY_ATT_KALLORY',
+                'PROPERTY_ATT_BELKI',
+                'PROPERTY_ATT_GIRY',
+                'PROPERTY_ATT_YGLEVODY',
             ]
         );
 
@@ -188,6 +196,13 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             $item['WEIGHT']       = $catalog[$id]['WEIGHT'] ?? 0;
             $item['PICTURE_SRC']  = $this->getPictureSrc($item);
             $item['SECTION_NAME'] = $sections[(int)$item['IBLOCK_SECTION_ID']] ?? '';
+            $item['DETAIL_TEXT']  = (string)($item['DETAIL_TEXT'] ?? '');
+
+            // Свойства БЖУ/калорий (см. Ldo\Rkeeper\Product)
+            $item['ATT_KALLORY']  = (string)($item['PROPERTY_ATT_KALLORY_VALUE'] ?? '');
+            $item['ATT_BELKI']    = (string)($item['PROPERTY_ATT_BELKI_VALUE'] ?? '');
+            $item['ATT_GIRY']     = (string)($item['PROPERTY_ATT_GIRY_VALUE'] ?? '');
+            $item['ATT_YGLEVODY'] = (string)($item['PROPERTY_ATT_YGLEVODY_VALUE'] ?? '');
         }
         unset($item);
 
@@ -376,6 +391,18 @@ class ProductsList extends \CBitrixComponent implements Controllerable
 
         $checkAttr = $active ? ' checked' : '';
 
+        $detailText = htmlspecialcharsbx((string)($item['DETAIL_TEXT'] ?? ''), true);
+        $kallory = htmlspecialcharsbx((string)($item['ATT_KALLORY'] ?? ''));
+        $belki = htmlspecialcharsbx((string)($item['ATT_BELKI'] ?? ''));
+        $giry = htmlspecialcharsbx((string)($item['ATT_GIRY'] ?? ''));
+        $yglevody = htmlspecialcharsbx((string)($item['ATT_YGLEVODY'] ?? ''));
+
+        // Текущее детальное фото (для предпросмотра при загрузке нового)
+        $detailSrc = '';
+        if (!empty($item['DETAIL_PICTURE'])) {
+            $detailSrc = \CFile::GetPath((int)$item['DETAIL_PICTURE']);
+        }
+
         return '
         <div class="product-item" data-id="' . $id . '">
             <div class="product-item__head">
@@ -383,7 +410,7 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                 <div class="product-item__name" title="' . $name . '">' . $name . '</div>
             </div>
 
-            <div class="product-item__fields">
+            <div class="product-item__main-fields">
                 <label class="product-field product-field--active" title="Активность">
                     <span class="product-field__label">Активность</span>
                     <span class="toggle-switch">
@@ -393,20 +420,22 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                 </label>
 
                 <label class="product-field">
-                    <span class="product-field__label">Раздел</span>
-                    <select class="product-section" disabled>
-                        ' . $sectionsHtml . '
-                    </select>
+                    <span class="product-field__label">Цена, ₽</span>
+                    <input type="number" step="0.01" class="product-price" value="' . number_format($price, 2, '.', '') . '" disabled>
                 </label>
 
                 <label class="product-field">
                     <span class="product-field__label">Сортировка</span>
                     <input type="number" class="product-sort" value="' . $sort . '" disabled>
                 </label>
+            </div>
 
+            <div class="product-extra" style="display:none;">
                 <label class="product-field">
-                    <span class="product-field__label">Цена, ₽</span>
-                    <input type="number" step="0.01" class="product-price" value="' . number_format($price, 2, '.', '') . '" disabled>
+                    <span class="product-field__label">Раздел</span>
+                    <select class="product-section" disabled>
+                        ' . $sectionsHtml . '
+                    </select>
                 </label>
 
                 <label class="product-field">
@@ -418,9 +447,45 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                     <span class="product-field__label">Вес, г</span>
                     <input type="number" step="1" class="product-weight" value="' . $weight . '" disabled>
                 </label>
+
+                <label class="product-field product-field--full">
+                    <span class="product-field__label">Детальное описание</span>
+                    <textarea class="product-detail" rows="4" disabled>' . $detailText . '</textarea>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Калории</span>
+                    <input type="number" step="0.01" class="product-kallory" value="' . $kallory . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Белки</span>
+                    <input type="number" step="0.01" class="product-belki" value="' . $belki . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Жиры</span>
+                    <input type="number" step="0.01" class="product-giry" value="' . $giry . '" disabled>
+                </label>
+
+                <label class="product-field">
+                    <span class="product-field__label">Углеводы</span>
+                    <input type="number" step="0.01" class="product-yglevody" value="' . $yglevody . '" disabled>
+                </label>
+
+                <label class="product-field product-field--full">
+                    <span class="product-field__label">Детальное фото</span>
+                    <span class="product-photo-block">
+                        ' . ($detailSrc ? '<img class="product-detail-photo" src="' . htmlspecialcharsbx($detailSrc) . '" alt="">' : '') . '
+                        <input type="file" class="product-detail-picture" accept="image/*" disabled>
+                    </span>
+                </label>
             </div>
 
             <div class="product-item__actions">
+                <button type="button" class="product-btn product-btn--delete" data-action="delete" title="Удалить товар">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
                 <button type="button" class="product-btn product-btn--edit" data-action="edit">Изменить</button>
                 <button type="button" class="product-btn product-btn--save" data-action="save" style="display:none;">Сохранить</button>
                 <button type="button" class="product-btn product-btn--cancel" data-action="cancel" style="display:none;">Отмена</button>
@@ -444,6 +509,9 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                 'prefilters' => [],
             ],
             'saveProduct' => [
+                'prefilters' => [],
+            ],
+            'deleteProduct' => [
                 'prefilters' => [],
             ],
         ];
@@ -495,10 +563,11 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         $this->arParams['SORT_ORDER'] = $sortOrder;
 
         $cache = Cache::createInstance();
-        // 'v3' — версия ключа: учитывает фильтр категории и поиск.
+        // 'v4' — версия ключа: учитывает фильтр категории, поиск и новую
+        // разметку карточки (скрытые поля при редактировании, описание, фото).
         $cacheId = implode('|', [
             'more',
-            'v3',
+            'v4',
             $page,
             $pageSize,
             $sortField,
@@ -573,10 +642,27 @@ class ProductsList extends \CBitrixComponent implements Controllerable
 
         // 1. Элемент инфоблока
         $fields = [
-            'ACTIVE'             => $request->getPost('active') === 'Y' ? 'Y' : 'N',
-            'IBLOCK_SECTION_ID'  => (int)$request->getPost('sectionId'),
-            'SORT'               => (int)$request->getPost('sort'),
+            'ACTIVE'            => $request->getPost('active') === 'Y' ? 'Y' : 'N',
+            'IBLOCK_SECTION_ID' => (int)$request->getPost('sectionId'),
+            'SORT'              => (int)$request->getPost('sort'),
+            'DETAIL_TEXT'       => (string)$request->getPost('detail'),
+            'PROPERTY_VALUES'   => [
+                'ATT_KALLORY'  => (float)$request->getPost('kallory'),
+                'ATT_BELKI'    => (float)$request->getPost('belki'),
+                'ATT_GIRY'     => (float)$request->getPost('giry'),
+                'ATT_YGLEVODY' => (float)$request->getPost('yglevody'),
+            ],
         ];
+
+        // Загрузка детального фото (DETAIL_PICTURE)
+        $detailPicture = $request->getFile('detailPicture');
+        if (
+            is_array($detailPicture)
+            && !empty($detailPicture['tmp_name'])
+            && (int)($detailPicture['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK
+        ) {
+            $fields['DETAIL_PICTURE'] = $detailPicture;
+        }
 
         $element = new \CIBlockElement();
         if (!$element->Update($id, $fields)) {
@@ -608,6 +694,53 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         $this->setPrice($id, $price);
 
         // 4. Сброс кеша компонента
+        BXClearCache(true, self::CACHE_DIR);
+
+        return [
+            'success' => true,
+        ];
+    }
+
+    /**
+     * AJAX-действие: удаление товара.
+     * После удаления сбрасывается кеш компонента.
+     *
+     * @return array{success: bool, error?: string}
+     */
+    public function deleteProductAction(): array
+    {
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error'   => 'Ошибка сессии. Пожалуйста, обновите страницу.',
+            ];
+        }
+
+        if (!Loader::includeModule('iblock')) {
+            return [
+                'success' => false,
+                'error'   => 'Модуль iblock не найден.',
+            ];
+        }
+
+        $request = \Bitrix\Main\Context::getCurrent()->getRequest();
+
+        $id = (int)$request->getPost('id');
+        if ($id <= 0) {
+            return [
+                'success' => false,
+                'error'   => 'Не передан ID товара.',
+            ];
+        }
+
+        $element = new \CIBlockElement();
+        if (!$element->Delete($id)) {
+            return [
+                'success' => false,
+                'error'   => $element->LAST_ERROR ?: 'Не удалось удалить товар.',
+            ];
+        }
+
         BXClearCache(true, self::CACHE_DIR);
 
         return [

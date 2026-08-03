@@ -149,7 +149,13 @@
             sort: item.querySelector('.product-sort'),
             price: item.querySelector('.product-price'),
             quantity: item.querySelector('.product-quantity'),
-            weight: item.querySelector('.product-weight')
+            weight: item.querySelector('.product-weight'),
+            detail: item.querySelector('.product-detail'),
+            kallory: item.querySelector('.product-kallory'),
+            belki: item.querySelector('.product-belki'),
+            giry: item.querySelector('.product-giry'),
+            yglevody: item.querySelector('.product-yglevody'),
+            detailPicture: item.querySelector('.product-detail-picture')
         };
     }
 
@@ -158,6 +164,7 @@
         var editBtn = item.querySelector('[data-action="edit"]');
         var saveBtn = item.querySelector('[data-action="save"]');
         var cancelBtn = item.querySelector('[data-action="cancel"]');
+        var extra = item.querySelector('.product-extra');
 
         Object.keys(inputs).forEach(function (key) {
             if (inputs[key]) {
@@ -165,6 +172,7 @@
             }
         });
 
+        if (extra) extra.style.display = editing ? '' : 'none';
         if (editBtn) editBtn.style.display = editing ? 'none' : '';
         if (saveBtn) saveBtn.style.display = editing ? '' : 'none';
         if (cancelBtn) cancelBtn.style.display = editing ? '' : 'none';
@@ -178,6 +186,11 @@
         item.setAttribute('data-state-price', inputs.price ? inputs.price.value : '0');
         item.setAttribute('data-state-quantity', inputs.quantity ? inputs.quantity.value : '0');
         item.setAttribute('data-state-weight', inputs.weight ? inputs.weight.value : '0');
+        item.setAttribute('data-state-detail', inputs.detail ? inputs.detail.value : '');
+        item.setAttribute('data-state-kallory', inputs.kallory ? inputs.kallory.value : '');
+        item.setAttribute('data-state-belki', inputs.belki ? inputs.belki.value : '');
+        item.setAttribute('data-state-giry', inputs.giry ? inputs.giry.value : '');
+        item.setAttribute('data-state-yglevody', inputs.yglevody ? inputs.yglevody.value : '');
     }
 
     function restoreState(item) {
@@ -188,6 +201,12 @@
         if (inputs.price) inputs.price.value = item.getAttribute('data-state-price') || '0';
         if (inputs.quantity) inputs.quantity.value = item.getAttribute('data-state-quantity') || '0';
         if (inputs.weight) inputs.weight.value = item.getAttribute('data-state-weight') || '0';
+        if (inputs.detail) inputs.detail.value = item.getAttribute('data-state-detail') || '';
+        if (inputs.kallory) inputs.kallory.value = item.getAttribute('data-state-kallory') || '';
+        if (inputs.belki) inputs.belki.value = item.getAttribute('data-state-belki') || '';
+        if (inputs.giry) inputs.giry.value = item.getAttribute('data-state-giry') || '';
+        if (inputs.yglevody) inputs.yglevody.value = item.getAttribute('data-state-yglevody') || '';
+        if (inputs.detailPicture) inputs.detailPicture.value = '';
         setEditMode(item, false);
     }
 
@@ -204,6 +223,14 @@
         formData.append('price', inputs.price ? inputs.price.value : '0');
         formData.append('quantity', inputs.quantity ? inputs.quantity.value : '0');
         formData.append('weight', inputs.weight ? inputs.weight.value : '0');
+        formData.append('detail', inputs.detail ? inputs.detail.value : '');
+        formData.append('kallory', inputs.kallory ? inputs.kallory.value : '0');
+        formData.append('belki', inputs.belki ? inputs.belki.value : '0');
+        formData.append('giry', inputs.giry ? inputs.giry.value : '0');
+        formData.append('yglevody', inputs.yglevody ? inputs.yglevody.value : '0');
+        if (inputs.detailPicture && inputs.detailPicture.files && inputs.detailPicture.files[0]) {
+            formData.append('detailPicture', inputs.detailPicture.files[0]);
+        }
         formData.append('sessid', BX.bitrix_sessid());
 
         btn.disabled = true;
@@ -232,6 +259,44 @@
         });
     }
 
+    // ===== Удаление товара =====
+    function deleteProduct(item, btn) {
+        var id = item.getAttribute('data-id');
+
+        if (!confirm('Удалить товар #' + id + '?')) {
+            return;
+        }
+
+        btn.disabled = true;
+
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('sessid', BX.bitrix_sessid());
+
+        BX.ajax.runComponentAction('ldo:products.list', 'deleteProduct', {
+            mode: 'class',
+            data: formData
+        }).then(function (response) {
+            if (response && response.data && response.data.success) {
+                var parent = item.parentNode;
+                if (parent) {
+                    parent.removeChild(item);
+                }
+                // Перезагружаем список с учётом фильтров/поиска
+                reloadList();
+            } else {
+                btn.disabled = false;
+                var msg = (response && response.data && response.data.error)
+                    ? response.data.error
+                    : 'Ошибка удаления товара';
+                alert(msg);
+            }
+        }).catch(function () {
+            btn.disabled = false;
+            alert('Ошибка соединения с сервером');
+        });
+    }
+
     // ===== Делегирование кликов: кнопки карточек и кнопка подгрузки =====
     document.addEventListener('click', function (e) {
         initNodes();
@@ -251,7 +316,9 @@
 
         var action = btn.getAttribute('data-action');
 
-        if (action === 'edit') {
+        if (action === 'delete') {
+            deleteProduct(item, btn);
+        } else if (action === 'edit') {
             rememberState(item);
             setEditMode(item, true);
         } else if (action === 'cancel') {
@@ -261,10 +328,22 @@
         }
     });
 
-    // ===== Фильтр по категории (select сверху) =====
+    // ===== Фильтр по категории (select сверху) + превью детального фото =====
     document.addEventListener('change', function (e) {
         if (e.target && e.target.id === 'products-category') {
             reloadList();
+            return;
+        }
+
+        // Превью выбранного детального фото
+        if (e.target && e.target.classList && e.target.classList.contains('product-detail-picture')) {
+            var item = e.target.closest('.product-item');
+            if (item && e.target.files && e.target.files[0]) {
+                var img = item.querySelector('.product-detail-photo');
+                if (img) {
+                    img.src = URL.createObjectURL(e.target.files[0]);
+                }
+            }
         }
     });
 

@@ -86,8 +86,12 @@
     border-radius: 10px;
 }
 
-/* ===== Карточка товара ===== */
+/* ===== Карточка товара: поля и кнопки в одну строку ===== */
 .product-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 16px;
     padding: 14px 16px;
     background: var(--bg-black, #1B1818);
     border: 1px solid var(--color-border, #868686);
@@ -97,8 +101,9 @@
 .product-item__head {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 12px;
+    gap: 12px;
+    min-width: 0;
+    flex: 1 1 260px;
 }
 
 .product-item__img-wrap {
@@ -135,12 +140,13 @@
     white-space: nowrap;
 }
 
-/* ===== Поля товара с подписями ===== */
-.product-item__fields {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px 16px;
-    margin-bottom: 12px;
+/* ===== Основные (видимые) поля товара ===== */
+.product-item__main-fields {
+    display: flex;
+    align-items: center;
+    gap: 14px 20px;
+    flex-wrap: wrap;
+    margin-left: auto;
 }
 
 .product-field {
@@ -148,6 +154,10 @@
     flex-direction: column;
     gap: 5px;
     min-width: 0;
+}
+
+.product-field--full {
+    grid-column: 1 / -1;
 }
 
 .product-field__label {
@@ -166,11 +176,29 @@
     align-self: flex-start;
 }
 
+/* ===== Скрытый блок (показывается при редактировании) ===== */
+.product-extra {
+    flex-basis: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px 16px;
+    margin: 0;
+    padding: 14px;
+    border: 1px dashed var(--color-border, #868686);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+}
+
 .product-section,
 .product-sort,
 .product-price,
 .product-quantity,
-.product-weight {
+.product-weight,
+.product-kallory,
+.product-belki,
+.product-giry,
+.product-yglevody,
+.product-detail {
     padding: 7px 10px;
     background: var(--bg-black, #1B1818);
     border: 1px solid var(--color-border, #868686);
@@ -183,11 +211,22 @@
     box-sizing: border-box;
 }
 
+.product-detail {
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.5;
+}
+
 .product-section:disabled,
 .product-sort:disabled,
 .product-price:disabled,
 .product-quantity:disabled,
-.product-weight:disabled {
+.product-weight:disabled,
+.product-kallory:disabled,
+.product-belki:disabled,
+.product-giry:disabled,
+.product-yglevody:disabled,
+.product-detail:disabled {
     opacity: .5;
     cursor: not-allowed;
 }
@@ -196,9 +235,54 @@
 .product-sort:focus,
 .product-price:focus,
 .product-quantity:focus,
-.product-weight:focus {
+.product-weight:focus,
+.product-kallory:focus,
+.product-belki:focus,
+.product-giry:focus,
+.product-yglevody:focus,
+.product-detail:focus {
     border-color: var(--bg-button, #F44336);
     outline: none;
+}
+
+/* ===== Блок детального фото ===== */
+.product-photo-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.product-detail-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+}
+
+.product-detail-picture {
+    max-width: 220px;
+    font-size: 12px;
+    color: var(--bg-white, #FFFFFF);
+}
+
+.product-detail-picture:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.product-detail-picture::-webkit-file-upload-button {
+    padding: 6px 12px;
+    margin-right: 8px;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 12px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
 }
 
 /* Название раздела под строкой (видно на маленьких экранах) */
@@ -215,6 +299,8 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+    flex-shrink: 0;
+    margin-top: 17px;
 }
 
 .product-btn {
@@ -231,6 +317,20 @@
     cursor: pointer;
     transition: opacity .2s ease, background .2s ease;
     white-space: nowrap;
+}
+
+.product-btn--delete {
+    background: transparent;
+    color: #E53935;
+    border-color: #E53935;
+    padding: 8px 10px;
+}
+.product-btn--delete:hover {
+    background: rgba(229,57,53,0.15);
+}
+.product-btn--delete:disabled {
+    opacity: .6;
+    cursor: not-allowed;
 }
 
 .product-btn--edit {
