@@ -167,10 +167,16 @@
         var extra = item.querySelector('.product-extra');
 
         Object.keys(inputs).forEach(function (key) {
+            // Чекбокс активности всегда доступен (работает без режима редактирования)
+            if (key === 'active') {
+                return;
+            }
             if (inputs[key]) {
                 inputs[key].disabled = !editing;
             }
         });
+
+        item.setAttribute('data-editing', editing ? '1' : '0');
 
         if (extra) extra.style.display = editing ? '' : 'none';
         if (editBtn) editBtn.style.display = editing ? 'none' : '';
@@ -259,6 +265,33 @@
         });
     }
 
+    // ===== Быстрое переключение активности (без режима редактирования) =====
+    function toggleActive(item, checkbox) {
+        var id = item.getAttribute('data-id');
+        var active = checkbox.checked ? 'Y' : 'N';
+
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('active', active);
+        formData.append('sessid', BX.bitrix_sessid());
+
+        BX.ajax.runComponentAction('ldo:products.list', 'toggleActive', {
+            mode: 'class',
+            data: formData
+        }).then(function (response) {
+            if (!response || !response.data || !response.data.success) {
+                checkbox.checked = !checkbox.checked;
+                var msg = (response && response.data && response.data.error)
+                    ? response.data.error
+                    : 'Ошибка обновления активности';
+                alert(msg);
+            }
+        }).catch(function () {
+            checkbox.checked = !checkbox.checked;
+            alert('Ошибка соединения с сервером');
+        });
+    }
+
     // ===== Удаление товара =====
     function deleteProduct(item, btn) {
         var id = item.getAttribute('data-id');
@@ -328,10 +361,19 @@
         }
     });
 
-    // ===== Фильтр по категории (select сверху) + превью детального фото =====
+    // ===== Фильтр по категории, активность, превью детального фото =====
     document.addEventListener('change', function (e) {
         if (e.target && e.target.id === 'products-category') {
             reloadList();
+            return;
+        }
+
+        // Быстрое переключение активности (вне режима редактирования)
+        if (e.target && e.target.classList && e.target.classList.contains('product-active')) {
+            var item = e.target.closest('.product-item');
+            if (item && item.getAttribute('data-editing') !== '1') {
+                toggleActive(item, e.target);
+            }
             return;
         }
 

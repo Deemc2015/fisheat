@@ -104,10 +104,10 @@ class ProductsList extends \CBitrixComponent implements Controllerable
      */
     private function getCacheKey(): string
     {
-        // 'v2' — версия: перезаписываем кеш после расширения набора полей
-        // (детальное описание, свойства БЖУ/калорий).
+        // 'v3' — версия: перезаписываем кеш после перехода на выборку
+        // только активных разделов.
         return implode('|', [
-            'v2',
+            'v3',
             self::IBLOCK_ID,
             $this->arParams['PAGE_SIZE'],
             $this->arParams['SORT_FIELD'],
@@ -137,8 +137,19 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         $pageNum = intdiv($offset, $limit) + 1;
 
         $filter = ['IBLOCK_ID' => self::IBLOCK_ID];
+
+        // Выводим только товары активных разделов (см. getSectionsMap).
+        // Если выбран конкретный раздел — фильтруем по нему (он активен, т.к.
+        // в выпадающем списке только активные), иначе — по всем активным разделам.
         if ($sectionId > 0) {
             $filter['SECTION_ID'] = $sectionId;
+            $filter['INCLUDE_SUBSECTIONS'] = 'Y';
+        } else {
+            $activeSections = array_keys($this->getSectionsMap());
+            if (empty($activeSections)) {
+                return [];
+            }
+            $filter['SECTION_ID'] = $activeSections;
             $filter['INCLUDE_SUBSECTIONS'] = 'Y';
         }
         if ($search !== '') {
@@ -223,22 +234,21 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         }
 
         $filter = ['IBLOCK_ID' => self::IBLOCK_ID];
+
+        // Только товары активных разделов (см. getSectionsMap)
         if ($sectionId > 0) {
             $filter['SECTION_ID'] = $sectionId;
+            $filter['INCLUDE_SUBSECTIONS'] = 'Y';
+        } else {
+            $activeSections = array_keys($this->getSectionsMap());
+            if (empty($activeSections)) {
+                return 0;
+            }
+            $filter['SECTION_ID'] = $activeSections;
             $filter['INCLUDE_SUBSECTIONS'] = 'Y';
         }
         if ($search !== '') {
             $filter['?NAME'] = $search;
-        }
-
-        // Если фильтров нет — быстрый подсчёт через ORM
-        if ($sectionId <= 0 && $search === '') {
-            try {
-                $count = \Bitrix\Iblock\ElementTable::getCount(['=IBLOCK_ID' => self::IBLOCK_ID]);
-                return (int)$count;
-            } catch (\Throwable $e) {
-                // фолбэк ниже
-            }
         }
 
         $rs = \CIBlockElement::GetList(
@@ -343,9 +353,10 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             return $this->sectionsMap;
         }
 
+        // Только активные разделы (используется и для фильтра, и для select в карточке)
         $rs = \CIBlockSection::GetList(
             ['SORT' => 'ASC', 'NAME' => 'ASC'],
-            ['IBLOCK_ID' => self::IBLOCK_ID],
+            ['IBLOCK_ID' => self::IBLOCK_ID, 'ACTIVE' => 'Y'],
             false,
             ['ID', 'NAME']
         );
@@ -414,7 +425,7 @@ class ProductsList extends \CBitrixComponent implements Controllerable
                 <label class="product-field product-field--active" title="Активность">
                     <span class="product-field__label">Активность</span>
                     <span class="toggle-switch">
-                        <input type="checkbox" class="product-active"' . $checkAttr . ' disabled>
+                        <input type="checkbox" class="product-active"' . $checkAttr . '>
                         <span class="toggle-switch__slider"></span>
                     </span>
                 </label>
@@ -514,6 +525,9 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             'deleteProduct' => [
                 'prefilters' => [],
             ],
+            'toggleActive' => [
+                'prefilters' => [],
+            ],
         ];
     }
 
@@ -563,11 +577,11 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         $this->arParams['SORT_ORDER'] = $sortOrder;
 
         $cache = Cache::createInstance();
-        // 'v4' — версия ключа: учитывает фильтр категории, поиск и новую
-        // разметку карточки (скрытые поля при редактировании, описание, фото).
+        // 'v5' — версия ключа: учитывает фильтр категории, поиск и выборку
+        // только активных разделов.
         $cacheId = implode('|', [
             'more',
-            'v4',
+            'v5',
             $page,
             $pageSize,
             $sortField,
@@ -738,6 +752,55 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             return [
                 'success' => false,
                 'error'   => $element->LAST_ERROR ?: 'Не удалось удалить товар.',
+            ];
+        }
+
+        BXClearCache(true, self::CACHE_DIR);
+
+        return [
+            'success' => true,
+        ];
+    }
+
+    /**
+     * AJAX-действие: быстрое переключение активности товара
+     * (работает без режима редактирования, прямо из списка).
+     *
+     * @return array{success: bool, error?: string}
+     */
+    public function toggleActiveAction(): array
+    {
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error'   => 'Ошибка сессии. Пожалуйста, обновите страницу.',
+            ];
+        }
+
+        if (!Loader::includeModule('iblock')) {
+            return [
+                'success' => false,
+                'error'   => 'Модуль iblock не найден.',
+            ];
+        }
+
+        $request = \Bitrix\Main\Context::getCurrent()->getRequest();
+
+        $id = (int)$request->getPost('id');
+        if ($id <= 0) {
+            return [
+                'success' => false,
+                'error'   => 'Не передан ID товара.',
+            ];
+        }
+
+        $active = $request->getPost('active') === 'Y' ? 'Y' : 'N';
+
+        $element = new \CIBlockElement();
+        if (!$element->Update($id, ['ACTIVE' => $active])) {
+            return [
+                'success' => false,
+                'error'   => $element->LAST_ERROR ?: 'Не удалось обновить активность товара.',
             ];
         }
 
