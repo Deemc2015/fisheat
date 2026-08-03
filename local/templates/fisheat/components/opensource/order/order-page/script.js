@@ -343,6 +343,7 @@
          * Поиск подсказок через геокодер Яндекса
          */
         searchAddressSuggestions: function(query, container, input, map) {
+            var self = this;
             var bounds = map.getBounds();
 
             ymaps.geocode(query, {
@@ -360,7 +361,7 @@
                 container.innerHTML = '';
 
                 suggestions.each(function(suggestion) {
-                    var address = suggestion.getAddressLine();
+                    var address = self.buildShortAddress(suggestion);
                     var coords = suggestion.geometry.getCoordinates();
 
                     var item = document.createElement('div');
@@ -618,6 +619,66 @@
        },
        
        /**
+        * Собирает короткий адрес (город + улица + дом) без страны и области.
+        * Использует структурированные данные геокодера Яндекса, при их
+        * отсутствии — компоненты адреса getComponents(), в крайнем случае
+        * строковую обрезку полного адреса.
+        * @param {object} geoObject - объект ymaps.GeoObject
+        * @return {string}
+        */
+       buildShortAddress: function(geoObject) {
+           if (!geoObject) return '';
+
+           var addr = typeof geoObject.getAddress === 'function' ? geoObject.getAddress() : null;
+           var parts = [];
+
+           // 1. Структурированные данные: locality + street + house
+           if (addr) {
+               if (typeof addr.getLocality === 'function' && addr.getLocality()) parts.push(addr.getLocality());
+               if (typeof addr.getStreet === 'function' && addr.getStreet()) parts.push(addr.getStreet());
+               if (typeof addr.getHouse === 'function' && addr.getHouse()) parts.push(addr.getHouse());
+           }
+           if (parts.length > 0) return parts.join(', ');
+
+           // 2. Компоненты адреса (getComponents): locality/district/street/house
+           if (addr && typeof addr.getComponents === 'function') {
+               var comps = addr.getComponents() || [];
+               var allowed = { locality: 1, district: 1, street: 1, house: 1 };
+               for (var i = 0; i < comps.length; i++) {
+                   if (comps[i] && allowed[comps[i].kind] && comps[i].name) {
+                       parts.push(comps[i].name);
+                   }
+               }
+               if (parts.length > 0) return parts.join(', ');
+           }
+
+           // 3. Строковый fallback: отрезаем страну и региональные сегменты,
+           //    не затрагивая населённый пункт (locality)
+           var full = typeof geoObject.getAddressLine === 'function' ? geoObject.getAddressLine() : '';
+           if (!full) return '';
+
+           var chunks = full.split(',').map(function(s) { return s.trim(); });
+           // Убираем страну в начале
+           if (chunks.length && /^(Россия|РФ)$/i.test(chunks[0])) chunks.shift();
+           // Убираем ведущие региональные сегменты (область/республика/край/округ/район),
+           // пока не встретим сегмент, содержащий город (locality)
+           while (chunks.length > 1) {
+               var head = chunks[0];
+               if (/(область|республика|край|округ|автономный|район)$/i.test(head) && !/(город|г\.)/i.test(head)) {
+                   chunks.shift();
+               } else {
+                   break;
+               }
+           }
+           // Убираем служебные префиксы типа "городской округ город", "город", "г."
+           if (chunks.length) {
+               chunks[0] = chunks[0].replace(/^(?:городской округ|муниципальный округ|город|поселок городского типа|пгт|г)\s+/i, '');
+           }
+
+           return chunks.join(', ');
+       },
+
+       /**
         * Инициализация подсказок адреса в модальном окне
         */
        modalInitAddressSuggest: function() {
@@ -690,7 +751,7 @@
                container.innerHTML = '';
                
                suggestions.each(function(suggestion) {
-                   var address = suggestion.getAddressLine();
+                   var address = self.buildShortAddress(suggestion);
                    var item = document.createElement('div');
                    item.className = 'suggestion-item';
                    item.textContent = address;
@@ -714,7 +775,7 @@
         */
        modalSelectSuggestion: function(suggestion) {
            var coords = suggestion.geometry.getCoordinates();
-           var address = suggestion.getAddressLine();
+           var address = this.buildShortAddress(suggestion);
            
            document.getElementById('modalAddressInput').value = address;
            document.getElementById('modalLatInput').value = coords[0].toFixed(6);
@@ -735,7 +796,7 @@
                var firstGeoObject = res.geoObjects.get(0);
                if (!firstGeoObject) return;
                
-               var address = firstGeoObject.getAddressLine();
+               var address = self.buildShortAddress(firstGeoObject);
                
                document.getElementById('modalAddressInput').value = address;
                document.getElementById('modalLatInput').value = coords[0].toFixed(6);

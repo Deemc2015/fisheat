@@ -1,0 +1,280 @@
+/* ===== Кнопки разделов ===== */
+.section-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: opacity .2s ease, background .2s ease;
+    white-space: nowrap;
+}
+
+.section-btn--edit {
+    background: var(--bg-button, #F44336);
+    color: #fff;
+}
+.section-btn--edit:hover {
+    opacity: .9;
+}
+
+.section-btn--save {
+    background: var(--bg-button, #4CAF50);
+    color: #fff;
+}
+.section-btn--save:hover {
+    opacity: .9;
+}
+.section-btn--save:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.section-btn--cancel {
+    background: transparent;
+    color: var(--color-muted, #969696);
+    border-color: var(--color-border, #868686);
+}
+.section-btn--cancel:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* ===== Поле "Родительский раздел" ===== */
+.section-parent-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    white-space: nowrap;
+}
+
+.section-parent-select {
+    padding: 6px 10px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    max-width: 240px;
+}
+
+/* ===== Отключённые элементы (режим просмотра) ===== */
+.toggle-switch input:disabled + .toggle-switch__slider {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.section-parent-select:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ===== Блок описания раздела ===== */
+.section-desc-block {
+    border-top: 1px solid var(--color-divider-light, #ffffff30);
+    padding: 16px;
+}
+
+.section-desc-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.section-desc-toolbar button {
+    min-width: 36px;
+    padding: 6px 10px;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+    transition: background .2s ease;
+}
+
+.section-desc-toolbar button:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.section-desc-editor {
+    min-height: 120px;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    line-height: 1.5;
+    overflow-y: auto;
+}
+
+.section-desc-editor:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+
+.section-desc-editor h1,
+.section-desc-editor h2,
+.section-desc-editor h3,
+.section-desc-editor h4,
+.section-desc-editor h5,
+.section-desc-editor h6 {
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+.section-desc-editor p {
+    margin: 0 0 8px;
+}
+
+.section-desc-editor ul,
+.section-desc-editor ol {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+
+/* Выпадающий список форматов блоков */
+.section-desc-block-select {
+    padding: 6px 10px;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+}
+
+/* Поле с HTML-кодом описания */
+.section-desc-html {
+    width: 100%;
+    min-height: 110px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: #9CDCFE;
+    font-size: 12px;
+    font-family: Consolas, 'Courier New', monospace;
+    line-height: 1.5;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.section-desc-html:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+
+/* ===== Иконка раздела ===== */
+.section-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+    background: var(--bg-gray, #2B2D2F);
+}
+
+.section-icon--empty {
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px dashed var(--color-border, #868686);
+}
+
+/* ===== Поле "Порядок" ===== */
+.section-sort-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    white-space: nowrap;
+}
+
+.section-sort-input {
+    width: 70px;
+    padding: 6px 10px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+}
+
+.section-sort-input:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* ===== Поле "Иконка" (загрузка файла) ===== */
+.section-picture-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    white-space: nowrap;
+}
+
+.section-picture-input {
+    max-width: 220px;
+    font-size: 12px;
+    color: var(--bg-white, #FFFFFF);
+}
+
+.section-picture-input:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.section-picture-input::-webkit-file-upload-button {
+    padding: 6px 12px;
+    margin-right: 8px;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 12px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    cursor: pointer;
+}
+
+/* ===== Поиск разделов ===== */
+.sections-search {
+    margin-bottom: 16px;
+}
+
+.sections-search-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px 14px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    box-sizing: border-box;
+}
+
+.sections-search-input::placeholder {
+    color: var(--color-muted, #969696);
+}
+
+.sections-search-input:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}

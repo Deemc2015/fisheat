@@ -20,17 +20,21 @@
 .partners-page {
     font-family: var(--font-family, 'Blogger Sans', 'Roboto');
     color: var(--bg-white, #FFFFFF);
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     background: var(--bg-black, #1B1818);
     margin: 0;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+}
+
+html {
+    overflow-y: auto;
 }
 
 body {
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     font-family: var(--font-family, 'Blogger Sans', 'Roboto');
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -175,10 +179,10 @@ body {
     margin-left: var(--p-sidebar-width);
     flex: 1;
     padding: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* ---------- Хедер дашборда ---------- */
@@ -224,9 +228,9 @@ body {
 
 /* ---------- Основная область дашборда ---------- */
 .p-main {
-    padding: 32px;
+    padding: 32px 32px 64px;
     flex: 1;
-    overflow-y: auto;
+    overflow: visible;
     min-height: 0;
 }
 

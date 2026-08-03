@@ -1175,7 +1175,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         global $USER;
 
         $fields = [
-            'UF_ADDRESS' => $dataAddress['address'],
+            'UF_ADDRESS' => $this->normalizeAddress((string)($dataAddress['address'] ?? '')),
             'UF_SHIRINA' => 321312,
             'UF_DOLGOTA' => 123123,
             'UF_MINIMAL_SUM' => 323212,
@@ -1194,6 +1194,53 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
     }
 
+
+    /**
+     * Приводит адрес к виду "город, улица, дом" — убирает страну и
+     * региональные сегменты (область/республика/край/округ/район) в начале.
+     * Страховка на случай, если фронтенд прислал полный адрес.
+     *
+     * @param string $address
+     * @return string
+     */
+    private function normalizeAddress(string $address): string
+    {
+        $address = trim($address);
+        if ($address === '') {
+            return $address;
+        }
+
+        // Убираем страну в начале
+        $address = preg_replace('/^Россия\s*,\s*/iu', '', $address);
+        $address = preg_replace('/^РФ\s*,\s*/iu', '', $address);
+
+        // Разбиваем на сегменты
+        $chunks = array_map('trim', explode(',', $address));
+
+        // Убираем ведущие региональные сегменты, пока не встретим город (locality)
+        while (count($chunks) > 1) {
+            $head = $chunks[0];
+            if (preg_match('/(область|республика|край|округ|автономный|район)$/iu', $head)
+                && !preg_match('/(город|г\.)/iu', $head)) {
+                array_shift($chunks);
+            } else {
+                break;
+            }
+        }
+
+        // Убираем служебные префиксы города
+        if (!empty($chunks)) {
+            $chunks[0] = preg_replace(
+                '/^(?:городской округ|муниципальный округ|город|поселок городского типа|пгт|г)\s+/iu',
+                '',
+                $chunks[0]
+            );
+        }
+
+        return implode(', ', array_filter($chunks, static function ($chunk) {
+            return $chunk !== '';
+        }));
+    }
 
     public function changePromoAction($dataPromo)
     {
