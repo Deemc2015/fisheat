@@ -28,31 +28,6 @@ $partnersHeaderActions = isset($partnersHeaderActions) ? (string)$partnersHeader
 $partnersLogoutUrl     = isset($partnersLogoutUrl) && $partnersLogoutUrl !== '' ? (string)$partnersLogoutUrl : rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/?logout=yes';
 $partnersSidebarBottom = isset($partnersSidebarBottom) ? (string)$partnersSidebarBottom : '';
 
-// Автоопределение активного пункта меню и заголовка, если они не заданы на странице
-if ($partnersActivePage === '') {
-    $partnersUri = $_SERVER['REQUEST_URI'] ?? '';
-    if (strpos($partnersUri, '/partners/menu/') !== false) {
-        $partnersActivePage = 'menu';
-    } elseif (strpos($partnersUri, '/partners/delivery-zones/') !== false) {
-        $partnersActivePage = 'delivery-zones';
-    } elseif (strpos($partnersUri, '/partners/statistics/') !== false) {
-        $partnersActivePage = 'statistics';
-    } elseif (strpos($partnersUri, '/partners/orders/') !== false) {
-        $partnersActivePage = 'orders';
-    } elseif (strpos($partnersUri, '/partners/finance/') !== false) {
-        $partnersActivePage = 'finance';
-    } elseif (strpos($partnersUri, '/partners/reports/') !== false) {
-        $partnersActivePage = 'reports';
-    } elseif (strpos($partnersUri, '/partners/settings/') !== false) {
-        $partnersActivePage = 'settings';
-    } else {
-        $partnersActivePage = 'overview';
-    }
-}
-if ($partnersPageTitle === '') {
-    $partnersPageTitle = (string)$APPLICATION->GetTitle();
-}
-
 $partnersNav = function ($key) use ($partnersActivePage) {
     return $partnersActivePage === $key ? ' active' : '';
 };

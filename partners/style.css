@@ -21,6 +21,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    text-decoration: none;
 }
 .p-dash-tabs .tab-btn:hover {
     color: var(--bg-white, #FFFFFF);
