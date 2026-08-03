@@ -32,8 +32,12 @@ use Ldo\Develop\Pict;
 
 if($item['PREVIEW_PICTURE']){
     $bgProduct = CFile::ResizeImageGet($item['PREVIEW_PICTURE']['ID'], ['width'=>280, 'height'=>280], BX_RESIZE_IMAGE_PROPORTIONAL, true);
+    $bgProduct = $bgProduct['src'];
 }
-$bgProduct = $bgProduct['src'];
+else{
+    $bgProduct = SITE_TEMPLATE_PATH.'/images/no_image.png';
+}
+
 
 if(Loader::includeModule('ldo.develop')){
     $webP = Pict::getResizeWebpSrc($item['PREVIEW_PICTURE']['ID'], 280, 280, true, 65);
