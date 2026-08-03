@@ -60,7 +60,13 @@ class SectionsList extends \CBitrixComponent implements Controllerable
             // Иконка раздела: фото уже сжато при сохранении, выводим напрямую
             $section['ICON_SRC'] = '';
             if (!empty($section['PICTURE'])) {
-                $section['ICON_SRC'] = \CFile::GetPath((int)$section['PICTURE']);
+                $path = \CFile::GetPath((int)$section['PICTURE']);
+                $section['ICON_SRC'] = $path;
+
+                // Диагностика: файл может быть не сохранён физически
+                if (!empty($path) && !file_exists($_SERVER['DOCUMENT_ROOT'] . $path)) {
+                    addMessage2Log('sections.icon: файл ID ' . (int)$section['PICTURE'] . ' по пути ' . $path . ' НЕ существует на диске');
+                }
             }
 
             $sections[] = $section;
@@ -120,14 +126,17 @@ class SectionsList extends \CBitrixComponent implements Controllerable
             'SORT'               => (int)$request->getPost('sort'),
         ];
 
-        // Иконка: сжимаем фото перед сохранением (50x50)
+
         $picture = $request->getFile('picture');
 
-        addMessage2Log($picture);
+
 
         if (is_array($picture) && !empty($picture['tmp_name']) && (int)($picture['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
-            $fileId = 0;
+            // В PICTURE передаём МАССИВ файла — CIBlockSection::Update сам
+            // сохранит его через CFile и запишет ID (передача ID не обновляет фото).
+            $fields['PICTURE'] = $picture;
 
+            // Пытаемся сжать до 50x50 и передать сжатую копию
             $resized = \CFile::ResizeImageGet(
                 $picture,
                 ['width' => 50, 'height' => 50],
@@ -138,22 +147,15 @@ class SectionsList extends \CBitrixComponent implements Controllerable
             if (is_array($resized) && !empty($resized['src'])) {
                 $fileArray = \CFile::MakeFileArray($resized['src']);
                 if ($fileArray) {
-                    $fileId = (int)\CFile::SaveFile($fileArray, 'iblock');
+                    $fields['PICTURE'] = $fileArray;
                 }
-            }
-
-            // Если сжать не удалось — сохраняем исходный файл
-            if (!$fileId) {
-                $fileId = (int)\CFile::SaveFile($picture, 'iblock');
-            }
-
-            if ($fileId) {
-                $fields['PICTURE'] = $fileId;
             }
         }
 
         $section = new \CIBlockSection();
         $result = $section->Update($id, $fields);
+
+
 
         if (!$result) {
             return [

@@ -257,20 +257,21 @@
         }
     });
 
-    // Поиск разделов по названию
-    var searchInput = document.querySelector('.sections-search-input');
-    var sectionList = document.getElementById('sections-list');
+    // Поиск разделов по названию (делегирование — работает независимо от готовности DOM)
+    document.addEventListener('input', function (e) {
+        var input = e.target.closest('.sections-search-input');
+        if (!input) return;
 
-    if (searchInput && sectionList) {
-        searchInput.addEventListener('input', function () {
-            var query = this.value.trim().toLowerCase();
-            var items = sectionList.querySelectorAll('.section-item');
+        var sectionList = document.getElementById('sections-list');
+        if (!sectionList) return;
 
-            for (var i = 0; i < items.length; i++) {
-                var nameEl = items[i].querySelector('.rest-item__name');
-                var name = nameEl ? nameEl.textContent.toLowerCase() : '';
-                items[i].style.display = (!query || name.indexOf(query) !== -1) ? '' : 'none';
-            }
-        });
-    }
+        var query = input.value.trim().toLowerCase();
+        var items = sectionList.querySelectorAll('.section-item');
+
+        for (var i = 0; i < items.length; i++) {
+            var nameEl = items[i].querySelector('.rest-item__name');
+            var name = nameEl ? nameEl.textContent.toLowerCase() : '';
+            items[i].style.display = (!query || name.indexOf(query) !== -1) ? '' : 'none';
+        }
+    });
 })();

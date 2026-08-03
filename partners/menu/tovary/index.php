@@ -29,9 +29,15 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                     <h2 class="p-section__title">Настройка товаров</h2>
                 </div>
 
-                <div style="padding:40px; text-align:center; color:var(--color-muted); background:var(--bg-black); border-radius:12px;">
-                    Раздел в разработке.
-                </div>
+                <?
+                $APPLICATION->IncludeComponent(
+                        "ldo:products.list",
+                        "",
+                        array(
+                                "CACHE_TIME" => 3600000,
+                        )
+                );
+                ?>
             </div>
         </div>
 

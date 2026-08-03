@@ -1,0 +1,220 @@
+/* ===== Список товаров ===== */
+#products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* ===== Карточка товара ===== */
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+.product-item__img-wrap {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+}
+
+.product-item__img {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    background: var(--bg-gray, #2B2D2F);
+}
+
+.product-item__img--empty {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px dashed var(--color-border, #868686);
+}
+
+.product-item__name {
+    min-width: 0;
+    flex: 1 1 220px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bg-white, #FFFFFF);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Чекбокс активности — компактнее стандартного переключателя */
+.product-active-wrap {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* Поля товара */
+.product-section,
+.product-sort,
+.product-price,
+.product-quantity,
+.product-weight {
+    padding: 7px 10px;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+    color: var(--bg-white, #FFFFFF);
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    min-width: 0;
+}
+
+.product-section {
+    max-width: 180px;
+    flex: 1 1 150px;
+}
+
+.product-sort {
+    width: 70px;
+}
+
+.product-price {
+    width: 110px;
+}
+
+.product-quantity {
+    width: 90px;
+}
+
+.product-weight {
+    width: 90px;
+}
+
+.product-section:disabled,
+.product-sort:disabled,
+.product-price:disabled,
+.product-quantity:disabled,
+.product-weight:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.product-section:focus,
+.product-sort:focus,
+.product-price:focus,
+.product-quantity:focus,
+.product-weight:focus {
+    border-color: var(--bg-button, #F44336);
+    outline: none;
+}
+
+/* Название раздела под строкой (видно, если select свёрнут) */
+.product-item__section-name {
+    display: none;
+    width: 100%;
+    font-size: 12px;
+    color: var(--color-muted, #969696);
+}
+
+/* ===== Кнопки действий ===== */
+.product-item__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.product-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: opacity .2s ease, background .2s ease;
+    white-space: nowrap;
+}
+
+.product-btn--edit {
+    background: var(--bg-button, #F44336);
+    color: #fff;
+}
+.product-btn--edit:hover {
+    opacity: .9;
+}
+
+.product-btn--save {
+    background: #4CAF50;
+    color: #fff;
+}
+.product-btn--save:hover {
+    opacity: .9;
+}
+.product-btn--save:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.product-btn--cancel {
+    background: transparent;
+    color: var(--color-muted, #969696);
+    border-color: var(--color-border, #868686);
+}
+.product-btn--cancel:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* ===== Кнопка "Показать ещё" ===== */
+.products-more {
+    text-align: center;
+    padding: 10px 0 20px;
+}
+
+.products-more__btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border, #868686);
+    background: var(--bg-gray, #2B2D2F);
+    color: var(--bg-white, #FFFFFF);
+    font-size: 14px;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .2s ease, background .2s ease;
+}
+
+.products-more__btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.products-more__btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 900px) {
+    .product-item {
+        align-items: flex-start;
+    }
+    .product-item__name {
+        flex-basis: calc(100% - 80px);
+    }
+    .product-item__section-name {
+        display: block;
+    }
+    .product-item__actions {
+        margin-left: 0;
+    }
+}
