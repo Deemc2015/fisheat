@@ -79,6 +79,10 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
 $isMobile = true;
 
+if(!$USER->isAuthorized()){
+    $class = "not-authorized";
+}
+
 if($isMobile):?>
     <div class="mobile-footer">
         <div class="mobile-footer__left">
@@ -86,7 +90,7 @@ if($isMobile):?>
             <div class="search-footer-link"></div>
         </div>
         <div class="mobile-footer__right">
-            <a href="/personal/" class="personal-link-footer <?if($APPLICATION->GetCurPage(false) == '/personal/'){echo 'active';}?>"></a>
+            <a href="/personal/" class="<?=$class?> personal-link-footer <?if($APPLICATION->GetCurPage(false) == '/personal/'){echo 'active';}?>"></a>
             <a href="/izbrannye-tovary/" class="wish-link-footer <?if($APPLICATION->GetCurPage(false) == '/izbrannye-tovary/'){echo 'active';}?>"></a>
         </div>
     </div>
