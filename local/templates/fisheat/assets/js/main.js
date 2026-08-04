@@ -50,7 +50,7 @@ $(document).ready(function(){
     })
 
 
-    $('.not-authorized .cart-page,.not-authorized .personal-link-footer').click(function(e){
+    $('.not-authorized .cart-page,.not-authorized.personal-link-footer').click(function(e){
         e.preventDefault();
         $('.modal-auth, .wrp').addClass('show');
     })
