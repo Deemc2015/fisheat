@@ -77,7 +77,7 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 
 <?
 
-$isMobile = true;
+
 
 if(!$USER->isAuthorized()){
     $class = "not-authorized";
