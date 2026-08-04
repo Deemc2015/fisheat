@@ -2,6 +2,7 @@
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 
 use Bitrix\Main\Context;
+use Bitrix\Main\UI\Extension;
 
 global $USER;
 
@@ -61,83 +62,60 @@ if (!$USER->IsAuthorized()) {
         . '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="white"/></svg>'
         . '</button>';
 
+    // ============================================================
+    // Данные дашборда (Model) — передаются в Vue-приложение через rootProps.
+    // TODO: заменить хардкод на выборку из БД (заказы/финансы/статистика).
+    // ============================================================
+    $dashboardData = [
+        'period' => 'week',
+        'cards' => [
+            ['id' => 'revenue',   'label' => 'Общий доход',       'value' => '1 284 500', 'currency' => '₽', 'change' => '+12.5%', 'changeType' => 'up'],
+            ['id' => 'orders',    'label' => 'Заказов сегодня',   'value' => '147',       'currency' => '',  'change' => '+8.3%',  'changeType' => 'up'],
+            ['id' => 'avg',       'label' => 'Средний чек',       'value' => '1 850',     'currency' => '₽', 'change' => '+3.2%',  'changeType' => 'up'],
+            ['id' => 'newclients','label' => 'Новых клиентов',    'value' => '38',        'currency' => '',  'change' => '-2.1%',  'changeType' => 'down'],
+        ],
+        'chart' => [
+            'labels' => ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+            'series' => [
+                ['name' => 'Продажи', 'color' => '#2ecc71', 'values' => [120, 190, 150, 260, 320, 410, 380]],
+                ['name' => 'Заказы',  'color' => '#3498db', 'values' => [80, 120, 95, 170, 210, 260, 240]],
+            ],
+        ],
+        'table' => [
+            'columns' => [
+                ['key' => 'number', 'title' => '№ заказа', 'sortable' => true],
+                ['key' => 'client', 'title' => 'Клиент'],
+                ['key' => 'amount', 'title' => 'Сумма', 'align' => 'right', 'sortable' => true],
+                ['key' => 'status', 'title' => 'Статус'],
+                ['key' => 'date',   'title' => 'Дата', 'sortable' => true],
+            ],
+            'rows' => [
+                ['id' => 1, 'number' => '#4582', 'client' => 'Иван Петров',    'amount' => '2 340 ₽', 'status' => 'Выполнен', 'date' => '13.07.2026'],
+                ['id' => 2, 'number' => '#4581', 'client' => 'Анна Смирнова',   'amount' => '1 560 ₽', 'status' => 'Выполнен', 'date' => '13.07.2026'],
+                ['id' => 3, 'number' => '#4580', 'client' => 'Сергей Козлов',   'amount' => '3 780 ₽', 'status' => 'Готовится', 'date' => '13.07.2026'],
+                ['id' => 4, 'number' => '#4579', 'client' => 'Елена Новикова',  'amount' => '890 ₽',   'status' => 'Отменён',   'date' => '12.07.2026'],
+            ],
+        ],
+    ];
+
+    // Подключаем расширение BitrixVue 3 (ДО include header.php)
+    Extension::load("ldo.vue-app");
+
     require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
     ?>
         <div class="p-main">
-
-            <!-- Статистика -->
-            <div class="p-stats">
-                <div class="p-stat-card">
-                    <div class="p-stat-card__label">Общий доход</div>
-                    <div class="p-stat-card__value">₽ 1 284 500</div>
-                    <div class="p-stat-card__change p-stat-card__change--up">↑ +12.5%</div>
-                </div>
-                <div class="p-stat-card">
-                    <div class="p-stat-card__label">Заказов сегодня</div>
-                    <div class="p-stat-card__value">147</div>
-                    <div class="p-stat-card__change p-stat-card__change--up">↑ +8.3%</div>
-                </div>
-                <div class="p-stat-card">
-                    <div class="p-stat-card__label">Средний чек</div>
-                    <div class="p-stat-card__value">₽ 1 850</div>
-                    <div class="p-stat-card__change p-stat-card__change--up">↑ +3.2%</div>
-                </div>
-                <div class="p-stat-card">
-                    <div class="p-stat-card__label">Новых клиентов</div>
-                    <div class="p-stat-card__value">38</div>
-                    <div class="p-stat-card__change p-stat-card__change--down">↓ -2.1%</div>
-                </div>
-            </div>
-
-            <!-- Последние заказы -->
-            <div class="p-section">
-                <div class="p-section__header">
-                    <h2 class="p-section__title">Последние заказы</h2>
-                    <a href="/partners/orders/" class="p-section__link">Все заказы →</a>
-                </div>
-                <table class="p-table">
-                    <thead>
-                        <tr>
-                            <th>№ заказа</th>
-                            <th>Клиент</th>
-                            <th>Сумма</th>
-                            <th>Статус</th>
-                            <th>Дата</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#4582</td>
-                            <td>Иван Петров</td>
-                            <td>₽ 2 340</td>
-                            <td><span class="p-status p-status--active">Выполнен</span></td>
-                            <td>13.07.2026</td>
-                        </tr>
-                        <tr>
-                            <td>#4581</td>
-                            <td>Анна Смирнова</td>
-                            <td>₽ 1 560</td>
-                            <td><span class="p-status p-status--active">Выполнен</span></td>
-                            <td>13.07.2026</td>
-                        </tr>
-                        <tr>
-                            <td>#4580</td>
-                            <td>Сергей Козлов</td>
-                            <td>₽ 3 780</td>
-                            <td><span class="p-status p-status--pending">Готовится</span></td>
-                            <td>13.07.2026</td>
-                        </tr>
-                        <tr>
-                            <td>#4579</td>
-                            <td>Елена Новикова</td>
-                            <td>₽ 890</td>
-                            <td><span class="p-status p-status--inactive">Отменён</span></td>
-                            <td>12.07.2026</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- Vue-приложение дашборда (BitrixVue 3, MVVM) -->
+            <div id="partners-vue-dashboard"></div>
         </div>
+
+        <script>
+            BX.ready(function () {
+                var app = new BX.LDO.VueApp.PartnersApplication('#partners-vue-dashboard', {
+                    dashboard: <?= \Bitrix\Main\Web\Json::encode($dashboardData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+                });
+                app.start();
+            });
+        </script>
 
     <?
     require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");

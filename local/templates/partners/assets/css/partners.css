@@ -1072,3 +1072,101 @@ body {
 .rest-edit-field textarea:focus {
     border-color: var(--bg-button, #F44336);
 }
+
+/* ---------- Vue-дашборд (BitrixVue 3) ---------- */
+.p-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.p-dashboard__panel {
+    background: var(--bg-gray, #2B2D2F);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.p-dashboard__panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.p-dashboard__panel-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Переключатель периода */
+.p-period-filter {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.p-period-filter__btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.p-period-filter__btn:hover {
+    color: var(--bg-white, #FFFFFF);
+}
+
+.p-period-filter__btn.is-active {
+    background: var(--bg-button, #F44336);
+    color: var(--bg-white, #FFFFFF);
+}
+
+/* Линейный график */
+.p-chart-line {
+    width: 100%;
+    max-height: 300px;
+}
+
+/* Таблица */
+.p-table-wrap {
+    overflow-x: auto;
+}
+
+.p-table__sort {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+.p-table th.is-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.p-table th.is-sortable:hover {
+    color: var(--bg-white, #FFFFFF);
+}
+
+.p-table__cell--right {
+    text-align: right;
+}
+
+.p-table__cell--center {
+    text-align: center;
+}
+
+.p-table__empty {
+    text-align: center;
+    color: var(--color-muted);
+    padding: 24px !important;
+}
