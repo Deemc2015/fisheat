@@ -75,7 +75,11 @@ $viewed_product = $APPLICATION->GetProperty("viewed-product");
 <?endif;?>
 <footer>
 
-<?if($isMobile):?>
+<?
+
+$isMobile = true;
+
+if($isMobile):?>
     <div class="mobile-footer">
         <div class="mobile-footer__left">
             <a  href="/" class="home-icon <?if($APPLICATION->GetCurPage(false) == '/'){echo 'active';}?>"></a>

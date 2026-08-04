@@ -50,6 +50,12 @@ $(document).ready(function(){
     })
 
 
+    $('.not-authorized .cart-page').click(function(e){
+        e.preventDefault();
+        $('.modal-auth, .wrp').addClass('show');
+    })
+
+
 
 
     $(".mycustom-scroll").mCustomScrollbar();

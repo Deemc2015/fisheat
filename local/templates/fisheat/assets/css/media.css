@@ -1052,6 +1052,14 @@
     }
 }
 @media (max-width:360px) {
+    /*Авторизация*/
+    .modal-auth{
+        width: 90%;
+        padding: 10px;
+    }
+    .modal-auth .bottom-auth, .modal-auth .bottom-auth a{
+        font-size:12px;
+    }
     /*Фильтр*/
     .top-section-list .sort-block{
         width: 195px;

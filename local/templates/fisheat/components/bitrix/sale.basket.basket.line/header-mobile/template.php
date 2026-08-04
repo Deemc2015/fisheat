@@ -18,6 +18,10 @@ else
 {
 	$cartStyle .= ' bx-opener';
 }
+
+if(!$USER->isAuthorized()){
+    $cartStyle .= ' not-authorized';
+}
 ?><script>
 var <?=$cartId?> = new BitrixSmallCart;
 </script>
