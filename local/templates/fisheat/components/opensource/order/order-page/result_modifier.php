@@ -416,7 +416,13 @@ $arResult['SUM_DISPLAY'] = SaleFormatCurrency(
 /*Рестораны для самовывоза*/
 $arResult['RESTORAN_ADRESS'] = [];
 if (Loader::includeModule('ldo.deliverymap')) {
-    $restaurants = \Ldo\Deliverymap\RestaurantsTable::getActiveList();
+    // Выводим только рестораны с заполненным XML_ID
+    $restaurants = array_filter(
+        \Ldo\Deliverymap\RestaurantsTable::getActiveList(),
+        static function ($restaurant) {
+            return !empty($restaurant['XML_ID']);
+        }
+    );
     if (!empty($restaurants)) {
         $checked = false;
         foreach ($restaurants as $restaurant) {

@@ -13,6 +13,13 @@ $aMenuLinks = Array(
 		Array(),
 		Array(),
 		""
+	),
+	Array(
+		"Настройка точек",
+		"/partners/settings/tochki/",
+		Array(),
+		Array(),
+		""
 	)
 );
 ?>

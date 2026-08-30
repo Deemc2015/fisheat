@@ -96,6 +96,43 @@ $partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 
+<style>
+/* Подсветка ресторана без соответствия iiko */
+.rest-item--no-xml {
+    background: rgba(231,76,60,.08);
+}
+.rest-item--no-xml .rest-item__main {
+    border-left: 3px solid #e74c3c;
+}
+.rest-item--no-xml:hover {
+    background: rgba(231,76,60,.14);
+}
+.rest-xml-warning {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #e74c3c;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.rest-xml-warning a {
+    color: var(--bg-button, #F44336);
+    text-decoration: underline;
+}
+.rest-xml-ok {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #2ecc71;
+    word-break: break-all;
+}
+.rest-edit-field input[readonly] {
+    opacity: .7;
+    cursor: not-allowed;
+}
+</style>
+
+
 
         <div class="p-main">
             <div class="p-section" style="display:flex; gap:20px; flex-wrap:wrap;">
@@ -126,7 +163,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                     </div>
                     <div id="restaurants-list">
                         <?php foreach ($restaurants as $r): ?>
-                            <div class="rest-item" data-id="<?= $r['ID'] ?>">
+                            <div class="rest-item<?= empty($r['XML_ID']) ? ' rest-item--no-xml' : '' ?>" data-id="<?= $r['ID'] ?>">
                                 <div class="rest-item__main">
                                     <div class="rest-item__info">
                                         <div class="rest-item__name"><?= htmlspecialchars($r['NAME']) ?></div>
@@ -135,6 +172,11 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                             <?php if ($r['PHONE'] && $r['EMAIL']): ?> · <?php endif; ?>
                                             <?php if ($r['EMAIL']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/></svg><?= htmlspecialchars($r['EMAIL']) ?><?php endif; ?>
                                         </div>
+                                        <?php if (!empty($r['XML_ID'])): ?>
+                                            <div class="rest-xml-ok">ID iiko: <?= htmlspecialchars($r['XML_ID']) ?></div>
+                                        <?php else: ?>
+                                            <div class="rest-xml-warning">⚠ Соответствие iiko не задано. <a href="/partners/settings/tochki/">Настроить точки</a></div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="rest-item__burger" onclick="event.stopPropagation();toggleRestMenu(this)">
                                         <span></span><span></span><span></span>
@@ -150,6 +192,10 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                         <div class="rest-edit-field">
                                             <label>Название</label>
                                             <input type="text" class="rest-edit-name" value="<?= htmlspecialchars($r['NAME']) ?>">
+                                        </div>
+                                        <div class="rest-edit-field">
+                                            <label>ID в iiko (XML_ID)</label>
+                                            <input type="text" class="rest-edit-xml" value="<?= htmlspecialchars($r['XML_ID']) ?>" readonly>
                                         </div>
                                         <div class="rest-edit-field">
                                             <label>Координаты (lat, lng)</label>
