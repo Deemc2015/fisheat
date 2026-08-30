@@ -1,0 +1,6 @@
+<?
+$sSectionName = "Маркетинг";
+$arDirProperties = Array(
+
+);
+?>

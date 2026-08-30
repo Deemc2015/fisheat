@@ -31,12 +31,18 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 
                 <?
                 $APPLICATION->IncludeComponent(
-                        "ldo:products.list",
-                        "",
-                        array(
-                                "CACHE_TIME" => 3600000,
-                        )
-                );
+	"ldo:products.list", 
+	".default", 
+	array(
+		"CACHE_TIME" => "3600000",
+		"COMPONENT_TEMPLATE" => ".default",
+		"SORT_FIELD" => "SORT",
+		"SORT_ORDER" => "ASC",
+		"PAGE_SIZE" => "20",
+		"CACHE_TYPE" => "A"
+	),
+	false
+);
                 ?>
             </div>
         </div>

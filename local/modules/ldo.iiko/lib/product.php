@@ -147,6 +147,111 @@ class Product
     }
 
     /**
+     * Синхронизация цен из iiko для существующих товаров (тип цены 1, RUB).
+     * Метод заточен под запуск по крону и минимизирует нагрузку на БД:
+     *  - один запрос к API iiko (itemCategories);
+     *  - сопоставление itemId -> элемент инфоблока одним запросом;
+     *  - загрузка всех текущих цен одним запросом (без GetList на каждый товар);
+     *  - обновляются только цены, которые реально изменились.
+     *
+     * @return int количество товаров с изменённой ценой
+     */
+    public function syncPrices(): int
+    {
+        Loader::includeModule('iblock');
+        Loader::includeModule('catalog');
+
+        $items = $this->getItems();
+        if (empty($items)) {
+            return 0;
+        }
+
+        // 1. Карта itemId (ATT_RK_ID) -> ID элемента инфоблока (один запрос)
+        $itemIdToElement = [];
+        $rs = \CIBlockElement::GetList(
+            [],
+            ['IBLOCK_ID' => self::IBLOCK_ID],
+            false,
+            false,
+            ['ID', 'PROPERTY_ATT_RK_ID']
+        );
+        while ($row = $rs->Fetch()) {
+            $rkId = (string)($row['PROPERTY_ATT_RK_ID_VALUE'] ?? '');
+            if ($rkId !== '') {
+                $itemIdToElement[$rkId] = (int)$row['ID'];
+            }
+        }
+
+        if (empty($itemIdToElement)) {
+            return 0;
+        }
+
+        // 2. Новая цена по itemId (только для товаров, присутствующих в БД)
+        $typePrice = 1;
+        $newPrices = []; // itemId => цена
+        $elementIds = []; // ID элементов с новой ценой
+        foreach ($items as $item) {
+            $itemId = (string)($item['itemId'] ?? '');
+            if ($itemId === '' || !isset($itemIdToElement[$itemId])) {
+                continue;
+            }
+
+            $price = $this->extractPrice($item);
+            if ($price === null) {
+                continue;
+            }
+
+            $newPrices[$itemId] = $price;
+            $elementIds[] = $itemIdToElement[$itemId];
+        }
+
+        if (empty($newPrices)) {
+            return 0;
+        }
+
+        // 3. Текущие цены в БД одним запросом: elementId => [ID записи, PRICE]
+        $currentPrices = [];
+        $rs = \CPrice::GetList(
+            [],
+            ['PRODUCT_ID' => $elementIds, 'CATALOG_GROUP_ID' => $typePrice]
+        );
+        while ($row = $rs->Fetch()) {
+            $currentPrices[(int)$row['PRODUCT_ID']] = [
+                'ID'    => (int)$row['ID'],
+                'PRICE' => (float)$row['PRICE'],
+            ];
+        }
+
+        // 4. Обновляем только изменившиеся цены
+        $updated = 0;
+        foreach ($newPrices as $itemId => $price) {
+            $elementId = $itemIdToElement[$itemId];
+            $current = $currentPrices[$elementId] ?? null;
+
+            if ($current !== null && abs($current['PRICE'] - $price) < 0.005) {
+                continue;
+            }
+
+            $arFields = [
+                'PRODUCT_ID'       => $elementId,
+                'CATALOG_GROUP_ID' => $typePrice,
+                'PRICE'            => $price,
+                'CURRENCY'         => 'RUB',
+            ];
+
+            if ($current !== null) {
+                \CPrice::Update($current['ID'], $arFields);
+            } else {
+                \CPrice::Add($arFields);
+            }
+
+            $updated++;
+        }
+
+        return $updated;
+    }
+
+    /**
      * Создать или обновить раздел инфоблока.
      * iikoGroupId хранится в UF_ID_RK.
      *
@@ -211,6 +316,9 @@ class Product
      * Создать или обновить товар в инфоблоке.
      * Уникальный ключ — itemId (свойство ATT_RK_ID), iikoGroupId хранится
      * в свойстве ATT_RK_CATEGORY_ID, раздел привязывается по iikoGroupId.
+     * Помимо цены сохраняются вес (itemSizes[].portionWeightGrams -> WEIGHT
+     * торгового каталога и свойство ATT_VES) и калорийность
+     * (nutritions[] -> ATT_KALLORY, ATT_BELKI, ATT_GIRY, ATT_YGLEVODY).
      *
      * @param array $item
      * @param array $sectionMap
@@ -227,6 +335,28 @@ class Product
         $sectionId = isset($sectionMap[$iikoGroupId]) ? (int)$sectionMap[$iikoGroupId] : null;
 
         $price = $this->extractPrice($item);
+        $weight = $this->extractWeight($item);
+        $nutrition = $this->extractNutrition($item);
+        $labels = $this->extractLabels($item);
+
+        $propertyValues = [
+            'ATT_RK_ID'          => $itemId,
+            'ATT_RK_CATEGORY_ID' => $iikoGroupId,
+            // Метки товара (labels[].name) во множественное свойство ATT_PLASHKA
+            'ATT_PLASHKA'        => $labels,
+        ];
+
+        // Калорийность товара: энергия, белки, жиры, углеводы
+        foreach ($this->nutritionPropertyMap() as $propertyCode => $key) {
+            if ($nutrition[$key] !== null) {
+                $propertyValues[$propertyCode] = $nutrition[$key];
+            }
+        }
+
+        // Вес товара в виде строки "135 г" (свойство ATT_VES)
+        if ($weight !== null) {
+            $propertyValues['ATT_VES'] = $weight . ' г';
+        }
 
         $fields = [
             'IBLOCK_ID'       => self::IBLOCK_ID,
@@ -234,11 +364,11 @@ class Product
             'DETAIL_TEXT'     => (string)($item['description'] ?? ''),
             'CODE'            => $this->uniqueCode((string)$item['name']),
             'ACTIVE'          => 'Y',
-            'PROPERTY_VALUES' => [
-                'ATT_RK_ID'          => $itemId,
-                'ATT_RK_CATEGORY_ID' => $iikoGroupId,
-            ],
+            'PROPERTY_VALUES' => $propertyValues,
         ];
+
+
+        addMessage2Log($propertyValues);
 
         if ($sectionId) {
             $fields['IBLOCK_SECTION_ID'] = $sectionId;
@@ -252,6 +382,7 @@ class Product
             if ($updated) {
                 $this->registerCatalogProduct($existId);
                 $this->addPrice($existId, $price);
+                $this->updateCatalogProductWeight($existId, $weight);
             }
             return $updated;
         }
@@ -262,10 +393,189 @@ class Product
             return false;
         }
 
-        $this->registerCatalogProduct($newId);
+        $this->registerCatalogProduct($newId, $weight);
         $this->addPrice($newId, $price);
 
         return true;
+    }
+
+    /**
+     * Извлечь названия меток товара из labels[].name
+     * (для множественного свойства ATT_PLASHKA).
+     *
+     * @param array $item
+     * @return array
+     */
+    private function extractLabels(array $item): array
+    {
+        if (empty($item['labels']) || !is_array($item['labels'])) {
+            return [];
+        }
+
+        $labels = [];
+        foreach ($item['labels'] as $label) {
+            if (!is_array($label)) {
+                continue;
+            }
+
+            $name = (string)($label['name'] ?? '');
+            if ($name !== '') {
+                $labels[] = $name;
+            }
+        }
+
+        return $labels;
+    }
+
+    /**
+     * Соответствие свойств инфоблока ключам питательной ценности iiko.
+     *
+     * @return array<string, string>
+     */
+    private function nutritionPropertyMap(): array
+    {
+        return [
+            'ATT_KALLORY'  => 'energy',
+            'ATT_BELKI'    => 'proteins',
+            'ATT_GIRY'     => 'fats',
+            'ATT_YGLEVODY' => 'carbs',
+        ];
+    }
+
+    /**
+     * Извлечь вес товара из itemSizes[].portionWeightGrams (граммы).
+     * Приоритет: размер с isDefault=true, иначе первый размер с указанным весом.
+     *
+     * @param array $item
+     * @return float|null
+     */
+    private function extractWeight(array $item): ?float
+    {
+        if (empty($item['itemSizes']) || !is_array($item['itemSizes'])) {
+            return null;
+        }
+
+        $fallbackWeight = null;
+
+        foreach ($item['itemSizes'] as $size) {
+            if (!isset($size['portionWeightGrams'])) {
+                continue;
+            }
+
+            $weight = (float)$size['portionWeightGrams'];
+
+            if ($fallbackWeight === null) {
+                $fallbackWeight = $weight;
+            }
+
+            // Приоритет — размер по умолчанию
+            if (!empty($size['isDefault'])) {
+                return $weight;
+            }
+        }
+
+        return $fallbackWeight;
+    }
+
+    /**
+     * Извлечь калорийность (КБЖУ) товара из itemSizes[].nutritions[].
+     * В ответе /menu/by_id питательная ценность привязана к размеру товара:
+     * у каждого элемента itemSizes есть nutritions[] (для порции) и
+     * nutritionPerHundredGrams (на 100 г). Приоритет — размер с isDefault=true,
+     * иначе первый размер с данными.
+     *
+     * @param array $item
+     * @return array{energy: ?float, proteins: ?float, fats: ?float, carbs: ?float}
+     */
+    private function extractNutrition(array $item): array
+    {
+        $empty = ['energy' => null, 'proteins' => null, 'fats' => null, 'carbs' => null];
+
+        if (empty($item['itemSizes']) || !is_array($item['itemSizes'])) {
+            return $empty;
+        }
+
+        $fallback = null;
+
+        foreach ($item['itemSizes'] as $size) {
+            if (!is_array($size)) {
+                continue;
+            }
+
+            $nutritionRow = $this->findNutrition($size);
+            if ($nutritionRow === null) {
+                continue;
+            }
+
+            if ($fallback === null) {
+                $fallback = $nutritionRow;
+            }
+
+            // Приоритет — размер по умолчанию
+            if (!empty($size['isDefault'])) {
+                return $this->mapNutrition($nutritionRow);
+            }
+        }
+
+        return $fallback === null ? $empty : $this->mapNutrition($fallback);
+    }
+
+    /**
+     * Получить данные КБЖУ из размера товара.
+     * Сначала nutritions[] для нужного ресторана (или первый элемент),
+     * затем nutritionPerHundredGrams как запасной источник.
+     *
+     * @param array $size
+     * @return array|null
+     */
+    private function findNutrition(array $size): ?array
+    {
+        // Питательная ценность порции (itemSizes[].nutritions[])
+        if (!empty($size['nutritions']) && is_array($size['nutritions'])) {
+            $fallback = null;
+
+            foreach ($size['nutritions'] as $nutrition) {
+                if (!is_array($nutrition)) {
+                    continue;
+                }
+
+                if ($fallback === null) {
+                    $fallback = $nutrition;
+                }
+
+                // Приоритет — питательная ценность для нужного ресторана
+                if (!empty($nutrition['organizations']) && in_array($this->restoranId, $nutrition['organizations'], true)) {
+                    return $nutrition;
+                }
+            }
+
+            if ($fallback !== null) {
+                return $fallback;
+            }
+        }
+
+        // Питательная ценность на 100 г (itemSizes[].nutritionPerHundredGrams)
+        if (!empty($size['nutritionPerHundredGrams']) && is_array($size['nutritionPerHundredGrams'])) {
+            return $size['nutritionPerHundredGrams'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Привести элемент nutritions к массиву КБЖУ.
+     *
+     * @param array $nutrition
+     * @return array{energy: ?float, proteins: ?float, fats: ?float, carbs: ?float}
+     */
+    private function mapNutrition(array $nutrition): array
+    {
+        return [
+            'energy'   => isset($nutrition['energy']) ? (float)$nutrition['energy'] : null,
+            'proteins' => isset($nutrition['proteins']) ? (float)$nutrition['proteins'] : null,
+            'fats'     => isset($nutrition['fats']) ? (float)$nutrition['fats'] : null,
+            'carbs'    => isset($nutrition['carbs']) ? (float)$nutrition['carbs'] : null,
+        ];
     }
 
     /**
@@ -316,21 +626,31 @@ class Product
 
     /**
      * Зарегистрировать товар в торговом каталоге (b_catalog_product).
+     * Вес (граммы) передаётся сразу при создании записи, чтобы не выполнять
+     * дополнительный UPDATE для новых товаров.
      *
      * @param int $idElement
+     * @param float|string|null $weight
      * @return void
      */
-    private function registerCatalogProduct(int $idElement): void
+    private function registerCatalogProduct(int $idElement, $weight = null): void
     {
         $row = \CCatalogProduct::GetByID($idElement);
         if ($row) {
             return;
         }
 
-        \CCatalogProduct::add([
+        $fields = [
             'ID' => $idElement,
             'QUANTITY' => 1000,
-        ]);
+        ];
+
+        // Вес передаётся сразу при создании, чтобы не делать отдельный UPDATE
+        if ($weight !== null && is_numeric($weight)) {
+            $fields['WEIGHT'] = (float)$weight;
+        }
+
+        \CCatalogProduct::add($fields);
     }
 
     /**
@@ -365,6 +685,25 @@ class Product
         } else {
             \CPrice::Add($arFields);
         }
+    }
+
+    /**
+     * Обновить вес товара в торговом каталоге (b_catalog_product.WEIGHT, граммы).
+     * Используется для вывода "Вес, г" в карточке товара и в корзине.
+     *
+     * @param int $idElement
+     * @param float|string|null $weight
+     * @return void
+     */
+    private function updateCatalogProductWeight(int $idElement, $weight): void
+    {
+        if ($weight === null || $weight === '' || !is_numeric($weight)) {
+            return;
+        }
+
+        \CCatalogProduct::Update($idElement, [
+            'WEIGHT' => (float)$weight,
+        ]);
     }
 
     /**

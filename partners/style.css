@@ -530,3 +530,171 @@
     color: #F44336;
     margin-left: 6px;
 }
+
+/* ===== Таблица пользователей (/partners/polzovateli/) ===== */
+.p-users-wrap {
+    background: var(--bg-black, #1B1818);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.p-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.p-users-table th {
+    text-align: left;
+    padding: 12px 16px;
+    color: var(--color-muted, #969696);
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-divider-light, #ffffff30);
+    white-space: nowrap;
+}
+.p-users-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-divider-light, #ffffff30);
+    vertical-align: middle;
+    color: var(--bg-white, #FFFFFF);
+}
+.p-users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.p-users-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+.p-users-fio {
+    font-weight: 500;
+    color: var(--bg-white, #FFFFFF);
+}
+.p-users-login {
+    font-size: 13px;
+    color: var(--color-muted, #969696);
+    margin-top: 2px;
+    word-break: break-all;
+}
+.p-users-toggle-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+.p-users-empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--color-muted, #969696);
+}
+
+/* Стилизованные чекбоксы «Активность» / «Заблокирован» */
+.p-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.p-checkbox input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+.p-checkbox__box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-black, #1B1818);
+    border: 2px solid var(--color-border, #868686);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+.p-checkbox__check {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s ease;
+}
+.p-checkbox:hover .p-checkbox__box {
+    border-color: var(--bg-button, #F44336);
+}
+.p-checkbox input:checked + .p-checkbox__box {
+    border-color: #2ecc71;
+    background: #2ecc71;
+}
+.p-checkbox input:checked + .p-checkbox__box .p-checkbox__check {
+    opacity: 1;
+    transform: scale(1);
+}
+/* Чекбокс «Заблокирован» — красный при включении */
+.p-checkbox--danger input:checked + .p-checkbox__box {
+    border-color: #e74c3c;
+    background: #e74c3c;
+}
+
+/* Кнопка удаления пользователя */
+.p-users-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-muted, #969696);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.p-users-delete:hover {
+    background: rgba(231, 76, 60, 0.12);
+    color: #e74c3c;
+}
+
+/* Пагинация */
+.p-users-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    flex-wrap: wrap;
+}
+.p-users-nav a,
+.p-users-nav .page {
+    display: inline-flex;
+    min-width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--bg-white, #FFFFFF);
+    text-decoration: none;
+    border: 1px solid var(--color-divider-light, #ffffff30);
+    box-sizing: border-box;
+}
+.p-users-nav a:hover {
+    border-color: var(--bg-button, #F44336);
+    color: var(--bg-button, #F44336);
+}
+.p-users-nav .page.current {
+    background: var(--bg-button, #F44336);
+    border-color: var(--bg-button, #F44336);
+}
+.p-users-nav .page.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
