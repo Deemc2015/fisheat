@@ -256,6 +256,43 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 }
             }
 
+            /*Свойства, к которым привязаны чекбоксы (инпуты в блоке .hidden-fields)*/
+            $defaultTimeProp = $arResult['PROPERTIES']['DEFAULT_TIME'] ?? null;
+            $dateTimeProp    = $arResult['PROPERTIES']['DATE_TIME_DELIVERY'] ?? null;
+            $timeProp        = $arResult['PROPERTIES']['TIME_DELIVERY'] ?? null;
+
+            /*По умолчанию всегда выбрано «Как можно скорее».
+              Режим «Выбрать дату и время» включается только при явном выборе
+              пользователя (значение DEFAULT_TIME == 'N' из отправленной формы).*/
+            $submittedDefaultTime = isset($_REQUEST['properties']['DEFAULT_TIME'])
+                ? (string)$_REQUEST['properties']['DEFAULT_TIME']
+                : null;
+            $isDefaultTime = ($submittedDefaultTime === null) ? true : ($submittedDefaultTime !== 'N');
+
+            /*Извлекаем дату и время из сохранённых значений для повторного отображения*/
+            $deliveryDate = '';
+            $deliveryTime = '';
+
+            if ($dateTimeProp && trim((string)$dateTimeProp['VALUE']) !== '') {
+                $dtValue = trim((string)$dateTimeProp['VALUE']);
+                if (preg_match('/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2})(?::\d{2})?)?/', $dtValue, $m)) {
+                    $deliveryDate = $m[1] . '-' . $m[2] . '-' . $m[3];
+                    if (!empty($m[4])) {
+                        $deliveryTime = $m[4] . ':' . $m[5];
+                    }
+                } elseif (preg_match('/^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2})(?::\d{2})?)?/', $dtValue, $m)) {
+                    $deliveryDate = $m[3] . '-' . $m[2] . '-' . $m[1];
+                    if (!empty($m[4])) {
+                        $deliveryTime = $m[4] . ':' . $m[5];
+                    }
+                } else {
+                    $deliveryDate = $dtValue;
+                }
+            }
+
+            if ($deliveryTime === '' && $timeProp && preg_match('/^(\d{2}):(\d{2})/', trim((string)$timeProp['VALUE']), $m)) {
+                $deliveryTime = $m[1] . ':' . $m[2];
+            }
         ?>
             <?if($fieldsTimeDelivery):
                 ?>
@@ -266,7 +303,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                             <input id="default_time" type="radio"
                                    name="time_delivery"
-                                   value="Y">
+                                   value="default" <?=$isDefaultTime ? 'checked' : ''?>>
                             <span></span>
                             Как можно скорее
                         </label>
@@ -274,24 +311,26 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                             <input id="date_time" type="radio"
                                    name="time_delivery"
-                                   value="Y">
+                                   value="datetime" <?=!$isDefaultTime ? 'checked' : ''?>>
                             <span></span>
                             Выбрать дату и время
                         </label>
                     </div>
 
-                    <?foreach($fieldsTimeDelivery as $itemTime):?>
-                        <?if($itemTime['TYPE'] == 'Y/N'):?>
-                            <input class="hidden-input default_time" id="<?=$itemTime['FORM_LABEL']?>" type="checkbox"
-                                   name="<?=$itemTime['FORM_NAME']?>"
-                                   value="Y">
-                        <?else:?>
-                            <input class="hidden-input date_time" id="<?=$itemTime['FORM_LABEL']?>" type="text"
-                                   name="<?=$itemTime['FORM_NAME']?>"
-                                   value="<?=$itemTime['NAME']?>">
-                        <?endif?>
-
-                    <?endforeach;?>
+                    <div class="time-delivery__datetime"<?=$isDefaultTime ? ' style="display:none;"' : ''?>>
+                        <div class="time-delivery__datetime-row">
+                            <label for="delivery_datetime_date">Дата</label>
+                            <input type="date" id="delivery_datetime_date"
+                                   class="time-delivery__input time-delivery__input--date"
+                                   value="<?=htmlspecialcharsbx($deliveryDate)?>">
+                        </div>
+                        <div class="time-delivery__datetime-row">
+                            <label for="delivery_datetime_time">Время</label>
+                            <input type="time" id="delivery_datetime_time"
+                                   class="time-delivery__input time-delivery__input--time"
+                                   value="<?=htmlspecialcharsbx($deliveryTime)?>">
+                        </div>
+                    </div>
                 </div>
             <?endif;?>
         </div>

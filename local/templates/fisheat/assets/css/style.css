@@ -2351,6 +2351,48 @@ footer .copyright{
     top:0;
     opacity:0;
 }
+.left-order-page .time-delivery__datetime{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:16px;
+}
+.left-order-page .time-delivery__datetime-row{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+.left-order-page .time-delivery__datetime-row label{
+    display:block;
+    margin-bottom:0;
+    font-size:14px;
+    color:var(--color-muted);
+    font-family:var(--font-light);
+}
+.left-order-page .time-delivery__input{
+    display:block;
+    width:180px;
+    padding:10px 14px;
+    border:1px solid var(--color-muted);
+    border-radius:10px;
+    font-size:15px;
+    background:#fff;
+    color:#333;
+    position:static;
+    opacity:1;
+}
+.left-order-page .time-delivery__input--error{
+    border-color:#e02020;
+    box-shadow:0 0 0 1px #e02020;
+}
+.left-order-page .time-delivery__datetime-error{
+    display:none;
+    color:#e02020;
+    font-size:14px;
+    margin-top:8px;
+    width:100%;
+    flex-basis:100%;
+}
 .bottom-product-detail{
     margin-top: 24px;
 }

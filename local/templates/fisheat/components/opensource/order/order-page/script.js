@@ -82,6 +82,7 @@
             this.initRestaurantSelect();    // Выбор ресторана самовывоза
             // Устанавливаем правильный заголовок при загрузке страницы
             this.initTimeDeliveryTitle();
+            this.initTimeDelivery();        // Переключение «Как можно скорее» / «Выбрать дату и время»
             // привязка отправки формы
             this.bindFormSubmit();
             this.initCommentToggle();
@@ -109,6 +110,176 @@
                 }
             }
         },
+
+        /**
+         * Инициализация переключения «Как можно скорее» / «Выбрать дату и время»
+         *
+         * Радиокнопки и поля даты/времени связываются со свойствами заказа,
+         * которые находятся в блоке .hidden-fields:
+         *   property_DEFAULT_TIME          (Y — «Как можно скорее», N — выбранная дата/время)
+         *   property_DATE_TIME_DELIVERY    (дата и время)
+         *   property_TIME_DELIVERY         (время)
+         */
+        initTimeDelivery: function() {
+            var defaultRadio = document.getElementById('default_time');
+            var dateTimeRadio = document.getElementById('date_time');
+            var datetimeBlock = document.querySelector('.time-delivery__datetime');
+
+            if (!defaultRadio || !dateTimeRadio) {
+                return;
+            }
+
+            var dateInput = document.getElementById('delivery_datetime_date');
+            var timeInput = document.getElementById('delivery_datetime_time');
+
+            // Инпуты свойств в блоке .hidden-fields
+            var defaultTimeInput = document.getElementById('property_DEFAULT_TIME');
+            var dateTimeInput = document.getElementById('property_DATE_TIME_DELIVERY');
+            var timePropertyInput = document.getElementById('property_TIME_DELIVERY');
+
+            /**
+             * Синхронизация выбранного режима со свойством DEFAULT_TIME
+             * и показ/скрытие полей выбора даты и времени
+             */
+            var syncMode = function() {
+                var isDefault = defaultRadio.checked;
+
+                if (defaultTimeInput) {
+                    defaultTimeInput.value = isDefault ? 'Y' : 'N';
+                }
+
+                if (datetimeBlock) {
+                    datetimeBlock.style.display = isDefault ? 'none' : 'flex';
+                }
+
+                // При «Как можно скорее» очищаем сохранённые дату и время,
+                // чтобы они не попали в заказ
+                if (isDefault) {
+                    if (dateTimeInput) dateTimeInput.value = '';
+                    if (timePropertyInput) timePropertyInput.value = '';
+                }
+            };
+
+            /**
+             * Синхронизация полей даты и времени со свойствами заказа
+             */
+            var syncDateTime = function() {
+                var dateVal = dateInput ? dateInput.value : '';
+                var timeVal = timeInput ? timeInput.value : '';
+
+                var combined = '';
+                if (dateVal && timeVal) {
+                    combined = dateVal + ' ' + timeVal;
+                } else if (dateVal) {
+                    combined = dateVal;
+                } else if (timeVal) {
+                    combined = timeVal;
+                }
+
+                if (dateTimeInput) {
+                    dateTimeInput.value = combined;
+                }
+                if (timePropertyInput) {
+                    timePropertyInput.value = timeVal;
+                }
+
+                // При вводе значений снимаем подсветку ошибок
+                if (dateInput) BX.removeClass(dateInput, 'time-delivery__input--error');
+                if (timeInput) BX.removeClass(timeInput, 'time-delivery__input--error');
+                var timeErrorNode = datetimeBlock ? datetimeBlock.querySelector('.time-delivery__datetime-error') : null;
+                if (timeErrorNode) {
+                    timeErrorNode.style.display = 'none';
+                }
+            };
+
+            BX.bind(defaultRadio, 'change', function() {
+                if (defaultRadio.checked) {
+                    syncMode();
+                }
+            });
+
+            BX.bind(dateTimeRadio, 'change', function() {
+                if (dateTimeRadio.checked) {
+                    syncMode();
+                    syncDateTime();
+                }
+            });
+
+            if (dateInput) {
+                BX.bind(dateInput, 'input', syncDateTime);
+                BX.bind(dateInput, 'change', syncDateTime);
+            }
+            if (timeInput) {
+                BX.bind(timeInput, 'input', syncDateTime);
+                BX.bind(timeInput, 'change', syncDateTime);
+            }
+
+            // Инициализация начального состояния
+            syncMode();
+            syncDateTime();
+        },
+
+        /**
+         * Валидация полей даты и времени доставки.
+         *
+         * Если выбран режим «Выбрать дату и время», а дата/время не заполнены —
+         * подсвечиваем поля красным, выводим сообщение и блокируем оформление заказа.
+         *
+         * @returns {boolean} true, если валидация пройдена
+         */
+        validateTimeDelivery: function() {
+            var dateTimeRadio = document.getElementById('date_time');
+            var dateInput = document.getElementById('delivery_datetime_date');
+            var timeInput = document.getElementById('delivery_datetime_time');
+            var datetimeBlock = document.querySelector('.time-delivery__datetime');
+
+            // Если режим «Выбрать дату и время» не выбран — валидация не нужна
+            if (!dateTimeRadio || !dateTimeRadio.checked) {
+                return true;
+            }
+
+            var dateVal = dateInput ? (dateInput.value || '').trim() : '';
+            var timeVal = timeInput ? (timeInput.value || '').trim() : '';
+
+            var hasDate = dateVal !== '';
+            var hasTime = timeVal !== '';
+
+            // Подсвечиваем незаполненные поля красным
+            if (dateInput) {
+                BX[hasDate ? 'removeClass' : 'addClass'](dateInput, 'time-delivery__input--error');
+            }
+            if (timeInput) {
+                BX[hasTime ? 'removeClass' : 'addClass'](timeInput, 'time-delivery__input--error');
+            }
+
+            // Сообщение об ошибке под полями
+            var errorNode = datetimeBlock ? datetimeBlock.querySelector('.time-delivery__datetime-error') : null;
+            if (!errorNode && datetimeBlock) {
+                errorNode = document.createElement('div');
+                errorNode.className = 'time-delivery__datetime-error';
+                datetimeBlock.appendChild(errorNode);
+            }
+
+            if (hasDate && hasTime) {
+                if (errorNode) {
+                    errorNode.style.display = 'none';
+                }
+                return true;
+            }
+
+            if (errorNode) {
+                errorNode.textContent = 'Заполните дату и время';
+                errorNode.style.display = 'block';
+            }
+
+            // Прокручиваем к блоку, чтобы пользователь увидел ошибку
+            if (datetimeBlock) {
+                datetimeBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            return false;
+        },
+
         /**
          * Привязывает обработчик отправки формы
          */
@@ -117,6 +288,12 @@
             if (form) {
                 BX.unbindAll(form);
                 BX.bind(form, 'submit', BX.proxy(function(event) {
+                    // Блокируем оформление заказа, если не заполнены дата и время
+                    if (!this.validateTimeDelivery()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
                     this.saveDeliveryState();
                 }, this));
             }
