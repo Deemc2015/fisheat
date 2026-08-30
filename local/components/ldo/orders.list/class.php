@@ -7,9 +7,11 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\Query\Query;
 use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\UI\PageNavigation;
+use Bitrix\Sale\Delivery\Services\Table as DeliveryServicesTable;
 use Bitrix\Sale\Internals\BasketTable;
 use Bitrix\Sale\Internals\OrderPropsValueTable;
 use Bitrix\Sale\Internals\OrderTable;
+use Bitrix\Sale\Internals\PaySystemActionTable;
 use Bitrix\Sale\Internals\ShipmentTable;
 use Bitrix\Sale\OrderStatus;
 
@@ -27,6 +29,12 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 {
 	/** @var string[] Выбранные статусы */
 	protected $filterStatus = [];
+
+	/** @var int[] Выбранные службы доставки (DELIVERY_ID) */
+	protected $filterDelivery = [];
+
+	/** @var int[] Выбранные платёжные системы (PAY_SYSTEM_ID) */
+	protected $filterPaySystem = [];
 
 	/** @var DateTime|null Дата "с" (начало дня) */
 	protected $dateFrom = null;
@@ -49,6 +57,15 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	/** @var array Карта статусов: ID => название */
 	protected $statuses = [];
 
+	/** @var int[] Службы доставки для фильтра (параметр DELIVERY_SERVICES; пусто — все) */
+	protected $allowedDeliveryIds = [];
+
+	/** @var int[] Платёжные системы для фильтра (параметр PAY_SYSTEMS; пусто — все) */
+	protected $allowedPaySystemIds = [];
+
+	/** @var array|null Кеш DEFAULT-параметров (чтобы не выбирать списки из БД на каждый хит) */
+	protected static $defaultParamsCache = null;
+
 	/**
 	 * Применение значений по умолчанию из .parameters.php.
 	 * При вызове через IncludeComponent Битрикс не подставляет DEFAULT автоматически —
@@ -59,16 +76,56 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	 */
 	public function onPrepareComponentParams($arParams)
 	{
-		return array_merge($this->getDefaultParams(), (array)$arParams);
+		$arParams = array_merge($this->getDefaultParams(), (array)$arParams);
+
+		// Параметры "какие способы выводить в фильтре" — нормализуем к int[]
+		$this->allowedDeliveryIds = $this->normalizeIdList($arParams['DELIVERY_SERVICES'] ?? []);
+		$this->allowedPaySystemIds = $this->normalizeIdList($arParams['PAY_SYSTEMS'] ?? []);
+
+		return $arParams;
+	}
+
+	/**
+	 * Приведение значения параметра (массив ID или строка "1,2,3") к массиву положительных int.
+	 *
+	 * @param mixed $value
+	 * @return int[]
+	 */
+	protected function normalizeIdList($value): array
+	{
+		$ids = [];
+		if (is_array($value)) {
+			foreach ($value as $item) {
+				$id = (int)$item;
+				if ($id > 0) {
+					$ids[] = $id;
+				}
+			}
+		} elseif (is_string($value) && $value !== '') {
+			foreach (explode(',', $value) as $item) {
+				$id = (int)trim($item);
+				if ($id > 0) {
+					$ids[] = $id;
+				}
+			}
+		}
+
+		return array_values(array_unique($ids));
 	}
 
 	/**
 	 * Читает DEFAULT всех параметров из .parameters.php.
+	 * Результат кешируется в статическом свойстве — .parameters.php выполняет
+	 * выборку списков доставок/оплат из БД, повторять её на каждый хит не нужно.
 	 *
 	 * @return array
 	 */
 	protected function getDefaultParams(): array
 	{
+		if (static::$defaultParamsCache !== null) {
+			return static::$defaultParamsCache;
+		}
+
 		$defaults = [];
 		$path = __DIR__ . '/.parameters.php';
 		if (file_exists($path)) {
@@ -83,6 +140,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			}
 		}
 
+		static::$defaultParamsCache = $defaults;
 		return $defaults;
 	}
 
@@ -155,12 +213,29 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			}
 		}
 
+		$rawDelivery = $request->getPost('DELIVERY');
+		$filterDelivery = is_array($rawDelivery)
+			? array_values(array_filter(array_map('intval', $rawDelivery)))
+			: ((int)$rawDelivery > 0 ? [(int)$rawDelivery] : []);
+
+		$rawPaySystem = $request->getPost('PAY_SYSTEM');
+		$filterPaySystem = is_array($rawPaySystem)
+			? array_values(array_filter(array_map('intval', $rawPaySystem)))
+			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
+
 		$this->applyFilterValues(
 			$filterStatus,
 			(string)$request->getPost('DATE_FROM'),
 			(string)$request->getPost('DATE_TO'),
-			(string)$request->getPost('SEARCH')
+			(string)$request->getPost('SEARCH'),
+			$filterDelivery,
+			$filterPaySystem
 		);
+
+		// Параметры "какие способы выводить в фильтре" — при AJAX (mode=class)
+		// компонент создаётся без параметров, поэтому передаём их из JS
+		$this->allowedDeliveryIds = $this->normalizeIdList($request->getPost('DELIVERY_SERVICES'));
+		$this->allowedPaySystemIds = $this->normalizeIdList($request->getPost('PAY_SYSTEMS'));
 
 		// При AJAX (mode=class) компонент создаётся заново без параметров —
 		// принимаем PAGE_SIZE из запроса (JS передаёт значение параметра компонента)
@@ -210,11 +285,23 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			}
 		}
 
+		$rawDelivery = $request->getQuery('DELIVERY');
+		$filterDelivery = is_array($rawDelivery)
+			? array_values(array_filter(array_map('intval', $rawDelivery)))
+			: ((int)$rawDelivery > 0 ? [(int)$rawDelivery] : []);
+
+		$rawPaySystem = $request->getQuery('PAY_SYSTEM');
+		$filterPaySystem = is_array($rawPaySystem)
+			? array_values(array_filter(array_map('intval', $rawPaySystem)))
+			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
+
 		$this->applyFilterValues(
 			$filterStatus,
 			(string)$request->getQuery('DATE_FROM'),
 			(string)$request->getQuery('DATE_TO'),
-			(string)$request->getQuery('SEARCH')
+			(string)$request->getQuery('SEARCH'),
+			$filterDelivery,
+			$filterPaySystem
 		);
 	}
 
@@ -225,10 +312,14 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	 * @param string $dateFromRaw
 	 * @param string $dateToRaw
 	 * @param string $search
+	 * @param array  $filterDelivery
+	 * @param array  $filterPaySystem
 	 */
-	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search)
+	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search, array $filterDelivery = [], array $filterPaySystem = [])
 	{
 		$this->filterStatus = array_values(array_unique($filterStatus));
+		$this->filterDelivery = array_values(array_unique(array_map('intval', $filterDelivery)));
+		$this->filterPaySystem = array_values(array_unique(array_map('intval', $filterPaySystem)));
 
 		$this->dateFromRaw = trim((string)$dateFromRaw);
 		$this->dateToRaw   = trim((string)$dateToRaw);
@@ -259,6 +350,84 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+	 * Список служб доставки: ID => название (b_sale_delivery_srv).
+	 *
+	 * @return array
+	 */
+	protected function getDeliveryServices(): array
+	{
+		$services = [];
+		try {
+			$rs = DeliveryServicesTable::getList([
+				'select' => ['ID', 'NAME'],
+				'order'  => ['SORT' => 'ASC', 'ID' => 'ASC'],
+			]);
+			while ($row = $rs->fetch()) {
+				$services[(int)$row['ID']] = (string)$row['NAME'];
+			}
+		} catch (\Throwable $e) {
+			$services = [];
+		}
+
+		return $services;
+	}
+
+	/**
+	 * Службы доставки для селекта фильтра: только выбранные в параметрах компонента
+	 * (DELIVERY_SERVICES). Если параметр не задан — все.
+	 *
+	 * @return array
+	 */
+	protected function getFilterDeliveryServices(): array
+	{
+		$services = $this->getDeliveryServices();
+		if (!empty($this->allowedDeliveryIds)) {
+			$services = array_intersect_key($services, array_flip($this->allowedDeliveryIds));
+		}
+
+		return $services;
+	}
+
+	/**
+	 * Список платёжных систем: ID => название (b_sale_pay_system_action).
+	 *
+	 * @return array
+	 */
+	protected function getPaySystems(): array
+	{
+		$systems = [];
+		try {
+			$rs = PaySystemActionTable::getList([
+				'select' => ['ID', 'NAME'],
+				'order'  => ['SORT' => 'ASC', 'ID' => 'ASC'],
+			]);
+			while ($row = $rs->fetch()) {
+				$systems[(int)$row['ID']] = (string)$row['NAME'];
+			}
+		} catch (\Throwable $e) {
+			$systems = [];
+		}
+
+		return $systems;
+	}
+
+	/**
+	 * Платёжные системы для селекта фильтра: только выбранные в параметрах компонента
+	 * (PAY_SYSTEMS). Если параметр не задан — все.
+	 *
+	 * @return array
+	 */
+	protected function getFilterPaySystems(): array
+	{
+		$systems = $this->getPaySystems();
+		if (!empty($this->allowedPaySystemIds)) {
+			$systems = array_intersect_key($systems, array_flip($this->allowedPaySystemIds));
+		}
+
+		return $systems;
+	}
+
+	/**
 	 * Поля выборки заказа + связанного пользователя.
 	 *
 	 * @return array
@@ -267,6 +436,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	{
 		return [
 			'ID', 'ACCOUNT_NUMBER', 'DATE_INSERT', 'PRICE', 'DISCOUNT_ALL', 'STATUS_ID', 'LID',
+			'DELIVERY_ID', 'PAY_SYSTEM_ID',
 			'USER_ID', 'USER.NAME', 'USER.LAST_NAME', 'USER.LOGIN', 'USER.EMAIL',
 		];
 	}
@@ -304,6 +474,12 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 
 		if (!empty($this->filterStatus)) {
 			$query->whereIn('STATUS_ID', $this->filterStatus);
+		}
+		if (!empty($this->filterDelivery)) {
+			$query->whereIn('DELIVERY_ID', $this->filterDelivery);
+		}
+		if (!empty($this->filterPaySystem)) {
+			$query->whereIn('PAY_SYSTEM_ID', $this->filterPaySystem);
 		}
 		if ($this->dateFrom !== null) {
 			$query->where('DATE_INSERT', '>=', $this->dateFrom);
@@ -514,6 +690,12 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		if (!empty($this->filterStatus)) {
 			$baseParams['STATUS'] = $this->filterStatus[0];
 		}
+		if (!empty($this->filterDelivery)) {
+			$baseParams['DELIVERY'] = $this->filterDelivery[0];
+		}
+		if (!empty($this->filterPaySystem)) {
+			$baseParams['PAY_SYSTEM'] = $this->filterPaySystem[0];
+		}
 		if ($this->dateFromRaw !== '') {
 			$baseParams['DATE_FROM'] = $this->dateFromRaw;
 		}
@@ -525,27 +707,35 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		}
 
 		return [
-			'ORDERS'      => $orders,
-			'STATUSES'    => $this->statuses,
-			'ORDER_PROPS' => $this->loadOrderProps($orderIds),
-			'BASKETS'     => $this->loadBaskets($orderIds),
-			'DELIVERY_SUM'=> $this->loadDeliverySum($orderIds),
-			'FILTER'      => [
-				'STATUS'    => $this->filterStatus,
-				'DATE_FROM' => $this->dateFromRaw,
-				'DATE_TO'   => $this->dateToRaw,
-				'SEARCH'    => $this->search,
+			'ORDERS'           => $orders,
+			'STATUSES'         => $this->statuses,
+			// Полные карты — для колонок таблицы (названия у ВСЕХ заказов)
+			'DELIVERY_SERVICES'=> $this->getDeliveryServices(),
+			'PAY_SYSTEMS'      => $this->getPaySystems(),
+			// Отфильтрованные по параметрам карты — только для селектов фильтра
+			'FILTER_DELIVERY'  => $this->getFilterDeliveryServices(),
+			'FILTER_PAY'       => $this->getFilterPaySystems(),
+			'ORDER_PROPS'      => $this->loadOrderProps($orderIds),
+			'BASKETS'          => $this->loadBaskets($orderIds),
+			'DELIVERY_SUM'     => $this->loadDeliverySum($orderIds),
+			'FILTER'           => [
+				'STATUS'     => $this->filterStatus,
+				'DELIVERY'   => $this->filterDelivery,
+				'PAY_SYSTEM' => $this->filterPaySystem,
+				'DATE_FROM'  => $this->dateFromRaw,
+				'DATE_TO'    => $this->dateToRaw,
+				'SEARCH'     => $this->search,
 			],
-			'NAV'         => [
+			'NAV'              => [
 				'TOTAL_COUNT'  => (int)$nav->getRecordCount(),
 				'PAGE_COUNT'   => $nav->getPageCount(),
 				'CURRENT_PAGE' => $nav->getCurrentPage(),
 			],
-			'BASE_PARAMS' => $baseParams,
+			'BASE_PARAMS'      => $baseParams,
 			// id навигации PageNavigation ('orders') — initFromUri() читает именно этот GET-параметр
-			'PAGE_PARAM'  => $nav->getId(),
-			'PAGE_SIZE'   => $pageSize,
-			'EXPORT_ENABLED' => $this->isExportEnabled(),
+			'PAGE_PARAM'       => $nav->getId(),
+			'PAGE_SIZE'        => $pageSize,
+			'EXPORT_ENABLED'   => $this->isExportEnabled(),
 		];
 	}
 

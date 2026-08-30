@@ -38,7 +38,7 @@
     // OrdersFilter — форма фильтра (AJAX, без перезагрузки)
     // ============================================================
     const OrdersFilter = {
-        props: ["model", "statuses", "exportEnabled", "exportUrl", "loading"],
+        props: ["model", "statuses", "deliveryServices", "paySystems", "exportEnabled", "exportUrl", "loading"],
         emits: ["submit-filter", "reset-filter"],
         template: `
             <form class="p-orders-filter" @submit.prevent="$emit('submit-filter')">
@@ -48,6 +48,22 @@
                         <select id="p-orders-status" v-model="model.status">
                             <option value="">Все статусы</option>
                             <option v-for="(name, id) in statuses" :key="id" :value="id">{{ name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="p-orders-filter__group">
+                        <label for="p-orders-delivery">Способ доставки</label>
+                        <select id="p-orders-delivery" v-model="model.delivery">
+                            <option value="">Все способы</option>
+                            <option v-for="(name, id) in deliveryServices" :key="id" :value="id">{{ name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="p-orders-filter__group">
+                        <label for="p-orders-pay">Способ оплаты</label>
+                        <select id="p-orders-pay" v-model="model.paySystem">
+                            <option value="">Все способы</option>
+                            <option v-for="(name, id) in paySystems" :key="id" :value="id">{{ name }}</option>
                         </select>
                     </div>
 
@@ -98,6 +114,12 @@
             const state = reactive({
                 orders: toArray(initial.ORDERS),
                 statuses: initial.STATUSES || {},
+                // Полные карты — для колонок таблицы (названия у ВСЕХ заказов)
+                deliveryServices: initial.DELIVERY_SERVICES || {},
+                paySystems: initial.PAY_SYSTEMS || {},
+                // Отфильтрованные по параметрам карты — только для селектов фильтра
+                filterDelivery: initial.FILTER_DELIVERY || initial.DELIVERY_SERVICES || {},
+                filterPay: initial.FILTER_PAY || initial.PAY_SYSTEMS || {},
                 orderProps: initial.ORDER_PROPS || {},
                 baskets: initial.BASKETS || {},
                 deliverySum: initial.DELIVERY_SUM || {},
@@ -114,6 +136,10 @@
             const model = reactive({
                 status: (initial.FILTER && Array.isArray(initial.FILTER.STATUS) && initial.FILTER.STATUS.length)
                     ? initial.FILTER.STATUS[0] : "",
+                delivery: (initial.FILTER && Array.isArray(initial.FILTER.DELIVERY) && initial.FILTER.DELIVERY.length)
+                    ? String(initial.FILTER.DELIVERY[0]) : "",
+                paySystem: (initial.FILTER && Array.isArray(initial.FILTER.PAY_SYSTEM) && initial.FILTER.PAY_SYSTEM.length)
+                    ? String(initial.FILTER.PAY_SYSTEM[0]) : "",
                 dateFrom: (initial.FILTER && initial.FILTER.DATE_FROM) || "",
                 dateTo: (initial.FILTER && initial.FILTER.DATE_TO) || "",
                 search: (initial.FILTER && initial.FILTER.SEARCH) || "",
@@ -148,8 +174,10 @@
                         phone,
                         email,
                         statusName: state.statuses[o.STATUS_ID] || o.STATUS_ID,
+                        deliveryName: state.deliveryServices[o.DELIVERY_ID] || "",
+                        paySystemName: state.paySystems[o.PAY_SYSTEM_ID] || "",
                         items: state.baskets[o.ID] || [],
-                        delivery: state.deliverySum[o.ID] || 0,
+                        deliverySum: state.deliverySum[o.ID] || 0,
                     });
                 });
             });
@@ -188,6 +216,18 @@
                         if (d.STATUSES && Object.keys(d.STATUSES).length) {
                             state.statuses = d.STATUSES;
                         }
+                        if (d.FILTER_DELIVERY) {
+                            state.filterDelivery = d.FILTER_DELIVERY;
+                        }
+                        if (d.FILTER_PAY) {
+                            state.filterPay = d.FILTER_PAY;
+                        }
+                        if (d.DELIVERY_SERVICES) {
+                            state.deliveryServices = d.DELIVERY_SERVICES;
+                        }
+                        if (d.PAY_SYSTEMS) {
+                            state.paySystems = d.PAY_SYSTEMS;
+                        }
                     } else {
                         state.error = (payload && payload.error) || "Ошибка загрузки списка";
                     }
@@ -200,6 +240,13 @@
             const buildParams = (page) => {
                 return {
                     STATUS: model.status !== "" ? [model.status] : [],
+                    DELIVERY: model.delivery !== "" ? [parseInt(model.delivery, 10)] : [],
+                    PAY_SYSTEM: model.paySystem !== "" ? [parseInt(model.paySystem, 10)] : [],
+                    // Списки способов из параметров компонента (state.filterDelivery/filterPay
+                    // уже отфильтрованы бэкендом) — передаём, чтобы AJAX-ответ строился
+                    // с теми же опциями в фильтре
+                    DELIVERY_SERVICES: Object.keys(state.filterDelivery).map(Number),
+                    PAY_SYSTEMS: Object.keys(state.filterPay).map(Number),
                     DATE_FROM: model.dateFrom,
                     DATE_TO: model.dateTo,
                     SEARCH: model.search,
@@ -216,6 +263,8 @@
             // Сброс фильтра
             const resetFilter = () => {
                 model.status = "";
+                model.delivery = "";
+                model.paySystem = "";
                 model.dateFrom = "";
                 model.dateTo = "";
                 model.search = "";
@@ -270,6 +319,8 @@
                     <OrdersFilter
                         :model="model"
                         :statuses="state.statuses"
+                        :delivery-services="state.filterDelivery"
+                        :pay-systems="state.filterPay"
                         :export-enabled="state.exportEnabled"
                         :export-url="exportUrl"
                         :loading="state.loading"
@@ -288,6 +339,8 @@
                                         <th>Дата</th>
                                         <th>Клиент</th>
                                         <th>Телефон</th>
+                                        <th>Доставка</th>
+                                        <th>Оплата</th>
                                         <th style="text-align:right;">Сумма</th>
                                         <th style="text-align:right;">Статус</th>
                                         <th></th>
@@ -295,12 +348,12 @@
                                 </thead>
                                 <tbody>
                                     <tr v-if="!view.length && !state.loading">
-                                        <td colspan="7">
+                                        <td colspan="9">
                                             <div class="p-users-empty">Заказы не найдены</div>
                                         </td>
                                     </tr>
                                     <tr v-if="state.loading && !view.length">
-                                        <td colspan="7">
+                                        <td colspan="9">
                                             <div class="p-users-empty">Загрузка…</div>
                                         </td>
                                     </tr>
@@ -317,6 +370,8 @@
                                                 <div class="p-users-login">{{ order.email !== '' ? order.email : (order.USER_LOGIN || '—') }}</div>
                                             </td>
                                             <td>{{ order.phone !== '' ? order.phone : '—' }}</td>
+                                            <td>{{ order.deliveryName !== '' ? order.deliveryName : '—' }}</td>
+                                            <td>{{ order.paySystemName !== '' ? order.paySystemName : '—' }}</td>
                                             <td style="text-align:right; white-space:nowrap;">{{ fmtMoney(order.PRICE) }} ₽</td>
                                             <td style="text-align:right;">
                                                 <span class="p-order-status" :data-status="order.STATUS_ID">{{ order.statusName }}</span>
@@ -340,7 +395,7 @@
                                             </td>
                                         </tr>
                                         <tr class="p-order-detail-row" :class="{ open: openId === order.ID }">
-                                            <td colspan="7">
+                                            <td colspan="9">
                                                 <div class="p-order-detail">
                                                     <table v-if="order.items.length" class="p-order-detail__products">
                                                         <thead>
@@ -367,7 +422,7 @@
                                                     <div class="p-order-detail__totals">
                                                         <div class="p-order-detail__total">
                                                             <span>Сумма доставки</span>
-                                                            <b>{{ fmtMoney(order.delivery) }} ₽</b>
+                                                            <b>{{ fmtMoney(order.deliverySum) }} ₽</b>
                                                         </div>
                                                         <div class="p-order-detail__total">
                                                             <span>Скидка</span>

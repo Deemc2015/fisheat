@@ -9,16 +9,24 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
-$orders     = $arResult['ORDERS'] ?? [];
-$statuses   = $arResult['STATUSES'] ?? [];
-$orderProps = $arResult['ORDER_PROPS'] ?? [];
-$baskets    = $arResult['BASKETS'] ?? [];
-$deliverySum= $arResult['DELIVERY_SUM'] ?? [];
+$orders           = $arResult['ORDERS'] ?? [];
+$statuses         = $arResult['STATUSES'] ?? [];
+// Полные карты — для колонок таблицы (названия у ВСЕХ заказов)
+$deliveryServices = $arResult['DELIVERY_SERVICES'] ?? [];
+$paySystems       = $arResult['PAY_SYSTEMS'] ?? [];
+// Отфильтрованные по параметрам карты — только для селектов фильтра
+$filterDeliveryServices = $arResult['FILTER_DELIVERY'] ?? $deliveryServices;
+$filterPaySystems       = $arResult['FILTER_PAY'] ?? $paySystems;
+$orderProps       = $arResult['ORDER_PROPS'] ?? [];
+$baskets          = $arResult['BASKETS'] ?? [];
+$deliverySum      = $arResult['DELIVERY_SUM'] ?? [];
 
-$filterStatus = $arResult['FILTER']['STATUS'] ?? [];
-$dateFromRaw  = $arResult['FILTER']['DATE_FROM'] ?? '';
-$dateToRaw    = $arResult['FILTER']['DATE_TO'] ?? '';
-$search       = $arResult['FILTER']['SEARCH'] ?? '';
+$filterStatus   = $arResult['FILTER']['STATUS'] ?? [];
+$filterDelivery = $arResult['FILTER']['DELIVERY'] ?? [];
+$filterPaySystem= $arResult['FILTER']['PAY_SYSTEM'] ?? [];
+$dateFromRaw    = $arResult['FILTER']['DATE_FROM'] ?? '';
+$dateToRaw      = $arResult['FILTER']['DATE_TO'] ?? '';
+$search         = $arResult['FILTER']['SEARCH'] ?? '';
 
 $totalCount  = (int)($arResult['NAV']['TOTAL_COUNT'] ?? 0);
 $pageCount   = (int)($arResult['NAV']['PAGE_COUNT'] ?? 1);
@@ -101,6 +109,26 @@ $exportUrl = $makeUrl(['EXPORT' => 'excel']);
                 </div>
 
                 <div class="p-orders-filter__group">
+                    <label for="p-orders-delivery">Способ доставки</label>
+                    <select id="p-orders-delivery" name="DELIVERY">
+                        <option value="">Все способы</option>
+                        <?php foreach ($filterDeliveryServices as $deliveryId => $deliveryName): ?>
+                            <option value="<?= (int)$deliveryId ?>" <?= in_array((int)$deliveryId, $filterDelivery, true) ? 'selected' : '' ?>><?= htmlspecialchars($deliveryName) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="p-orders-filter__group">
+                    <label for="p-orders-pay">Способ оплаты</label>
+                    <select id="p-orders-pay" name="PAY_SYSTEM">
+                        <option value="">Все способы</option>
+                        <?php foreach ($filterPaySystems as $payId => $payName): ?>
+                            <option value="<?= (int)$payId ?>" <?= in_array((int)$payId, $filterPaySystem, true) ? 'selected' : '' ?>><?= htmlspecialchars($payName) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="p-orders-filter__group">
                     <label for="p-orders-date-from">Дата с</label>
                     <input type="date" id="p-orders-date-from" name="DATE_FROM" value="<?= htmlspecialchars($dateFromRaw) ?>">
                 </div>
@@ -137,6 +165,8 @@ $exportUrl = $makeUrl(['EXPORT' => 'excel']);
                             <th>Дата</th>
                             <th>Клиент</th>
                             <th>Телефон</th>
+                            <th>Доставка</th>
+                            <th>Оплата</th>
                             <th style="text-align:right;">Сумма</th>
                             <th style="text-align:right;">Статус</th>
                             <th></th>
@@ -145,7 +175,7 @@ $exportUrl = $makeUrl(['EXPORT' => 'excel']);
                     <tbody>
                         <?php if (!$orders): ?>
                             <tr>
-                                <td colspan="7">
+                                <td colspan="9">
                                     <div class="p-users-empty">Заказы не найдены</div>
                                 </td>
                             </tr>
@@ -175,6 +205,8 @@ $exportUrl = $makeUrl(['EXPORT' => 'excel']);
                                     </div>
                                 </td>
                                 <td><?= htmlspecialchars($phone !== '' ? $phone : '—') ?></td>
+                                <td class="p-order-delivery"><?= htmlspecialchars((string)($deliveryServices[$o['DELIVERY_ID']] ?? '—')) ?></td>
+                                <td class="p-order-pay"><?= htmlspecialchars((string)($paySystems[$o['PAY_SYSTEM_ID']] ?? '—')) ?></td>
                                 <td style="text-align:right; white-space:nowrap;"><?= number_format((float)$o['PRICE'], 2, ',', ' ') ?> ₽</td>
                                 <td style="text-align:right;">
                                     <span class="p-order-status" data-status="<?= htmlspecialchars((string)$o['STATUS_ID']) ?>"><?= htmlspecialchars($statusName) ?></span>
@@ -198,7 +230,7 @@ $exportUrl = $makeUrl(['EXPORT' => 'excel']);
                                 </td>
                             </tr>
                             <tr class="p-order-detail-row" id="p-order-detail-<?= (int)$o['ID'] ?>">
-                                <td colspan="7">
+                                <td colspan="9">
                                     <div class="p-order-detail">
                                         <?php if (!empty($baskets[$o['ID']])): ?>
                                             <table class="p-order-detail__products">

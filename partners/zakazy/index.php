@@ -55,7 +55,15 @@ $APPLICATION->IncludeComponent(
 		"COMPONENT_TEMPLATE" => "vue",
 		"PAGE_SIZE" => "20",
 		"CACHE_TYPE" => "A",
-		"CACHE_TIME" => ""
+		"CACHE_TIME" => "",
+		"DELIVERY_SERVICES" => array(
+			0 => "2",
+			1 => "3",
+		),
+		"PAY_SYSTEMS" => array(
+			0 => "2",
+			1 => "3",
+		)
 	),
 	false
 );
