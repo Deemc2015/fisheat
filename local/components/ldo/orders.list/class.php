@@ -452,7 +452,11 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			return $restaurants;
 		}
 		try {
-			$list = \Ldo\Deliverymap\RestaurantsTable::getActiveList([], ['NAME' => 'ASC']);
+			// Только рестораны текущего сайта (заказы тоже выбираются по LID = SITE_ID)
+			$list = \Ldo\Deliverymap\RestaurantsTable::getActiveList(
+				['=SITE_ID' => SITE_ID],
+				['NAME' => 'ASC']
+			);
 			foreach ($list as $r) {
 				$xmlId = (string)($r['XML_ID'] ?? '');
 				if ($xmlId !== '') {
@@ -542,7 +546,12 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			$query->whereIn('PAY_SYSTEM_ID', $this->filterPaySystem);
 		}
 		if ($this->filterRestaurant !== '') {
-			$query->whereIn('ID', $this->restaurantOrderIds);
+			if (!empty($this->restaurantOrderIds)) {
+				$query->whereIn('ID', $this->restaurantOrderIds);
+			} else {
+				// Ресторан выбран, но заказов с ним нет — возвращаем пустой список
+				$query->where('ID', -1);
+			}
 		}
 		if ($this->dateFrom !== null) {
 			$query->where('DATE_INSERT', '>=', $this->dateFrom);
