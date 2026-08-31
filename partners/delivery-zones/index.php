@@ -51,6 +51,18 @@ if ($moduleLoaded) {
         'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
     ]);
     while ($z = $dbZones->fetch()) {
+        // Зона активна только при заполнении всех обязательных полей
+        $zoneComplete = (int)$z['RESTAURANT_ID'] > 0
+            && (int)$z['PRICE'] > 0
+            && (int)$z['FREE_DELIVERY_PRICE'] > 0
+            && (int)$z['DELIVERY_TIME_START'] > 0
+            && (int)$z['DELIVERY_TIME_END'] > 0
+            && (int)$z['MIN_ORDER_PRICE'] > 0
+            && trim((string)$z['NAME']) !== '';
+        if (!$zoneComplete && $z['ACTIVE'] === 'Y') {
+            DeliveryZoneTable::update($z['ID'], ['ACTIVE' => 'N']);
+            $z['ACTIVE'] = 'N';
+        }
         $z['COORDINATES'] = is_string($z['COORDINATES']) ? json_decode($z['COORDINATES'], true) : $z['COORDINATES'];
         $deliveryZones[] = $z;
     }
@@ -73,6 +85,16 @@ if ($request->isPost() && $request->getPost('ajax_zone') && $moduleLoaded) {
                 $coordinates = [];
             }
 
+            // Ресторан и остальные обязательные поля — для активной зоны
+            $restaurantId = (int)$request->getPost('RESTAURANT_ID');
+            $zoneComplete = $restaurantId > 0
+                && (int)$request->getPost('PRICE') > 0
+                && (int)$request->getPost('FREE_FROM') > 0
+                && (int)$request->getPost('DELIVERY_TIME_START') > 0
+                && (int)$request->getPost('DELIVERY_TIME_END') > 0
+                && (int)$request->getPost('MIN_ORDER_PRICE') > 0
+                && trim((string)$request->getPost('NAME')) !== '';
+
             $data = [
                 'NAME' => trim((string)$request->getPost('NAME')),
                 'PRICE' => (int)$request->getPost('PRICE'),
@@ -82,10 +104,11 @@ if ($request->isPost() && $request->getPost('ajax_zone') && $moduleLoaded) {
                 'COLOR' => $request->getPost('COLOR') ?: '#00FF00',
                 'SORT' => (int)$request->getPost('SORT') ?: 500,
                 'MIN_ORDER_PRICE' => (int)$request->getPost('MIN_ORDER_PRICE'),
-                'ACTIVE' => $request->getPost('ACTIVE') === 'Y' ? 'Y' : 'N',
+                // Пока обязательные поля не заполнены — активность включить нельзя
+                'ACTIVE' => $zoneComplete && $request->getPost('ACTIVE') === 'Y' ? 'Y' : 'N',
                 'SITE_ID' => $siteId,
                 'COORDINATES' => $coordinates,
-                'RESTAURANT_ID' => (int)$request->getPost('RESTAURANT_ID'),
+                'RESTAURANT_ID' => $restaurantId,
             ];
             if (empty($data['NAME'])) throw new \Exception('Введите название зоны');
 
@@ -189,6 +212,29 @@ $partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 
+<style>
+/* Зона с незаполненными обязательными полями */
+.rest-item--invalid {
+    background: rgba(231, 76, 60, .1);
+    box-shadow: inset 0 0 0 2px rgba(231, 76, 60, .45);
+}
+.rest-item--invalid:hover {
+    background: rgba(231, 76, 60, .15);
+}
+.rest-item__warning {
+    margin-top: 6px;
+    color: #e74c3c;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.rest-item__warning::before {
+    content: "⚠";
+    font-size: 14px;
+}
+</style>
 
         <div class="p-main">
             <!-- Вкладка: Зоны доставки -->
@@ -232,6 +278,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                             <h2 style="font-size:18px; margin:0; color:var(--bg-white);">Зоны доставки</h2>
                             <span style="font-size:13px; color:var(--color-muted);">Всего: <?= count($deliveryZones) ?></span>
                         </div>
+                        <div id="zone-warning-message" style="display:none; background:rgba(231,76,60,.12); color:#e74c3c; padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:14px;"></div>
                         <div id="zones-list" style="max-height:460px; overflow-y:auto;">
                             <?php foreach ($deliveryZones as $z):
                                 $restName = '';
@@ -243,8 +290,16 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                         }
                                     }
                                 }
+                                // Зона считается невалидной, если не заполнены обязательные поля
+                                $zoneInvalid = !((int)$z['RESTAURANT_ID'] > 0
+                                    && (int)$z['PRICE'] > 0
+                                    && (int)$z['FREE_DELIVERY_PRICE'] > 0
+                                    && (int)$z['DELIVERY_TIME_START'] > 0
+                                    && (int)$z['DELIVERY_TIME_END'] > 0
+                                    && (int)$z['MIN_ORDER_PRICE'] > 0
+                                    && trim((string)$z['NAME']) !== '');
                             ?>
-                                <div class="rest-item" data-id="<?= $z['ID'] ?>" style="border-left:4px solid <?= htmlspecialchars($z['COLOR'] ?: '#00FF00') ?>;">
+                                <div class="rest-item<?= $zoneInvalid ? ' rest-item--invalid' : '' ?>" data-id="<?= $z['ID'] ?>" style="border-left:4px solid <?= htmlspecialchars($z['COLOR'] ?: '#00FF00') ?>;">
                                     <div class="rest-item__main">
                                         <div class="rest-item__info">
                                             <div class="rest-item__name"><?= htmlspecialchars($z['NAME']) ?></div>
@@ -256,6 +311,12 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                                     <span class="zone-highload-badge">+<?= $highLoadAddTime ?> мин. выс.нагр.</span>
                                                 <?php endif; ?>
                                             </div>
+                                            <?php if ($zoneInvalid): ?>
+                                                <div class="rest-item__warning">Не заполнены обязательные поля</div>
+                                            <?php endif; ?>
+                                            <?php if ($z['ACTIVE'] !== 'Y'): ?>
+                                                <div class="rest-item__warning">Зона неактивна</div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="rest-item__burger" onclick="event.stopPropagation();toggleRestMenu(this)">
                                             <span></span><span></span><span></span>
@@ -603,8 +664,22 @@ document.getElementById('import-dialog')?.addEventListener('click', function(e) 
         fd.append('DELIVERY_TIME_END', document.getElementById('zone-form-tend').value);
         fd.append('MIN_ORDER_PRICE', document.getElementById('zone-form-min').value);
         fd.append('COLOR', document.getElementById('zone-form-color').value);
+        var zoneDataForm = {
+            name: document.getElementById('zone-form-name').value,
+            restaurantId: document.getElementById('zone-form-restaurant').value,
+            price: document.getElementById('zone-form-price').value,
+            freeFrom: document.getElementById('zone-form-free').value,
+            tstart: document.getElementById('zone-form-tstart').value,
+            tend: document.getElementById('zone-form-tend').value,
+            min: document.getElementById('zone-form-min').value
+        };
+        // Если обязательные поля не заполнены — блокируем сохранение
+        if (!isZoneValid(zoneDataForm)) {
+            showZoneWarning(0, getZoneRequiredError());
+            return;
+        }
         fd.append('ACTIVE', 'Y');
-        fd.append('RESTAURANT_ID', document.getElementById('zone-form-restaurant').value);
+        fd.append('RESTAURANT_ID', parseInt(zoneDataForm.restaurantId) || 0);
 
         fetch(window.location.href, {
             method: 'POST',
@@ -763,6 +838,24 @@ document.addEventListener('click', function(e) {
 // ===== Toggle активности =====
 document.addEventListener('change', function(e) {
     if (e.target.classList.contains('zone-edit-active')) {
+        var editBlock = e.target.closest('.rest-item__edit');
+        var editId = editBlock ? parseInt(String(editBlock.id).replace('zone-edit-', '')) || 0 : 0;
+        var zoneData = editBlock ? {
+            name: editBlock.querySelector('.zone-edit-name').value,
+            restaurantId: editBlock.querySelector('.zone-edit-restaurant').value,
+            price: editBlock.querySelector('.zone-edit-price').value,
+            freeFrom: editBlock.querySelector('.zone-edit-free').value,
+            tstart: editBlock.querySelector('.zone-edit-tstart').value,
+            tend: editBlock.querySelector('.zone-edit-tend').value,
+            min: editBlock.querySelector('.zone-edit-min').value
+        } : null;
+
+        // Пока обязательные поля не заполнены — активность включить нельзя
+        if (e.target.checked && !isZoneValid(zoneData)) {
+            e.target.checked = false;
+            showZoneWarning(editId, getZoneRequiredError());
+        }
+
         var label = e.target.closest('.toggle-switch');
         if (label) {
             var labelText = label.querySelector('.toggle-switch__label');
@@ -772,7 +865,36 @@ document.addEventListener('change', function(e) {
 });
 
 // ===== Редактирование зоны на карте =====
-var zonePolygons = {}; // id -> { polygon, coords, color }
+var zonePolygons = {}; // id -> { polygon, coords, color, restaurantId }
+
+// Сообщение об ошибке зоны + подсветка зоны в списке (без alert)
+function showZoneWarning(zoneId, message) {
+    if (typeof highlightZoneInList === 'function') {
+        highlightZoneInList(zoneId);
+    }
+    var msgBox = document.getElementById('zone-warning-message');
+    if (msgBox) {
+        msgBox.textContent = message;
+        msgBox.style.display = 'block';
+    }
+}
+
+// Проверка заполненности обязательных полей зоны
+function isZoneValid(zone) {
+    if (!zone) return false;
+    if (!zone.name || String(zone.name).trim() === '') return false;
+    if (!(parseInt(zone.restaurantId) > 0)) return false;
+    if (!(parseInt(zone.price) > 0)) return false;
+    if (!(parseInt(zone.freeFrom) > 0)) return false;
+    if (!(parseInt(zone.tstart) > 0)) return false;
+    if (!(parseInt(zone.tend) > 0)) return false;
+    if (!(parseInt(zone.min) > 0)) return false;
+    return true;
+}
+
+function getZoneRequiredError() {
+    return 'Не заполнены обязательные поля';
+}
 
 // Переопределяем initZonesMap для сохранения ссылок на полигоны
 (function() {
@@ -816,7 +938,18 @@ var zonePolygons = {}; // id -> { polygon, coords, color }
                         selectZoneOnMap(<?= $zId ?>);
                         highlightZoneInList(<?= $zId ?>);
                     });
-                    zonePolygons[<?= $zId ?>] = { polygon: poly, coords: coords, color: '<?= $color ?>' };
+                    zonePolygons[<?= $zId ?>] = {
+                        polygon: poly,
+                        coords: coords,
+                        color: '<?= $color ?>',
+                        restaurantId: <?= (int)$z['RESTAURANT_ID'] ?>,
+                        name: <?= json_encode($z['NAME']) ?>,
+                        price: <?= (int)$z['PRICE'] ?>,
+                        freeFrom: <?= (int)$z['FREE_DELIVERY_PRICE'] ?>,
+                        tstart: <?= (int)$z['DELIVERY_TIME_START'] ?>,
+                        tend: <?= (int)$z['DELIVERY_TIME_END'] ?>,
+                        min: <?= (int)$z['MIN_ORDER_PRICE'] ?>
+                    };
                 })();
                 <?php
                     endif;
@@ -939,8 +1072,22 @@ window.saveZoneEdit = function(id) {
     fd.append('DELIVERY_TIME_END', el.querySelector('.zone-edit-tend').value);
     fd.append('MIN_ORDER_PRICE', el.querySelector('.zone-edit-min').value);
     fd.append('COLOR', el.querySelector('.zone-edit-color').value);
-    fd.append('ACTIVE', activeCb ? (activeCb.checked ? 'Y' : 'N') : 'Y');
-    fd.append('RESTAURANT_ID', el.querySelector('.zone-edit-restaurant').value);
+    var zoneDataEdit = {
+        name: el.querySelector('.zone-edit-name').value,
+        restaurantId: el.querySelector('.zone-edit-restaurant').value,
+        price: el.querySelector('.zone-edit-price').value,
+        freeFrom: el.querySelector('.zone-edit-free').value,
+        tstart: el.querySelector('.zone-edit-tstart').value,
+        tend: el.querySelector('.zone-edit-tend').value,
+        min: el.querySelector('.zone-edit-min').value
+    };
+    // Если обязательные поля не заполнены — блокируем сохранение
+    if (!isZoneValid(zoneDataEdit)) {
+        showZoneWarning(id, getZoneRequiredError());
+        return;
+    }
+    fd.append('ACTIVE', (activeCb && activeCb.checked) ? 'Y' : 'N');
+    fd.append('RESTAURANT_ID', parseInt(zoneDataEdit.restaurantId) || 0);
 
     // Координаты из редактора
     if (editOverlayPolygon) {

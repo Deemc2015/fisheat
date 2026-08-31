@@ -1966,6 +1966,9 @@
                     if (addressInput) {
                         addressInput.value = '';
                     }
+
+                    // Очищаем свойства заказа (при самовывозе адрес не нужен)
+                    this.syncOrderAddressProps(null);
                 } else if (this.totalBlock.addressValueNode) {
                     this.totalBlock.addressValueNode.textContent = 'Не выбран ресторан';
                 }
@@ -1980,6 +1983,9 @@
                     if (addressInput) {
                         addressInput.value = selectedAddress.value;
                     }
+
+                    // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
+                    this.syncOrderAddressProps(selectedAddress);
 
                     // Очищаем поле ресторана
                     var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
@@ -2173,6 +2179,26 @@
         },
 
         /**
+         * Копирует данные выбранного адреса (квартира/подъезд/этаж/домофон) в свойства заказа
+         * @param {HTMLElement|null} radio - выбранная radio-кнопка адреса (null — очистить)
+         */
+        syncOrderAddressProps: function(radio) {
+            var map = {
+                'properties[KVARTIRA]': radio ? radio.getAttribute('data-kvartira') : '',
+                'properties[PODEZD]': radio ? radio.getAttribute('data-podezd') : '',
+                'properties[ETAG]': radio ? radio.getAttribute('data-etag') : '',
+                'properties[DOMOFON]': radio ? radio.getAttribute('data-domofon') : ''
+            };
+            for (var name in map) {
+                if (!map.hasOwnProperty(name)) continue;
+                var input = document.querySelector('input[name="' + name + '"]');
+                if (input) {
+                    input.value = map[name] || '';
+                }
+            }
+        },
+
+        /**
          * Инициализация выбора адреса доставки
          */
         initAddressSelect: function() {
@@ -2195,6 +2221,9 @@
                     if (addressInput) {
                         addressInput.value = addressName;
                     }
+
+                    // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
+                    self.syncOrderAddressProps(target);
 
                     // Обновляем отображение выбранной информации
                     self.updateSelectedInfoDisplay();
