@@ -1997,19 +1997,18 @@
                     // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
                     this.syncOrderAddressProps(selectedAddress);
 
-                    // Очищаем поля ресторана (ID, XML_ID, название)
+                    // Очищаем внутренний ID ресторана (используется при самовывозе)
                     var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
                     if (restaurantIdInput) {
                         restaurantIdInput.value = '';
                     }
-                    var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
-                    if (restaurantXmlInput) {
-                        restaurantXmlInput.value = '';
-                    }
-                    var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
-                    if (restaurantNameInput) {
-                        restaurantNameInput.value = '';
-                    }
+
+                    // Заполняем XML_ID (RESTORAN_ID) и название ресторана (NAME_RESTORAN)
+                    // по зоне доставки выбранного адреса
+                    this.syncRestaurantProps(
+                        selectedAddress.getAttribute('data-rest-xml') || '',
+                        selectedAddress.getAttribute('data-rest-name') || ''
+                    );
                 } else if (this.totalBlock.addressValueNode) {
                     this.totalBlock.addressValueNode.textContent = 'Не выбран адрес';
                 }
@@ -2227,6 +2226,22 @@
         },
 
         /**
+         * Заполняет свойства заказа RESTORAN_ID (XML_ID ресторана) и NAME_RESTORAN (название ресторана)
+         * @param {string} xmlId - XML_ID ресторана
+         * @param {string} name - название ресторана
+         */
+        syncRestaurantProps: function(xmlId, name) {
+            var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+            if (restaurantXmlInput) {
+                restaurantXmlInput.value = xmlId || '';
+            }
+            var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+            if (restaurantNameInput) {
+                restaurantNameInput.value = name || '';
+            }
+        },
+
+        /**
          * Инициализация выбора адреса доставки
          */
         initAddressSelect: function() {
@@ -2252,6 +2267,12 @@
 
                     // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
                     self.syncOrderAddressProps(target);
+
+                    // Заполняем XML_ID и название ресторана по зоне доставки выбранного адреса
+                    self.syncRestaurantProps(
+                        target.getAttribute('data-rest-xml') || '',
+                        target.getAttribute('data-rest-name') || ''
+                    );
 
                     // Обновляем отображение выбранной информации
                     self.updateSelectedInfoDisplay();
@@ -2371,17 +2392,19 @@
                     addressInput.value = selectedAddressRadio.value;
                 }
 
-                // Очищаем поля ресторана при доставке (ID, XML_ID, название)
+                // Очищаем внутренний ID ресторана (используется при самовывозе)
                 if (restaurantIdInput) {
                     restaurantIdInput.value = '';
                 }
-                var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
-                if (restaurantXmlInput) {
-                    restaurantXmlInput.value = '';
-                }
-                var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
-                if (restaurantNameInput) {
-                    restaurantNameInput.value = '';
+                // Заполняем XML_ID (RESTORAN_ID) и название ресторана (NAME_RESTORAN)
+                // по зоне доставки выбранного адреса
+                if (selectedAddressRadio) {
+                    this.syncRestaurantProps(
+                        selectedAddressRadio.getAttribute('data-rest-xml') || '',
+                        selectedAddressRadio.getAttribute('data-rest-name') || ''
+                    );
+                } else {
+                    this.syncRestaurantProps('', '');
                 }
             }
 

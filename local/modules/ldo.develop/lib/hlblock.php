@@ -12,6 +12,9 @@ class Hlblock
     /** @var bool Поле UF_CITY в HL-блоке adress_user гарантировано создано */
     private static $cityFieldEnsured = false;
 
+    /** @var bool Поле UF_ZONE_ID в HL-блоке adress_user гарантировано создано */
+    private static $zoneFieldEnsured = false;
+
     public static function getImageByIds( $arrCodes)
     {
 
@@ -153,7 +156,7 @@ class Hlblock
             }
 
             $records = $entity::getList([
-                'select' => ['ID','UF_SHIRINA', 'UF_DOLGOTA','UF_ADDRESS','UF_CITY','UF_KVARTIRA','UF_PODEZD','UF_ETAG','UF_DOMOFON','UF_PRICE','UF_DATE_ACTUAL','UF_MINIMAL_SUM','UF_FREE_DELIVERY'],
+                'select' => ['ID','UF_SHIRINA', 'UF_DOLGOTA','UF_ADDRESS','UF_CITY','UF_KVARTIRA','UF_PODEZD','UF_ETAG','UF_DOMOFON','UF_PRICE','UF_DATE_ACTUAL','UF_MINIMAL_SUM','UF_FREE_DELIVERY','UF_ZONE_ID'],
                 'filter' => ['UF_USER_ID' => $userId]
             ])->fetchAll();
 
@@ -191,7 +194,8 @@ class Hlblock
                         'DOLGOTA' => $item['UF_DOLGOTA'],
                         'MIN_SUM' => $item['UF_MINIMAL_SUM'],
                         'PRICE' => $item['UF_PRICE'],
-                        'FREE_DELIVERY' => $item['UF_FREE_DELIVERY']
+                        'FREE_DELIVERY' => $item['UF_FREE_DELIVERY'],
+                        'ZONE_ID' => (int)($item['UF_ZONE_ID'] ?? 0)
                     ];
                     $i++;
                 }
@@ -286,6 +290,148 @@ class Hlblock
     }
 
     /**
+     * Гарантирует наличие поля UF_ZONE_ID в HL-блоке adress_user.
+     * В это поле сохраняется ID зоны доставки, к которой относится адрес.
+     * Если поле отсутствует — создаёт его через CUserTypeEntity.
+     *
+     * @return bool
+     */
+    public static function ensureAddressZoneField(): bool
+    {
+        if (self::$zoneFieldEnsured) {
+            return true;
+        }
+
+        if (!Loader::includeModule('highloadblock')) {
+            return false;
+        }
+
+        $hlblock = HL\HighloadBlockTable::getRow([
+            'filter' => ['=TABLE_NAME' => 'adress_user']
+        ]);
+        if (!$hlblock) {
+            return false;
+        }
+
+        $entityId = 'HLBLOCK_' . (int)$hlblock['ID'];
+
+        $field = \Bitrix\Main\UserFieldTable::getRow([
+            'filter' => ['=ENTITY_ID' => $entityId, '=FIELD_NAME' => 'UF_ZONE_ID']
+        ]);
+
+        if (!$field) {
+            $userTypeEntity = new \CUserTypeEntity();
+            $userTypeEntity->Add([
+                'ENTITY_ID' => $entityId,
+                'FIELD_NAME' => 'UF_ZONE_ID',
+                'USER_TYPE_ID' => 'integer',
+                'XML_ID' => 'UF_ZONE_ID',
+                'SORT' => 500,
+                'MULTIPLE' => 'N',
+                'MANDATORY' => 'N',
+                'SHOW_FILTER' => 'N',
+                'SHOW_IN_LIST' => 'Y',
+                'EDIT_IN_LIST' => 'Y',
+                'IS_SEARCHABLE' => 'N',
+                'EDIT_FORM_LABEL' => ['ru' => 'Зона доставки'],
+                'LIST_COLUMN_LABEL' => ['ru' => 'Зона доставки'],
+                'LIST_FILTER_LABEL' => ['ru' => 'Зона доставки'],
+            ]);
+        }
+
+        self::$zoneFieldEnsured = true;
+
+        return true;
+    }
+
+    /**
+     * Определяет ID зоны доставки, к которой относятся координаты адреса.
+     *
+     * @param mixed $lat Широта
+     * @param mixed $lon Долгота
+     * @return int ID зоны доставки или 0, если адрес вне зон
+     */
+    public static function findZoneIdByCoordinates($lat, $lon): int
+    {
+        $lat = (float)$lat;
+        $lon = (float)$lon;
+
+        if ($lat == 0 || $lon == 0 || !Loader::includeModule('ldo.deliverymap')) {
+            return 0;
+        }
+
+        $siteId = defined('SITE_ID') ? SITE_ID : 's1';
+
+        $dbZones = \Ldo\Deliverymap\DeliveryZoneTable::getList([
+            'filter' => [
+                '=ACTIVE' => 'Y',
+                '=SITE_ID' => $siteId
+            ],
+            'order' => ['SORT' => 'ASC', 'ID' => 'ASC']
+        ]);
+
+        $point = [$lat, $lon];
+
+        while ($zone = $dbZones->fetch()) {
+            $coordinates = $zone['COORDINATES'];
+            if (is_string($coordinates)) {
+                $coordinates = json_decode($coordinates, true);
+            }
+
+            if (!is_array($coordinates) || count($coordinates) < 3) {
+                continue;
+            }
+
+            $polygon = [];
+            foreach ($coordinates as $p) {
+                if (is_array($p) && count($p) === 2) {
+                    $polygon[] = [(float)$p[0], (float)$p[1]];
+                }
+            }
+
+            if (count($polygon) < 3 || !self::isPointInPolygon($point, $polygon)) {
+                continue;
+            }
+
+            return (int)$zone['ID'];
+        }
+
+        return 0;
+    }
+
+    /**
+     * Проверка принадлежности точки полигону (алгоритм Ray Casting).
+     *
+     * @param array $point [lat, lng]
+     * @param array $polygon [[lat, lng], ...]
+     * @return bool
+     */
+    private static function isPointInPolygon(array $point, array $polygon): bool
+    {
+        $x = $point[0];
+        $y = $point[1];
+        $inside = false;
+        $j = count($polygon) - 1;
+
+        for ($i = 0; $i < count($polygon); $i++) {
+            $xi = $polygon[$i][0];
+            $yi = $polygon[$i][1];
+            $xj = $polygon[$j][0];
+            $yj = $polygon[$j][1];
+
+            $intersect = (($yi > $y) != ($yj > $y)) &&
+                ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi);
+
+            if ($intersect) {
+                $inside = !$inside;
+            }
+            $j = $i;
+        }
+
+        return $inside;
+    }
+
+    /**
      * Добавляет адрес пользователя в HL-блок adress_user,
      * гарантируя наличие поля UF_CITY и используя свежую сущность.
      *
@@ -298,8 +444,19 @@ class Hlblock
             return false;
         }
 
-        // Гарантируем наличие поля UF_CITY
+        // Гарантируем наличие полей UF_CITY и UF_ZONE_ID
         self::ensureAddressCityField();
+        self::ensureAddressZoneField();
+
+        // Определяем ID зоны доставки, к которой относится адрес
+        $lat = (float)($fields['UF_SHIRINA'] ?? 0);
+        $lon = (float)($fields['UF_DOLGOTA'] ?? 0);
+        if ($lat != 0 && $lon != 0) {
+            $zoneId = self::findZoneIdByCoordinates($lat, $lon);
+            if ($zoneId > 0) {
+                $fields['UF_ZONE_ID'] = $zoneId;
+            }
+        }
 
         $hlblock = HL\HighloadBlockTable::getRow([
             'filter' => ['=TABLE_NAME' => 'adress_user']
@@ -332,8 +489,38 @@ class Hlblock
             return false;
         }
 
-        // Гарантируем наличие поля UF_CITY
+        // Гарантируем наличие полей UF_CITY и UF_ZONE_ID
         self::ensureAddressCityField();
+        self::ensureAddressZoneField();
+
+        // Если координаты не переданы — берём их из текущей записи
+        if (!array_key_exists('UF_SHIRINA', $fields) || !array_key_exists('UF_DOLGOTA', $fields)) {
+            $hlblockCurrent = HL\HighloadBlockTable::getRow([
+                'filter' => ['=TABLE_NAME' => 'adress_user']
+            ]);
+            if ($hlblockCurrent) {
+                $entityCurrent = HL\HighloadBlockTable::compileEntity($hlblockCurrent)->getDataClass();
+                $current = $entityCurrent::getRow([
+                    'filter' => ['=ID' => $id],
+                    'select' => ['ID', 'UF_SHIRINA', 'UF_DOLGOTA']
+                ]);
+                if ($current) {
+                    if (!array_key_exists('UF_SHIRINA', $fields)) {
+                        $fields['UF_SHIRINA'] = $current['UF_SHIRINA'] ?? '';
+                    }
+                    if (!array_key_exists('UF_DOLGOTA', $fields)) {
+                        $fields['UF_DOLGOTA'] = $current['UF_DOLGOTA'] ?? '';
+                    }
+                }
+            }
+        }
+
+        // Пересчитываем ID зоны доставки по координатам адреса
+        $lat = (float)($fields['UF_SHIRINA'] ?? 0);
+        $lon = (float)($fields['UF_DOLGOTA'] ?? 0);
+        $fields['UF_ZONE_ID'] = ($lat != 0 && $lon != 0)
+            ? self::findZoneIdByCoordinates($lat, $lon)
+            : 0;
 
         $hlblock = HL\HighloadBlockTable::getRow([
             'filter' => ['=TABLE_NAME' => 'adress_user']

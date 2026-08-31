@@ -419,6 +419,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                            data-domofon="<?= htmlspecialchars($adress['DOMOFON'] ?? '') ?>"
                                            data-lat="<?= htmlspecialchars($adress['SHIRINA'] ?? '') ?>"
                                            data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
+                                           data-rest-xml="<?= htmlspecialchars($adress['RESTORAN_XML_ID'] ?? '') ?>"
+                                           data-rest-name="<?= htmlspecialchars($adress['RESTORAN_NAME'] ?? '') ?>"
                                            <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>

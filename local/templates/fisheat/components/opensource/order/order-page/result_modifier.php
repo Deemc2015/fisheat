@@ -105,6 +105,32 @@ function getUserInfo(){
 if(Loader::includeModule('ldo.develop')){
     $adressList = Hlblock::getAdressList();
 
+    // Для каждого адреса определяем ресторан зоны доставки
+    // (XML_ID iiko и название) по сохранённому ID зоны
+    if (is_array($adressList) && Loader::includeModule('ldo.deliverymap')) {
+        foreach ($adressList as &$adr) {
+            $zoneId = (int)($adr['ZONE_ID'] ?? 0);
+            $adr['RESTORAN_XML_ID'] = '';
+            $adr['RESTORAN_NAME'] = '';
+
+            if ($zoneId > 0) {
+                $dbZone = \Ldo\Deliverymap\DeliveryZoneTable::getList([
+                    'filter' => ['=ID' => $zoneId],
+                    'limit' => 1
+                ]);
+                $zone = $dbZone->fetch();
+                if ($zone && (int)$zone['RESTAURANT_ID'] > 0) {
+                    $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById((int)$zone['RESTAURANT_ID']);
+                    if ($restaurant) {
+                        $adr['RESTORAN_XML_ID'] = (string)($restaurant['XML_ID'] ?? '');
+                        $adr['RESTORAN_NAME'] = (string)($restaurant['NAME'] ?? '');
+                    }
+                }
+            }
+        }
+        unset($adr);
+    }
+
     $arResult['USER_ADRESS'] = $adressList;
 }
 /**/
