@@ -67,6 +67,15 @@ foreach ($order->getPropertyCollection() as $prop) {
 
 }
 
+// Город доставки по умолчанию — подставляем из настроек доставки (если не заполнен)
+if (!empty($arResult['PROPERTIES']['CITY']) && empty($arResult['PROPERTIES']['CITY']['VALUE'])
+    && Loader::includeModule('ldo.deliverymap')) {
+    $defaultCity = \Ldo\Deliverymap\SettingsTable::get('s1', 'default_city', '');
+    if ($defaultCity !== '') {
+        $arResult['PROPERTIES']['CITY']['VALUE'] = $defaultCity;
+    }
+}
+
 
 function getUserInfo(){
 

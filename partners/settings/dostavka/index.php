@@ -29,6 +29,9 @@ $yandexApiKey = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'yan
 $defaultLat   = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_lat', '54.7355') : '54.7355';
 $defaultLng   = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_lng', '55.9587') : '55.9587';
 $defaultZoom  = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_zoom', '11') : '11';
+$defaultCity  = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_city', '') : '';
+
+$saveError = '';
 
 // --- Сохранение настроек доставки ---
 if ($request->isPost() && $request->getPost('save_settings') === 'Y' && $deliveryModuleLoaded) {
@@ -36,13 +39,26 @@ if ($request->isPost() && $request->getPost('save_settings') === 'Y' && $deliver
     $lat  = trim((string)$request->getPost('default_lat'));
     $lng  = trim((string)$request->getPost('default_lng'));
     $zoom = trim((string)$request->getPost('default_zoom'));
+    $city = trim((string)$request->getPost('default_city'));
 
-    DeliverySettingsTable::set($siteId, 'yandex_api_key', $key);
-    DeliverySettingsTable::set($siteId, 'default_lat', $lat);
-    DeliverySettingsTable::set($siteId, 'default_lng', $lng);
-    DeliverySettingsTable::set($siteId, 'default_zoom', $zoom);
+    // Город — обязательное поле
+    if ($city === '') {
+        $saveError = 'Поле «Город доставки по умолчанию» обязательно для заполнения.';
+        // Не теряем введённые данные при ошибке
+        $yandexApiKey = $key;
+        $defaultLat   = $lat;
+        $defaultLng   = $lng;
+        $defaultZoom  = $zoom;
+        $defaultCity  = $city;
+    } else {
+        DeliverySettingsTable::set($siteId, 'yandex_api_key', $key);
+        DeliverySettingsTable::set($siteId, 'default_lat', $lat);
+        DeliverySettingsTable::set($siteId, 'default_lng', $lng);
+        DeliverySettingsTable::set($siteId, 'default_zoom', $zoom);
+        DeliverySettingsTable::set($siteId, 'default_city', $city);
 
-    LocalRedirect('/partners/settings/dostavka/?settings_saved=1');
+        LocalRedirect('/partners/settings/dostavka/?settings_saved=1');
+    }
 }
 
 $saved = $request->getQuery('settings_saved') === '1';
@@ -64,6 +80,10 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                     <div class="settings-saved">✓ Настройки сохранены</div>
                 <?php endif; ?>
 
+                <?php if ($saveError): ?>
+                    <div class="settings-error"><?= htmlspecialchars($saveError) ?></div>
+                <?php endif; ?>
+
                 <?php if (!$deliveryModuleLoaded): ?>
                     <div style="background:rgba(231,76,60,.12); color:#e74c3c; padding:12px 16px; border-radius:8px; margin-bottom:16px;">
                         Модуль ldo.deliverymap не подключён.
@@ -81,6 +101,14 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                         <span class="settings-hint">
                             Получить в <a href="https://developer.tech.yandex.ru/" target="_blank" style="color:var(--bg-button);">кабинете разработчика Яндекс</a>
                         </span>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="default_city">Город доставки по умолчанию <span style="color:#e74c3c;">*</span></label>
+                        <input type="text" id="default_city" name="default_city" required
+                               value="<?= htmlspecialchars($defaultCity) ?>"
+                               placeholder="Например, Уфа">
+                        <span class="settings-hint">Город, в который осуществляется доставка (обязательное поле)</span>
                     </div>
 
                     <div class="settings-group">
@@ -176,6 +204,17 @@ function updateCoords(lat, lng) {
 
 initSettingsMap();
 </script>
+
+<style>
+.settings-error {
+    background: rgba(231, 76, 60, .12);
+    color: #e74c3c;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+</style>
 
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");

@@ -199,7 +199,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             <?//print_r($adress);?>
                             <div class="adress-user-list__item">
                                 <label for="adress-user-list__item-name-<?=$adress['ID']?>">
-                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>"
+                                           data-city="<?= htmlspecialchars($adress['CITY'] ?? '') ?>"
+                                           data-kvartira="<?= htmlspecialchars($adress['KVARTIRA'] ?? '') ?>"
+                                           data-podezd="<?= htmlspecialchars($adress['PODEZD'] ?? '') ?>"
+                                           data-etag="<?= htmlspecialchars($adress['ETAG'] ?? '') ?>"
+                                           data-domofon="<?= htmlspecialchars($adress['DOMOFON'] ?? '') ?>"
+                                           data-lat="<?= htmlspecialchars($adress['SHIRINA'] ?? '') ?>"
+                                           data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
+                                           <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
                                 </label>
@@ -403,7 +411,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
                             <div class="adress-user-list__item">
                                 <label for="adress-user-list__item-name-<?=$adress['ID']?>">
-                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>" <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                    <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>"
+                                           data-city="<?= htmlspecialchars($adress['CITY'] ?? '') ?>"
+                                           data-kvartira="<?= htmlspecialchars($adress['KVARTIRA'] ?? '') ?>"
+                                           data-podezd="<?= htmlspecialchars($adress['PODEZD'] ?? '') ?>"
+                                           data-etag="<?= htmlspecialchars($adress['ETAG'] ?? '') ?>"
+                                           data-domofon="<?= htmlspecialchars($adress['DOMOFON'] ?? '') ?>"
+                                           data-lat="<?= htmlspecialchars($adress['SHIRINA'] ?? '') ?>"
+                                           data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
+                                           <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
                                 </label>
@@ -753,6 +769,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 </div>
 
                 <!-- Скрытые поля -->
+                <input type="hidden" name="CITY" id="modalCityInput" value="">
                 <input type="hidden" name="LAT" id="modalLatInput" value="">
                 <input type="hidden" name="LON" id="modalLonInput" value="">
                 <input type="hidden" name="ZONE_ID" id="modalZoneId" value="">

@@ -423,7 +423,7 @@
                     var addressItem = event.target.closest('.adress-user-list__item');
                     if (!addressItem) return;
 
-                    // Получаем данные адреса
+                    // Получаем данные адреса (включая город, квартиру, подъезд, этаж, домофон)
                     var radioInput = addressItem.querySelector('input[name="address_id"]');
                     var addressId = radioInput ? radioInput.getAttribute('data-id') : '';
                     var addressText = radioInput ? radioInput.value : '';
@@ -434,6 +434,11 @@
                     self.openAddAddressModal('edit', {
                         id: addressId,
                         address: addressText,
+                        city: radioInput ? radioInput.getAttribute('data-city') : null,
+                        apartment: radioInput ? radioInput.getAttribute('data-kvartira') : null,
+                        entrance: radioInput ? radioInput.getAttribute('data-podezd') : null,
+                        floor: radioInput ? radioInput.getAttribute('data-etag') : null,
+                        intercom: radioInput ? radioInput.getAttribute('data-domofon') : null,
                         lat: radioInput ? radioInput.getAttribute('data-lat') : null,
                         lon: radioInput ? radioInput.getAttribute('data-lon') : null
                     });
@@ -548,9 +553,12 @@
                     item.addEventListener('mouseenter', function() { this.style.backgroundColor = '#f5f5f5'; });
                     item.addEventListener('mouseleave', function() { this.style.backgroundColor = 'white'; });
                     item.addEventListener('click', function() {
-                        input.value = address;
+                        // Адрес без города (только улица и дом), город — отдельно
+                        input.value = self.buildStreetAddress(suggestion);
                         input.setAttribute('data-lat', coords[0]);
                         input.setAttribute('data-lon', coords[1]);
+                        var cityInput = document.querySelector('.modal-add-address input[name="CITY"]');
+                        if (cityInput) cityInput.value = self.extractLocality(suggestion);
                         container.style.display = 'none';
                     });
 
@@ -614,6 +622,31 @@
                    addressInput.value = addressData.address;
                }
 
+               // Город
+               var cityInput = modal.querySelector('input[name="CITY"]');
+               if (cityInput && addressData && addressData.city) {
+                   cityInput.value = addressData.city;
+               }
+
+               // Показываем доп. поля и заполняем их (квартира/подъезд/этаж/домофон)
+               var extraFields = modal.querySelector('.form-block-extra');
+               if (extraFields) {
+                   extraFields.style.display = 'block';
+               }
+               var extraMap = {
+                   'APARTMENT': addressData ? addressData.apartment : '',
+                   'ENTRANCE': addressData ? addressData.entrance : '',
+                   'FLOOR': addressData ? addressData.floor : '',
+                   'INTERCOM': addressData ? addressData.intercom : ''
+               };
+               for (var extraName in extraMap) {
+                   if (!extraMap.hasOwnProperty(extraName)) continue;
+                   var extraInput = modal.querySelector('input[name="' + extraName + '"]');
+                   if (extraInput) {
+                       extraInput.value = extraMap[extraName] || '';
+                   }
+               }
+
                // Если есть ID адреса, добавляем скрытое поле
                var hiddenIdInput = modal.querySelector('input[name="ADDRESS_ID"]');
                if (!hiddenIdInput && addressData && addressData.id) {
@@ -625,6 +658,12 @@
                } else if (hiddenIdInput && addressData && addressData.id) {
                    hiddenIdInput.value = addressData.id;
                }
+
+               // Сохраняем координаты для восстановления метки на карте
+               this.pendingEditCoords = (addressData && addressData.lat && addressData.lon)
+                   ? [addressData.lat, addressData.lon]
+                   : null;
+               this.pendingEditAddress = (addressData && addressData.address) ? addressData.address : '';
 
                if (submitBtn) {
                    submitBtn.textContent = 'Сохранить';
@@ -666,6 +705,12 @@
 
            // Инициализируем карту в модальном окне
            this.initModalMap();
+
+           // При редактировании — восстанавливаем метку по координатам,
+           // чтобы показать блок со временем и стоимостью доставки
+           if (this.pendingEditCoords) {
+               this.modalRestoreAddress(this.pendingEditCoords, this.pendingEditAddress || '');
+           }
        },
        
        /**
@@ -695,6 +740,7 @@
                
                self.modalDeliveryZones = [];
                self.modalSelectedPlacemark = null;
+               self.modalZonesLoaded = false;
                
                // Клик по карте
                self.modalMapInstance.events.add('click', function(e) {
@@ -736,6 +782,7 @@
            }).then(function(response) {
                if (response.data && response.data.success && response.data.zones) {
                    self.modalRenderZones(response.data.zones);
+                   self.modalZonesLoaded = true;
                }
            }).catch(function(error) {
                console.error('Ошибка загрузки зон доставки:', error);
@@ -856,6 +903,69 @@
        },
 
        /**
+        * Извлекает название города из геообъекта Яндекса (locality)
+        * @param {object} geoObject - объект ymaps.GeoObject
+        * @return {string}
+        */
+       extractLocality: function(geoObject) {
+           if (!geoObject) return '';
+
+           var addr = typeof geoObject.getAddress === 'function' ? geoObject.getAddress() : null;
+           if (addr && typeof addr.getLocality === 'function' && addr.getLocality()) {
+               return addr.getLocality();
+           }
+           if (addr && typeof addr.getComponents === 'function') {
+               var comps = addr.getComponents() || [];
+               for (var i = 0; i < comps.length; i++) {
+                   if (comps[i] && comps[i].kind === 'locality' && comps[i].name) {
+                       return comps[i].name;
+                   }
+               }
+           }
+           return '';
+       },
+
+       /**
+        * Собирает адрес без города: только улица и дом.
+        * @param {object} geoObject - объект ymaps.GeoObject
+        * @return {string}
+        */
+       buildStreetAddress: function(geoObject) {
+           if (!geoObject) return '';
+
+           var addr = typeof geoObject.getAddress === 'function' ? geoObject.getAddress() : null;
+           var parts = [];
+
+           // 1. Структурированные данные: street + house
+           if (addr) {
+               if (typeof addr.getStreet === 'function' && addr.getStreet()) parts.push(addr.getStreet());
+               if (typeof addr.getHouse === 'function' && addr.getHouse()) parts.push(addr.getHouse());
+           }
+           if (parts.length > 0) return parts.join(', ');
+
+           // 2. Компоненты адреса: street/house
+           if (addr && typeof addr.getComponents === 'function') {
+               var comps = addr.getComponents() || [];
+               var allowed = { street: 1, house: 1 };
+               for (var i = 0; i < comps.length; i++) {
+                   if (comps[i] && allowed[comps[i].kind] && comps[i].name) {
+                       parts.push(comps[i].name);
+                   }
+               }
+               if (parts.length > 0) return parts.join(', ');
+           }
+
+           // 3. Fallback: короткий адрес без первого сегмента (город)
+           var short = this.buildShortAddress(geoObject);
+           var chunks = short.split(',').map(function(s) { return s.trim(); });
+           if (chunks.length > 1) {
+               chunks.shift();
+               return chunks.join(', ');
+           }
+           return short;
+       },
+
+       /**
         * Инициализация подсказок адреса в модальном окне
         */
        modalInitAddressSuggest: function() {
@@ -952,9 +1062,12 @@
         */
        modalSelectSuggestion: function(suggestion) {
            var coords = suggestion.geometry.getCoordinates();
-           var address = this.buildShortAddress(suggestion);
-           
+           // Адрес без города (только улица и дом), город — отдельно
+           var address = this.buildStreetAddress(suggestion);
+           var city = this.extractLocality(suggestion);
+
            document.getElementById('modalAddressInput').value = address;
+           document.getElementById('modalCityInput').value = city;
            document.getElementById('modalLatInput').value = coords[0].toFixed(6);
            document.getElementById('modalLonInput').value = coords[1].toFixed(6);
            
@@ -973,9 +1086,12 @@
                var firstGeoObject = res.geoObjects.get(0);
                if (!firstGeoObject) return;
                
-               var address = self.buildShortAddress(firstGeoObject);
+               // Адрес без города (только улица и дом), город — отдельно
+               var address = self.buildStreetAddress(firstGeoObject);
+               var city = self.extractLocality(firstGeoObject);
                
                document.getElementById('modalAddressInput').value = address;
+               document.getElementById('modalCityInput').value = city;
                document.getElementById('modalLatInput').value = coords[0].toFixed(6);
                document.getElementById('modalLonInput').value = coords[1].toFixed(6);
                
@@ -1109,6 +1225,42 @@
        },
 
         /**
+         * Восстанавливает метку на карте по координатам (режим редактирования).
+         * Ставит метку, заполняет координаты и проверяет зону доставки,
+         * чтобы показать блок со временем/стоимостью и активировать кнопку.
+         * @param {Array} coords [lat, lon]
+         * @param {string} address
+         */
+        modalRestoreAddress: function(coords, address) {
+            var self = this;
+            var checks = 0;
+
+            var tryRestore = function() {
+                // Ждём готовности карты и загрузки зон доставки
+                if (!self.modalMapInstance || !self.modalZonesLoaded) {
+                    if (checks++ > 150) return; // ~15 сек
+                    setTimeout(tryRestore, 100);
+                    return;
+                }
+
+                var lat = parseFloat(coords[0]);
+                var lon = parseFloat(coords[1]);
+                if (isNaN(lat) || isNaN(lon)) {
+                    return;
+                }
+
+                document.getElementById('modalLatInput').value = lat.toFixed(6);
+                document.getElementById('modalLonInput').value = lon.toFixed(6);
+
+                self.modalMapInstance.setCenter([lat, lon], 15);
+                self.modalAddPlacemark([lat, lon], address);
+                self.modalCheckDeliveryZone([lat, lon]);
+            };
+
+            tryRestore();
+        },
+
+        /**
          * Закрывает модальное окно добавления адреса
          */
         closeAddAddressModal: function() {
@@ -1135,12 +1287,13 @@
             var address = addressInput ? addressInput.value.trim() : '';
             var mode = form.getAttribute('type') || 'add';
 
-            // Получаем координаты из скрытых полей
+            // Получаем координаты и город из скрытых полей
             var lat = document.getElementById('modalLatInput') ? document.getElementById('modalLatInput').value : '';
             var lon = document.getElementById('modalLonInput') ? document.getElementById('modalLonInput').value : '';
             var zoneId = document.getElementById('modalZoneId') ? document.getElementById('modalZoneId').value : '';
+            var city = document.getElementById('modalCityInput') ? document.getElementById('modalCityInput').value.trim() : '';
 
-            // Дополнительные поля
+            // Доп. поля (квартира/подъезд/этаж/домофон)
             var apartment = form.querySelector('input[name="APARTMENT"]') ? form.querySelector('input[name="APARTMENT"]').value.trim() : '';
             var entrance = form.querySelector('input[name="ENTRANCE"]') ? form.querySelector('input[name="ENTRANCE"]').value.trim() : '';
             var floor = form.querySelector('input[name="FLOOR"]') ? form.querySelector('input[name="FLOOR"]').value.trim() : '';
@@ -1162,16 +1315,16 @@
             var sessidInput = form.querySelector('input[name="sessid"]');
             var sessid = sessidInput ? sessidInput.value : BX.bitrix_sessid();
 
-            // Формируем полный адрес с доп. полями
-            var fullAddress = address;
-            if (apartment) fullAddress += ', кв ' + apartment;
-            if (entrance) fullAddress += ', подъезд ' + entrance;
-            if (floor) fullAddress += ', этаж ' + floor;
-            if (intercom) fullAddress += ', домофон ' + intercom;
-
+            // Адрес храним без объединения с квартирой/подъездом/этажом/домофоном —
+            // эти данные передаются отдельными полями
             var data = {
                 action: mode === 'edit' ? 'editAddress' : 'addAddress',
-                address: fullAddress,
+                address: address,
+                city: city,
+                apartment: apartment,
+                entrance: entrance,
+                floor: floor,
+                intercom: intercom,
                 lat: lat,
                 lon: lon,
                 zoneId: zoneId,

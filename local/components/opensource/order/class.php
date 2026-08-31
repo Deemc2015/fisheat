@@ -443,6 +443,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'addAddress' => [
                 'prefilters' => [],
             ],
+            'editAddress' => [
+                'prefilters' => [],
+            ],
             'getBasketItemData' => [
                 'prefilters' => [],
             ],
@@ -947,7 +950,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                     $obItem = $item;
                     break;
                 }
-               }
+            }
 
 
             if (!$obItem) {
@@ -1017,9 +1020,6 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         return $result;
     }
-
-
-
 
 
     public function addQuantityAction($dataProduct)
@@ -1109,7 +1109,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
-    public function deleteAddressAction($dataAddress){
+    public function deleteAddressAction($dataAddress)
+    {
         // Проверка сессии
         if (!check_bitrix_sessid()) {
             return [
@@ -1118,14 +1119,14 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
-        if($dataAddress['action'] != 'deleteAddress'){
+        if ($dataAddress['action'] != 'deleteAddress') {
             return [
                 'success' => false,
                 'error' => 'Неизвестный тип операции'
             ];
         }
 
-        if(!$dataAddress['addressId']){
+        if (!$dataAddress['addressId']) {
             return [
                 'success' => false,
                 'error' => 'Не передан ID адреса'
@@ -1134,7 +1135,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         $addressId = (int)$dataAddress['addressId'];
 
-        if(!Loader::includeModule('ldo.develop')){
+        if (!Loader::includeModule('ldo.develop')) {
             return [
                 'success' => false,
                 'error' => 'Модуль ldo.develop не найден'
@@ -1143,7 +1144,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         $deleteResult = Hlblock::deleteAddress($addressId);
 
-        if($deleteResult){
+        if ($deleteResult) {
             return [
                 'success' => true,
                 'message' => 'Адрес успешно удален'
@@ -1156,7 +1157,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
     }
 
-    public function addAddressAction($dataAddress){
+    public function addAddressAction($dataAddress)
+    {
         // Проверка сессии
         if (!check_bitrix_sessid()) {
             return [
@@ -1165,7 +1167,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
-        if($dataAddress['action'] !='addAddress'){
+        if ($dataAddress['action'] != 'addAddress') {
             return [
                 'success' => false,
                 'error' => 'Неизвестный тип операции'
@@ -1174,24 +1176,122 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         global $USER;
 
+        // Город: передаётся с фронтенда, иначе — из настроек доставки по умолчанию
+        $city = trim((string)($dataAddress['city'] ?? ''));
+        if ($city === '' && Loader::includeModule('ldo.deliverymap')) {
+            $city = trim((string)\Ldo\Deliverymap\SettingsTable::get('s1', 'default_city', ''));
+        }
+
+        // Адрес без города и региона — только улица и дом
+        $address = $this->normalizeAddress((string)($dataAddress['address'] ?? ''));
+        $address = $this->stripCityFromAddress($address, $city);
+
         $fields = [
-            'UF_ADDRESS' => $this->normalizeAddress((string)($dataAddress['address'] ?? '')),
-            'UF_SHIRINA' => 321312,
-            'UF_DOLGOTA' => 123123,
+            'UF_ADDRESS' => $address,
+            'UF_CITY' => $city,
+            'UF_KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
+            'UF_PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
+            'UF_ETAG' => trim((string)($dataAddress['floor'] ?? '')),
+            'UF_DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
+            'UF_SHIRINA' => trim((string)($dataAddress['lat'] ?? '')),
+            'UF_DOLGOTA' => trim((string)($dataAddress['lon'] ?? '')),
             'UF_MINIMAL_SUM' => 323212,
             'UF_PRICE' => 321,
             'UF_FREE_DELIVERY' => 500,
             'UF_USER_ID' => $USER->GetID(), // ID пользователя
         ];
 
-        if(Loader::includeModule('ldo.develop')){
-            $addAddres = Hlblock::add($fields, 'adress_user');
+        if (Loader::includeModule('ldo.develop')) {
+            // Поле UF_CITY создаётся автоматически, если его нет
+            $addressId = Hlblock::addAddress($fields);
 
-            return $addAddres;
+            if ($addressId) {
+                return [
+                    'success' => true,
+                    'addressId' => $addressId,
+                    'address' => $fields['UF_ADDRESS'],
+                    'city' => $fields['UF_CITY'],
+                ];
+            }
+
+            return [
+                'success' => false,
+                'error' => 'Не удалось добавить адрес'
+            ];
         }
 
+        return [
+            'success' => false,
+            'error' => 'Модуль ldo.develop не найден'
+        ];
+    }
 
+    public function editAddressAction($dataAddress)
+    {
+        // Проверка сессии
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
 
+        if (($dataAddress['action'] ?? '') !== 'editAddress') {
+            return [
+                'success' => false,
+                'error' => 'Неизвестный тип операции'
+            ];
+        }
+
+        $addressId = (int)($dataAddress['addressId'] ?? 0);
+        if (!$addressId) {
+            return [
+                'success' => false,
+                'error' => 'Не передан ID адреса'
+            ];
+        }
+
+        global $USER;
+
+        // Город: из формы, иначе из настроек доставки по умолчанию
+        $city = trim((string)($dataAddress['city'] ?? ''));
+        if ($city === '' && Loader::includeModule('ldo.deliverymap')) {
+            $city = trim((string)\Ldo\Deliverymap\SettingsTable::get('s1', 'default_city', ''));
+        }
+
+        // Адрес без города и региона — только улица и дом
+        $address = $this->normalizeAddress((string)($dataAddress['address'] ?? ''));
+        $address = $this->stripCityFromAddress($address, $city);
+
+        if (!Loader::includeModule('ldo.develop')) {
+            return [
+                'success' => false,
+                'error' => 'Модуль ldo.develop не найден'
+            ];
+        }
+
+        $updateResult = Hlblock::updateAddress($addressId, [
+            'UF_ADDRESS' => $address,
+            'UF_CITY' => $city,
+            'UF_KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
+            'UF_PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
+            'UF_ETAG' => trim((string)($dataAddress['floor'] ?? '')),
+            'UF_DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
+        ]);
+
+        if ($updateResult) {
+            return [
+                'success' => true,
+                'addressId' => $addressId,
+                'address' => $address,
+                'city' => $city,
+            ];
+        }
+
+        return [
+            'success' => false,
+            'error' => 'Не удалось обновить адрес'
+        ];
     }
 
 
@@ -1235,6 +1335,34 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 '',
                 $chunks[0]
             );
+        }
+
+        return implode(', ', array_filter($chunks, static function ($chunk) {
+            return $chunk !== '';
+        }));
+    }
+
+    /**
+     * Убирает город из начала адреса, оставляя только улицу и дом.
+     * Страховка на случай, если город остался в строке адреса
+     * (например, при ручном вводе).
+     *
+     * @param string $address
+     * @param string $city
+     * @return string
+     */
+    private function stripCityFromAddress(string $address, string $city): string
+    {
+        $address = trim($address);
+        if ($address === '' || $city === '') {
+            return $address;
+        }
+
+        $chunks = array_map('trim', explode(',', $address));
+
+        // Если первый сегмент совпадает с городом — убираем его
+        if (!empty($chunks) && $chunks[0] !== '' && mb_stripos($chunks[0], $city) !== false) {
+            array_shift($chunks);
         }
 
         return implode(', ', array_filter($chunks, static function ($chunk) {
@@ -1433,5 +1561,4 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             }
         }
     }
-
 }
