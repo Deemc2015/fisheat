@@ -38,7 +38,7 @@
     // OrdersFilter — форма фильтра (AJAX, без перезагрузки)
     // ============================================================
     const OrdersFilter = {
-        props: ["model", "statuses", "deliveryServices", "paySystems", "exportEnabled", "exportUrl", "loading"],
+        props: ["model", "statuses", "deliveryServices", "paySystems", "restaurants", "exportEnabled", "exportUrl", "loading"],
         emits: ["submit-filter", "reset-filter"],
         template: `
             <form class="p-orders-filter" @submit.prevent="$emit('submit-filter')">
@@ -64,6 +64,14 @@
                         <select id="p-orders-pay" v-model="model.paySystem">
                             <option value="">Все способы</option>
                             <option v-for="(name, id) in paySystems" :key="id" :value="id">{{ name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="p-orders-filter__group">
+                        <label for="p-orders-restaurant">Ресторан</label>
+                        <select id="p-orders-restaurant" v-model="model.restaurant">
+                            <option value="">Все рестораны</option>
+                            <option v-for="(name, xmlId) in restaurants" :key="xmlId" :value="xmlId">{{ name }}</option>
                         </select>
                     </div>
 
@@ -120,6 +128,7 @@
                 // Отфильтрованные по параметрам карты — только для селектов фильтра
                 filterDelivery: initial.FILTER_DELIVERY || initial.DELIVERY_SERVICES || {},
                 filterPay: initial.FILTER_PAY || initial.PAY_SYSTEMS || {},
+                filterRestaurants: initial.FILTER_RESTAURANTS || {},
                 orderProps: initial.ORDER_PROPS || {},
                 baskets: initial.BASKETS || {},
                 deliverySum: initial.DELIVERY_SUM || {},
@@ -140,6 +149,7 @@
                     ? String(initial.FILTER.DELIVERY[0]) : "",
                 paySystem: (initial.FILTER && Array.isArray(initial.FILTER.PAY_SYSTEM) && initial.FILTER.PAY_SYSTEM.length)
                     ? String(initial.FILTER.PAY_SYSTEM[0]) : "",
+                restaurant: (initial.FILTER && initial.FILTER.RESTAURANT) || "",
                 dateFrom: (initial.FILTER && initial.FILTER.DATE_FROM) || "",
                 dateTo: (initial.FILTER && initial.FILTER.DATE_TO) || "",
                 search: (initial.FILTER && initial.FILTER.SEARCH) || "",
@@ -222,6 +232,9 @@
                         if (d.FILTER_PAY) {
                             state.filterPay = d.FILTER_PAY;
                         }
+                        if (d.FILTER_RESTAURANTS) {
+                            state.filterRestaurants = d.FILTER_RESTAURANTS;
+                        }
                         if (d.DELIVERY_SERVICES) {
                             state.deliveryServices = d.DELIVERY_SERVICES;
                         }
@@ -242,6 +255,7 @@
                     STATUS: model.status !== "" ? [model.status] : [],
                     DELIVERY: model.delivery !== "" ? [parseInt(model.delivery, 10)] : [],
                     PAY_SYSTEM: model.paySystem !== "" ? [parseInt(model.paySystem, 10)] : [],
+                    RESTAURANT: model.restaurant,
                     // Списки способов из параметров компонента (state.filterDelivery/filterPay
                     // уже отфильтрованы бэкендом) — передаём, чтобы AJAX-ответ строился
                     // с теми же опциями в фильтре
@@ -265,6 +279,7 @@
                 model.status = "";
                 model.delivery = "";
                 model.paySystem = "";
+                model.restaurant = "";
                 model.dateFrom = "";
                 model.dateTo = "";
                 model.search = "";
@@ -321,6 +336,7 @@
                         :statuses="state.statuses"
                         :delivery-services="state.filterDelivery"
                         :pay-systems="state.filterPay"
+                        :restaurants="state.filterRestaurants"
                         :export-enabled="state.exportEnabled"
                         :export-url="exportUrl"
                         :loading="state.loading"

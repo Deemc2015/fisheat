@@ -36,6 +36,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	/** @var int[] Выбранные платёжные системы (PAY_SYSTEM_ID) */
 	protected $filterPaySystem = [];
 
+	/** @var string Выбранный ресторан (XML_ID из свойства заказа RESTORAN_ID) */
+	protected $filterRestaurant = '';
+
 	/** @var DateTime|null Дата "с" (начало дня) */
 	protected $dateFrom = null;
 
@@ -53,6 +56,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 
 	/** @var int[] ID заказов, найденных по свойствам (поиск) */
 	protected $searchOrderIds = [];
+
+	/** @var int[] ID заказов, отфильтрованных по ресторану (свойство RESTORAN_ID) */
+	protected $restaurantOrderIds = [];
 
 	/** @var array Карта статусов: ID => название */
 	protected $statuses = [];
@@ -223,13 +229,16 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			? array_values(array_filter(array_map('intval', $rawPaySystem)))
 			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
 
+		$filterRestaurant = trim((string)$request->getPost('RESTAURANT'));
+
 		$this->applyFilterValues(
 			$filterStatus,
 			(string)$request->getPost('DATE_FROM'),
 			(string)$request->getPost('DATE_TO'),
 			(string)$request->getPost('SEARCH'),
 			$filterDelivery,
-			$filterPaySystem
+			$filterPaySystem,
+			$filterRestaurant
 		);
 
 		// Параметры "какие способы выводить в фильтре" — при AJAX (mode=class)
@@ -295,13 +304,16 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			? array_values(array_filter(array_map('intval', $rawPaySystem)))
 			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
 
+		$filterRestaurant = trim((string)$request->getQuery('RESTAURANT'));
+
 		$this->applyFilterValues(
 			$filterStatus,
 			(string)$request->getQuery('DATE_FROM'),
 			(string)$request->getQuery('DATE_TO'),
 			(string)$request->getQuery('SEARCH'),
 			$filterDelivery,
-			$filterPaySystem
+			$filterPaySystem,
+			$filterRestaurant
 		);
 	}
 
@@ -315,11 +327,12 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	 * @param array  $filterDelivery
 	 * @param array  $filterPaySystem
 	 */
-	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search, array $filterDelivery = [], array $filterPaySystem = [])
+	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search, array $filterDelivery = [], array $filterPaySystem = [], $filterRestaurant = '')
 	{
 		$this->filterStatus = array_values(array_unique($filterStatus));
 		$this->filterDelivery = array_values(array_unique(array_map('intval', $filterDelivery)));
 		$this->filterPaySystem = array_values(array_unique(array_map('intval', $filterPaySystem)));
+		$this->filterRestaurant = trim((string)$filterRestaurant);
 
 		$this->dateFromRaw = trim((string)$dateFromRaw);
 		$this->dateToRaw   = trim((string)$dateToRaw);
@@ -428,6 +441,32 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+	 * Список ресторанов для фильтра: XML_ID => название (активные из ldo_delivery_restaurants).
+	 *
+	 * @return array
+	 */
+	protected function getRestaurants(): array
+	{
+		$restaurants = [];
+		if (!Loader::includeModule('ldo.deliverymap')) {
+			return $restaurants;
+		}
+		try {
+			$list = \Ldo\Deliverymap\RestaurantsTable::getActiveList([], ['NAME' => 'ASC']);
+			foreach ($list as $r) {
+				$xmlId = (string)($r['XML_ID'] ?? '');
+				if ($xmlId !== '') {
+					$restaurants[$xmlId] = (string)$r['NAME'];
+				}
+			}
+		} catch (\Throwable $e) {
+			$restaurants = [];
+		}
+
+		return $restaurants;
+	}
+
+	/**
 	 * Поля выборки заказа + связанного пользователя.
 	 *
 	 * @return array
@@ -464,6 +503,27 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+		* ID заказов, у которых свойство заказа RESTORAN_ID (XML_ID) равно выбранному ресторану.
+		*/
+	protected function collectRestaurantOrderIds()
+	{
+		$this->restaurantOrderIds = [];
+		if ($this->filterRestaurant === '') {
+			return;
+		}
+
+		$rs = OrderPropsValueTable::getList([
+			'select' => ['ORDER_ID'],
+			'filter' => ['=CODE' => 'RESTORAN_ID', '=VALUE' => $this->filterRestaurant],
+		]);
+		$ids = [];
+		while ($p = $rs->fetch()) {
+			$ids[(int)$p['ORDER_ID']] = true;
+		}
+		$this->restaurantOrderIds = array_keys($ids);
+	}
+
+	/**
 	 * Применение фильтров к ORM-запросу (методы Битрикс: whereIn / where / whereLike / OR-логика).
 	 *
 	 * @param Query $query
@@ -480,6 +540,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		}
 		if (!empty($this->filterPaySystem)) {
 			$query->whereIn('PAY_SYSTEM_ID', $this->filterPaySystem);
+		}
+		if ($this->filterRestaurant !== '') {
+			$query->whereIn('ID', $this->restaurantOrderIds);
 		}
 		if ($this->dateFrom !== null) {
 			$query->where('DATE_INSERT', '>=', $this->dateFrom);
@@ -642,6 +705,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	{
 		$this->statuses = $this->getStatuses();
 		$this->collectSearchOrderIds();
+		$this->collectRestaurantOrderIds();
 
 		$orderSelect = $this->getOrderSelect();
 		$pageSize    = max(1, (int)($this->arParams['PAGE_SIZE'] ?? 50));
@@ -696,6 +760,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		if (!empty($this->filterPaySystem)) {
 			$baseParams['PAY_SYSTEM'] = $this->filterPaySystem[0];
 		}
+		if ($this->filterRestaurant !== '') {
+			$baseParams['RESTAURANT'] = $this->filterRestaurant;
+		}
 		if ($this->dateFromRaw !== '') {
 			$baseParams['DATE_FROM'] = $this->dateFromRaw;
 		}
@@ -715,6 +782,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			// Отфильтрованные по параметрам карты — только для селектов фильтра
 			'FILTER_DELIVERY'  => $this->getFilterDeliveryServices(),
 			'FILTER_PAY'       => $this->getFilterPaySystems(),
+			'FILTER_RESTAURANTS' => $this->getRestaurants(),
 			'ORDER_PROPS'      => $this->loadOrderProps($orderIds),
 			'BASKETS'          => $this->loadBaskets($orderIds),
 			'DELIVERY_SUM'     => $this->loadDeliverySum($orderIds),
@@ -722,6 +790,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 				'STATUS'     => $this->filterStatus,
 				'DELIVERY'   => $this->filterDelivery,
 				'PAY_SYSTEM' => $this->filterPaySystem,
+				'RESTAURANT' => $this->filterRestaurant,
 				'DATE_FROM'  => $this->dateFromRaw,
 				'DATE_TO'    => $this->dateToRaw,
 				'SEARCH'     => $this->search,
