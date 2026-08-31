@@ -439,7 +439,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?foreach($arResult['RESTORAN_ADRESS'] as $restoran):?>
                         <div class="restorans-list__item">
                             <label for="restorans-list__item-name-<?=$restoran['ID']?>">
-                                <input data-id="<?=$restoran['ID']?>"  name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
+                                <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
                                 <span></span>
                                 <?=$restoran['NAME']?>
                             </label>

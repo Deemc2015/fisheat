@@ -1961,6 +1961,16 @@
                         restaurantIdInput.value = selectedRestaurant.getAttribute('data-id') || selectedRestaurant.value;
                     }
 
+                    // Обновляем XML_ID (RESTORAN_ID) и название ресторана (NAME_RESTORAN)
+                    var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+                    if (restaurantXmlInput) {
+                        restaurantXmlInput.value = selectedRestaurant.getAttribute('data-xml') || '';
+                    }
+                    var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+                    if (restaurantNameInput) {
+                        restaurantNameInput.value = selectedRestaurant.value;
+                    }
+
                     // Очищаем поле адреса
                     var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
                     if (addressInput) {
@@ -1987,10 +1997,18 @@
                     // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
                     this.syncOrderAddressProps(selectedAddress);
 
-                    // Очищаем поле ресторана
+                    // Очищаем поля ресторана (ID, XML_ID, название)
                     var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
                     if (restaurantIdInput) {
                         restaurantIdInput.value = '';
+                    }
+                    var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+                    if (restaurantXmlInput) {
+                        restaurantXmlInput.value = '';
+                    }
+                    var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+                    if (restaurantNameInput) {
+                        restaurantNameInput.value = '';
                     }
                 } else if (this.totalBlock.addressValueNode) {
                     this.totalBlock.addressValueNode.textContent = 'Не выбран адрес';
@@ -2109,6 +2127,16 @@
                     var restaurantIdInput = document.querySelector('input[name="properties[RESTAURANT_ID]"]');
                     if (restaurantIdInput) {
                         restaurantIdInput.value = restaurantId || restaurantName;
+                    }
+
+                    // Обновляем XML_ID (RESTORAN_ID) и название ресторана (NAME_RESTORAN)
+                    var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+                    if (restaurantXmlInput) {
+                        restaurantXmlInput.value = target.getAttribute('data-xml') || '';
+                    }
+                    var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+                    if (restaurantNameInput) {
+                        restaurantNameInput.value = restaurantName;
                     }
 
                     // Очищаем поле адреса
@@ -2320,6 +2348,17 @@
                 if (selectedRestaurant && restaurantIdInput) {
                     restaurantIdInput.value = selectedRestaurant.getAttribute('data-id') || selectedRestaurant.value;
                 }
+                if (selectedRestaurant) {
+                    // Обновляем XML_ID (RESTORAN_ID) и название ресторана (NAME_RESTORAN)
+                    var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+                    if (restaurantXmlInput) {
+                        restaurantXmlInput.value = selectedRestaurant.getAttribute('data-xml') || '';
+                    }
+                    var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+                    if (restaurantNameInput) {
+                        restaurantNameInput.value = selectedRestaurant.value;
+                    }
+                }
 
                 // Очищаем поле адреса при самовывозе
                 if (addressInput) {
@@ -2332,9 +2371,17 @@
                     addressInput.value = selectedAddressRadio.value;
                 }
 
-                // Очищаем поле ресторана при доставке
+                // Очищаем поля ресторана при доставке (ID, XML_ID, название)
                 if (restaurantIdInput) {
                     restaurantIdInput.value = '';
+                }
+                var restaurantXmlInput = document.querySelector('input[name="properties[RESTORAN_ID]"]');
+                if (restaurantXmlInput) {
+                    restaurantXmlInput.value = '';
+                }
+                var restaurantNameInput = document.querySelector('input[name="properties[NAME_RESTORAN]"]');
+                if (restaurantNameInput) {
+                    restaurantNameInput.value = '';
                 }
             }
 

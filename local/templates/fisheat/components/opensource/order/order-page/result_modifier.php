@@ -437,6 +437,7 @@ if (Loader::includeModule('ldo.deliverymap')) {
         foreach ($restaurants as $restaurant) {
             $arResult['RESTORAN_ADRESS'][] = [
                 'ID' => (int)$restaurant['ID'],
+                'XML_ID' => $restaurant['XML_ID'],
                 'NAME' => $restaurant['NAME'],
                 'CHECKED' => !$checked ? 'Y' : 'N',
             ];
