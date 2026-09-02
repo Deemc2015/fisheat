@@ -696,6 +696,19 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
    <div class="hidden-fields">
+        <?
+        /*Служебное свойство ADDRESS_ID (ID выбранного адреса доставки) — скрытое поле*/
+        $addressIdValue = '';
+        if (isset($component->order)) {
+            foreach ($component->order->getPropertyCollection() as $addressIdProp) {
+                if ($addressIdProp->getField('CODE') === 'ADDRESS_ID') {
+                    $addressIdValue = (string)$addressIdProp->getValue();
+                    break;
+                }
+            }
+        }
+        ?>
+        <input type="hidden" name="properties[ADDRESS_ID]" id="property_ADDRESS_ID" value="<?=htmlspecialcharsbx($addressIdValue)?>">
         <?foreach($arResult['PROPERTIES'] as $field):?>
             <? foreach ($field['ERRORS'] as $error):
                 /** @var Error $error */

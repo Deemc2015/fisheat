@@ -101,9 +101,10 @@ function getUserInfo(){
 }
 
 
-/*Адреса доставки пользователя*/
-if(Loader::includeModule('ldo.develop')){
-    $adressList = Hlblock::getAdressList();
+/*Адреса доставки пользователя (собственная таблица ldo_iiko_user_address)*/
+global $USER;
+if(Loader::includeModule('ldo.iiko')){
+    $adressList = \Ldo\Iiko\UserAddress::getListForUser((int)$USER->GetID());
 
     // Для каждого адреса определяем ресторан зоны доставки
     // (XML_ID iiko и название) по сохранённому ID зоны

@@ -67,11 +67,10 @@ foreach ($order->getPropertyCollection() as $prop) {
 }
 
 
-/*Адреса доставки пользователя*/
-if(Loader::includeModule('ldo.develop')){
-    $adressList = Hlblock::getAdressList();
-
-    $arResult['USER_ADRESS'] = $adressList;
+/*Адреса доставки пользователя (собственная таблица ldo_iiko_user_address)*/
+global $USER;
+if(Loader::includeModule('ldo.iiko')){
+    $arResult['USER_ADRESS'] = \Ldo\Iiko\UserAddress::getListForUser((int)$USER->GetID());
 }
 /**/
 

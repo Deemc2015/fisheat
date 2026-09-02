@@ -170,12 +170,32 @@ class Ldo_iiko extends CModule
                 UNIQUE KEY `IX_SITE_ID` (`SITE_ID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
+
+        // Адреса доставки пользователей (собственная таблица вместо HL-блока adress_user)
+        $DB->Query("
+            CREATE TABLE IF NOT EXISTS `ldo_iiko_user_address` (
+                `ID` int(11) NOT NULL AUTO_INCREMENT,
+                `USER_ID` int(11) NOT NULL DEFAULT '0',
+                `CITY` varchar(255) NOT NULL DEFAULT '',
+                `ADDRESS` varchar(255) NOT NULL DEFAULT '',
+                `KVARTIRA` varchar(64) NOT NULL DEFAULT '',
+                `PODEZD` varchar(64) NOT NULL DEFAULT '',
+                `ETAG` varchar(64) NOT NULL DEFAULT '',
+                `DOMOFON` varchar(64) NOT NULL DEFAULT '',
+                `LAT` varchar(32) NOT NULL DEFAULT '',
+                `LON` varchar(32) NOT NULL DEFAULT '',
+                `ZONE_ID` int(11) NOT NULL DEFAULT '0',
+                PRIMARY KEY (`ID`),
+                KEY `IX_USER_ID` (`USER_ID`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
     }
 
     private function dropTables()
     {
         global $DB;
         $DB->Query("DROP TABLE IF EXISTS `ldo_iiko_settings`");
+        $DB->Query("DROP TABLE IF EXISTS `ldo_iiko_user_address`");
     }
 
 }

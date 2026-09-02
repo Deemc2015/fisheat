@@ -41,6 +41,12 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
     protected $personTypes = [];
 
+    /** @var bool Свойство ADDRESS_ID проверено/создано в текущем запросе */
+    protected static $addressIdPropEnsured = false;
+
+    /** @var bool Службы доставки проверены/переключены в текущем запросе */
+    protected static $zoneServicesEnsured = false;
+
     /**
      * CustomOrder constructor.
      * @param CBitrixComponent|null $component
@@ -150,7 +156,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             /**
              * @var PropertyValue $prop
              */
-            if ($prop->isUtil()) {
+            // Служебное свойство ADDRESS_ID (выбранный адрес доставки) разрешаем заполнять,
+            // остальные служебные свойства пропускаем
+            if ($prop->isUtil() && $prop->getField('CODE') !== 'ADDRESS_ID') {
                 continue;
             }
 
@@ -175,12 +183,17 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
      */
     public function createOrderShipment(int $deliveryId = 0)
     {
+        // Модуль зон доставки (класс службы ZoneDelivery)
+        Loader::includeModule('ldo.deliverymap');
+        // Самовосстановление: «Доставка» должна использовать ZoneDelivery
+        $this->ensureZoneDeliveryService($deliveryId);
+
         /* @var $shipmentCollection ShipmentCollection */
         $shipmentCollection = $this->order->getShipmentCollection();
 
         if ($deliveryId > 0) {
             $shipment = $shipmentCollection->createItem(
-                Bitrix\Sale\Delivery\Services\Manager::getObjectById($deliveryId)
+                $this->getDeliveryServiceObject($deliveryId)
             );
         } else {
             $shipment = $shipmentCollection->createItem();
@@ -200,6 +213,231 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         return $shipment;
+    }
+
+    /**
+     * Пересчитывает стоимость доставки по зоне выбранного адреса
+     * (через службу доставки ZoneDelivery) перед сохранением заказа.
+     *
+     * @return float Цена доставки
+     * @throws Exception
+     */
+    public function calculateShipmentDelivery()
+    {
+        // Модуль зон доставки (класс службы ZoneDelivery)
+        Loader::includeModule('ldo.deliverymap');
+
+        $shipment = OrderHelper::getFirstNonSystemShipment($this->order);
+        if ($shipment === null) {
+            return 0;
+        }
+
+        $delivery = $shipment->getDelivery();
+        if (!$delivery instanceof Delivery\Services\Base) {
+            return 0;
+        }
+
+        // Самовывоз — доставка бесплатна
+        $deliveryName = mb_strtolower((string)$delivery->getNameWithParent());
+        if ($deliveryName === 'самовывоз' || mb_strtolower((string)$delivery->getName()) === 'самовывоз') {
+            $shipment->setBasePriceDelivery(0);
+            $shipment->setField('PRICE_DELIVERY', 0);
+            return 0;
+        }
+
+        $calculationResult = $delivery->calculate($shipment);
+        if ($calculationResult->isSuccess()) {
+            $price = (float)$calculationResult->getPrice();
+            $shipment->setBasePriceDelivery($price);
+            $shipment->setField('PRICE_DELIVERY', $price);
+            return $price;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Гарантирует наличие служебного свойства заказа ADDRESS_ID.
+     * Создаёт его для всех типов плательщиков, если его ещё нет.
+     *
+     * @return void
+     */
+    public function ensureAddressIdProperty()
+    {
+        if (self::$addressIdPropEnsured) {
+            return;
+        }
+        self::$addressIdPropEnsured = true;
+
+        if (!Loader::includeModule('sale')) {
+            return;
+        }
+
+        $personTypes = \Bitrix\Sale\Internals\PersonTypeTable::getList(['select' => ['ID']])->fetchAll();
+
+        foreach ($personTypes as $pt) {
+            $personTypeId = (int)$pt['ID'];
+
+            $exists = \Bitrix\Sale\Internals\OrderPropsTable::getList([
+                'filter' => ['=CODE' => 'ADDRESS_ID', '=PERSON_TYPE_ID' => $personTypeId],
+                'select' => ['ID'],
+            ])->fetch();
+            if ($exists) {
+                continue;
+            }
+
+            $groupId = 0;
+            $group = \Bitrix\Sale\Internals\OrderPropsGroupTable::getList([
+                'select' => ['ID'],
+                'filter' => ['=PERSON_TYPE_ID' => $personTypeId],
+                'order' => ['ID' => 'ASC'],
+                'limit' => 1,
+            ])->fetch();
+            if ($group) {
+                $groupId = (int)$group['ID'];
+            } else {
+                $groupId = (int)(new \CSaleOrderPropsGroup())->Add([
+                    'PERSON_TYPE_ID' => $personTypeId,
+                    'NAME' => 'Служебные',
+                    'SORT' => 700,
+                ]);
+            }
+
+            $prop = new \CSaleOrderProps();
+            $prop->Add([
+                'PERSON_TYPE_ID' => $personTypeId,
+                'NAME' => 'ID адреса доставки',
+                'CODE' => 'ADDRESS_ID',
+                'TYPE' => 'STRING',
+                'REQUIED' => 'N',
+                'DEFAULT_VALUE' => '',
+                'SORT' => 700,
+                'USER_PROPS' => 'N',
+                'IS_LOCATION' => 'N',
+                'PROPS_GROUP_ID' => $groupId,
+                'DESCRIPTION' => '',
+                'IS_EMAIL' => 'N',
+                'IS_PROFILE_NAME' => 'N',
+                'IS_PAYER' => 'N',
+                'IS_ZIP' => 'N',
+                'IS_PHONE' => 'N',
+                'UTIL' => 'Y',
+                'SETTINGS' => ['SIZE' => 30, 'ROWS' => 1],
+                'ENTITY_REGISTRY_TYPE' => 'ORDER',
+            ]);
+        }
+    }
+
+    /**
+     * Гарантирует, что служба «Доставка» (не «Самовывоз») использует класс ZoneDelivery.
+     * Самовосстановление, чтобы не зависеть от ручного запуска миграции.
+     *
+     * @param int $deliveryId
+     * @return void
+     */
+    private function ensureZoneDeliveryService($deliveryId)
+    {
+        if ($deliveryId <= 0 || !Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        $row = \Bitrix\Sale\Delivery\Services\Table::getRowById($deliveryId);
+        if (!$row) {
+            return;
+        }
+
+        // «Самовывоз» и «Без доставки» не трогаем
+        $rowName = (string)($row['NAME'] ?? '');
+        $rowClass = (string)($row['CLASS_NAME'] ?? '');
+        if (mb_stripos($rowName, 'самовывоз') !== false
+            || mb_stripos($rowClass, 'EmptyDeliveryService') !== false) {
+            return;
+        }
+
+        if ($rowClass === \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class) {
+            return;
+        }
+
+        \Bitrix\Sale\Delivery\Services\Table::update($deliveryId, [
+            'CLASS_NAME' => \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class,
+        ]);
+        \Bitrix\Main\Data\Cache::clearCache(true);
+    }
+
+    /**
+     * Гарантирует, что все активные службы «Доставка» (не «Самовывоз»)
+     * используют класс ZoneDelivery. Самовосстановление выполняется один раз
+     * на запрос, чтобы отображение доставки на форме тоже работало от зоны.
+     *
+     * @return void
+     */
+    private function ensureZoneDeliveryServices()
+    {
+        if (self::$zoneServicesEnsured) {
+            return;
+        }
+        self::$zoneServicesEnsured = true;
+
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        $services = \Bitrix\Sale\Delivery\Services\Table::getList([
+            'select' => ['ID', 'NAME', 'CLASS_NAME', 'ACTIVE', 'PARENT_ID'],
+        ])->fetchAll();
+
+        foreach ($services as $service) {
+            if ((int)$service['PARENT_ID'] > 0) {
+                continue;
+            }
+            $serviceName = (string)($service['NAME'] ?? '');
+            $serviceClass = (string)($service['CLASS_NAME'] ?? '');
+            if (mb_stripos($serviceName, 'самовывоз') !== false
+                || mb_stripos($serviceClass, 'EmptyDeliveryService') !== false) {
+                continue;
+            }
+            if ($serviceClass === \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class) {
+                continue;
+            }
+
+            \Bitrix\Sale\Delivery\Services\Table::update((int)$service['ID'], [
+                'CLASS_NAME' => \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class,
+            ]);
+            \Bitrix\Main\Data\Cache::clearCache(true);
+        }
+    }
+
+    /**
+     * Возвращает объект службы доставки, гарантируя использование ZoneDelivery
+     * для службы «Доставка» (не полагаясь на кэш Manager).
+     *
+     * @param int $deliveryId
+     * @return Delivery\Services\Base|null
+     */
+    private function getDeliveryServiceObject($deliveryId)
+    {
+        $row = \Bitrix\Sale\Delivery\Services\Table::getRowById($deliveryId);
+        if (!$row) {
+            return Delivery\Services\Manager::getObjectById($deliveryId);
+        }
+
+        if (mb_stripos((string)($row['NAME'] ?? ''), 'самовывоз') !== false
+            || mb_stripos((string)($row['CLASS_NAME'] ?? ''), 'EmptyDeliveryService') !== false) {
+            return Delivery\Services\Manager::getObjectById($deliveryId);
+        }
+
+        $className = (string)($row['CLASS_NAME'] ?? '');
+        if ($className !== \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class) {
+            $this->ensureZoneDeliveryService($deliveryId);
+            $row = \Bitrix\Sale\Delivery\Services\Table::getRowById($deliveryId);
+            $className = (string)($row['CLASS_NAME'] ?? '');
+        }
+
+        if ($className !== \Ldo\Deliverymap\DeliveryServices\ZoneDelivery::class) {
+            return Delivery\Services\Manager::getObjectById($deliveryId);
+        }
+
+        return new \Ldo\Deliverymap\DeliveryServices\ZoneDelivery($row);
     }
 
     /**
@@ -383,6 +621,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     public function executeComponent()
     {
         try {
+            // Гарантируем наличие служебного свойства ADDRESS_ID (создаётся при необходимости)
+            $this->ensureAddressIdProperty();
+            // Гарантируем, что службы «Доставка» используют ZoneDelivery (самовосстановление)
+            $this->ensureZoneDeliveryServices();
+
             $this->createVirtualOrder($this->arParams['PERSON_TYPE_ID']);
 
             $this->prefillPropertiesWithUserData();
@@ -404,6 +647,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 $validationResult = $this->validateOrder();
 
                 if ($validationResult->isSuccess()) {
+                    // Стоимость доставки по зоне выбранного адреса (служба доставки ZoneDelivery)
+                    $this->calculateShipmentDelivery();
+
                     $saveResult = $this->order->save();
                     if (!$saveResult->isSuccess()) {
                         $this->errorCollection->add($saveResult->getErrors());
@@ -466,6 +712,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
      */
     public function updateDeliveryPriceAction($dataDelivery)
     {
+        global $USER;
+
         $deliveryId = (int)($dataDelivery['deliveryId'] ?? 0);
         $deliveryName = trim($dataDelivery['deliveryName'] ?? '');
         $addressId = (int)($dataDelivery['addressId'] ?? 0);
@@ -500,59 +748,25 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             }
 
             if (!$isPickup) {
-                // Доставка — получаем цену доставки
-                if (Loader::includeModule('ldo.develop') && Loader::includeModule('highloadblock')) {
-                    $selectedAddress = null;
-
-                    if ($addressId > 0) {
-                        // Если передан ID адреса — загружаем его напрямую
-                        $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getRow([
-                            'filter' => ['=TABLE_NAME' => 'adress_user']
-                        ]);
-                        if ($hlblock) {
-                            $entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hlblock)->getDataClass();
-                            $addressData = $entity::getById($addressId)->fetch();
-                            if ($addressData) {
-                                $selectedAddress = [
-                                    'PRICE' => (float)($addressData['UF_PRICE'] ?? 0),
-                                    'SHIRINA' => (float)($addressData['UF_SHIRINA'] ?? 0),
-                                    'DOLGOTA' => (float)($addressData['UF_DOLGOTA'] ?? 0),
-                                ];
+                // Доставка — цена по зоне выбранного адреса через службу доставки (ZoneDelivery)
+                if ($addressId <= 0 && Loader::includeModule('ldo.iiko')) {
+                    // Если ID адреса не передан — берём «отмеченный» адрес пользователя
+                    $userAddresses = \Ldo\Iiko\UserAddress::getListForUser((int)$USER->GetID());
+                    if (!empty($userAddresses)) {
+                        foreach ($userAddresses as $address) {
+                            if (!empty($address['CHECKED'])) {
+                                $addressId = (int)$address['ID'];
+                                break;
                             }
                         }
-                    } else {
-                        // Если ID адреса не передан — берём первый из списка пользователя
-                        $userAddresses = Hlblock::getAdressList();
-                        if (!empty($userAddresses)) {
-                            foreach ($userAddresses as $address) {
-                                if (!empty($address['CHECKED'])) {
-                                    $selectedAddress = $address;
-                                    break;
-                                }
-                            }
-                            if (!$selectedAddress) {
-                                $selectedAddress = reset($userAddresses);
-                            }
-                        }
-                    }
-
-                    if ($selectedAddress) {
-                        $deliveryPrice = (float)($selectedAddress['PRICE'] ?? 0);
-
-                        // Если цена не указана в адресе, ищем зону по координатам
-                        if ($deliveryPrice == 0 && !empty($selectedAddress['SHIRINA']) && !empty($selectedAddress['DOLGOTA'])) {
-                            $deliveryPrice = $this->findDeliveryPriceByCoordinates(
-                                (float)$selectedAddress['SHIRINA'],
-                                (float)$selectedAddress['DOLGOTA']
-                            );
+                        if ($addressId <= 0) {
+                            $firstAddress = reset($userAddresses);
+                            $addressId = (int)$firstAddress['ID'];
                         }
                     }
                 }
 
-                // Если не удалось получить цену через адрес — пробуем через виртуальный заказ
-                if ($deliveryPrice == 0) {
-                    $deliveryPrice = $this->getDeliveryPriceFromOrder($deliveryId, $basket);
-                }
+                $deliveryPrice = $this->getDeliveryPriceFromOrder($deliveryId, $basket, $addressId);
             }
             // При самовывозе deliveryPrice остаётся 0
         } catch (\Exception $e) {
@@ -586,7 +800,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     public function updateAddressPriceAction($dataAddress)
     {
         $addressId = (int)($dataAddress['addressId'] ?? 0);
-        $deliveryPrice = (float)($dataAddress['deliveryPrice'] ?? 0);
+        $deliveryId = (int)($dataAddress['deliveryId'] ?? 0);
 
         $baseSum = 0;
         $discount = 0;
@@ -612,6 +826,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                     $totalPrice += $unitPrice * $quantity;
                 }
             }
+
+            // Доставка — цена по зоне выбранного адреса через службу доставки (ZoneDelivery)
+            $deliveryPrice = ($deliveryId > 0)
+                ? $this->getDeliveryPriceFromOrder($deliveryId, $basket, $addressId)
+                : 0;
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -705,17 +924,23 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
-     * Получение цены доставки через виртуальный заказ
+     * Получение цены доставки через виртуальный заказ.
+     *
+     * Цена берётся из службы доставки (ZoneDelivery определяет её по зоне адреса).
      *
      * @param int $deliveryId
      * @param Basket $basket
+     * @param int $addressId ID выбранного адреса из HL-блока adress_user
      * @return float
      */
-    private function getDeliveryPriceFromOrder($deliveryId, $basket)
+    private function getDeliveryPriceFromOrder($deliveryId, $basket, $addressId = 0)
     {
         if ($deliveryId <= 0) {
             return 0;
         }
+
+        // Модуль зон доставки (класс службы ZoneDelivery)
+        Loader::includeModule('ldo.deliverymap');
 
         try {
             global $USER;
@@ -724,8 +949,18 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             $order->setPersonTypeId(1);
             $order->setBasket($basket);
 
+            // Передаём выбранный адрес в службу доставки (свойство ADDRESS_ID)
+            if ($addressId > 0) {
+                foreach ($order->getPropertyCollection() as $prop) {
+                    if ($prop->getField('CODE') === 'ADDRESS_ID') {
+                        $prop->setValue($addressId);
+                        break;
+                    }
+                }
+            }
+
             $shipmentCollection = $order->getShipmentCollection();
-            $deliveryService = Delivery\Services\Manager::getObjectById($deliveryId);
+            $deliveryService = $this->getDeliveryServiceObject($deliveryId);
             if ($deliveryService) {
                 $shipment = $shipmentCollection->createItem($deliveryService);
                 $shipmentItemCollection = $shipment->getShipmentItemCollection();
@@ -1135,14 +1370,14 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         $addressId = (int)$dataAddress['addressId'];
 
-        if (!Loader::includeModule('ldo.develop')) {
+        if (!Loader::includeModule('ldo.iiko')) {
             return [
                 'success' => false,
-                'error' => 'Модуль ldo.develop не найден'
+                'error' => 'Модуль адресов доставки не найден'
             ];
         }
 
-        $deleteResult = Hlblock::deleteAddress($addressId);
+        $deleteResult = \Ldo\Iiko\UserAddress::delete($addressId);
 
         if ($deleteResult) {
             return [
@@ -1186,43 +1421,60 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $address = $this->normalizeAddress((string)($dataAddress['address'] ?? ''));
         $address = $this->stripCityFromAddress($address, $city);
 
-        $fields = [
-            'UF_ADDRESS' => $address,
-            'UF_CITY' => $city,
-            'UF_KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
-            'UF_PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
-            'UF_ETAG' => trim((string)($dataAddress['floor'] ?? '')),
-            'UF_DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
-            'UF_SHIRINA' => trim((string)($dataAddress['lat'] ?? '')),
-            'UF_DOLGOTA' => trim((string)($dataAddress['lon'] ?? '')),
-            'UF_MINIMAL_SUM' => 323212,
-            'UF_PRICE' => 321,
-            'UF_FREE_DELIVERY' => 500,
-            'UF_USER_ID' => $USER->GetID(), // ID пользователя
-        ];
+        // Координаты адреса
+        $lat = trim((string)($dataAddress['lat'] ?? ''));
+        $lon = trim((string)($dataAddress['lon'] ?? ''));
 
-        if (Loader::includeModule('ldo.develop')) {
-            // Поле UF_CITY создаётся автоматически, если его нет
-            $addressId = Hlblock::addAddress($fields);
-
-            if ($addressId) {
-                return [
-                    'success' => true,
-                    'addressId' => $addressId,
-                    'address' => $fields['UF_ADDRESS'],
-                    'city' => $fields['UF_CITY'],
-                ];
-            }
-
+        // Запрет добавления адреса вне зоны доставки
+        if (!Loader::includeModule('ldo.deliverymap') || !Loader::includeModule('ldo.develop')) {
             return [
                 'success' => false,
-                'error' => 'Не удалось добавить адрес'
+                'error' => 'Модуль зон доставки недоступен'
+            ];
+        }
+
+        $zoneId = Hlblock::findZoneIdByCoordinates((float)$lat, (float)$lon);
+        if ($zoneId <= 0) {
+            return [
+                'success' => false,
+                'error' => 'Адрес не входит в зону доставки'
+            ];
+        }
+
+        // Сохраняем адрес в собственную таблицу (ldo_iiko_user_address)
+        if (!Loader::includeModule('ldo.iiko')) {
+            return [
+                'success' => false,
+                'error' => 'Модуль адресов доставки не найден'
+            ];
+        }
+
+        $addressId = \Ldo\Iiko\UserAddress::add([
+            'USER_ID' => (int)$USER->GetID(),
+            'CITY' => $city,
+            'ADDRESS' => $address,
+            'KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
+            'PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
+            'ETAG' => trim((string)($dataAddress['floor'] ?? '')),
+            'DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
+            'LAT' => $lat,
+            'LON' => $lon,
+            'ZONE_ID' => $zoneId,
+        ]);
+
+        if ($addressId) {
+            return [
+                'success' => true,
+                'addressId' => $addressId,
+                'address' => $address,
+                'city' => $city,
+                'zoneId' => $zoneId,
             ];
         }
 
         return [
             'success' => false,
-            'error' => 'Модуль ldo.develop не найден'
+            'error' => 'Не удалось добавить адрес'
         ];
     }
 
@@ -1263,20 +1515,20 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $address = $this->normalizeAddress((string)($dataAddress['address'] ?? ''));
         $address = $this->stripCityFromAddress($address, $city);
 
-        if (!Loader::includeModule('ldo.develop')) {
+        if (!Loader::includeModule('ldo.iiko')) {
             return [
                 'success' => false,
-                'error' => 'Модуль ldo.develop не найден'
+                'error' => 'Модуль адресов доставки не найден'
             ];
         }
 
-        $updateResult = Hlblock::updateAddress($addressId, [
-            'UF_ADDRESS' => $address,
-            'UF_CITY' => $city,
-            'UF_KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
-            'UF_PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
-            'UF_ETAG' => trim((string)($dataAddress['floor'] ?? '')),
-            'UF_DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
+        $updateResult = \Ldo\Iiko\UserAddress::update($addressId, [
+            'ADDRESS' => $address,
+            'CITY' => $city,
+            'KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
+            'PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
+            'ETAG' => trim((string)($dataAddress['floor'] ?? '')),
+            'DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
         ]);
 
         if ($updateResult) {

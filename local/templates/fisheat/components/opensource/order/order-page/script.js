@@ -1979,6 +1979,10 @@
 
                     // Очищаем свойства заказа (при самовывозе адрес не нужен)
                     this.syncOrderAddressProps(null);
+                    var addressIdInputPickup = document.querySelector('input[name="properties[ADDRESS_ID]"]');
+                    if (addressIdInputPickup) {
+                        addressIdInputPickup.value = '';
+                    }
                 } else if (this.totalBlock.addressValueNode) {
                     this.totalBlock.addressValueNode.textContent = 'Не выбран ресторан';
                 }
@@ -1992,6 +1996,12 @@
                     var addressInput = document.querySelector('input[name="properties[ADDRESS]"]');
                     if (addressInput) {
                         addressInput.value = selectedAddress.value;
+                    }
+
+                    // Сохраняем ID выбранного адреса (для расчёта доставки по зоне на бэкенде)
+                    var addressIdInput = document.querySelector('input[name="properties[ADDRESS_ID]"]');
+                    if (addressIdInput) {
+                        addressIdInput.value = selectedAddress.getAttribute('data-id') || '';
                     }
 
                     // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
@@ -2265,6 +2275,12 @@
                         addressInput.value = addressName;
                     }
 
+                    // Сохраняем ID выбранного адреса (для расчёта доставки по зоне на бэкенде)
+                    var addressIdInput = document.querySelector('input[name="properties[ADDRESS_ID]"]');
+                    if (addressIdInput) {
+                        addressIdInput.value = addressId || '';
+                    }
+
                     // Заполняем свойства заказа (квартира/подъезд/этаж/домофон)
                     self.syncOrderAddressProps(target);
 
@@ -2294,11 +2310,8 @@
                 this.totalBlock.addressValueNode.textContent = addressName;
             }
 
-            // Обновляем стоимость доставки, если она зависит от адреса
-            if (addressPrice !== undefined && addressPrice != 0) {
-                this.updateDeliveryPrice(parseFloat(addressPrice));
-                this.updateTotalsByAddress(addressId, addressPrice);
-            }
+            // Обновляем стоимость доставки по зоне выбранного адреса (считает бэкенд)
+            this.updateTotalsByAddress(addressId);
         },
 
         /**
@@ -2306,13 +2319,17 @@
          * @param {string} addressId - ID адреса
          * @param {number} deliveryPrice - стоимость доставки
          */
-        updateTotalsByAddress: function(addressId, deliveryPrice) {
+        updateTotalsByAddress: function(addressId) {
             var self = this;
+
+            // Определяем выбранный способ доставки
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            var deliveryId = selectedDelivery ? selectedDelivery.value : '';
 
             var data = {
                 action: 'updateAddress',
-                addressId: addressId,
-                deliveryPrice: deliveryPrice,
+                addressId: addressId || '',
+                deliveryId: deliveryId,
                 sessid: BX.bitrix_sessid()
             };
 

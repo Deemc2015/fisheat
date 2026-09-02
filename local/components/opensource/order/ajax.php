@@ -200,6 +200,8 @@ class OpenSourceOrderAjaxController extends Controller
         CBitrixComponent::includeComponentClass('opensource:order');
 
         $componentClass = new OpenSourceOrderComponent();
+        // Гарантируем наличие служебного свойства ADDRESS_ID
+        $componentClass->ensureAddressIdProperty();
         $componentClass->createVirtualOrder($person_type_id);
         $componentClass->setOrderProperties($properties);
         $componentClass->createOrderShipment($delivery_id);
@@ -207,6 +209,9 @@ class OpenSourceOrderAjaxController extends Controller
 
         $validationResult = $componentClass->validateOrder();
         if ($validationResult->isSuccess()) {
+            // Стоимость доставки по зоне выбранного адреса (служба доставки ZoneDelivery)
+            $componentClass->calculateShipmentDelivery();
+
             $saveResult = $componentClass->order->save();
             if ($saveResult->isSuccess()) {
                 $data['saved'] = true;
