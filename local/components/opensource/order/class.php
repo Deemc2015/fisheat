@@ -1522,6 +1522,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
+        // Частичное обновление: UserAddress::update меняет только переданные поля,
+        // поэтому USER_ID, координаты и зона существующего адреса не затираются.
         $updateResult = \Ldo\Iiko\UserAddress::update($addressId, [
             'ADDRESS' => $address,
             'CITY' => $city,

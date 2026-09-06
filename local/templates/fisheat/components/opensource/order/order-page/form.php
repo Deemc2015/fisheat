@@ -537,6 +537,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
     <style>
+        .hidden-fields,
         .hidd3en-fields{
             display: none;
         }
@@ -716,7 +717,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <div class="error"><?= $error->getMessage() ?></div>
             <? endforeach; ?>
 
-                <input name="<?=$field['FORM_NAME']?>" id="<?=$field['FORM_LABEL']?>" type="<?=$field['TYPE']?>" placeholder="<?=$field['NAME']?>" value="<?=$field['VALUE']?>">
+                <?php /* type="hidden", а не тип свойства: у DATE-свойства type="DATE"
+                       превращается браузером в нативный <input type="date"> и значение
+                       в формате «ДД.ММ.ГГГГ ЧЧ:ММ» молча стирается при отправке. */ ?>
+                <input type="hidden" name="<?=$field['FORM_NAME']?>" id="<?=$field['FORM_LABEL']?>" value="<?=htmlspecialcharsbx((string)$field['VALUE'])?>">
 
         <?endforeach?>
     </div>

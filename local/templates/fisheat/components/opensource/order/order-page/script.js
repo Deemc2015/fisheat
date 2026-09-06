@@ -152,11 +152,17 @@
                     datetimeBlock.style.display = isDefault ? 'none' : 'flex';
                 }
 
-                // При «Как можно скорее» очищаем сохранённые дату и время,
+                // Свойства-флаги взаимоисключающие:
+                //   DEFAULT_TIME («Как можно скорее»)  = Y при ASAP
+                //   TIME_DELIVERY («Выбрать дату и время») = Y при выборе даты/времени
+                if (timePropertyInput) {
+                    timePropertyInput.value = isDefault ? 'N' : 'Y';
+                }
+
+                // При «Как можно скорее» очищаем сохранённую дату/время,
                 // чтобы они не попали в заказ
-                if (isDefault) {
-                    if (dateTimeInput) dateTimeInput.value = '';
-                    if (timePropertyInput) timePropertyInput.value = '';
+                if (isDefault && dateTimeInput) {
+                    dateTimeInput.value = '';
                 }
             };
 
@@ -191,12 +197,11 @@
                 if (dateTimeInput) {
                     dateTimeInput.value = combined;
                 }
-                // ВНИМАНИЕ: свойство TIME_DELIVERY имеет тип Y/N и НЕ хранит время.
-                // Записывать сюда «14:30» нельзя — валидатор вернёт ошибку ввода.
-                // Сама дата/время уходят в DATE_TIME_DELIVERY (ДД.ММ.ГГГГ ЧЧ:ММ),
-                // а TIME_DELIVERY оставляем дефолтным 'N' (как в существующих заказах).
+                // TIME_DELIVERY — Y/N-флаг режима «Выбрать дату и время»: само время
+                // хранится в DATE_TIME_DELIVERY (ДД.ММ.ГГГГ ЧЧ:ММ). Пишем 'Y', если
+                // выбран этот режим, иначе 'N' (валидатор Y/N принимает только Y/N).
                 if (timePropertyInput) {
-                    timePropertyInput.value = 'N';
+                    timePropertyInput.value = (dateTimeRadio && dateTimeRadio.checked) ? 'Y' : 'N';
                 }
 
                 // При вводе значений снимаем подсветку ошибок

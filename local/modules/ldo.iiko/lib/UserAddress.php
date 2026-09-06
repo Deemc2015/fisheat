@@ -183,6 +183,10 @@ class UserAddress
     /**
      * Обновляет адрес пользователя.
      *
+     * Частичное обновление: меняются только переданные поля, остальные
+     * (USER_ID, координаты, зона) не затираются. Если вместе с адресом
+     * переданы координаты — зона доставки пересчитывается по ним.
+     *
      * @param int $id
      * @param array $fields
      * @return bool
@@ -195,12 +199,19 @@ class UserAddress
 
         UserAddressTable::ensureTable();
 
-        $data = self::normalizeFields($fields);
+        $data = self::normalizeProvidedFields($fields);
+        if (empty($data)) {
+            return false;
+        }
+
         // При редактировании координат пересчитываем зону адреса
         if (array_key_exists('LAT', $data) || array_key_exists('LON', $data)) {
             $lat = (float)($data['LAT'] ?? 0);
             $lon = (float)($data['LON'] ?? 0);
-            if ($lat != 0 && $lon != 0 && Loader::includeModule('ldo.develop')) {
+            if ($lat == 0 || $lon == 0) {
+                // Пустые/нулевые координаты — не затираем существующие
+                unset($data['LAT'], $data['LON']);
+            } elseif (Loader::includeModule('ldo.develop')) {
                 $zoneId = \Ldo\Develop\Hlblock::findZoneIdByCoordinates($lat, $lon);
                 $data['ZONE_ID'] = $zoneId > 0 ? $zoneId : 0;
             }
@@ -229,14 +240,13 @@ class UserAddress
     }
 
     /**
-     * Приводит входной массив к полям таблицы (без UF_*-префиксов).
+     * Соответствие входных ключей полям таблицы (без UF_*-префиксов).
      *
-     * @param array $fields
      * @return array
      */
-    private static function normalizeFields(array $fields): array
+    private static function fieldMap(): array
     {
-        $map = [
+        return [
             'USER_ID' => 'USER_ID',
             'CITY' => 'CITY',
             'ADDRESS' => 'ADDRESS',
@@ -259,13 +269,19 @@ class UserAddress
             'UF_DOLGOTA' => 'LON',
             'UF_ZONE_ID' => 'ZONE_ID',
         ];
+    }
 
-        $data = [];
-        foreach ($map as $source => $target) {
-            if (array_key_exists($source, $fields)) {
-                $data[$target] = $fields[$source];
-            }
-        }
+    /**
+     * Приводит входной массив к полям таблицы (без UF_*-префиксов),
+     * заполняя отсутствующие поля значениями по умолчанию.
+     * Используется при добавлении адреса.
+     *
+     * @param array $fields
+     * @return array
+     */
+    private static function normalizeFields(array $fields): array
+    {
+        $data = self::normalizeProvidedFields($fields);
 
         $data['USER_ID'] = (int)($data['USER_ID'] ?? 0);
         $data['ZONE_ID'] = (int)($data['ZONE_ID'] ?? 0);
@@ -277,6 +293,32 @@ class UserAddress
         $data['DOMOFON'] = (string)($data['DOMOFON'] ?? '');
         $data['LAT'] = (string)($data['LAT'] ?? '');
         $data['LON'] = (string)($data['LON'] ?? '');
+
+        return $data;
+    }
+
+    /**
+     * Возвращает только переданные поля с приведением типов.
+     * Используется для частичного обновления адреса, чтобы не затирать
+     * остальные (USER_ID, LAT/LON, ZONE_ID) пустыми значениями.
+     *
+     * @param array $fields
+     * @return array
+     */
+    private static function normalizeProvidedFields(array $fields): array
+    {
+        $data = [];
+        foreach (self::fieldMap() as $source => $target) {
+            if (!array_key_exists($source, $fields)) {
+                continue;
+            }
+            $value = $fields[$source];
+            if ($target === 'USER_ID' || $target === 'ZONE_ID') {
+                $data[$target] = (int)$value;
+            } else {
+                $data[$target] = (string)$value;
+            }
+        }
 
         return $data;
     }
