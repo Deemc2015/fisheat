@@ -257,6 +257,83 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * В режиме «Как можно скорее» подставляет дату/время доставки из окна
+     * доставки зоны выбранного адреса (конец окна = сейчас + DELIVERY_TIME_END).
+     * Учитывает надбавку «высокой нагрузки» (как в модуле ldo.deliverymap).
+     *
+     * @return void
+     */
+    private function applyAsapDeliveryDateTime()
+    {
+        // Режим «Как можно скорее» задаётся свойством DEFAULT_TIME = Y
+        if ($this->getOrderPropertyValue('DEFAULT_TIME') !== 'Y') {
+            return;
+        }
+
+        // Нужен выбранный адрес и его зона
+        $addressId = (int)$this->getOrderPropertyValue('ADDRESS_ID');
+        if ($addressId <= 0) {
+            return;
+        }
+        if (!Loader::includeModule('ldo.iiko') || !Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        $address = \Ldo\Iiko\UserAddress::getById($addressId);
+        if (!$address || (int)$address['ZONE_ID'] <= 0) {
+            return;
+        }
+
+        $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById((int)$address['ZONE_ID']);
+        if (!$zone) {
+            return;
+        }
+
+        $endMinutes = (int)($zone['DELIVERY_TIME_END'] ?? 0);
+        if ($endMinutes <= 0) {
+            return;
+        }
+
+        // Надбавка при высокой нагрузке (как в map.delivery)
+        $siteId = Context::getCurrent()->getSite();
+        if (\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_enabled', 'N') === 'Y') {
+            $endMinutes += (int)\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_add_time', '0');
+        }
+
+        $deliveryDate = new \Bitrix\Main\Type\DateTime();
+        $deliveryDate->add('+' . $endMinutes . ' minutes');
+        $value = $deliveryDate->format('d.m.Y H:i');
+
+        foreach ($this->order->getPropertyCollection() as $prop) {
+            if ($prop->getField('CODE') === 'DATE_TIME_DELIVERY') {
+                $prop->setValue($value);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Возвращает значение свойства заказа по коду.
+     *
+     * @param string $code
+     * @return string
+     */
+    private function getOrderPropertyValue(string $code): string
+    {
+        if (!$this->order) {
+            return '';
+        }
+
+        foreach ($this->order->getPropertyCollection() as $prop) {
+            if ($prop->getField('CODE') === $code) {
+                return (string)$prop->getValue();
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * Гарантирует наличие служебного свойства заказа ADDRESS_ID.
      * Создаёт его для всех типов плательщиков, если его ещё нет.
      *
@@ -644,6 +721,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             }
 
             if ($this->arParams['SAVE']) {
+                // Режим «Как можно скорее»: подставляем дату/время доставки
+                // из окна зоны выбранного адреса (конец окна = сейчас + DELIVERY_TIME_END)
+                $this->applyAsapDeliveryDateTime();
+
                 $validationResult = $this->validateOrder();
 
                 if ($validationResult->isSuccess()) {
