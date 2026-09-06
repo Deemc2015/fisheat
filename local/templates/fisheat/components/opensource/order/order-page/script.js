@@ -167,11 +167,23 @@
                 var dateVal = dateInput ? dateInput.value : '';
                 var timeVal = timeInput ? timeInput.value : '';
 
+                // Свойство DATE_TIME_DELIVERY имеет тип DATE и валидируется как
+                // CheckDateTime($value, FORMAT_DATE), где FORMAT_DATE = ДД.ММ.ГГГГ.
+                // input[type="date"] возвращает ISO (ГГГГ-ММ-ДД) — переводим в ДД.ММ.ГГГГ,
+                // иначе валидация заказа падает с «Свойство заказа ... - ошибка ввода».
+                var dateRus = '';
+                var mDate = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateVal);
+                if (mDate) {
+                    dateRus = mDate[3] + '.' + mDate[2] + '.' + mDate[1];
+                } else {
+                    dateRus = dateVal;
+                }
+
                 var combined = '';
-                if (dateVal && timeVal) {
-                    combined = dateVal + ' ' + timeVal;
-                } else if (dateVal) {
-                    combined = dateVal;
+                if (dateRus && timeVal) {
+                    combined = dateRus + ' ' + timeVal;
+                } else if (dateRus) {
+                    combined = dateRus;
                 } else if (timeVal) {
                     combined = timeVal;
                 }
@@ -179,8 +191,12 @@
                 if (dateTimeInput) {
                     dateTimeInput.value = combined;
                 }
+                // ВНИМАНИЕ: свойство TIME_DELIVERY имеет тип Y/N и НЕ хранит время.
+                // Записывать сюда «14:30» нельзя — валидатор вернёт ошибку ввода.
+                // Сама дата/время уходят в DATE_TIME_DELIVERY (ДД.ММ.ГГГГ ЧЧ:ММ),
+                // а TIME_DELIVERY оставляем дефолтным 'N' (как в существующих заказах).
                 if (timePropertyInput) {
-                    timePropertyInput.value = timeVal;
+                    timePropertyInput.value = 'N';
                 }
 
                 // При вводе значений снимаем подсветку ошибок
