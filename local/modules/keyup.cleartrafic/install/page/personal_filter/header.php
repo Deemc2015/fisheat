@@ -49,7 +49,7 @@ $pageTitleSafe = (isset($pageTitle) && (string)$pageTitle !== '') ? (string)$pag
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css" type="text/css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Sofia+Sans:wght@600&display=swap" rel="stylesheet" />
-    <link href="/personal_filter/style.css" type="text/css" rel="stylesheet" />
+    <link href="/local/modules/keyup.cleartrafic/assets/style.css" type="text/css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
         /* Сессионный идентификатор для AJAX-запросов панели */

@@ -3,7 +3,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)
 {
 	die();
 }
-$this->addExternalCss("/personal_filter/style.css");
+$this->addExternalCss("/local/modules/keyup.cleartrafic/assets/style.css");
 /** @global CMain $APPLICATION */
 /** @var array $arParams */
 /** @var array $arResult */

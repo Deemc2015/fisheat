@@ -17,7 +17,7 @@ if(!Loader::IncludeModule('keyup.cleartrafic')){
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link href="/black_page/style.css" type="text/css" rel="stylesheet" />
+    <link href="/local/modules/keyup.cleartrafic/assets/style.css" type="text/css" rel="stylesheet" />
 </head>
 <body class="bp-body">
 <main class="bp-wrap">
