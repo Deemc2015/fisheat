@@ -21,7 +21,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100001;
-    width: 320px;
+    width: 400px;
     max-width: calc(100% - 32px);
     padding: 24px;
     box-sizing: border-box;
@@ -45,6 +45,7 @@ body.keyup-captcha-locked {
     margin: 0 0 16px;
     font-size: 16px;
     line-height: 1.4;
+    color:#000;
 }
 
 .keyup-captcha-modal__container {
