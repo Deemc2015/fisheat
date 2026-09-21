@@ -1,0 +1,1189 @@
+/* ============================================================
+   Модуль фильтрации трафика — панель управления
+   Единая современная тема для всех страниц /personal_filter/
+   Дизайн: спокойный, «продуктовый», без пугающих чёрных экранов
+   ============================================================ */
+
+/* ---------- Токены дизайна ---------- */
+:root {
+    --pf-primary: #2563eb;
+    --pf-primary-600: #1d4ed8;
+    --pf-primary-050: #eff6ff;
+    --pf-primary-100: #dbeafe;
+    --pf-accent: #7c3aed;
+
+    --pf-success: #16a34a;
+    --pf-success-050: #f0fdf4;
+    --pf-success-100: #dcfce7;
+
+    --pf-warning: #d97706;
+    --pf-warning-050: #fffbeb;
+    --pf-warning-100: #fef3c7;
+
+    --pf-danger: #dc2626;
+    --pf-danger-050: #fef2f2;
+    --pf-danger-100: #fee2e2;
+
+    --pf-text: #0f172a;
+    --pf-text-soft: #334155;
+    --pf-muted: #64748b;
+    --pf-border: #e6ebf2;
+    --pf-bg: #f4f6fb;
+    --pf-card: #ffffff;
+
+    --pf-radius: 16px;
+    --pf-radius-sm: 10px;
+    --pf-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 10px 28px rgba(15, 23, 42, .06);
+    --pf-shadow-hover: 0 2px 4px rgba(15, 23, 42, .05), 0 16px 36px rgba(15, 23, 42, .10);
+    --pf-shadow-modal: 0 30px 70px rgba(15, 23, 42, .28);
+    --pf-font: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: var(--pf-bg);
+    font-family: var(--pf-font);
+    color: var(--pf-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.pf-container,
+.container.pf-container {
+    max-width: 1440px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+/* ---------- Верхняя панель ---------- */
+.pf-topbar {
+    background: var(--pf-card);
+    border-bottom: 1px solid var(--pf-border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.pf-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+}
+
+.pf-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.pf-brand__logo {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .32);
+}
+
+.pf-brand__text {
+    min-width: 0;
+}
+
+.pf-brand__text strong {
+    display: block;
+    font-size: 15px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: var(--pf-text);
+    white-space: nowrap;
+}
+
+.pf-brand__text small {
+    display: block;
+    font-size: 12px;
+    color: var(--pf-muted);
+}
+
+.pf-topbar__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pf-clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--pf-primary-050);
+    color: var(--pf-primary-600);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.pf-clock::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pf-primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, .14);
+}
+
+/* ---------- Каркас ---------- */
+.pf-layout {
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+.pf-page-header {
+    margin: 0 0 20px;
+}
+
+.pf-page-header h1 {
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--pf-text);
+    letter-spacing: -0.01em;
+}
+
+.pf-page-header p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--pf-muted);
+    max-width: 900px;
+}
+
+/* ---------- Сайдбар ---------- */
+.menu-block {
+    background: var(--pf-card);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    padding: 12px;
+    box-shadow: var(--pf-shadow);
+}
+
+@media (min-width: 992px) {
+    .pf-sidebar {
+        position: sticky;
+        top: 84px;
+    }
+}
+
+.pf-nav__title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    font-weight: 700;
+    color: var(--pf-muted);
+    margin: 14px 10px 6px;
+}
+
+.pf-nav__title:first-child {
+    margin-top: 4px;
+}
+
+.menu-block a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--pf-text-soft);
+    text-decoration: none;
+    font-family: var(--pf-font);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 9px 12px;
+    border-radius: var(--pf-radius-sm);
+    margin-bottom: 2px;
+    opacity: 1;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.menu-block a::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: background .15s ease;
+}
+
+.menu-block a:hover {
+    background: var(--pf-primary-050);
+    color: var(--pf-primary-600);
+}
+
+.menu-block a:hover::before {
+    background: var(--pf-primary);
+}
+
+.menu-block a.active {
+    background: var(--pf-primary);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .28);
+}
+
+.menu-block a.active::before {
+    background: #fff;
+}
+
+.menu-block a.active:hover {
+    background: var(--pf-primary-600);
+    color: #fff;
+}
+
+/* ---------- Фильтры ---------- */
+.filter-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.filter-line a {
+    color: var(--pf-text-soft);
+    text-decoration: none;
+    border: 1px solid var(--pf-border);
+    background: var(--pf-card);
+    border-radius: 999px;
+    padding: 7px 15px;
+    display: inline-block;
+    font-family: var(--pf-font);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .15s ease;
+}
+
+.filter-line a:hover {
+    border-color: var(--pf-primary-100);
+    color: var(--pf-primary-600);
+    background: var(--pf-primary-050);
+}
+
+.filter-line a.active {
+    background: var(--pf-primary);
+    border-color: var(--pf-primary);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .25);
+}
+
+.ipsearch {
+    margin: 14px 0 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    background: var(--pf-card);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    padding: 12px 14px;
+    box-shadow: var(--pf-shadow);
+}
+
+.ipsearch input {
+    color: var(--pf-text);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius-sm);
+    padding: 9px 13px;
+    font-family: var(--pf-font);
+    font-size: 14px;
+    outline: none !important;
+    margin: 0;
+    flex: 0 1 240px;
+    background: #fff;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.ipsearch input:focus {
+    border-color: var(--pf-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.ipsearch input.error {
+    border-color: var(--pf-danger);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .12);
+}
+
+.ipsearch button {
+    background: var(--pf-primary);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--pf-radius-sm);
+    text-transform: none;
+    font-family: var(--pf-font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, box-shadow .15s ease;
+}
+
+.ipsearch button:hover {
+    background: var(--pf-primary-600);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .28);
+}
+
+.period-date {
+    display: none;
+}
+
+.period-date.show {
+    display: block;
+    flex: 1 1 100%;
+}
+
+.period-date form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 0;
+}
+
+.ipsearch .period-date input {
+    font-size: 14px;
+    flex: 0 1 170px;
+}
+
+/* ---------- Кнопки действий на страницах ---------- */
+#addIp,
+#removeAll,
+#stop,
+#start,
+.pf-btn {
+    padding: 10px 18px;
+    border-radius: var(--pf-radius-sm);
+    border: 1px solid var(--pf-border);
+    background: var(--pf-card);
+    color: var(--pf-text-soft);
+    font-family: var(--pf-font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 8px 12px 0;
+    transition: all .15s ease;
+}
+
+#addIp {
+    background: var(--pf-primary);
+    border-color: var(--pf-primary);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, .25);
+}
+
+#addIp:hover {
+    background: var(--pf-primary-600);
+    border-color: var(--pf-primary-600);
+}
+
+#removeAll:hover {
+    background: var(--pf-danger-050);
+    border-color: var(--pf-danger-100);
+    color: var(--pf-danger);
+}
+
+#stop:hover {
+    background: var(--pf-warning-050);
+    border-color: var(--pf-warning-100);
+    color: var(--pf-warning);
+}
+
+#start:hover {
+    background: var(--pf-success-050);
+    border-color: var(--pf-success-100);
+    color: var(--pf-success);
+}
+
+/* ---------- Таблицы ---------- */
+.reports-result-list-wrap {
+    background: var(--pf-card);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow);
+    padding: 4px 4px 8px;
+    overflow: hidden;
+}
+
+.report-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--pf-radius-sm);
+}
+
+.reports-list-left-corner,
+.reports-list-right-corner {
+    display: none;
+}
+
+#report-result-table {
+    font-family: var(--pf-font);
+    font-size: 14px;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    display: table;
+    overflow: visible;
+    color: var(--pf-text-soft);
+}
+
+#report-result-table th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f8fafc;
+    padding: 0;
+    border-bottom: 1px solid var(--pf-border);
+    white-space: nowrap;
+    text-align: left;
+}
+
+#report-result-table th .reports-head-cell {
+    padding: 13px 14px;
+    background: transparent;
+    border: none;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reports-head-cell-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--pf-muted);
+}
+
+.reports-selected-column .reports-head-cell-title {
+    color: var(--pf-primary-600);
+}
+
+#report-result-table th.report-column-disabled-sort {
+    cursor: default;
+}
+
+#report-result-table th:not(.report-column-disabled-sort) {
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+#report-result-table th:not(.report-column-disabled-sort):hover {
+    background: var(--pf-primary-050);
+}
+
+.reports-table-arrow {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #cbd5e1;
+}
+
+.reports-head-cell-top .reports-table-arrow {
+    border-top: none;
+    border-bottom: 5px solid var(--pf-primary);
+}
+
+.reports-list-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    color: var(--pf-text-soft);
+    max-width: 360px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reports-list-item:hover td {
+    background: #f8fafc;
+}
+
+.reports-list-item:last-child td {
+    border-bottom: none;
+}
+
+/* Скрываем «tag»-мусор от битриксового рендера полей */
+.reports-list-table td br {
+    display: none;
+}
+
+/* Статусы строк — мягкие, не пугающие акценты */
+tr.gray td {
+    background: var(--pf-warning-050);
+}
+
+tr.gray:hover td {
+    background: var(--pf-warning-100);
+}
+
+tr.black td {
+    background: var(--pf-danger-050);
+    color: var(--pf-text-soft);
+}
+
+tr.black:hover td {
+    background: var(--pf-danger-100);
+}
+
+tr.gray.checkCaptcha td {
+    background: var(--pf-success-050);
+}
+
+tr.gray.checkCaptcha:hover td {
+    background: var(--pf-success-100);
+}
+
+tr.black td:first-child,
+tr.gray td:first-child,
+tr.gray.checkCaptcha td:first-child {
+    border-left: 3px solid transparent;
+}
+
+tr.black td:first-child {
+    border-left-color: var(--pf-danger);
+}
+
+tr.gray td:first-child {
+    border-left-color: var(--pf-warning);
+}
+
+tr.gray.checkCaptcha td:first-child {
+    border-left-color: var(--pf-success);
+}
+
+td.UF_IP_SOVPADENIE {
+    font-weight: 600;
+}
+
+tr.black td.UF_IP_SOVPADENIE {
+    color: var(--pf-danger);
+}
+
+tr.gray td.UF_IP_SOVPADENIE {
+    color: var(--pf-warning);
+}
+
+tr.gray.checkCaptcha td.UF_IP_SOVPADENIE {
+    color: var(--pf-success);
+}
+
+/* Кнопки в строке таблицы */
+th > .button-list {
+    width: auto;
+    background: transparent;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+td.button-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.edit-button,
+.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin: 0;
+    transition: all .15s ease;
+    user-select: none;
+}
+
+.edit-button {
+    background: var(--pf-primary-050);
+    color: var(--pf-primary-600);
+    border-color: var(--pf-primary-100);
+}
+
+.edit-button:hover {
+    background: var(--pf-primary);
+    border-color: var(--pf-primary);
+    color: #fff;
+}
+
+.delete-btn {
+    background: var(--pf-danger-050);
+    color: var(--pf-danger);
+    border-color: var(--pf-danger-100);
+}
+
+.delete-btn:hover {
+    background: var(--pf-danger);
+    border-color: var(--pf-danger);
+    color: #fff;
+}
+
+/* ---------- Пагинация ---------- */
+.bx-pagination-container ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin: 0;
+    padding: 18px 10px 8px;
+    font-family: var(--pf-font);
+}
+
+.bx-pagination-container ul li {
+    margin: 0;
+}
+
+.bx-pagination-container a,
+.bx-pagination-container span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 11px;
+    border-radius: 9px;
+    border: 1px solid var(--pf-border);
+    background: var(--pf-card);
+    color: var(--pf-text-soft);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .15s ease;
+}
+
+.bx-pagination-container a:hover {
+    border-color: var(--pf-primary-100);
+    background: var(--pf-primary-050);
+    color: var(--pf-primary-600);
+}
+
+#mask_page .bx-pagination-container ul {
+    list-style: none;
+}
+
+/* ---------- Модальные окна ---------- */
+.modalAdd,
+.wrp,
+.modalEdit {
+    display: none;
+}
+
+.wrp.show {
+    position: fixed;
+    inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, .45);
+    display: block;
+    z-index: 100;
+}
+
+.modalAdd.show,
+.modalEdit.show {
+    display: block;
+    position: fixed;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 380px);
+    margin: 0;
+    background: var(--pf-card);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow-modal);
+    padding: 26px 24px 22px;
+    z-index: 101;
+}
+
+.modalAdd .modal-title,
+.modalEdit .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin: 0 0 6px;
+    padding-right: 30px;
+    font-family: var(--pf-font);
+}
+
+.modalAdd .modal-subtitle,
+.modalEdit .modal-subtitle {
+    font-size: 13px;
+    color: var(--pf-muted);
+    margin: 0 0 16px;
+    line-height: 1.45;
+}
+
+.modalAdd .close,
+.modalEdit .close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    opacity: .55;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.modalAdd .close:hover,
+.modalEdit .close:hover {
+    background: #f1f5f9;
+    opacity: 1;
+}
+
+.modalAdd input,
+.modalEdit input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius-sm);
+    outline: none !important;
+    font-family: var(--pf-font);
+    font-size: 14px;
+    color: var(--pf-text);
+    margin-bottom: 10px;
+    background: #fff;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.modalAdd input:focus,
+.modalEdit input:focus {
+    border-color: var(--pf-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.modalAdd button,
+.modalEdit button {
+    display: block;
+    width: 100%;
+    font-family: var(--pf-font);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+    margin: 8px 0 0;
+    padding: 11px 16px;
+    border: none;
+    border-radius: var(--pf-radius-sm);
+    background: var(--pf-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+
+.modalAdd button:hover,
+.modalEdit button:hover {
+    background: var(--pf-primary-600);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, .28);
+}
+
+.modalAdd.loading {
+    cursor: wait;
+    opacity: .75;
+}
+
+.spinner {
+    position: absolute;
+    top: calc(50% - 20px);
+    left: calc(50% - 20px);
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.modalAdd.loading .spinner {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f1f5f9;
+    border-radius: 50%;
+    border-top-color: var(--pf-primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.modalAdd .error,
+.modalEdit .error {
+    color: var(--pf-danger);
+    text-align: center;
+    font-family: var(--pf-font);
+    font-size: 13px;
+    display: block;
+    margin-top: 10px;
+}
+
+.modalAdd .error:empty,
+.modalEdit .error:empty {
+    display: none;
+}
+
+/* ---------- Импорт списка из файла ---------- */
+.modalAdd .pf-or {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 12px;
+    font-family: var(--pf-font);
+    font-size: 12px;
+    color: var(--pf-muted);
+    text-align: center;
+}
+
+.modalAdd .pf-or::before,
+.modalAdd .pf-or::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--pf-border);
+}
+
+.modalAdd input[type="file"] {
+    padding: 9px 11px;
+    background: #f8fafc;
+    font-size: 13px;
+    color: var(--pf-muted);
+}
+
+.modalAdd .pf-file-btn {
+    background: #fff;
+    color: var(--pf-primary-600);
+    border: 1px solid var(--pf-primary-100);
+}
+
+.modalAdd .pf-file-btn:hover {
+    background: var(--pf-primary-050);
+    border-color: var(--pf-primary-100);
+    box-shadow: none;
+}
+
+.modalAdd .import-result {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    font-family: var(--pf-font);
+    font-size: 13px;
+    color: var(--pf-success);
+}
+
+.modalAdd .import-result:empty {
+    display: none;
+}
+
+/* ---------- Маски подсетей ---------- */
+#mask_page {
+    margin-bottom: 6px;
+}
+
+td.UF_MASC_NUM {
+    width: 60px;
+    text-align: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    color: var(--pf-muted);
+    font-weight: 600;
+}
+
+/* ---------- Пустое состояние ---------- */
+.pf-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--pf-muted);
+    font-size: 14px;
+}
+
+/* ============================================================
+   АДАПТИВНОСТЬ
+   ============================================================ */
+
+/* Модалки не должны вылезать за экран по высоте */
+.modalAdd.show,
+.modalEdit.show {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Небольшие ноутбуки */
+@media (max-width: 1199px) {
+    .pf-container,
+    .container.pf-container {
+        max-width: 100%;
+    }
+
+    .pf-page-header h1 {
+        font-size: 24px;
+    }
+}
+
+/* Планшеты: сайдбар превращается в горизонтальную ленту навигации */
+@media (max-width: 991px) {
+    .pf-layout {
+        padding-top: 18px;
+        padding-bottom: 32px;
+    }
+
+    .pf-sidebar {
+        position: static;
+        margin-bottom: 16px;
+    }
+
+    .menu-block {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 10px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .pf-nav__title {
+        flex: 0 0 auto;
+        margin: 0 6px 0 4px;
+        white-space: nowrap;
+    }
+
+    .pf-nav__title:first-child {
+        margin-top: 0;
+    }
+
+    .menu-block a {
+        flex: 0 0 auto;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+    .menu-block a::before {
+        display: none;
+    }
+
+    .pf-page-header h1 {
+        font-size: 22px;
+    }
+}
+
+/* Телефоны (широкие) */
+@media (max-width: 767px) {
+    .pf-topbar {
+        position: static;
+    }
+
+    .pf-page-header {
+        margin-bottom: 16px;
+    }
+
+    .pf-page-header h1 {
+        font-size: 20px;
+    }
+
+    .pf-page-header p {
+        font-size: 13px;
+    }
+
+    /* Фильтры-периоды — горизонтальная прокрутка */
+    .filter-line {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .filter-line a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .ipsearch {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .ipsearch input {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .ipsearch button {
+        flex: 1 1 100%;
+    }
+
+    .period-date form {
+        width: 100%;
+    }
+
+    .ipsearch .period-date input {
+        flex: 1 1 100%;
+    }
+
+    /* Кнопки управления — на всю ширину, крупные тап-зоны */
+    #addIp,
+    #removeAll,
+    #stop,
+    #start {
+        display: block;
+        width: 100%;
+        margin: 0 0 10px;
+    }
+
+    /* Таблицы: горизонтальная прокрутка с инерцией */
+    .reports-result-list-wrap {
+        padding: 2px 2px 6px;
+    }
+
+    .report-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    #report-result-table {
+        min-width: 720px;
+    }
+
+    th > .button-list {
+        min-width: 150px;
+    }
+
+    .edit-button,
+    .delete-btn {
+        padding: 8px 12px;
+    }
+
+    .bx-pagination-container a,
+    .bx-pagination-container span {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 9px;
+    }
+}
+
+/* Телефоны (узкие) */
+@media (max-width: 575px) {
+    .pf-container,
+    .container.pf-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .pf-topbar__inner {
+        padding: 10px 0;
+        gap: 10px;
+    }
+
+    .pf-brand__logo {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+        border-radius: 10px;
+    }
+
+    .pf-brand__text strong {
+        font-size: 14px;
+    }
+
+    .pf-brand__text small {
+        display: none;
+    }
+
+    .pf-clock {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    #report-result-table th .reports-head-cell {
+        padding: 10px 10px;
+    }
+
+    .reports-list-table td {
+        padding: 10px 10px;
+        font-size: 13px;
+    }
+
+    /* Модальные окна — на всю ширину, с прокруткой при низких экранах */
+    .modalAdd.show,
+    .modalEdit.show {
+        width: calc(100vw - 24px);
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 22px 18px 18px;
+    }
+
+    .modalAdd .modal-title,
+    .modalEdit .modal-title {
+        font-size: 16px;
+    }
+}
+
+/* Очень узкие экраны */
+@media (max-width: 380px) {
+    .pf-clock {
+        display: none;
+    }
+
+    .filter-line a {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .reports-list-table td {
+        padding: 9px 9px;
+    }
+}
+
+/* Низкие экраны (альбомная ориентация телефонов) */
+@media (max-height: 560px) {
+    .modalAdd.show,
+    .modalEdit.show {
+        max-height: 94vh;
+        overflow-y: auto;
+    }
+}
+
+/* Устройства без наведения: убираем «залипание» hover-эффектов на тач-экранах */
+@media (hover: none) {
+    .menu-block a:hover {
+        background: transparent;
+        color: var(--pf-text-soft);
+    }
+
+    .menu-block a.active:hover {
+        background: var(--pf-primary);
+        color: #fff;
+    }
+}

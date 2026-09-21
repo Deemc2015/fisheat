@@ -313,6 +313,76 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * При самовывозе в режиме «Как можно скорее» подставляет дату/время
+     * готовности из времени готовки выбранного ресторана.
+     *
+     * Ресторан определяется по XML_ID (свойство RESTORAN_ID, заполняется
+     * на форме при выборе ресторана из списка самовывоза). К времени готовки
+     * ресторана (конец окна = сейчас + DELIVERY_TIME_END) добавляется
+     * надбавка «высокой нагрузки» (общая настройка, как у зон).
+     *
+     * @return void
+     */
+    private function applyAsapPickupDeliveryDateTime()
+    {
+        // Режим «Как можно скорее» задаётся свойством DEFAULT_TIME = Y
+        if ($this->getOrderPropertyValue('DEFAULT_TIME') !== 'Y') {
+            return;
+        }
+
+        // Определяем выбранную службу доставки — метод применим только к «Самовывозу»
+        $shipment = OrderHelper::getFirstNonSystemShipment($this->order);
+        if ($shipment === null) {
+            return;
+        }
+        $delivery = $shipment->getDelivery();
+        if (!$delivery instanceof Delivery\Services\Base) {
+            return;
+        }
+        $deliveryName = mb_strtolower((string)$delivery->getNameWithParent());
+        if ($deliveryName !== 'самовывоз' && mb_strtolower((string)$delivery->getName()) !== 'самовывоз') {
+            return;
+        }
+
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        // Выбранный ресторан (XML_ID iiko в свойстве RESTORAN_ID)
+        $restaurantXmlId = $this->getOrderPropertyValue('RESTORAN_ID');
+        if ($restaurantXmlId === '') {
+            return;
+        }
+
+        $restaurant = \Ldo\Deliverymap\RestaurantsTable::getByXmlId($restaurantXmlId);
+        if (!$restaurant) {
+            return;
+        }
+
+        $minutes = (int)($restaurant['DELIVERY_TIME_END'] ?? 0);
+        if ($minutes <= 0) {
+            return;
+        }
+
+        // Надбавка при высокой нагрузке (как в map.delivery и для зон)
+        $siteId = Context::getCurrent()->getSite();
+        if (\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_enabled', 'N') === 'Y') {
+            $minutes += (int)\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_add_time', '0');
+        }
+
+        $deliveryDate = new \Bitrix\Main\Type\DateTime();
+        $deliveryDate->add('+' . $minutes . ' minutes');
+        $value = $deliveryDate->format('d.m.Y H:i');
+
+        foreach ($this->order->getPropertyCollection() as $prop) {
+            if ($prop->getField('CODE') === 'DATE_TIME_DELIVERY') {
+                $prop->setValue($value);
+                break;
+            }
+        }
+    }
+
+    /**
      * Возвращает значение свойства заказа по коду.
      *
      * @param string $code
@@ -724,6 +794,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 // Режим «Как можно скорее»: подставляем дату/время доставки
                 // из окна зоны выбранного адреса (конец окна = сейчас + DELIVERY_TIME_END)
                 $this->applyAsapDeliveryDateTime();
+                // Самовывоз: подставляем дату/время готовности из времени готовки
+                // выбранного ресторана (конец окна + надбавка высокой нагрузки)
+                $this->applyAsapPickupDeliveryDateTime();
 
                 $validationResult = $this->validateOrder();
 
@@ -782,6 +855,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'updateAddressPrice' => [
                 'prefilters' => [],
             ],
+            'updateRestaurantPrice' => [
+                'prefilters' => [],
+            ],
         ];
     }
 
@@ -809,47 +885,39 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         try {
             $basket = $this->getBasket();
             if ($basket && $basket->count() > 0) {
-                // Принудительно применяем скидки для получения актуальных цен
-                $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
-                $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
-                $discounts->calculate();
-                $applyResult = $discounts->getApplyResult(true);
-                $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
-
-                foreach ($basket as $item) {
-                    $basketId = $item->getId();
-                    $basePrice = $item->getBasePrice();
-                    $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
-                    $quantity = $item->getQuantity();
-
-                    $baseSum += $basePrice * $quantity;
-                    $discount += ($basePrice - $unitPrice) * $quantity;
-                    $totalPrice += $unitPrice * $quantity;
-                }
-            }
-
-            if (!$isPickup) {
-                // Доставка — цена по зоне выбранного адреса через службу доставки (ZoneDelivery)
-                if ($addressId <= 0 && Loader::includeModule('ldo.iiko')) {
+                if (!$isPickup) {
                     // Если ID адреса не передан — берём «отмеченный» адрес пользователя
-                    $userAddresses = \Ldo\Iiko\UserAddress::getListForUser((int)$USER->GetID());
-                    if (!empty($userAddresses)) {
-                        foreach ($userAddresses as $address) {
-                            if (!empty($address['CHECKED'])) {
-                                $addressId = (int)$address['ID'];
-                                break;
+                    if ($addressId <= 0 && Loader::includeModule('ldo.iiko')) {
+                        $userAddresses = \Ldo\Iiko\UserAddress::getListForUser((int)$USER->GetID());
+                        if (!empty($userAddresses)) {
+                            foreach ($userAddresses as $address) {
+                                if (!empty($address['CHECKED'])) {
+                                    $addressId = (int)$address['ID'];
+                                    break;
+                                }
                             }
-                        }
-                        if ($addressId <= 0) {
-                            $firstAddress = reset($userAddresses);
-                            $addressId = (int)$firstAddress['ID'];
+                            if ($addressId <= 0) {
+                                $firstAddress = reset($userAddresses);
+                                $addressId = (int)$firstAddress['ID'];
+                            }
                         }
                     }
                 }
 
-                $deliveryPrice = $this->getDeliveryPriceFromOrder($deliveryId, $basket, $addressId);
+                // Пересчёт скидок/правил корзины в контексте заказа с выбранной службой
+                // доставки — чтобы правила, зависящие от типа доставки (например,
+                // «−10% при Самовывозе»), учитывались и при предпросмотре.
+                $totals = $this->calculateTotalsInOrderContext($deliveryId, $addressId);
+                $baseSum = $totals['baseSum'];
+                $discount = $totals['discount'];
+                $totalPrice = $totals['totalPrice'];
+
+                if (!$isPickup) {
+                    // Доставка — цена по зоне выбранного адреса через службу доставки (ZoneDelivery)
+                    $deliveryPrice = $this->getDeliveryPriceFromOrder($deliveryId, $basket, $addressId);
+                }
+                // При самовывозе deliveryPrice остаётся 0
             }
-            // При самовывозе deliveryPrice остаётся 0
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -890,22 +958,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         try {
             $basket = $this->getBasket();
             if ($basket && $basket->count() > 0) {
-                $fuser = new \Bitrix\Sale\Discount\Context\Fuser($basket->getFUserId(true));
-                $discounts = \Bitrix\Sale\Discount::buildFromBasket($basket, $fuser);
-                $discounts->calculate();
-                $applyResult = $discounts->getApplyResult(true);
-                $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
-
-                foreach ($basket as $item) {
-                    $basketId = $item->getId();
-                    $basePrice = $item->getBasePrice();
-                    $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
-                    $quantity = $item->getQuantity();
-
-                    $baseSum += $basePrice * $quantity;
-                    $discount += ($basePrice - $unitPrice) * $quantity;
-                    $totalPrice += $unitPrice * $quantity;
-                }
+                // Пересчёт скидок/правил корзины в контексте заказа с выбранной службой доставки
+                $totals = $this->calculateTotalsInOrderContext($deliveryId, $addressId);
+                $baseSum = $totals['baseSum'];
+                $discount = $totals['discount'];
+                $totalPrice = $totals['totalPrice'];
             }
 
             // Доставка — цена по зоне выбранного адреса через службу доставки (ZoneDelivery)
@@ -931,6 +988,163 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'baseSum' => $baseSum,
             'discount' => $discount,
             'totalPrice' => $totalWithDelivery
+        ];
+    }
+
+    /**
+     * Пересчёт итоговых сумм корзины при выборе ресторана самовывоза.
+     *
+     * Самовывоз бесплатен (deliveryPrice = 0), но скидки, промокоды и итог
+     * пересчитываются так же, как при выборе адреса доставки, чтобы правила
+     * корзины учитывались и для типа «Самовывоз».
+     *
+     * @param array $dataRestaurant Данные: restaurantId
+     * @return array
+     */
+    public function updateRestaurantPriceAction($dataRestaurant)
+    {
+        $baseSum = 0;
+        $discount = 0;
+        $totalPrice = 0;
+
+        try {
+            $basket = $this->getBasket();
+            if ($basket && $basket->count() > 0) {
+                // Самовывоз: пересчёт в контексте заказа с отгрузкой службы «Самовывоз»,
+                // чтобы правила корзины с ограничением по способу доставки
+                // (например «−10% при Самовывозе») учитывались при предпросмотре.
+                // ID службы передаётся с формы (выбранный radio delivery_id);
+                // если не передан — ищем службу «Самовывоз» по имени.
+                $deliveryId = (int)($dataRestaurant['deliveryId'] ?? 0);
+                if ($deliveryId <= 0) {
+                    $deliveryId = $this->getPickupDeliveryId();
+                }
+                $totals = $this->calculateTotalsInOrderContext($deliveryId, 0);
+                $baseSum = $totals['baseSum'];
+                $discount = $totals['discount'];
+                $totalPrice = $totals['totalPrice'];
+            }
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+
+        // Самовывоз — доставка бесплатна, выбранный ресторан передаётся формой
+        $deliveryPrice = 0;
+        $_SESSION['LDO_DELIVERY_PRICE'] = 0;
+        $_SESSION['LDO_IS_PICKUP'] = 'Y';
+
+        return [
+            'success' => true,
+            'deliveryPrice' => $deliveryPrice,
+            'baseSum' => $baseSum,
+            'discount' => $discount,
+            'totalPrice' => $totalPrice + $deliveryPrice
+        ];
+    }
+
+    /**
+     * Возвращает ID активной службы доставки «Самовывоз».
+     *
+     * @return int
+     */
+    private function getPickupDeliveryId()
+    {
+        if (!Loader::includeModule('sale')) {
+            return 0;
+        }
+
+        $services = \Bitrix\Sale\Delivery\Services\Table::getList([
+            'select' => ['ID', 'NAME', 'CLASS_NAME'],
+            'filter' => ['=ACTIVE' => 'Y'],
+        ]);
+        while ($service = $services->fetch()) {
+            $name = (string)($service['NAME'] ?? '');
+            $class = (string)($service['CLASS_NAME'] ?? '');
+            if (mb_stripos($name, 'самовывоз') !== false
+                || mb_stripos($class, 'EmptyDeliveryService') !== false) {
+                return (int)$service['ID'];
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Пересчитывает товарные суммы корзины с учётом правил работы с корзиной
+     * в контексте виртуального заказа, к которому привязана отгрузка с выбранной
+     * службой доставки.
+     *
+     * Только так правила, зависящие от способа доставки (например, «−10% при
+     * Самовывозе» — условие «Способ доставки» в правилах корзины), применяются
+     * при предпросмотре. Обычный Discount::buildFromBasket не учитывает службу
+     * доставки, поэтому такие правила в нём не срабатывают.
+     *
+     * @param int $deliveryId ID службы доставки (0 — без отгрузки)
+     * @param int $addressId  ID адреса доставки (свойство ADDRESS_ID)
+     * @return array ['baseSum' => float, 'discount' => float, 'totalPrice' => float]
+     */
+    private function calculateTotalsInOrderContext($deliveryId = 0, $addressId = 0)
+    {
+        global $USER;
+
+        $siteId = Context::getCurrent()->getSite();
+        $basket = Basket::loadItemsForFUser(Fuser::getId(), $siteId);
+        if (!$basket || $basket->count() === 0) {
+            return ['baseSum' => 0, 'discount' => 0, 'totalPrice' => 0];
+        }
+
+        $orderable = $basket->getOrderableItems();
+        $order = Order::create($siteId, $USER->GetID());
+        $order->setPersonTypeId(1);
+        $order->setBasket($orderable);
+
+        if ($addressId > 0) {
+            foreach ($order->getPropertyCollection() as $prop) {
+                if ($prop->getField('CODE') === 'ADDRESS_ID') {
+                    $prop->setValue($addressId);
+                    break;
+                }
+            }
+        }
+
+        if ($deliveryId > 0) {
+            Loader::includeModule('ldo.deliverymap');
+            $service = $this->getDeliveryServiceObject($deliveryId);
+            if ($service) {
+                $shipment = $order->getShipmentCollection()->createItem($service);
+                $shipment->setField('CURRENCY', $order->getCurrency());
+                foreach ($orderable as $basketItem) {
+                    $shipmentItem = $shipment->getShipmentItemCollection()->createItem($basketItem);
+                    $shipmentItem->setQuantity($basketItem->getQuantity());
+                }
+            }
+        }
+
+        // Расчёт скидок/правил в контексте заказа (учитывает выбранную службу доставки)
+        $applyResult = $order->getDiscount()->getApplyResult(true);
+        $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
+
+        $baseSum = 0;
+        $discount = 0;
+        $totalPrice = 0;
+        foreach ($orderable as $item) {
+            $basketId = $item->getId();
+            $basePrice = $item->getBasePrice();
+            $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
+            $quantity = $item->getQuantity();
+
+            $baseSum += $basePrice * $quantity;
+            $discount += ($basePrice - $unitPrice) * $quantity;
+            $totalPrice += $unitPrice * $quantity;
+        }
+
+        return [
+            'baseSum' => $baseSum,
+            'discount' => $discount,
+            'totalPrice' => $totalPrice,
         ];
     }
 

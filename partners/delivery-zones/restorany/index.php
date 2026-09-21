@@ -29,6 +29,16 @@ $defaultLat    = $moduleLoaded ? SettingsTable::get($siteId, 'default_lat', '54.
 $defaultLng    = $moduleLoaded ? SettingsTable::get($siteId, 'default_lng', '55.9587') : '55.9587';
 $defaultZoom   = $moduleLoaded ? SettingsTable::get($siteId, 'default_zoom', '11') : '11';
 
+// Высокая нагрузка — общая настройка сайта (как на странице зон).
+// При проставлении чекбокса сохраняется в ldo_delivery_settings и применяется
+// к времени доставки ресторанов (отображается «+N мин. выс.нагр.»).
+$highLoadEnabled = 'N';
+$highLoadAddTime = 0;
+if ($moduleLoaded) {
+    $highLoadEnabled = SettingsTable::get($siteId, 'high_load_enabled', 'N');
+    $highLoadAddTime = (int)SettingsTable::get($siteId, 'high_load_add_time', '0');
+}
+
 // --- AJAX обработка ресторанов ---
 if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded) {
     header('Content-Type: application/json; charset=utf-8');
@@ -46,6 +56,8 @@ if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded)
                 'PHONE' => trim((string)$request->getPost('PHONE')),
                 'EMAIL' => trim((string)$request->getPost('EMAIL')),
                 'REQUISITES' => trim((string)$request->getPost('REQUISITES')),
+                'DELIVERY_TIME_START' => (int)$request->getPost('DELIVERY_TIME_START'),
+                'DELIVERY_TIME_END' => (int)$request->getPost('DELIVERY_TIME_END'),
                 'ACTIVE' => $request->getPost('ACTIVE') === 'Y' ? 'Y' : 'N',
             ];
 
@@ -69,6 +81,11 @@ if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded)
                 'order' => ['ID' => 'ASC']
             ])->fetchAll();
             $response = ['success' => true, 'restaurants' => $list];
+        } elseif ($action === 'save_high_load') {
+            // Высокая нагрузка — общая настройка сайта (как на странице зон)
+            SettingsTable::set($siteId, 'high_load_enabled', $request->getPost('high_load_enabled') === 'Y' ? 'Y' : 'N');
+            SettingsTable::set($siteId, 'high_load_add_time', (string)(int)$request->getPost('high_load_add_time'));
+            $response = ['success' => true, 'message' => 'Сохранено'];
         }
     } catch (\Exception $e) {
         $response = ['success' => false, 'error' => $e->getMessage()];
@@ -141,6 +158,18 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                 </div>
                 <!-- Левая колонка: карта -->
                 <div style="flex:1; min-width:300px;">
+                    <div class="zone-highload-bar <?= $highLoadEnabled === 'Y' ? 'active' : '' ?>" id="zone-highload-bar">
+                        <label class="zone-highload-label">
+                            <input type="checkbox" id="zone-high-load" <?= $highLoadEnabled === 'Y' ? 'checked' : '' ?> onchange="toggleHighLoad(this)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M12 2L1 21H23L12 2ZM12 6L19.53 19H4.47L12 6ZM13 16H11V18H13V16ZM13 10H11V14H13V10Z" fill="currentColor"/></svg>
+                            Высокая нагрузка
+                        </label>
+                        <div class="zone-highload-settings <?= $highLoadEnabled === 'Y' ? 'is-visible' : '' ?>" id="zone-high-load-settings">
+                            <span>Доп. минут:</span>
+                            <input type="number" id="zone-high-load-minutes" value="<?= $highLoadAddTime ?>" min="1" max="1440" step="5">
+                            <button class="p-btn p-btn--primary" style="padding:6px 14px; font-size:13px;" onclick="saveHighLoad()">Сохранить</button>
+                        </div>
+                    </div>
                     <?php if (!empty($yandexApiKey)): ?>
                         <div id="restaurants-map" style="width:100%; height:400px; border-radius:12px; overflow:hidden;"></div>
                     <?php else: ?>
@@ -171,6 +200,10 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                             <?php if ($r['PHONE']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M6.62 10.79C8.06 13.62 10.38 15.94 13.21 17.38L15.41 15.18C15.68 14.91 16.08 14.82 16.43 14.94C17.55 15.31 18.76 15.51 20 15.51C20.55 15.51 21 15.96 21 16.51V20C21 20.55 20.55 21 20 21C10.61 21 3 13.39 3 4C3 3.45 3.45 3 4 3H7.5C8.05 3 8.5 3.45 8.5 4C8.5 5.25 8.7 6.45 9.07 7.57C9.18 7.92 9.1 8.31 8.82 8.59L6.62 10.79Z" fill="currentColor"/></svg><?= htmlspecialchars($r['PHONE']) ?><?php endif; ?>
                                             <?php if ($r['PHONE'] && $r['EMAIL']): ?> · <?php endif; ?>
                                             <?php if ($r['EMAIL']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/></svg><?= htmlspecialchars($r['EMAIL']) ?><?php endif; ?>
+                                            <?php if ((int)$r['DELIVERY_TIME_START'] > 0 && (int)$r['DELIVERY_TIME_END'] > 0): ?> · ⏱ Время доставки: <?= (int)$r['DELIVERY_TIME_START'] ?>–<?= (int)$r['DELIVERY_TIME_END'] ?> мин<?php endif; ?>
+                                            <?php if ($highLoadEnabled === 'Y' && $highLoadAddTime > 0): ?>
+                                                <span class="zone-highload-badge">+<?= $highLoadAddTime ?> мин. выс.нагр.</span>
+                                            <?php endif; ?>
                                         </div>
                                         <?php if (!empty($r['XML_ID'])): ?>
                                             <div class="rest-xml-ok">ID iiko: <?= htmlspecialchars($r['XML_ID']) ?></div>
@@ -200,6 +233,16 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                         <div class="rest-edit-field">
                                             <label>Координаты (lat, lng)</label>
                                             <input type="text" class="rest-edit-coords" value="<?= htmlspecialchars($r['COORDINATES']) ?>">
+                                        </div>
+                                        <div class="rest-edit-row">
+                                            <div class="rest-edit-field">
+                                                <label>Время доставки от (мин)</label>
+                                                <input type="number" class="rest-edit-time-start" min="0" step="5" value="<?= (int)$r['DELIVERY_TIME_START'] ?>">
+                                            </div>
+                                            <div class="rest-edit-field">
+                                                <label>Время доставки до (мин)</label>
+                                                <input type="number" class="rest-edit-time-end" min="0" step="5" value="<?= (int)$r['DELIVERY_TIME_END'] ?>">
+                                            </div>
                                         </div>
                                         <div class="rest-edit-row">
                                             <div class="rest-edit-field">
@@ -259,6 +302,16 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
             <div class="dz-form-group">
                 <label>Реквизиты</label>
                 <textarea id="rest-reqv" rows="3"></textarea>
+            </div>
+            <div style="display:flex;gap:12px;">
+                <div class="dz-form-group" style="flex:1;">
+                    <label>Время доставки от (мин)</label>
+                    <input type="number" id="rest-time-start" min="0" step="5" value="0">
+                </div>
+                <div class="dz-form-group" style="flex:1;">
+                    <label>Время доставки до (мин)</label>
+                    <input type="number" id="rest-time-end" min="0" step="5" value="0">
+                </div>
             </div>
             <div class="dz-form-actions">
                 <button type="submit" class="dz-btn dz-btn--primary">Сохранить</button>
@@ -329,6 +382,8 @@ function saveRestaurant(e) {
     formData.append('PHONE', document.getElementById('rest-phone').value);
     formData.append('EMAIL', document.getElementById('rest-email').value);
     formData.append('REQUISITES', document.getElementById('rest-reqv').value);
+    formData.append('DELIVERY_TIME_START', document.getElementById('rest-time-start').value);
+    formData.append('DELIVERY_TIME_END', document.getElementById('rest-time-end').value);
     formData.append('ACTIVE', 'Y');
 
     fetch(window.location.href, {
@@ -389,6 +444,8 @@ function saveRestaurantEdit(id) {
     formData.append('PHONE', el.querySelector('.rest-edit-phone').value);
     formData.append('EMAIL', el.querySelector('.rest-edit-email').value);
     formData.append('REQUISITES', el.querySelector('.rest-edit-reqv').value);
+    formData.append('DELIVERY_TIME_START', el.querySelector('.rest-edit-time-start').value);
+    formData.append('DELIVERY_TIME_END', el.querySelector('.rest-edit-time-end').value);
     formData.append('ACTIVE', 'Y');
 
     fetch(window.location.href, {
@@ -401,6 +458,38 @@ function saveRestaurantEdit(id) {
         if (data.success) location.reload();
         else alert(data.error || 'Ошибка');
     });
+}
+
+// === Высокая нагрузка (общая настройка сайта, как на странице зон) ===
+function toggleHighLoad(cb) {
+    var bar = document.getElementById('zone-highload-bar');
+    var settings = document.getElementById('zone-high-load-settings');
+    if (cb.checked) {
+        bar.classList.add('active');
+        settings.classList.add('is-visible');
+    } else {
+        bar.classList.remove('active');
+        settings.classList.remove('is-visible');
+    }
+    saveHighLoad();
+}
+
+function saveHighLoad() {
+    var cb = document.getElementById('zone-high-load');
+    var minutes = document.getElementById('zone-high-load-minutes').value;
+    var fd = new FormData();
+    fd.append('ajax_restaurant', '1');
+    fd.append('action', 'save_high_load');
+    fd.append('high_load_enabled', cb.checked ? 'Y' : 'N');
+    fd.append('high_load_add_time', minutes);
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: fd
+    }).then(function(r) { return r.json(); })
+      .then(function(data) {
+          if (data && data.success) location.reload();
+      });
 }
 
 document.getElementById('rest-form-overlay').addEventListener('click', function(e) {
@@ -488,6 +577,8 @@ document.getElementById('rest-form-overlay').addEventListener('click', function(
                     document.getElementById('rest-phone').value = '';
                     document.getElementById('rest-email').value = '';
                     document.getElementById('rest-reqv').value = '';
+                    document.getElementById('rest-time-start').value = '0';
+                    document.getElementById('rest-time-end').value = '0';
                     document.getElementById('rest-form-overlay').classList.add('open');
                     cancelAddRestaurant();
                 });

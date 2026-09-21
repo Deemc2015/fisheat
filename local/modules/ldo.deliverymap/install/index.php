@@ -68,10 +68,41 @@ class Ldo_deliverymap extends CModule
         global $DB;
 
         $this->createTables();
+        $this->ensureDeliveryMapUpgrades();
         $this->setOptions();
         $this->addEventHandlers();
 
         return true;
+    }
+
+    /**
+     * Миграция уже установленных таблиц: добавляет новые колонки,
+     * которых не было в прежних версиях модуля.
+     *
+     * @return void
+     */
+    private function ensureDeliveryMapUpgrades()
+    {
+        global $DB;
+
+        // ldo_delivery_restaurants: время доставки (по аналогии с зонами).
+        // Высокая нагрузка — общая настройка сайта (ldo_delivery_settings).
+        $restaurantColumns = [
+            'DELIVERY_TIME_START' => "int(11) NOT NULL DEFAULT '0'",
+            'DELIVERY_TIME_END' => "int(11) NOT NULL DEFAULT '0'",
+        ];
+        foreach ($restaurantColumns as $column => $definition) {
+            $exists = $DB->Query(
+                "SELECT COUNT(*) AS CNT FROM information_schema.COLUMNS
+                 WHERE TABLE_SCHEMA = DATABASE()
+                   AND TABLE_NAME = 'ldo_delivery_restaurants'
+                   AND COLUMN_NAME = '" . $column . "'"
+            )->Fetch();
+
+            if (!$exists || (int)$exists['CNT'] === 0) {
+                $DB->Query("ALTER TABLE `ldo_delivery_restaurants` ADD COLUMN `" . $column . "` " . $definition);
+            }
+        }
     }
 
     public function UnInstallDB()
@@ -209,6 +240,8 @@ class Ldo_deliverymap extends CModule
                 `EMAIL` varchar(100) NOT NULL DEFAULT '',
                 `REQUISITES` text,
                 `XML_ID` varchar(255) NOT NULL DEFAULT '',
+                `DELIVERY_TIME_START` int(11) NOT NULL DEFAULT '0',
+                `DELIVERY_TIME_END` int(11) NOT NULL DEFAULT '0',
                 PRIMARY KEY (`ID`),
                 KEY `IX_ACTIVE` (`ACTIVE`),
                 KEY `IX_SITE_ID` (`SITE_ID`),

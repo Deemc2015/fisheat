@@ -64,6 +64,15 @@ class RestaurantsTable extends Entity\DataManager
                     return [new Entity\Validator\Length(null, 255)];
                 }
             ]),
+            // Время доставки (минуты от момента заказа) — по аналогии с зонами.
+            // Высокая нагрузка — общая настройка сайта (как у зон), хранится
+            // в ldo_delivery_settings (high_load_enabled / high_load_add_time).
+            new Entity\IntegerField('DELIVERY_TIME_START', [
+                'default_value' => 0,
+            ]),
+            new Entity\IntegerField('DELIVERY_TIME_END', [
+                'default_value' => 0,
+            ]),
         ];
     }
 

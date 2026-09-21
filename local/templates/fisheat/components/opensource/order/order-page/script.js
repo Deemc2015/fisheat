@@ -2206,9 +2206,15 @@
         updateRestaurantPrice: function(restaurantId) {
             var self = this;
 
+            // ID выбранной службы доставки (нужен для пересчёта правил корзины
+            // в контексте службы «Самовывоз», чтобы скидка −10% не обнулялась)
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            var deliveryId = selectedDelivery ? selectedDelivery.value : '';
+
             var data = {
                 action: 'updateRestaurant',
                 restaurantId: restaurantId,
+                deliveryId: deliveryId,
                 sessid: BX.bitrix_sessid()
             };
 

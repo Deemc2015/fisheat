@@ -1,0 +1,269 @@
+body.botsIp{
+    overflow: hidden;
+}
+.wrp-bot{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    top: 0;
+    z-index: 8;
+}
+.modal-ip-captcha{
+    width: 500px;
+    position: fixed;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 9;
+    background: #f2f2f2;
+    border-radius: 10px;
+    padding: 15px;
+    display: none;
+    border: 1px solid #000000;
+}
+
+.modal-ip-captcha p.not-captcha span{
+    background: url('loading.gif') no-repeat;
+    width: 30px;
+    display: block;
+    height: 30px;
+    background-size: cover;
+    position: absolute;
+    right: 0px;
+    top: -2px;
+}
+.modal-ip-captcha.show{
+    display: block;
+}
+.modal-ip-captcha p:first-child{
+    text-align: center;
+    font-size:18px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+.modal-ip-captcha p.not-captcha{
+    font-size: 16px !important;
+    font-weight: normal;
+    position:relative;
+    width: 300px;
+    position: absolute;
+    left: 0px;
+    right: 0;
+    margin: 0 auto;
+    top: 104px;
+    text-align: left;
+}
+#formCaptcha .g-recaptcha{
+    position: relative;
+    z-index: 1;
+}
+.modal-ip-captcha button{
+    background: transparent;
+    border: none;
+    padding: 14px 23px;
+    color: #000000;
+    margin: 0 auto;
+    width: 200px;
+    display: block;
+    margin-top: 25px;
+    border:1px solid #000000;
+    transition: all .3s;
+    font-family: var(--fonts-global);
+    cursor: pointer;
+}
+.modal-ip-captcha button:hover{
+    background: #000000;
+    color:#ffffff;
+}
+.modal-ip-captcha .line-captcha{
+    display: flex;
+}
+#formCaptcha .g-recaptcha{
+    display: block !important;
+}
+#formCaptcha .g-recaptcha div:first-child{
+    margin:0 auto;
+}
+.afterFormLink{
+    font-size: 13px;
+    margin-top: 20px;
+    text-align: center;
+}
+.afterFormLink span{
+    color: #000000;
+    border-bottom: 1px solid;
+    cursor: pointer;
+}
+.modalError{
+    position: fixed;
+    width: 500px;
+    background: #f2f2f2;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 30%;
+    z-index: 9;
+    padding: 30px;
+    display: none;
+}
+.modalError .title{
+    font-size: 18px;
+}
+#modalError input{
+    display: inline-block;
+    width: 100%;
+    border:none;
+    background: #ffffff;
+    margin-bottom: 10px;
+    padding: 13px;
+    display:block;
+    font-family: var(--fonts-global);
+}
+#modalError textarea{
+    background: #ffffff;
+    padding: 10px;
+    min-height: 150px;
+    line-height: 1.2;
+    width: 100%;
+    font-family: var(--fonts-global);
+    border:none;
+    outline: none !important;
+}
+#modalError button{
+    background: transparent;
+    border: 1px solid #000;
+    padding: 14px 23px;
+    color: #000;
+    width: 200px;
+    display: block;
+    transition: all .3s;
+    cursor: pointer;
+}
+#modalError button:hover{
+    background: #000;
+    color:#fff;
+}
+#modalError .button-bottom{
+    margin-top:15px;
+}
+#modalError .button-bottom{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#modalError label{
+    border: 1px solid #d7d7d7;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 0;
+    transition: all .3s;
+    position: relative;
+}
+textarea::placeholder {
+  opacity: 1;
+
+}
+
+textarea.active::placeholder {
+  opacity: 0;
+  transition: opacity .1s ease;
+}
+.typefile{
+    opacity: 0;
+    position: absolute;
+    top: 0;
+}
+.file-info{
+    margin-top:15px;
+    text-align:center;
+}
+.succes-modal{
+    position: fixed;
+    top: 43%;
+    width: 500px;
+    background: #f2f2f2;
+    border-radius: 6px;
+    border: 1px solid #000000;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 10;
+    padding: 20px;
+    display:none;
+}
+.succes-modal .title{
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.succes-modal .title span{
+    color:#1d4369;
+}
+.succes-modal .title + p{
+    font-size:13px;
+}
+
+
+@media(max-width:500px){
+    .succes-modal,.modal-ip-captcha,.modalError{
+        width: 100%;
+
+    }
+    .modal-ip-captcha p:first-child{
+        font-size: 16px;
+    }
+    .succes-modal .title{
+        margin-top: 0;
+    }
+   
+    .modal-ip-captcha p.not-captcha span{
+        right:0;
+    }
+    .modal-ip-captcha p.not-captcha{
+        width: 300px;
+        left: 0;
+        right: 0;
+        margin:0 auto;
+    }
+}
+@media(max-width:440px){
+    .modal-ip-captcha p:first-child{
+        font-size: 14px;
+    }
+}
+@media(max-width:380px){
+    .modal-ip-captcha p:first-child{
+        font-size: 13px;
+    }
+    #modalError .button-bottom{
+        display:block;
+    }
+    #modalError button{
+        width: 154px;
+        margin-top: 15px;
+    }
+}
+
+@media(max-width:360px){
+    .modal-ip-captcha p:first-child{
+        font-size: 12px;
+    }
+}
+
+@media(max-width:340px){
+    .modal-ip-captcha p.not-captcha{
+        width:290px;
+    }
+}
+
+@media(max-width:330px){
+    .modal-ip-captcha{
+        padding:13px;
+    }
+}
