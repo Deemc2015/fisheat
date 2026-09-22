@@ -214,18 +214,17 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-// Заменяем переносы (<br>, </p>, </div> и т.п.) на пробел,
-// чтобы слова не склеивались
+// Заменяем теги переноса на пробел, чтобы слова не склеивались
 $shortDescription = preg_replace('/<(br|\/p|\/div|\/h[1-6])\s*\/?>/i', ' ', $item['DETAIL_TEXT']);
 
 // Удаляем все оставшиеся теги
 $shortDescription = strip_tags($shortDescription);
 
-// Схлопываем пробелы и переносы строк
+// Схлопываем пробелы, табы и переносы строк
 $shortDescription = preg_replace('/\s+/', ' ', $shortDescription);
 $shortDescription = trim($shortDescription);
 
-// Обрезаем
+// Обрезаем до 105 символов
 if (mb_strlen($shortDescription) > $maxLength) {
     $shortDescription = mb_substr($shortDescription, 0, $maxLength) . '...';
 }
