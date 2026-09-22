@@ -214,17 +214,25 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-// Заменяем теги переноса на пробел, чтобы слова не склеивались
-$shortDescription = preg_replace('/<(br|\/p|\/div|\/h[1-6])\s*\/?>/i', ' ', $item['DETAIL_TEXT']);
+// 1. Раскодируем HTML-сущности (если есть &lt;br /&gt;)
+$shortDescription = html_entity_decode($item['DETAIL_TEXT'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-// Удаляем все оставшиеся теги
+// 2. Заменяем всевозможные варианты <br>, <p>, </p> и т.п. на пробел
+$shortDescription = preg_replace('/<\s*\/?\s*(br|p|div|h[1-6])\s*\/?\s*>/i', ' ', $shortDescription);
+
+// 3. Удаляем все оставшиеся теги
 $shortDescription = strip_tags($shortDescription);
 
-// Схлопываем пробелы, табы и переносы строк
-$shortDescription = preg_replace('/\s+/', ' ', $shortDescription);
+// 4. Заменяем переносы строк \n, \r, табы на пробел
+$shortDescription = preg_replace('/[\r\n\t]+/', ' ', $shortDescription);
+
+// 5. Схлопываем множественные пробелы
+$shortDescription = preg_replace('/\s{2,}/', ' ', $shortDescription);
+
+// 6. Обрезаем пробелы по краям
 $shortDescription = trim($shortDescription);
 
-// Обрезаем до 105 символов
+// 7. Обрезаем до 105 символов
 if (mb_strlen($shortDescription) > $maxLength) {
     $shortDescription = mb_substr($shortDescription, 0, $maxLength) . '...';
 }
