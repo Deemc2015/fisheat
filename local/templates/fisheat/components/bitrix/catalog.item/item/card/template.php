@@ -211,56 +211,56 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
         <?endif;?>
 	<? endif; ?>
 	</h3>
-    <?
-    $maxLength = 105;
-    // Оставляем только разрешённые теги
-    $shortDescription = strip_tags($item['DETAIL_TEXT'], '<p><br>');
+<?
+$maxLength = 105;
 
-    if (mb_strlen(strip_tags($shortDescription)) > $maxLength) {
-        $shortDescription = truncateHtml($shortDescription, $maxLength);
-    }
+// Оставляем только разрешённые теги
+$shortDescription = strip_tags($item['DETAIL_TEXT'], '<p><br>');
 
-    if (!function_exists('truncateHtml')) {
-        function truncateHtml($html, $maxLength) {
-            $textLength = 0;
-            $result = '';
-            $openTags = [];
+$truncateHtml = function ($html, $maxLength) {
+    $textLength = 0;
+    $result = '';
+    $openTags = [];
 
-            preg_match_all('/<[^>]+>|[^<]+/', $html, $matches);
+    preg_match_all('/<[^>]+>|[^<]+/', $html, $matches);
 
-            foreach ($matches[0] as $part) {
-                if (strpos($part, '<') === 0) {
-                    if (preg_match('/<(\w+)[^>]*>/', $part, $m)) {
-                        if (!preg_match('/\/>$/', $part)) {
-                            $openTags[] = $m[1];
-                        }
-                    } elseif (preg_match('/<\/(\w+)>/', $part, $m)) {
-                        $openTags = array_diff($openTags, [$m[1]]);
-                    }
-                    $result .= $part;
-                } else {
-                    $remaining = $maxLength - $textLength;
-                    if ($remaining <= 0) break;
-
-                    if (mb_strlen($part) > $remaining) {
-                        $result .= mb_substr($part, 0, $remaining) . '...';
-                        $textLength += $remaining;
-                        break;
-                    } else {
-                        $result .= $part;
-                        $textLength += mb_strlen($part);
-                    }
+    foreach ($matches[0] as $part) {
+        if (strpos($part, '<') === 0) {
+            if (preg_match('/<(\w+)[^>]*>/', $part, $m)) {
+                if (!preg_match('/\/>$/', $part)) {
+                    $openTags[] = $m[1];
                 }
+            } elseif (preg_match('/<\/(\w+)>/', $part, $m)) {
+                $openTags = array_diff($openTags, [$m[1]]);
             }
+            $result .= $part;
+        } else {
+            $remaining = $maxLength - $textLength;
+            if ($remaining <= 0) break;
 
-            foreach (array_reverse($openTags) as $tag) {
-                $result .= "</$tag>";
+            if (mb_strlen($part) > $remaining) {
+                $result .= mb_substr($part, 0, $remaining) . '...';
+                $textLength += $remaining;
+                break;
+            } else {
+                $result .= $part;
+                $textLength += mb_strlen($part);
             }
-
-            return $result;
         }
     }
-    ?>
+
+    // Закрываем незакрытые теги
+    foreach (array_reverse($openTags) as $tag) {
+        $result .= "</$tag>";
+    }
+
+    return $result;
+};
+
+if (mb_strlen(strip_tags($shortDescription)) > $maxLength) {
+    $shortDescription = $truncateHtml($shortDescription, $maxLength);
+}
+?>
     <?if($shortDescription ):?>
     <div title="<?=$item['DETAIL_TEXT']?>" class=" <?=$disabledClass?> desc-product">
         <?=$shortDescription ?>
