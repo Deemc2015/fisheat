@@ -65,6 +65,8 @@ class Handlers
         '/personal_filter/useragent/',
         '/personal_filter/useragent_list/',
         '/personal_filter/config/',
+        /* Промо-страница модуля: визиты продающего лендинга в журнал не пишем */
+        '/cleartrafic/',
     ];
 
     /**

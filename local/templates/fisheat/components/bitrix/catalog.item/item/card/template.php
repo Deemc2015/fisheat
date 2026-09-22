@@ -126,9 +126,7 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 			}
 			?>
 		</span>
-            <?
-            echo $bgProduct;
-            ?>
+
             <div id="image-product-block">
                 <picture>
                         <?if($webP):?>
