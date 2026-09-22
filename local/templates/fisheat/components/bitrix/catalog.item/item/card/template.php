@@ -214,17 +214,13 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-// Заменяем блочные теги на пробел, чтобы слова не склеивались
-$text = preg_replace('/<(br|\/p|\/div|\/h[1-6])\s*\/?>/i', ' ', $item['DETAIL_TEXT']);
-$text = strip_tags($text);
-$text = preg_replace('/\s+/', ' ', $text);
-$text = trim($text);
+$shortDescription = strip_tags($item['DETAIL_TEXT']);
+$shortDescription = preg_replace('/\s+/', ' ', $shortDescription);
+$shortDescription = trim($shortDescription);
 
-if (mb_strlen($text) > $maxLength) {
-    $text = mb_substr($text, 0, $maxLength) . '...';
+if (mb_strlen($shortDescription) > $maxLength) {
+    $shortDescription = mb_substr($shortDescription, 0, $maxLength) . '...';
 }
-
-$shortDescription = $text;
 ?>
     <?if($shortDescription ):?>
     <div title="<?=$item['DETAIL_TEXT']?>" class=" <?=$disabledClass?> desc-product">
