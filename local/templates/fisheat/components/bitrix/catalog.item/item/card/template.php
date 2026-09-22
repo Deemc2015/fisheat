@@ -214,10 +214,17 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-$shortDescription = strip_tags($item['DETAIL_TEXT']);
+// Раскодируем HTML-сущности (&lt;br /&gt; → <br />)
+$shortDescription = html_entity_decode($item['DETAIL_TEXT'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+// Теперь удаляем все теги
+$shortDescription = strip_tags($shortDescription);
+
+// Схлопываем пробелы и переносы
 $shortDescription = preg_replace('/\s+/', ' ', $shortDescription);
 $shortDescription = trim($shortDescription);
 
+// Обрезаем
 if (mb_strlen($shortDescription) > $maxLength) {
     $shortDescription = mb_substr($shortDescription, 0, $maxLength) . '...';
 }
