@@ -67,6 +67,7 @@ if (0 < $arResult["SECTIONS_COUNT"])
 <ul class="product-menu">
 <?
 
+
 			foreach ($arResult['SECTIONS'] as &$arSection)
 			{
 				$this->AddEditAction($arSection['ID'], $arSection['EDIT_LINK'], $strSectionEdit);
@@ -91,11 +92,15 @@ if (0 < $arResult["SECTIONS_COUNT"])
 					);
 					unset($titleValue, $altValue);
 				}
-				?><li id="<? echo $this->GetEditAreaId($arSection['ID']); ?>">
+
+                $bgId = $arSection['PICTURE'];
+                $bgMini = CFile::ResizeImageGet($bgId, array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+
+                ?><li id="<? echo $this->GetEditAreaId($arSection['ID']); ?>">
 				<a
 					href="<? echo $arSection['SECTION_PAGE_URL']; ?>"
 					class="menu_img"
-					style="background-image: url('<? echo $arSection['PICTURE']['SRC']; ?>');"
+					style="background-image: url('<?=$bgMini['src']; ?>');"
 					title="<? echo $arSection['PICTURE']['TITLE']; ?>"
 				></a>
 				<a class="menu_title" href="<? echo $arSection['SECTION_PAGE_URL']; ?>"><? echo $arSection['NAME']; ?></a>
