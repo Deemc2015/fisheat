@@ -214,13 +214,14 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-// Раскодируем HTML-сущности (&lt;br /&gt; → <br />)
-$shortDescription = html_entity_decode($item['DETAIL_TEXT'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+// Заменяем переносы (<br>, </p>, </div> и т.п.) на пробел,
+// чтобы слова не склеивались
+$shortDescription = preg_replace('/<(br|\/p|\/div|\/h[1-6])\s*\/?>/i', ' ', $item['DETAIL_TEXT']);
 
-// Теперь удаляем все теги
+// Удаляем все оставшиеся теги
 $shortDescription = strip_tags($shortDescription);
 
-// Схлопываем пробелы и переносы
+// Схлопываем пробелы и переносы строк
 $shortDescription = preg_replace('/\s+/', ' ', $shortDescription);
 $shortDescription = trim($shortDescription);
 
