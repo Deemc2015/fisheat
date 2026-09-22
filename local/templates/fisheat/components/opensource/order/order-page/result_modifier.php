@@ -219,9 +219,17 @@ foreach ($order->getBasket() as $basketItem) {
 
             $arBasketItem['LINK'] = $dataProduct['DETAIL_PAGE_URL'];
 
-            if($dataProduct['DETAIL_PICTURE']){
 
-                $imageProduct = \CFile::ResizeImageGet($dataProduct['DETAIL_PICTURE'], array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+            $image = $dataProduct['DETAIL_PICTURE'];
+
+            if(empty($image)){
+                $image = $dataProduct['PREVIEW_PICTURE'];
+            }
+
+
+            if($image){
+
+                $imageProduct = \CFile::ResizeImageGet($image, array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
                 if(is_array($imageProduct)){
                     $arBasketItem['IMAGE'] = $imageProduct['src'];
