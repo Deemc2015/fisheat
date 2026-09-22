@@ -212,11 +212,54 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 	<? endif; ?>
 	</h3>
     <?
-    $maxLength = 105; // Нужное количество символов
-    $shortDescription = $item['DETAIL_TEXT'];
+    $maxLength = 105;
+    // Оставляем только разрешённые теги (например, <p>, <br>)
+    $shortDescription = strip_tags($item['DETAIL_TEXT'], '<p><br>');
 
-    if (mb_strlen($shortDescription) > $maxLength) {
-        $shortDescription = mb_substr($shortDescription, 0, $maxLength) . '...';
+    if (mb_strlen(strip_tags($shortDescription)) > $maxLength) {
+        // Обрезаем по тексту, а потом закрываем теги
+        $shortDescription = truncateHtml($shortDescription, $maxLength);
+    }
+
+    function truncateHtml($html, $maxLength) {
+        $textLength = 0;
+        $result = '';
+        $openTags = [];
+
+        // Разбиваем на теги и текст
+        preg_match_all('/<[^>]+>|[^<]+/', $html, $matches);
+
+        foreach ($matches[0] as $part) {
+            if (strpos($part, '<') === 0) {
+                // Это тег
+                if (preg_match('/<(\w+)[^>]*>/', $part, $m)) {
+                    $openTags[] = $m[1];
+                } elseif (preg_match('/<\/(\w+)>/', $part, $m)) {
+                    $openTags = array_diff($openTags, [$m[1]]);
+                }
+                $result .= $part;
+            } else {
+                // Это текст
+                $remaining = $maxLength - $textLength;
+                if ($remaining <= 0) break;
+
+                if (mb_strlen($part) > $remaining) {
+                    $result .= mb_substr($part, 0, $remaining) . '...';
+                    $textLength += $remaining;
+                    break;
+                } else {
+                    $result .= $part;
+                    $textLength += mb_strlen($part);
+                }
+            }
+        }
+
+        // Закрываем незакрытые теги
+        foreach (array_reverse($openTags) as $tag) {
+            $result .= "</$tag>";
+        }
+
+        return $result;
     }
     ?>
     <?if($shortDescription ):?>
