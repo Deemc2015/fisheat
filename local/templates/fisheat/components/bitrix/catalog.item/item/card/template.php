@@ -214,52 +214,17 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 <?
 $maxLength = 105;
 
-// Оставляем только разрешённые теги
-$shortDescription = strip_tags($item['DETAIL_TEXT'], '<p><br>');
+// Заменяем блочные теги на пробел, чтобы слова не склеивались
+$text = preg_replace('/<(br|\/p|\/div|\/h[1-6])\s*\/?>/i', ' ', $item['DETAIL_TEXT']);
+$text = strip_tags($text);
+$text = preg_replace('/\s+/', ' ', $text);
+$text = trim($text);
 
-$truncateHtml = function ($html, $maxLength) {
-    $textLength = 0;
-    $result = '';
-    $openTags = [];
-
-    preg_match_all('/<[^>]+>|[^<]+/', $html, $matches);
-
-    foreach ($matches[0] as $part) {
-        if (strpos($part, '<') === 0) {
-            if (preg_match('/<(\w+)[^>]*>/', $part, $m)) {
-                if (!preg_match('/\/>$/', $part)) {
-                    $openTags[] = $m[1];
-                }
-            } elseif (preg_match('/<\/(\w+)>/', $part, $m)) {
-                $openTags = array_diff($openTags, [$m[1]]);
-            }
-            $result .= $part;
-        } else {
-            $remaining = $maxLength - $textLength;
-            if ($remaining <= 0) break;
-
-            if (mb_strlen($part) > $remaining) {
-                $result .= mb_substr($part, 0, $remaining) . '...';
-                $textLength += $remaining;
-                break;
-            } else {
-                $result .= $part;
-                $textLength += mb_strlen($part);
-            }
-        }
-    }
-
-    // Закрываем незакрытые теги
-    foreach (array_reverse($openTags) as $tag) {
-        $result .= "</$tag>";
-    }
-
-    return $result;
-};
-
-if (mb_strlen(strip_tags($shortDescription)) > $maxLength) {
-    $shortDescription = $truncateHtml($shortDescription, $maxLength);
+if (mb_strlen($text) > $maxLength) {
+    $text = mb_substr($text, 0, $maxLength) . '...';
 }
+
+$shortDescription = $text;
 ?>
     <?if($shortDescription ):?>
     <div title="<?=$item['DETAIL_TEXT']?>" class=" <?=$disabledClass?> desc-product">
