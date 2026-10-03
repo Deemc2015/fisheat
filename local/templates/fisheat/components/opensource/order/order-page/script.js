@@ -27,6 +27,8 @@
             discountNode: null,                  // Сумма скидки
             bonusNode: null,                     // Сумма бонусов
             totalNode: null,                     // Итоговая сумма
+            deliveryTimeNode: null,              // Строка «Время доставки»
+            deliveryTimeValueNode: null,         // Значение времени доставки
             currentData: {                       // Текущие значения для быстрого доступа
                 address: '',
                 deliveryPrice: 0,
@@ -1554,6 +1556,8 @@
             this.totalBlock.discountNode = this.totalBlock.node.querySelector('.total-skidka');
             this.totalBlock.bonusNode = this.totalBlock.node.querySelector('.total-bonus');
             this.totalBlock.totalNode = this.totalBlock.node.querySelector('.total-value');
+            this.totalBlock.deliveryTimeNode = this.totalBlock.node.querySelector('.delivery-time-text');
+            this.totalBlock.deliveryTimeValueNode = this.totalBlock.node.querySelector('.delivery-time-value');
 
             this.updateTotalBlockData();
             console.log('Total block initialized', this.totalBlock);
@@ -2194,6 +2198,9 @@
                 this.totalBlock.addressValueNode.textContent = restaurantName + ' (самовывоз)';
             }
 
+            // При самовывозе окно времени доставки не показываем
+            this.updateDeliveryTime('', '');
+
             // Здесь можно отправить AJAX запрос для обновления цен,
             // если стоимость зависит от выбранного ресторана
             this.updateRestaurantPrice(restaurantId);
@@ -2377,11 +2384,39 @@
                             discount: response.data.discount,
                             total: response.data.totalPrice
                         });
+
+                        // Окно времени доставки по зоне выбранного адреса
+                        self.updateDeliveryTime(response.data.timeFrom, response.data.timeTo);
                     }
                 })
                 .catch(function(error) {
                     console.error('Ошибка обновления цен по адресу:', error);
                 });
+        },
+
+        /**
+         * Обновляет строку «Время доставки» в блоке стоимости
+         * @param {number} from - время от, минут (например, 20)
+         * @param {number} to - время до, минут (например, 40)
+         */
+        updateDeliveryTime: function(from, to) {
+            var row = this.totalBlock.deliveryTimeNode;
+            var value = this.totalBlock.deliveryTimeValueNode;
+            if (!row || !value) return;
+
+            from = parseInt(from, 10) || 0;
+            to = parseInt(to, 10) || 0;
+
+            if (from > 0 && to > 0) {
+                value.textContent = from + '–' + to + ' минут';
+                row.style.display = '';
+            } else if (to > 0) {
+                value.textContent = 'до ' + to + ' минут';
+                row.style.display = '';
+            } else {
+                value.textContent = '';
+                row.style.display = 'none';
+            }
         },
 
         /**

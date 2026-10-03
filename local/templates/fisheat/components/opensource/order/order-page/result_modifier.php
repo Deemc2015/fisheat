@@ -331,6 +331,23 @@ $arResult['DELIVERY_PRICE_DISPLAY'] = SaleFormatCurrency(
     $arResult['CURRENCY']
 );
 
+/**
+ * Время доставки (минуты) зоны выбранного адреса — для первичного рендера,
+ * чтобы строка «Время доставки» была заполнена сразу, без ожидания AJAX.
+ */
+$selectedAddressId = (int)($arResult['PROPERTIES']['ADDRESS_ID']['VALUE'] ?? 0);
+if ($selectedAddressId <= 0 && !empty($arResult['USER_ADRESS'])) {
+    foreach ($arResult['USER_ADRESS'] as $userAddress) {
+        if (!empty($userAddress['CHECKED'])) {
+            $selectedAddressId = (int)$userAddress['ID'];
+            break;
+        }
+    }
+}
+$deliveryTimeWindow = $component->getAddressTimeWindow($selectedAddressId);
+$arResult['DELIVERY_TIME_FROM'] = (int)$deliveryTimeWindow['from'];
+$arResult['DELIVERY_TIME_TO'] = (int)$deliveryTimeWindow['to'];
+
 //Скидка на доставку
 $arResult['DELIVERY_DISCOUNT'] = $arShowPrices['DELIVERY']['DISCOUNT'] ?? 0;
 $arResult['DELIVERY_DISCOUNT_DISPLAY'] = SaleFormatCurrency(
@@ -455,6 +472,49 @@ $arResult['SUM_DISPLAY'] = SaleFormatCurrency(
     $arResult['SUM'],
     $arResult['CURRENCY']
 );
+
+/**
+ * Если адрес доставки уже выбран, пересчитываем суммы на сервере тем же способом,
+ * что и AJAX (по зоне доставки), чтобы при первой загрузке цифры не «прыгали».
+ */
+if (!empty($selectedAddressId)) {
+    $selectedDeliveryId = 0;
+    foreach ($arResult['DELIVERY_LIST'] as $deliveryItem) {
+        if (!empty($deliveryItem['CHECKED'])) {
+            $selectedDeliveryId = (int)$deliveryItem['ID'];
+            break;
+        }
+    }
+    if ($selectedDeliveryId <= 0) {
+        $selectedDeliveryId = (int)($arParams['DEFAULT_DELIVERY_ID'] ?? 0);
+    }
+
+    $addressPreview = $component->updateAddressPriceAction([
+        'addressId' => $selectedAddressId,
+        'deliveryId' => $selectedDeliveryId,
+    ]);
+
+    if (!empty($addressPreview['success'])) {
+        $previewDeliveryPrice = (float)$addressPreview['deliveryPrice'];
+        $previewBaseSum = (float)$addressPreview['baseSum'];
+        $previewDiscount = (float)$addressPreview['discount'];
+        $previewTotal = (float)$addressPreview['totalPrice'];
+
+        $arResult['DELIVERY_PRICE'] = $previewDeliveryPrice;
+        $arResult['DELIVERY_PRICE_DISPLAY'] = SaleFormatCurrency($previewDeliveryPrice, $arResult['CURRENCY']);
+
+        $arResult['SUM_BASE'] = $previewBaseSum;
+        $arResult['SUM_BASE_DISPLAY'] = SaleFormatCurrency($previewBaseSum, $arResult['CURRENCY']);
+
+        $arResult['DISCOUNT_VALUE'] = $previewDiscount;
+        $arResult['DISCOUNT_VALUE_DISPLAY'] = SaleFormatCurrency($previewDiscount, $arResult['CURRENCY']);
+
+        $arResult['SUM'] = $previewTotal;
+        $arResult['SUM_DISPLAY'] = SaleFormatCurrency($previewTotal, $arResult['CURRENCY']);
+
+        $_SESSION['LDO_DELIVERY_PRICE'] = $previewDeliveryPrice;
+    }
+}
 
 
 /*Рестораны для самовывоза*/

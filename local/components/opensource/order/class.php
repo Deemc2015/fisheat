@@ -946,6 +946,59 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * Возвращает время доставки зоны выбранного адреса в минутах (от/до).
+     *
+     * Значения зоны заданы в минутах (например, 20–40 минут); учитывается
+     * надбавка «высокой нагрузки» из настроек ldo.deliverymap.
+     *
+     * @param int $addressId ID адреса пользователя
+     * @return array ['from' => 20, 'to' => 40]
+     */
+    public function getAddressTimeWindow(int $addressId): array
+    {
+        $empty = ['from' => '', 'to' => ''];
+
+        if ($addressId <= 0
+            || !Loader::includeModule('ldo.iiko')
+            || !Loader::includeModule('ldo.deliverymap')
+        ) {
+            return $empty;
+        }
+
+        $address = \Ldo\Iiko\UserAddress::getById($addressId);
+        if (!$address || (int)$address['ZONE_ID'] <= 0) {
+            return $empty;
+        }
+
+        $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById((int)$address['ZONE_ID']);
+        if (!$zone) {
+            return $empty;
+        }
+
+        $start = (int)($zone['DELIVERY_TIME_START'] ?? 0);
+        $end = (int)($zone['DELIVERY_TIME_END'] ?? 0);
+
+        if ($end <= 0) {
+            return $empty;
+        }
+
+        $siteId = Context::getCurrent()->getSite();
+        if (\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_enabled', 'N') === 'Y') {
+            $extra = (int)\Ldo\Deliverymap\SettingsTable::get($siteId, 'high_load_add_time', '0');
+            if ($start > 0) {
+                $start += $extra;
+            }
+            $end += $extra;
+        }
+
+        // Время доставки зоны задано в минутах (например, 20–40 минут)
+        return [
+            'from' => max(0, $start),
+            'to' => $end,
+        ];
+    }
+
+    /**
      * Обновление итоговых сумм при выборе адреса доставки
      *
      * @param array $dataAddress Данные: addressId, deliveryPrice
@@ -986,13 +1039,16 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $_SESSION['LDO_IS_PICKUP'] = 'N';
 
         $totalWithDelivery = $totalPrice + $deliveryPrice;
+        $timeWindow = $this->getAddressTimeWindow($addressId);
 
         return [
             'success' => true,
             'deliveryPrice' => $deliveryPrice,
             'baseSum' => $baseSum,
             'discount' => $discount,
-            'totalPrice' => $totalWithDelivery
+            'totalPrice' => $totalWithDelivery,
+            'timeFrom' => $timeWindow['from'],
+            'timeTo' => $timeWindow['to']
         ];
     }
 
