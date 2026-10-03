@@ -2698,6 +2698,8 @@ footer .copyright{
     padding: 12px;
     margin-top: 12px;
     height: 150px;
+    font-family: var(--font-light);
+    font-size: 16px;
 }
 /*Корневой раздел каталога*/
 .titleSectionCatalog{
