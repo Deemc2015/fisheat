@@ -97,27 +97,70 @@ class Basket
 
     public static function getData($dataCart)
     {
-        $dataBasket = $dataCart->getParameter("VALUES");
-        $productId = $dataBasket['PRODUCT']['ID'];
+        try {
+            $productIds = [];
 
-        if ($productId) {
-            // Проверяем, не является ли добавляемый товар сам бесплатным
-            $freeProductsList = Product::checkInFreeCategoryProducts($productId);
-            if ($freeProductsList !== false) {
-                // Это бесплатный товар, не обрабатываем
-                return;
+            if ($dataCart instanceof \Bitrix\Main\Event) {
+                $values = (array)$dataCart->getParameter('VALUES');
+                if (!empty($values['PRODUCT']['ID'])) {
+                    $productIds[] = (int)$values['PRODUCT']['ID'];
+                }
+
+                $entity = $dataCart->getParameter('ENTITY');
+                if ($entity instanceof \Bitrix\Sale\BasketItem) {
+                    $productIds[] = (int)$entity->getProductId();
+                } elseif ($entity instanceof \Bitrix\Sale\Basket) {
+                    $productIds = array_merge($productIds, self::getNewProductIds($entity));
+                }
+            } elseif ($dataCart instanceof \Bitrix\Sale\BasketItem) {
+                $productIds[] = (int)$dataCart->getProductId();
+            } elseif ($dataCart instanceof \Bitrix\Sale\Basket) {
+                // Событие OnSaleBasketBeforeSaved передаёт корзину целиком,
+                // поэтому берём только новые позиции (ещё без ID).
+                $productIds = self::getNewProductIds($dataCart);
             }
 
-            $dataProduct = Product::getDataById($productId);
-            $productSectionId = $dataProduct['IBLOCK_SECTION_ID'];
+            foreach (array_unique(array_filter($productIds)) as $productId) {
+                // Проверяем, не является ли добавляемый товар сам бесплатным
+                $freeProductsList = Product::checkInFreeCategoryProducts($productId);
+                if ($freeProductsList !== false) {
+                    // Это бесплатный товар, не обрабатываем
+                    continue;
+                }
 
-            if ($productSectionId) {
-                $addFreeDopProduct = Product::checkInFreeCategoryProducts($productSectionId);
-                if ($addFreeDopProduct) {
-                    self::addFreePosition($addFreeDopProduct, $productSectionId);
+                $dataProduct = Product::getDataById($productId);
+                $productSectionId = $dataProduct['IBLOCK_SECTION_ID'] ?? 0;
+
+                if ($productSectionId) {
+                    $addFreeDopProduct = Product::checkInFreeCategoryProducts($productSectionId);
+                    if ($addFreeDopProduct) {
+                        self::addFreePosition($addFreeDopProduct, $productSectionId);
+                    }
                 }
             }
+        } catch (\Throwable $e) {
+            // Обработчик не должен ломать сохранение корзины
+            AddMessage2Log('ldo.develop basket getData: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Возвращает ID товаров новых позиций корзины (ещё не сохранённых, без ID).
+     *
+     * @param \Bitrix\Sale\Basket $basket
+     * @return array
+     */
+    private static function getNewProductIds($basket): array
+    {
+        $productIds = [];
+
+        foreach ($basket as $item) {
+            if (!$item->getId()) {
+                $productIds[] = (int)$item->getProductId();
+            }
+        }
+
+        return $productIds;
     }
 
 

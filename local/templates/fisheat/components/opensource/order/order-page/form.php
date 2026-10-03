@@ -465,6 +465,19 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <div class="total-order-block__line delivery-text">
                 <span>Сумма доставки</span><span class="delivery-price"><?=$arResult['DELIVERY_PRICE_DISPLAY']?></span>
             </div>
+            <?
+            $deliveryTimeFrom = (int)($arResult['DELIVERY_TIME_FROM'] ?? 0);
+            $deliveryTimeTo = (int)($arResult['DELIVERY_TIME_TO'] ?? 0);
+            $deliveryTimeText = '';
+            if ($deliveryTimeFrom > 0 && $deliveryTimeTo > 0) {
+                $deliveryTimeText = $deliveryTimeFrom . '–' . $deliveryTimeTo . ' минут';
+            } elseif ($deliveryTimeTo > 0) {
+                $deliveryTimeText = 'до ' . $deliveryTimeTo . ' минут';
+            }
+            ?>
+            <div class="total-order-block__line delivery-time-text"<?=($deliveryTimeText === '' ? ' style="display:none;"' : '')?>>
+                <span>Время доставки</span><span class="delivery-time-value"><?=htmlspecialcharsbx($deliveryTimeText)?></span>
+            </div>
             <div class="total-order-block__line">
                 <span>Сумма заказа</span><span class="total-price"><?=$arResult['SUM_BASE_DISPLAY']?></span>
             </div>
