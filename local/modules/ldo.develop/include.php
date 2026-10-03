@@ -8,6 +8,7 @@ Loader::registerAutoLoadClasses(
     [
         'Ldo\\Develop\\Sections' => 'lib/sections.php',
         'Ldo\\Develop\\Property' => 'lib/property.php',
+        'Ldo\\Develop\\Agents' => 'lib/agents.php',
     ]
 );
 
