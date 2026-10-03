@@ -8,7 +8,7 @@ use Bitrix\Main\SystemException;
 class Iblock
 {
 
-    public static function getList(string $iblockName, array $fieldsSelect, array $arrfilter = null):array
+    public static function getList(string $iblockName, array $fieldsSelect, array $arrfilter = null, $limit = null):array
     {
 
         try {

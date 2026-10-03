@@ -42,7 +42,7 @@ class Ldo_develop extends CModule
     {
         RegisterModule($this->MODULE_ID);
         $this->RegisterModuleHandlers();
-        //$this->addAgents();
+        $this->addAgents();
         //$this->InstallDB();
         //$this->InstallFiles();
        /* $this->InstallEvents();
@@ -64,7 +64,7 @@ class Ldo_develop extends CModule
     {
         UnRegisterModule($this->MODULE_ID);
         $this->unRegisterModuleHandlers();
-        //$this->removeAgents();
+        $this->removeAgents();
         //$this->UnInstallDB();
         //$this->UnInstallFiles();
         //$this->deleteHlBlock($this->name);
@@ -100,7 +100,15 @@ class Ldo_develop extends CModule
     
     protected function addAgents()
     {
-        \CAgent::AddAgent( "\Prokhorov\Checkwh\Data::get();", $this->MODULE_ID, "N", 60, "", "Y");
+        // Генерация WebP-версий изображений товаров — каждые 5 минут
+        \CAgent::AddAgent(
+            "\\Ldo\\Develop\\Agents::run();",
+            $this->MODULE_ID,
+            "N",
+            300,
+            "",
+            "Y"
+        );
 
     }
 
