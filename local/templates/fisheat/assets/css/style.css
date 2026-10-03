@@ -2742,3 +2742,77 @@ footer .copyright{
     padding: 2px 8px;
     display: table;
 }
+/*Страница 404*/
+.page-404{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px 72px;
+    text-align: center;
+    color:#ffffff;
+}
+.page-404__code{
+    font-family: var(--font-bold);
+    font-size: 140px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--bg-button);
+    margin-bottom: 8px;
+    text-shadow: 0 16px 48px rgba(244, 67, 54, 0.35);
+}
+.page-404__title{
+    margin: 0 0 16px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-family: var(--font-family);
+    font-weight: normal;
+    color:#ffffff;
+}
+.page-404__text{
+    max-width: 540px;
+    margin: 0 auto 32px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-muted);
+}
+.page-404__actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+.page-404__btn{
+    display: inline-block;
+    min-width: 200px;
+    padding: 14px 32px;
+    border-radius: 6px;
+    background: var(--bg-btn-secondary);
+    color:#ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 1;
+    text-align: center;
+    transition: var(--transition);
+}
+.page-404__btn:hover{
+    color:#ffffff;
+    opacity: 0.75;
+}
+.page-404__btn--primary{
+    background: var(--bg-button);
+}
+@media (max-width: 600px){
+    .page-404{
+        padding: 24px 16px 48px;
+    }
+    .page-404__code{
+        font-size: 96px;
+    }
+    .page-404__title{
+        font-size: 24px;
+    }
+    .page-404__btn{
+        width: 100%;
+        min-width: 0;
+    }
+}
