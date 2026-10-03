@@ -782,6 +782,11 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 $this->setOrderProperties($propertiesList);
             }
 
+            // «Комментарий кухне» из формы (поле ORDER_DESCRIPTION) сохраняем
+            // в стандартное поле заказа USER_DESCRIPTION, чтобы он был виден в админке.
+            $orderDescription = $this->request['ORDER_DESCRIPTION'] ?? $this->request['USER_DESCRIPTION'] ?? '';
+            $this->order->setField('USER_DESCRIPTION', (string)$orderDescription);
+
             $deliveryId = $this->request['delivery_id'] ?? $this->arParams['DEFAULT_DELIVERY_ID'] ?? 0;
             $this->createOrderShipment($deliveryId);
 
