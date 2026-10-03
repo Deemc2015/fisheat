@@ -2701,6 +2701,9 @@ footer .copyright{
     font-family: var(--font-light);
     font-size: 16px;
 }
+.title-search-result-block .right-block-product .description br{
+    display: none !important;
+}
 /*Корневой раздел каталога*/
 .titleSectionCatalog{
     font-size: 36px;
