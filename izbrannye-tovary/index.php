@@ -84,7 +84,7 @@ $APPLICATION->setPageProperty("NOCACHE", "Y");
 		),
 		"ROTATE_TIMER" => "30",
 		"SECTION_URL" => "",
-		"SEF_MODE" => "Y",
+		"SEF_MODE" => "N",
 		"SHOW_CLOSE_POPUP" => "N",
 		"SHOW_DISCOUNT_PERCENT" => "N",
 		"SHOW_MAX_QUANTITY" => "N",
