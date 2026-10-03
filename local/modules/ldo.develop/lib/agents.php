@@ -3,7 +3,6 @@
 namespace Ldo\Develop;
 
 use Bitrix\Main\Loader;
-use CFile;
 use CIBlockElement;
 
 /**
@@ -14,8 +13,17 @@ class Agents
     /** ID инфоблока каталога с товарами */
     public const IBLOCK_ID = 4;
 
-    /** Код свойства инфоблока, в которое записывается путь к WebP */
+    /** Код свойства инфоблока для основного WebP (700x700) */
     public const WEBP_PROPERTY = 'ATT_WEBP_PHOTO';
+
+    /** Код свойства инфоблока для превью WebP (280x280) */
+    public const WEBP_PREV_PROPERTY = 'ATT_WEBP_PHOTO_PREV';
+
+    /** Размер основного изображения для WebP */
+    public const MAIN_SIZE = 700;
+
+    /** Размер превью-изображения для WebP */
+    public const PREV_SIZE = 280;
 
     /** Сколько товаров обрабатывать за один запуск агента */
     public const BATCH_SIZE = 50;
@@ -32,9 +40,9 @@ class Agents
     /**
      * Агент генерации WebP-версий изображений товаров.
      *
-     * Выбирает 50 товаров, у которых свойство ATT_WEBP_PHOTO не заполнено,
-     * конвертирует в WebP сначала PREVIEW_PICTURE, а если его нет — DETAIL_PICTURE,
-     * и записывает полученный путь в свойство.
+     * Выбирает товары, у которых свойство ATT_WEBP_PHOTO не заполнено. Источник фото —
+     * PREVIEW_PICTURE, при отсутствии — DETAIL_PICTURE. Для каждого товара формируются
+     * две WebP-версии: 700x700 -> ATT_WEBP_PHOTO и 280x280 -> ATT_WEBP_PHOTO_PREV.
      *
      * @return string Строка вызова агента, чтобы он продолжил работу
      */
@@ -100,7 +108,10 @@ class Agents
     }
 
     /**
-     * Генерирует WebP для товара и записывает путь в свойство.
+     * Генерирует WebP-версии товара и записывает пути в свойства.
+     *
+     * Основное изображение — 700x700, превью — 280x280
+     * (пропорциональный ресайз средствами Битрикс).
      *
      * @param int   $elementId
      * @param array $element
@@ -115,36 +126,47 @@ class Agents
             return false;
         }
 
-        $fileArray = CFile::GetFileArray($fileId);
+        $webpMain = self::makeWebp($fileId, self::MAIN_SIZE);
+        $webpPrev = self::makeWebp($fileId, self::PREV_SIZE);
 
-        if (!$fileArray || empty($fileArray['SRC'])) {
+        if ($webpMain === '' && $webpPrev === '') {
             return false;
         }
 
-        // Берём собственные размеры файла, чтобы получить WebP исходного изображения
-        $width = (int)($fileArray['WIDTH'] ?? 0);
-        $height = (int)($fileArray['HEIGHT'] ?? 0);
+        $properties = [];
 
-        if ($width <= 0 || $height <= 0) {
-            $width = 2000;
-            $height = 2000;
+        if ($webpMain !== '') {
+            $properties[self::WEBP_PROPERTY] = $webpMain;
         }
 
-        Pict::getResizeWebpSrc($fileId, $width, $height, true, self::WEBP_QUALITY);
+        if ($webpPrev !== '') {
+            $properties[self::WEBP_PREV_PROPERTY] = $webpPrev;
+        }
+
+        CIBlockElement::SetPropertyValuesEx($elementId, self::IBLOCK_ID, $properties);
+
+        return $webpMain !== '';
+    }
+
+    /**
+     * Пропорционально ресайзит изображение средствами Битрикс и генерирует WebP.
+     *
+     * @param int $fileId ID файла
+     * @param int $size   Сторона квадрата (ширина и высота)
+     * @return string Путь к сгенерированному .webp либо пустая строка
+     */
+    protected static function makeWebp(int $fileId, int $size): string
+    {
+        // CFile::ResizeImageGet (внутри Pict) + генерация WebP классом Pict
+        Pict::getResizeWebpSrc($fileId, $size, $size, true, self::WEBP_QUALITY);
 
         $webpSrc = Pict::getLastWebpSrc();
 
         // Пишем только реально сгенерированный .webp, а не исходный файл
         if ($webpSrc === '' || !preg_match('/\.webp$/i', $webpSrc)) {
-            return false;
+            return '';
         }
 
-        CIBlockElement::SetPropertyValuesEx(
-            $elementId,
-            self::IBLOCK_ID,
-            [self::WEBP_PROPERTY => $webpSrc]
-        );
-
-        return true;
+        return $webpSrc;
     }
 }
