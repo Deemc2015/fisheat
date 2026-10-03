@@ -22,12 +22,22 @@ if (!empty($arResult['CATEGORIES']) && $arResult['CATEGORIES_ITEMS_EXISTS']):?>
                 }
                 else{
                     $dataProduct = GetIBlockElement($arItem['ITEM_ID']);
+
                     if($dataProduct['PREVIEW_PICTURE']){
-                        $arrImage = CFile::ResizeImageGet($dataProduct['PREVIEW_PICTURE'], array('width'=>70, 'height'=>70), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+                        $productImage = $dataProduct['PREVIEW_PICTURE'];
+                    }
+                    else{
+                        $productImage = $dataProduct['DETAIL_PICTURE'];
+                    }
+
+                    if($productImage){
+                        $arrImage = CFile::ResizeImageGet($productImage, array('width'=>70, 'height'=>70), BX_RESIZE_IMAGE_PROPORTIONAL, true);
                         $arrImage = $arrImage['src'];
 
                         $arrDesc = $dataProduct['DETAIL_TEXT'];
                     }
+
+                    unset($productImage);
                 }
 
                 ?>
