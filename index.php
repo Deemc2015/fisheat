@@ -1,6 +1,8 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Главная");
+$APPLICATION->SetPageProperty("title", "ᐈ Доставка суши и роллов в Уфе из Рыба Закусывала, заказать вкусные роллы и суши на дом или в офис");
+$APPLICATION->SetPageProperty("keywords", "Рыба Закусывала - доставка суши и роллов на дом или в офис в Уфе. Роллы или по-простому «суши-рулет» — это японский вид суши. Быстро доставим роллы и суши! Заказать доставку вкусных роллов и суши в Уфе домой или к офису.");
+$APPLICATION->SetTitle("Рыба Закусывала");
 use Bitrix\Main\Loader;
 use \Ldo\Develop\Sections;
 ?>
