@@ -101,20 +101,20 @@ class Ldo_develop extends CModule
     protected function addAgents()
     {
         // Генерация WebP-версий изображений товаров — каждые 5 минут
-        \CAgent::AddAgent(
+       /* \CAgent::AddAgent(
             "\\Ldo\\Develop\\Agents::run();",
             $this->MODULE_ID,
             "N",
             300,
             "",
             "Y"
-        );
+        );*/
 
     }
 
     protected function removeAgents()
     {
-        \CAgent::RemoveModuleAgents($this->MODULE_ID);
+        //\CAgent::RemoveModuleAgents($this->MODULE_ID);
     }
 
 
