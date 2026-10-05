@@ -11,10 +11,10 @@ Loader::includeModule('iblock');
 // компонента (runComponentAction) выполняются без вызова executeComponent(),
 // поэтому подключение внутри метода не срабатывало и выдавало "модуль не установлен".
 if (!Loader::includeModule('ldo.marketing')
-    && !class_exists('\\Ldo\\Marketing\\GiftsTable')) {
-    $giftsTableFile = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/ldo.marketing/lib/GiftsTable.php';
-    if (is_file($giftsTableFile)) {
-        require_once $giftsTableFile;
+    && !class_exists('\\Ldo\\Marketing\\FreePositionsTable')) {
+    $freePositionsTableFile = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/ldo.marketing/lib/FreePositionsTable.php';
+    if (is_file($freePositionsTableFile)) {
+        require_once $freePositionsTableFile;
     }
 }
 if (!class_exists('\\Ldo\\Marketing\\Settings')) {
@@ -25,34 +25,18 @@ if (!class_exists('\\Ldo\\Marketing\\Settings')) {
 }
 
 /**
- * Компонент "Уровни подарков к заказам" для партнёрского раздела
- * (таб "Подарки к заказу" на странице /partners/marketing/).
+ * Компонент "Бесплатные позиции к товарам".
  *
- * Данные хранятся в собственной таблице модуля ldo.marketing
- * (ldo_marketing_gift_levels) через ORM-сущность GiftsTable.
- * Ранее использовался инфоблок подарков (ID = 8); функционал перенесён
- * на таблицу, интерфейс компонента (шаблон и JS) сохранён без изменений.
- *
- * Изменение данных выполняется AJAX-контроллерами компонента
- * (saveLevelAction / deleteLevelAction), поиск товаров — searchProductsAction.
+ * ID инфоблока каталога берётся из настроек модуля ldo.marketing (Settings)
+ * для подтягивания разделов, фото и данных товаров.
  */
-class GiftsList extends \CBitrixComponent implements Controllerable
+class FreePositionsList extends \CBitrixComponent implements Controllerable
 {
-    /** Код модуля, которому принадлежит таблица. */
     const MODULE_ID = 'ldo.marketing';
-
-    /** Класс ORM-таблицы уровней подарков. */
-    const TABLE_CLASS = '\\Ldo\\Marketing\\GiftsTable';
-
-    /** ID инфоблока каталога (товары для привязки). */
+    const TABLE_CLASS = '\\Ldo\\Marketing\\FreePositionsTable';
     const CATALOG_IBLOCK_ID = 4;
-
-    /** Сайт по умолчанию. */
     const DEFAULT_SITE_ID = 's1';
 
-    /**
-     * Основной вывод компонента.
-     */
     public function executeComponent()
     {
         $moduleOk = $this->includeMarketingModule();
@@ -62,29 +46,25 @@ class GiftsList extends \CBitrixComponent implements Controllerable
             $siteId = self::DEFAULT_SITE_ID;
         }
 
-        $this->arResult['SESSID']  = bitrix_sessid();
-        $this->arResult['SITE_ID'] = $siteId;
-        $this->arResult['ERROR']   = $moduleOk ? '' : 'Модуль ldo.marketing не установлен. Установите модуль для работы раздела.';
+        $this->arResult['SITE_ID']  = $siteId;
+        $this->arResult['SESSID']   = bitrix_sessid();
+        $this->arResult['SECTIONS'] = $this->getSections();
+        $this->arResult['SITES']    = $this->getSites();
+        $this->arResult['ERROR']    = $moduleOk ? '' : 'Модуль ldo.marketing не установлен. Установите модуль для работы раздела.';
 
-        $levels = [];
+        $items = [];
         if ($moduleOk) {
             $class = self::TABLE_CLASS;
             $class::ensureTable();
             $rows = $class::getBySite($siteId);
-            $levels = $this->prepareLevels($rows);
+            $items = $this->prepareItems($rows);
         }
 
-        $this->arResult['LEVELS'] = $levels;
+        $this->arResult['ITEMS'] = $items;
 
         $this->includeComponentTemplate();
     }
 
-    /**
-     * Подключение модуля ldo.marketing с фолбэком на прямое подключение
-     * класса таблицы (если модуль не зарегистрирован, но файлы есть).
-     *
-     * @return bool
-     */
     private function includeMarketingModule(): bool
     {
         if (Loader::includeModule(self::MODULE_ID) && class_exists(self::TABLE_CLASS)) {
@@ -92,7 +72,7 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         }
 
         if (!class_exists(self::TABLE_CLASS)) {
-            $file = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/' . self::MODULE_ID . '/lib/GiftsTable.php';
+            $file = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/' . self::MODULE_ID . '/lib/FreePositionsTable.php';
             if (is_file($file)) {
                 require_once $file;
             }
@@ -102,24 +82,37 @@ class GiftsList extends \CBitrixComponent implements Controllerable
     }
 
     /**
-     * Преобразование строк таблицы в структуру для шаблона:
-     * декодирование JSON-поля товаров и обогащение их данными каталога.
+     * ID инфоблока каталога из настроек модуля.
      *
-     * @param array $rows
-     * @return array
+     * @return int
      */
-    private function prepareLevels(array $rows): array
+    private function getCatalogIblockId(): int
+    {
+        if (class_exists('\\Ldo\\Marketing\\Settings')) {
+            return \Ldo\Marketing\Settings::getCatalogIblockId();
+        }
+
+        return self::CATALOG_IBLOCK_ID;
+    }
+
+    private function prepareItems(array $rows): array
     {
         if (empty($rows)) {
             return [];
+        }
+
+        $sectionsMap = [];
+        foreach ($this->arResult['SECTIONS'] as $section) {
+            $sectionsMap[(int)$section['ID']] = $section['NAME'];
         }
 
         $allProductIds = [];
         $decoded = [];
         foreach ($rows as $row) {
             $id = (int)$row['ID'];
+            $sectionIds = self::decodeIds($row['SECTION_IDS'] ?? '');
             $productIds = self::decodeIds($row['PRODUCT_IDS'] ?? '');
-            $decoded[$id] = $productIds;
+            $decoded[$id] = [$sectionIds, $productIds];
             foreach ($productIds as $pid) {
                 $allProductIds[$pid] = $pid;
             }
@@ -127,12 +120,21 @@ class GiftsList extends \CBitrixComponent implements Controllerable
 
         $productsMap = $this->getProductsInfo(array_values($allProductIds));
 
-        $levels = [];
+        $items = [];
         foreach ($rows as $row) {
             $id = (int)$row['ID'];
+            list($sectionIds, $productIds) = $decoded[$id];
+
+            $sections = [];
+            foreach ($sectionIds as $sid) {
+                $sections[] = [
+                    'ID'   => $sid,
+                    'NAME' => $sectionsMap[$sid] ?? ('#' . $sid),
+                ];
+            }
 
             $products = [];
-            foreach ($decoded[$id] as $pid) {
+            foreach ($productIds as $pid) {
                 $products[] = $productsMap[$pid] ?? [
                     'ID'      => $pid,
                     'NAME'    => '#' . $pid,
@@ -140,36 +142,84 @@ class GiftsList extends \CBitrixComponent implements Controllerable
                 ];
             }
 
-            $levels[] = [
-                'ID'       => $id,
-                'NAME'     => (string)$row['NAME'],
-                'ACTIVE'   => ($row['ACTIVE'] ?? 'Y') === 'Y',
-                'SORT'     => (int)$row['SORT'],
-                'SUM'      => (int)$row['SUM'],
-                'SITE_ID'  => (string)$row['SITE_ID'],
-                'PRODUCTS' => $products,
+            $items[] = [
+                'ID'          => $id,
+                'NAME'        => (string)$row['NAME'],
+                'PORTIONS'    => (int)$row['PORTIONS'],
+                'SITE_ID'     => (string)$row['SITE_ID'],
+                'SECTION_IDS' => $sectionIds,
+                'PRODUCT_IDS' => $productIds,
+                'SECTIONS'    => $sections,
+                'PRODUCTS'    => $products,
             ];
         }
 
-        return $levels;
+        return $items;
     }
 
-    /**
-     * Данные товаров каталога (название + уменьшенное фото).
-     *
-     * @param array $ids
-     * @return array id => ['ID','NAME','PICTURE']
-     */
+    private function getSections(): array
+    {
+        if (!Loader::includeModule('iblock')) {
+            return [];
+        }
+
+        $catalogIblockId = $this->getCatalogIblockId();
+        if ($catalogIblockId <= 0) {
+            return [];
+        }
+
+        $list = [];
+        $rs = \CIBlockSection::GetList(
+            ['LEFT_MARGIN' => 'ASC'],
+            ['IBLOCK_ID' => $catalogIblockId],
+            false,
+            ['ID', 'NAME', 'DEPTH_LEVEL']
+        );
+
+        while ($s = $rs->Fetch()) {
+            $list[] = [
+                'ID'    => (int)$s['ID'],
+                'NAME'  => (string)$s['NAME'],
+                'DEPTH' => (int)$s['DEPTH_LEVEL'],
+            ];
+        }
+
+        return $list;
+    }
+
+    private function getSites(): array
+    {
+        $list = [];
+        $rs = \Bitrix\Main\SiteTable::getList([
+            'select' => ['LID', 'NAME'],
+            'order'  => ['SORT' => 'ASC'],
+        ]);
+
+        while ($site = $rs->fetch()) {
+            $list[] = [
+                'LID'  => (string)$site['LID'],
+                'NAME' => (string)$site['NAME'],
+            ];
+        }
+
+        return $list;
+    }
+
     private function getProductsInfo(array $ids): array
     {
         if (empty($ids)) {
             return [];
         }
 
+        $catalogIblockId = $this->getCatalogIblockId();
+        if ($catalogIblockId <= 0) {
+            return [];
+        }
+
         $result = [];
         $rs = \CIBlockElement::GetList(
             [],
-            ['IBLOCK_ID' => $this->getCatalogIblockId(), '=ID' => $ids],
+            ['IBLOCK_ID' => $catalogIblockId, '=ID' => $ids],
             false,
             false,
             ['ID', 'NAME', 'PREVIEW_PICTURE']
@@ -199,27 +249,6 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         return $result;
     }
 
-    /**
-     * ID инфоблока каталога из настроек модуля
-     * (используется для фото и данных товаров).
-     *
-     * @return int
-     */
-    private function getCatalogIblockId(): int
-    {
-        if (class_exists('\\Ldo\\Marketing\\Settings')) {
-            return \Ldo\Marketing\Settings::getCatalogIblockId();
-        }
-
-        return self::CATALOG_IBLOCK_ID;
-    }
-
-    /**
-     * Кодирование массива ID в JSON для хранения в БД.
-     *
-     * @param array $ids
-     * @return string
-     */
     private static function encodeIds(array $ids): string
     {
         $clean = [];
@@ -233,12 +262,6 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         return (string)json_encode(array_values($clean), JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * Декодирование JSON-массива ID из БД.
-     *
-     * @param mixed $raw
-     * @return array
-     */
     private static function decodeIds($raw): array
     {
         if (is_array($raw)) {
@@ -265,19 +288,13 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         return array_values($ids);
     }
 
-    /**
-     * Конфигурация AJAX-действий. Префильтры пустые — CSRF-защита
-     * выполняется вручную через check_bitrix_sessid().
-     *
-     * @return array
-     */
     public function configureActions()
     {
         return [
-            'saveLevel' => [
+            'save' => [
                 'prefilters' => [],
             ],
-            'deleteLevel' => [
+            'delete' => [
                 'prefilters' => [],
             ],
             'searchProducts' => [
@@ -286,12 +303,7 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         ];
     }
 
-    /**
-     * AJAX-контроллер: создание/обновление уровня подарка.
-     *
-     * @return array{success: bool, id?: int, error?: string}
-     */
-    public function saveLevelAction(): array
+    public function saveAction(): array
     {
         if (!check_bitrix_sessid()) {
             return ['success' => false, 'error' => 'Сессия истекла. Обновите страницу.'];
@@ -311,14 +323,13 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         $id   = (int)$request->getPost('id');
         $name = trim((string)$request->getPost('name'));
         if ($name === '') {
-            return ['success' => false, 'error' => 'Введите название уровня.'];
+            return ['success' => false, 'error' => 'Введите название.'];
         }
 
-        $sum    = (int)$request->getPost('sum');
-        $sort   = (int)$request->getPost('sort');
-        $active = $request->getPost('active') === 'Y' ? 'Y' : 'N';
-
-        $productIds = $this->readIntArray($request->getPost('product_ids'));
+        $portions = (int)$request->getPost('portions');
+        if ($portions < 1) {
+            $portions = 1;
+        }
 
         $siteId = trim((string)$request->getPost('site_id'));
         if ($siteId === '') {
@@ -329,12 +340,14 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         }
         $siteId = mb_substr($siteId, 0, 2);
 
+        $sectionIds = $this->readIntArray($request->getPost('section_ids'));
+        $productIds = $this->readIntArray($request->getPost('product_ids'));
+
         $data = [
             'NAME'        => $name,
-            'ACTIVE'      => $active,
-            'SORT'        => $sort,
-            'SUM'         => $sum,
+            'SECTION_IDS' => self::encodeIds($sectionIds),
             'PRODUCT_IDS' => self::encodeIds($productIds),
+            'PORTIONS'    => $portions,
             'SITE_ID'     => $siteId,
         ];
 
@@ -357,19 +370,14 @@ class GiftsList extends \CBitrixComponent implements Controllerable
             $errors = $result->getErrorMessages();
             return [
                 'success' => false,
-                'error'   => !empty($errors) ? implode('; ', $errors) : 'Не удалось сохранить уровень.',
+                'error'   => !empty($errors) ? implode('; ', $errors) : 'Не удалось сохранить запись.',
             ];
         }
 
         return ['success' => true, 'id' => $id];
     }
 
-    /**
-     * AJAX-контроллер: удаление уровня подарка.
-     *
-     * @return array{success: bool, error?: string}
-     */
-    public function deleteLevelAction(): array
+    public function deleteAction(): array
     {
         if (!check_bitrix_sessid()) {
             return ['success' => false, 'error' => 'Сессия истекла. Обновите страницу.'];
@@ -387,7 +395,7 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         $request = Context::getCurrent()->getRequest();
         $id = (int)$request->getPost('id');
         if ($id <= 0) {
-            return ['success' => false, 'error' => 'Неверный идентификатор уровня.'];
+            return ['success' => false, 'error' => 'Неверный идентификатор записи.'];
         }
 
         $class = self::TABLE_CLASS;
@@ -399,17 +407,12 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         }
 
         if (!$result->isSuccess()) {
-            return ['success' => false, 'error' => 'Не удалось удалить уровень.'];
+            return ['success' => false, 'error' => 'Не удалось удалить запись.'];
         }
 
         return ['success' => true];
     }
 
-    /**
-     * AJAX-контроллер: поиск товаров каталога по названию (для выбора в уровне).
-     *
-     * @return array{success: bool, items?: array, error?: string}
-     */
     public function searchProductsAction(): array
     {
         if (!check_bitrix_sessid()) {
@@ -429,11 +432,16 @@ class GiftsList extends \CBitrixComponent implements Controllerable
             return ['success' => true, 'items' => []];
         }
 
+        $catalogIblockId = $this->getCatalogIblockId();
+        if ($catalogIblockId <= 0) {
+            return ['success' => true, 'items' => []];
+        }
+
         $items = [];
         $rs = \CIBlockElement::GetList(
             [],
             [
-                'IBLOCK_ID' => $this->getCatalogIblockId(),
+                'IBLOCK_ID' => $catalogIblockId,
                 'ACTIVE'    => 'Y',
                 '%NAME'     => $q,
             ],
@@ -452,12 +460,6 @@ class GiftsList extends \CBitrixComponent implements Controllerable
         return ['success' => true, 'items' => $items];
     }
 
-    /**
-     * Приведение значения POST к массиву целых положительных ID.
-     *
-     * @param mixed $value
-     * @return array
-     */
     private function readIntArray($value): array
     {
         if (!is_array($value)) {

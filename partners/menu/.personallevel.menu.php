@@ -20,13 +20,6 @@ $aMenuLinks = Array(
 		Array(),
 		Array(),
 		""
-	),
-	Array(
-		"Подарки к заказам",
-		"/partners/menu/gifts/",
-		Array(),
-		Array(),
-		""
 	)
 );
 ?>
