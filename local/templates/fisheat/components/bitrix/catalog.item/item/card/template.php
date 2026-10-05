@@ -355,7 +355,9 @@ if (mb_strlen($shortDescription) > $maxLength) {
 				case 'quantity':
 					if (!$haveOffers)
 					{
-						if ($actualItem['CAN_BUY'] && $arParams['USE_PRODUCT_QUANTITY'])
+						// Строго 'Y': строка 'N' в PHP — truthy и включала блок количества,
+						// из-за чего в корзину уходил коэффициент ЕИ вместо 1.
+						if ($actualItem['CAN_BUY'] && $arParams['USE_PRODUCT_QUANTITY'] === 'Y')
 						{
 							?>
 							<div class="product-item-info-container product-item-hidden" data-entity="quantity-block">
@@ -378,7 +380,7 @@ if (mb_strlen($shortDescription) > $maxLength) {
 					}
 					elseif ($arParams['PRODUCT_DISPLAY_MODE'] === 'Y')
 					{
-						if ($arParams['USE_PRODUCT_QUANTITY'])
+						if ($arParams['USE_PRODUCT_QUANTITY'] === 'Y')
 						{
 							?>
 							<div class="product-item-info-container product-item-hidden" data-entity="quantity-block">

@@ -129,7 +129,9 @@ if (isset($arResult['ITEM']))
 		{
 			$jsParams = array(
 				'PRODUCT_TYPE' => $item['PRODUCT']['TYPE'],
-				'SHOW_QUANTITY' => $arParams['USE_PRODUCT_QUANTITY'],
+				// Важно: строго boolean. Строка 'N' в JS — truthy, из-за чего
+				// включалась логика количества и в корзину уходил шаг (коэф. ЕИ).
+				'SHOW_QUANTITY' => ($arParams['USE_PRODUCT_QUANTITY'] === 'Y'),
 				'SHOW_ADD_BASKET_BTN' => false,
 				'SHOW_BUY_BTN' => true,
 				'SHOW_ABSENT' => true,
@@ -261,7 +263,7 @@ if (isset($arResult['ITEM']))
 
 			if ($arParams['PRODUCT_DISPLAY_MODE'] === 'Y')
 			{
-				$jsParams['SHOW_QUANTITY'] = $arParams['USE_PRODUCT_QUANTITY'];
+				$jsParams['SHOW_QUANTITY'] = ($arParams['USE_PRODUCT_QUANTITY'] === 'Y');
 				$jsParams['SHOW_SKU_PROPS'] = !empty($item['OFFERS_PROP']) ? $item['OFFERS_PROPS_DISPLAY'] : null;
 				$jsParams['OFFERS'] = $item['JS_OFFERS'];
 				$jsParams['OFFER_SELECTED'] = $item['OFFERS_SELECTED'];
