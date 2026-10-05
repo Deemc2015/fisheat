@@ -2659,6 +2659,9 @@ footer .copyright{
 .gifts-list__item-img img{
     border-radius:6px;
     width: 140px;
+    height: 140px;
+    object-fit: cover;
+    display: block;
 }
 .gifts-block__items{
     margin-top: 24px;

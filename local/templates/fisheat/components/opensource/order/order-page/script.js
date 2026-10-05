@@ -3124,6 +3124,48 @@
                     this.totalPriceNode.innerHTML = this.formatPrice(totalPrice);
                 }
             }
+
+            // Пересчёт доступности подарков при любом изменении корзины
+            this.recalcGiftsAvailability(totalPrice);
+        },
+
+        /**
+         * Пересчитывает доступность подарков по текущей сумме заказа.
+         * @param {number} total текущая сумма заказа
+         */
+        recalcGiftsAvailability: function(total) {
+            var items = document.querySelectorAll('.gifts-list__item');
+            if (!items || !items.length) return;
+
+            total = parseFloat(total) || 0;
+
+            items.forEach(function(item) {
+                if (item.classList.contains('disabled')) return;
+
+                var level = parseFloat(item.getAttribute('data-sum-level')) || 0;
+                var available = total >= level;
+
+                var button = item.querySelector('.addCartGift');
+                var notAvailable = item.querySelector('.not-avaliable-text');
+
+                if (button) {
+                    button.style.display = available ? '' : 'none';
+                }
+                if (notAvailable) {
+                    notAvailable.style.display = available ? 'none' : '';
+                }
+
+                if (!available && item.classList.contains('selected')) {
+                    item.classList.remove('selected');
+                    if (button) {
+                        button.textContent = 'Выбрать';
+                    }
+                    if (this.selectedGiftNode === item) {
+                        this.selectedGiftId = null;
+                        this.selectedGiftNode = null;
+                    }
+                }
+            }, this);
         },
 
         // ==============================================

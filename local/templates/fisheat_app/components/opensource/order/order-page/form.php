@@ -104,7 +104,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>
-                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>">
+                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>" data-sum-level="<?=(int)$gift['SUM_LEVEL']?>">
                                 <div class="gifts-list__item-img">
                                     <picture>
                                         <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
@@ -113,17 +113,14 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                 </div>
                                 <div class="gifts-list__item-title"><?=$gift['NAME']?></div>
                                 <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
-                                    <div class="not-avaliable-text">
-                                        Выбор недоступен
+                                    <div class="gifts-list__item-actions">
+                                        <div class="not-avaliable-text">Выбор недоступен</div>
                                     </div>
                                 <?else:?>
-                                    <?if($gift['AVAILABLE']):?>
-                                        <div class="addCartGift" id-product="<?=$gift['ID']?>">Выбрать</div>
-                                    <?else:?>
-                                        <div class="not-avaliable-text">
-                                            Доступно при заказе от<br> <?=$gift['SUM_LEVEL']?> ₽
-                                        </div>
-                                    <?endif;?>
+                                    <div class="gifts-list__item-actions">
+                                        <div class="addCartGift" id-product="<?=$gift['ID']?>"<?= $gift['AVAILABLE'] ? '' : ' style="display:none;"' ?>>Выбрать</div>
+                                        <div class="not-avaliable-text"<?= $gift['AVAILABLE'] ? ' style="display:none;"' : '' ?>>Доступно при заказе от<br> <?=(int)$gift['SUM_LEVEL']?> ₽</div>
+                                    </div>
                                 <?endif?>
 
 

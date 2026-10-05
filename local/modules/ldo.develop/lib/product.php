@@ -115,11 +115,12 @@ class Product
     }
 
     /**
-     * Все правила бесплатных позиций для текущего сайта.
+     * Все правила бесплатных позиций для указанного сайта.
      *
+     * @param string $siteId
      * @return array
      */
-    private static function getFreePositionRules(): array
+    public static function getFreePositionRulesBySite(string $siteId): array
     {
         // Модуль ldo.marketing: подключаем с фолбэком на прямой require класса.
         if (!Loader::includeModule('ldo.marketing')
@@ -136,7 +137,7 @@ class Product
 
         try {
             $rows = \Ldo\Marketing\FreePositionsTable::getList([
-                'filter' => ['=SITE_ID' => self::getCurrentSiteId()],
+                'filter' => ['=SITE_ID' => $siteId],
                 'order'  => ['ID' => 'ASC'],
             ])->fetchAll();
         } catch (\Throwable $e) {
@@ -147,12 +148,22 @@ class Product
     }
 
     /**
+     * Все правила бесплатных позиций для текущего сайта.
+     *
+     * @return array
+     */
+    private static function getFreePositionRules(): array
+    {
+        return self::getFreePositionRulesBySite(self::getCurrentSiteId());
+    }
+
+    /**
      * Декодирование JSON-массива ID из таблицы.
      *
      * @param mixed $raw
      * @return array
      */
-    private static function decodeFreePositionIds($raw): array
+    public static function decodeFreePositionIds($raw): array
     {
         if (is_array($raw)) {
             $data = $raw;
@@ -176,6 +187,45 @@ class Product
         }
 
         return array_values($ids);
+    }
+
+    /**
+     * Разворачивает список ID разделов, добавляя вложенные подразделы.
+     *
+     * @param array $sectionIds
+     * @return array
+     */
+    public static function expandSectionIds(array $sectionIds): array
+    {
+        $sectionIds = array_values(array_unique(array_map('intval', $sectionIds)));
+        if (empty($sectionIds) || !Loader::includeModule('iblock')) {
+            return $sectionIds;
+        }
+
+        $result = $sectionIds;
+        $queue = $sectionIds;
+        $guard = 0;
+
+        while (!empty($queue) && $guard < 50) {
+            $guard++;
+            $parent = array_shift($queue);
+
+            $rs = \CIBlockSection::GetList(
+                [],
+                ['IBLOCK_SECTION_ID' => $parent, 'CHECK_PERMISSIONS' => 'N'],
+                false,
+                ['ID']
+            );
+            while ($section = $rs->Fetch()) {
+                $id = (int)$section['ID'];
+                if (!in_array($id, $result, true)) {
+                    $result[] = $id;
+                    $queue[] = $id;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
