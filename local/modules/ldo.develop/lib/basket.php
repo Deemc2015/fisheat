@@ -321,35 +321,64 @@ class Basket
         try {
             $currency = CurrencyManager::getBaseCurrency();
 
-            foreach ($required as $freeProductId => $needCount) {
+            foreach ($required as $freeProductId => $freeCount) {
                 $item = $currentBasket->getExistsItem('catalog', $freeProductId);
 
-                if ($needCount <= 0) {
+                // Условие бесплатной позиции не выполнено — убираем её из корзины.
+                if ($freeCount <= 0) {
                     if ($item) {
                         $item->delete();
                     }
                     continue;
                 }
 
-                if ($item) {
-                    if ((float)$item->getQuantity() !== (float)$needCount) {
-                        $item->setField('QUANTITY', $needCount);
-                    }
+                // Желаемое количество — то, что сейчас в корзине: пользователь мог
+                // увеличить бесплатную позицию, докупая дополнительные единицы.
+                $desiredQty = $item ? (float)$item->getQuantity() : 0.0;
 
-                    // Бесплатная позиция всегда идёт с ручной нулевой ценой.
+                // Меньше бесплатного количества быть не может — оно начисляется авто.
+                $totalQty = max($desiredQty, (float)$freeCount);
+
+                if (!$item) {
+                    $item = $currentBasket->createItem('catalog', $freeProductId);
+                    $item->setFields([
+                        'QUANTITY' => $totalQty,
+                        'CURRENCY' => $currency,
+                        'LID'      => $siteId,
+                        'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
+                    ]);
+                } elseif ((float)$item->getQuantity() !== $totalQty) {
+                    $item->setField('QUANTITY', $totalQty);
+                }
+
+                // Платные единицы — всё, что сверх бесплатного количества.
+                $paidQty = max(0.0, $totalQty - (float)$freeCount);
+
+                if ($paidQty <= 0) {
+                    // Вся позиция бесплатная — ручная нулевая цена.
                     self::markItemAsFree($item);
                     continue;
                 }
 
-                $newItem = $currentBasket->createItem('catalog', $freeProductId);
-                $newItem->setFields([
-                    'QUANTITY' => $needCount,
-                    'CURRENCY' => $currency,
-                    'LID'      => $siteId,
-                    'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
-                ]);
-                // Цена 0 задаётся как «ручная», иначе провайдер пересчитает её из каталога.
-                self::markItemAsFree($newItem);
+                // Часть единиц бесплатно, часть — по цене каталога. Итоговая сумма
+                // строки = платных единиц × цена каталога; цена за единицу — средняя.
+                $basePrice = Product::getProductBasePrice((int)$freeProductId, $currency);
+                $unitPrice = $basePrice > 0
+                    ? round(($paidQty * $basePrice) / $totalQty, 2)
+                    : 0.0;
+
+                $isCustom = ((string)$item->getField('CUSTOM_PRICE') === 'Y');
+                $priceMatches = (abs((float)$item->getPrice() - $unitPrice) <= 0.001
+                    && abs((float)$item->getField('BASE_PRICE') - $unitPrice) <= 0.001);
+
+                if (!$isCustom || !$priceMatches) {
+                    $item->setFields([
+                        'CUSTOM_PRICE'   => 'Y',
+                        'BASE_PRICE'     => $unitPrice,
+                        'PRICE'          => $unitPrice,
+                        'DISCOUNT_PRICE' => 0,
+                    ]);
+                }
             }
         } finally {
             self::$freePositionsSyncing = false;

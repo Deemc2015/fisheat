@@ -3130,42 +3130,83 @@
         },
 
         /**
-         * Пересчитывает доступность подарков по текущей сумме заказа.
+         * Пересчитывает доступность подарков по текущей сумме заказа
+         * и обновляет верхнюю строку «До подарка … осталось ещё …».
          * @param {number} total текущая сумма заказа
          */
         recalcGiftsAvailability: function(total) {
             var items = document.querySelectorAll('.gifts-list__item');
-            if (!items || !items.length) return;
-
             total = parseFloat(total) || 0;
 
-            items.forEach(function(item) {
-                if (item.classList.contains('disabled')) return;
+            var nearest = null;
 
-                var level = parseFloat(item.getAttribute('data-sum-level')) || 0;
-                var available = total >= level;
+            if (items && items.length) {
+                items.forEach(function(item) {
+                    if (item.classList.contains('disabled')) return;
 
-                var button = item.querySelector('.addCartGift');
-                var notAvailable = item.querySelector('.not-avaliable-text');
+                    var level = parseFloat(item.getAttribute('data-sum-level')) || 0;
+                    var available = total >= level;
 
-                if (button) {
-                    button.style.display = available ? '' : 'none';
-                }
-                if (notAvailable) {
-                    notAvailable.style.display = available ? 'none' : '';
-                }
+                    var button = item.querySelector('.addCartGift');
+                    var notAvailable = item.querySelector('.not-avaliable-text');
 
-                if (!available && item.classList.contains('selected')) {
-                    item.classList.remove('selected');
                     if (button) {
-                        button.textContent = 'Выбрать';
+                        button.style.display = available ? '' : 'none';
                     }
-                    if (this.selectedGiftNode === item) {
-                        this.selectedGiftId = null;
-                        this.selectedGiftNode = null;
+                    if (notAvailable) {
+                        notAvailable.style.display = available ? 'none' : '';
                     }
-                }
-            }, this);
+
+                    if (!available && item.classList.contains('selected')) {
+                        item.classList.remove('selected');
+                        if (button) {
+                            button.textContent = 'Выбрать';
+                        }
+                        if (this.selectedGiftNode === item) {
+                            this.selectedGiftId = null;
+                            this.selectedGiftNode = null;
+                        }
+                    }
+
+                    // Ближайший недоступный уровень (минимальный порог выше суммы)
+                    if (!available && level > 0 && (nearest === null || level < nearest.level)) {
+                        nearest = {
+                            level: level,
+                            free: level - total,
+                            name: item.getAttribute('data-sum-level-name') || level
+                        };
+                    }
+                }, this);
+            }
+
+            this.updateGiftsBlockTop(nearest);
+        },
+
+        /**
+         * Обновляет верхнюю строку блока подарков (ближайший уровень подарка).
+         * @param {{level:number, free:number, name:string}|null} nearest
+         */
+        updateGiftsBlockTop: function(nearest) {
+            var block = document.querySelector('.gifts-block__top');
+            if (!block) return;
+
+            if (!nearest) {
+                block.style.display = 'none';
+                return;
+            }
+
+            block.style.display = '';
+
+            var levelNode = block.querySelector('.gifts-block__level');
+            var sumNode = block.querySelector('.gifts-block__sum');
+            var free = Math.max(0, Math.ceil(nearest.free));
+
+            if (levelNode) {
+                levelNode.textContent = nearest.name;
+            }
+            if (sumNode) {
+                sumNode.textContent = free + ' ₽';
+            }
         },
 
         // ==============================================

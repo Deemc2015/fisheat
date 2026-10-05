@@ -563,6 +563,49 @@ class Product
     }
 
     /**
+     * Базовая (каталожная) цена товара за единицу.
+     *
+     * @param int    $productId
+     * @param string $currency
+     * @return float
+     */
+    public static function getProductBasePrice(int $productId, string $currency = ''): float
+    {
+        if ($productId <= 0) {
+            return 0.0;
+        }
+
+        \CModule::IncludeModule('catalog');
+
+        try {
+            $price = \CPrice::GetBasePrice($productId, 1, $currency !== '' ? $currency : false);
+        } catch (\Throwable $e) {
+            $price = false;
+        }
+
+        if (is_array($price) && isset($price['PRICE'])) {
+            return (float)$price['PRICE'];
+        }
+
+        // Фолбэк: оптимальная цена (для товаров без явной базовой цены).
+        try {
+            $optimal = \CCatalogProduct::GetOptimalPrice($productId, 1, []);
+        } catch (\Throwable $e) {
+            $optimal = false;
+        }
+        if (is_array($optimal)) {
+            if (isset($optimal['BASE_PRICE'])) {
+                return (float)$optimal['BASE_PRICE'];
+            }
+            if (isset($optimal['PRICE'])) {
+                return (float)$optimal['PRICE'];
+            }
+        }
+
+        return 0.0;
+    }
+
+    /**
      * ID текущего сайта (фолбэк s1).
      *
      * @return string
