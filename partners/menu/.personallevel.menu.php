@@ -15,11 +15,11 @@ $aMenuLinks = Array(
 		"" 
 	),
 	Array(
-		"Настройка разделов", 
-		"/partners/menu/razdely/", 
-		Array(), 
-		Array(), 
-		"" 
+		"Настройка разделов",
+		"/partners/menu/razdely/",
+		Array(),
+		Array(),
+		""
 	)
 );
 ?>

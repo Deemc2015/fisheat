@@ -268,21 +268,47 @@ $arResult['DELIVERY_DISCOUNT_DISPLAY'] = SaleFormatCurrency(
 );
 
 
-//Выводим список подарков в корзине
-$idProducts = Iblock::getList('gifts', [
-    'NAME',
-    'PRODUCT_ID' => 'ATT_PRODUCT.VALUE',
-    'SUM_LEVEL' => 'ATT_SUM_CART.VALUE'
-]);
+//Выводим список подарков в корзине (данные из таблицы модуля ldo.marketing)
+if (!\Bitrix\Main\Loader::includeModule('ldo.marketing')
+    && !class_exists('\\Ldo\\Marketing\\GiftsTable')) {
+    $giftsTableFile = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/ldo.marketing/lib/GiftsTable.php';
+    if (is_file($giftsTableFile)) {
+        require_once $giftsTableFile;
+    }
+}
+if (!class_exists('\\Ldo\\Marketing\\Settings')) {
+    $marketingSettingsFile = $_SERVER['DOCUMENT_ROOT'] . '/local/modules/ldo.marketing/lib/Settings.php';
+    if (is_file($marketingSettingsFile)) {
+        require_once $marketingSettingsFile;
+    }
+}
 
 $arrProducts = []; // Инициализируем массив
 
-if ($idProducts) {
-    foreach ($idProducts as $gift) {
-        $arrProducts['GIFTS'][$gift['NAME']][] = [
-            'PRODUCT_ID' => (int)$gift['PRODUCT_ID'],
-            'SUM_LEVEL' => (float)$gift['SUM_LEVEL']
-        ];
+if (class_exists('\\Ldo\\Marketing\\GiftsTable')) {
+    $giftLevels = \Ldo\Marketing\GiftsTable::getList([
+        'filter' => [
+            '=ACTIVE'  => 'Y',
+            '=SITE_ID' => \Bitrix\Main\Context::getCurrent()->getSite() ?: 's1',
+        ],
+        'order'  => ['SORT' => 'ASC', 'ID' => 'ASC'],
+    ])->fetchAll();
+
+    foreach ($giftLevels as $giftLevel) {
+        $giftProductIds = json_decode((string)($giftLevel['PRODUCT_IDS'] ?? ''), true);
+        if (!is_array($giftProductIds)) {
+            continue;
+        }
+        foreach ($giftProductIds as $giftProductId) {
+            $giftProductId = (int)$giftProductId;
+            if ($giftProductId <= 0) {
+                continue;
+            }
+            $arrProducts['GIFTS'][$giftLevel['NAME']][] = [
+                'PRODUCT_ID' => $giftProductId,
+                'SUM_LEVEL' => (float)$giftLevel['SUM']
+            ];
+        }
     }
 }
 
@@ -293,11 +319,21 @@ if (!empty($arrProducts['GIFTS'])) {
         // Собираем все ID товаров
         $productIds = array_column($data, 'PRODUCT_ID');
 
-        // Получаем информацию о товарах
-        $products = Iblock::getList('catalog',
-            ['ID', 'NAME', 'PREVIEW_PICTURE'],
-            ['ID' => $productIds]
-        );
+        // Получаем информацию о товарах из настроенного каталога (настройка модуля ldo.marketing)
+        $catalogIblockId = \Ldo\Marketing\Settings::getCatalogIblockId();
+        $products = [];
+        if ($catalogIblockId > 0 && !empty($productIds)) {
+            $rsProducts = \CIBlockElement::GetList(
+                [],
+                ['IBLOCK_ID' => $catalogIblockId, '=ID' => $productIds],
+                false,
+                false,
+                ['ID', 'NAME', 'PREVIEW_PICTURE']
+            );
+            while ($productRow = $rsProducts->Fetch()) {
+                $products[] = $productRow;
+            }
+        }
 
         if ($products) {
             $sumLevel = (int)$data[0]['SUM_LEVEL'];

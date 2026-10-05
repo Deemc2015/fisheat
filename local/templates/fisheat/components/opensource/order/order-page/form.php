@@ -82,7 +82,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <div class="comments-block__top-icon"></div>
             </div>
             <textarea id="orderDescription" cols="4" class="form-control bx-soa-customer-textarea bx-ios-fix" name="ORDER_DESCRIPTION"></textarea>
-            <?print_r($arResult['NEAREST_GIFT']);?>
         </div>
         <?php if (!empty($arResult['GIFTS'])): ?>
         <div class="gifts-block">

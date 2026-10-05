@@ -49,6 +49,17 @@ if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded)
 
         if ($action === 'save') {
             $id = (int)$request->getPost('ID');
+
+            // Время работы — строго формат HH:MM, иначе пустая строка.
+            $workTimeStart = trim((string)$request->getPost('WORK_TIME_START'));
+            $workTimeEnd   = trim((string)$request->getPost('WORK_TIME_END'));
+            if (!preg_match('/^\d{2}:\d{2}$/', $workTimeStart)) {
+                $workTimeStart = '';
+            }
+            if (!preg_match('/^\d{2}:\d{2}$/', $workTimeEnd)) {
+                $workTimeEnd = '';
+            }
+
             $data = [
                 'NAME' => trim((string)$request->getPost('NAME')),
                 'COORDINATES' => trim((string)$request->getPost('COORDINATES')),
@@ -58,6 +69,8 @@ if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded)
                 'REQUISITES' => trim((string)$request->getPost('REQUISITES')),
                 'DELIVERY_TIME_START' => (int)$request->getPost('DELIVERY_TIME_START'),
                 'DELIVERY_TIME_END' => (int)$request->getPost('DELIVERY_TIME_END'),
+                'WORK_TIME_START' => $workTimeStart,
+                'WORK_TIME_END' => $workTimeEnd,
                 'ACTIVE' => $request->getPost('ACTIVE') === 'Y' ? 'Y' : 'N',
             ];
 
@@ -200,6 +213,7 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                             <?php if ($r['PHONE'] && $r['EMAIL']): ?> · <?php endif; ?>
                                             <?php if ($r['EMAIL']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/></svg><?= htmlspecialchars($r['EMAIL']) ?><?php endif; ?>
                                             <?php if ((int)$r['DELIVERY_TIME_START'] > 0 && (int)$r['DELIVERY_TIME_END'] > 0): ?> · ⏱ Время доставки: <?= (int)$r['DELIVERY_TIME_START'] ?>–<?= (int)$r['DELIVERY_TIME_END'] ?> мин<?php endif; ?>
+                                            <?php if (!empty($r['WORK_TIME_START']) || !empty($r['WORK_TIME_END'])): ?> · 🕐 Время работы: <?= htmlspecialchars(($r['WORK_TIME_START'] ?? '') ?: '—') ?>–<?= htmlspecialchars(($r['WORK_TIME_END'] ?? '') ?: '—') ?><?php endif; ?>
                                             <?php if ($highLoadEnabled === 'Y' && $highLoadAddTime > 0): ?>
                                                 <span class="zone-highload-badge">+<?= $highLoadAddTime ?> мин. выс.нагр.</span>
                                             <?php endif; ?>
@@ -241,6 +255,19 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                             <div class="rest-edit-field">
                                                 <label>Время доставки до (мин)</label>
                                                 <input type="number" class="rest-edit-time-end" min="0" step="5" value="<?= (int)$r['DELIVERY_TIME_END'] ?>">
+                                            </div>
+                                        </div>
+                                        <div class="rest-edit-field">
+                                            <label>Время работы</label>
+                                            <div class="rest-edit-row" style="margin-top:4px;">
+                                                <div class="rest-edit-field">
+                                                    <label>с</label>
+                                                    <input type="time" class="rest-edit-work-start" value="<?= htmlspecialchars($r['WORK_TIME_START'] ?? '') ?>">
+                                                </div>
+                                                <div class="rest-edit-field">
+                                                    <label>до</label>
+                                                    <input type="time" class="rest-edit-work-end" value="<?= htmlspecialchars($r['WORK_TIME_END'] ?? '') ?>">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="rest-edit-row">
@@ -310,6 +337,19 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                 <div class="dz-form-group" style="flex:1;">
                     <label>Время доставки до (мин)</label>
                     <input type="number" id="rest-time-end" min="0" step="5" value="0">
+                </div>
+            </div>
+            <div class="dz-form-group">
+                <label>Время работы</label>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;">
+                        <label style="font-size:12px;">с</label>
+                        <input type="time" id="rest-work-start" style="width:100%;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:12px;">до</label>
+                        <input type="time" id="rest-work-end" style="width:100%;">
+                    </div>
                 </div>
             </div>
             <div class="dz-form-actions">
@@ -383,6 +423,8 @@ function saveRestaurant(e) {
     formData.append('REQUISITES', document.getElementById('rest-reqv').value);
     formData.append('DELIVERY_TIME_START', document.getElementById('rest-time-start').value);
     formData.append('DELIVERY_TIME_END', document.getElementById('rest-time-end').value);
+    formData.append('WORK_TIME_START', document.getElementById('rest-work-start').value);
+    formData.append('WORK_TIME_END', document.getElementById('rest-work-end').value);
     formData.append('ACTIVE', 'Y');
 
     fetch(window.location.href, {
@@ -445,6 +487,8 @@ function saveRestaurantEdit(id) {
     formData.append('REQUISITES', el.querySelector('.rest-edit-reqv').value);
     formData.append('DELIVERY_TIME_START', el.querySelector('.rest-edit-time-start').value);
     formData.append('DELIVERY_TIME_END', el.querySelector('.rest-edit-time-end').value);
+    formData.append('WORK_TIME_START', el.querySelector('.rest-edit-work-start').value);
+    formData.append('WORK_TIME_END', el.querySelector('.rest-edit-work-end').value);
     formData.append('ACTIVE', 'Y');
 
     fetch(window.location.href, {
@@ -578,6 +622,8 @@ document.getElementById('rest-form-overlay').addEventListener('click', function(
                     document.getElementById('rest-reqv').value = '';
                     document.getElementById('rest-time-start').value = '0';
                     document.getElementById('rest-time-end').value = '0';
+                    document.getElementById('rest-work-start').value = '';
+                    document.getElementById('rest-work-end').value = '';
                     document.getElementById('rest-form-overlay').classList.add('open');
                     cancelAddRestaurant();
                 });
