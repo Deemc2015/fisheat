@@ -132,6 +132,13 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $siteId = Context::getCurrent()
             ->getSite();
 
+        // Бесплатные позиции добавляются в корзину ТОЛЬКО при переходе на
+        // страницу оформления заказа — до того, как из корзины собран заказ.
+        if (\Bitrix\Main\Loader::includeModule('ldo.develop')
+            && class_exists('\Ldo\Develop\Basket')) {
+            \Ldo\Develop\Basket::applyFreePositionsToCurrentBasket();
+        }
+
         $basketItems = Basket::loadItemsForFUser(Fuser::getId(), $siteId)
             ->getOrderableItems();
 
