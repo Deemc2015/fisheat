@@ -577,8 +577,27 @@ class Product
 
         \CModule::IncludeModule('catalog');
 
-        // Цена товара так, как её считает сам Bitrix для покупателя
-        // (группа «Все пользователи») — то же значение, что показывается в каталоге.
+        // 1. Штатный расчёт цены товара — тот самый метод, которым корзина Bitrix
+        // считает цену позиции (CCatalogProductProvider::GetProductData).
+        try {
+            $data = \CCatalogProductProvider::GetProductData([
+                'PRODUCT_ID' => $productId,
+                'QUANTITY'   => 1,
+                'RENEWAL'    => 'N',
+            ]);
+        } catch (\Throwable $e) {
+            $data = false;
+        }
+        if (is_array($data)) {
+            if (isset($data['PRICE']) && (float)$data['PRICE'] > 0) {
+                return (float)$data['PRICE'];
+            }
+            if (isset($data['BASE_PRICE']) && (float)$data['BASE_PRICE'] > 0) {
+                return (float)$data['BASE_PRICE'];
+            }
+        }
+
+        // 2. Резерв — оптимальная цена каталога.
         try {
             $optimal = \CCatalogProduct::GetOptimalPrice($productId, 1, [2], 'N');
         } catch (\Throwable $e) {
@@ -593,7 +612,7 @@ class Product
             }
         }
 
-        // Резерв — цена из прайс-листа товара.
+        // 3. Базовая цена прайс-листа.
         try {
             $price = \CPrice::GetBasePrice($productId, 1, $currency !== '' ? $currency : false);
         } catch (\Throwable $e) {
