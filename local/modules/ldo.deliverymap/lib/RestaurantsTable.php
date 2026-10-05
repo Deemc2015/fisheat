@@ -73,6 +73,21 @@ class RestaurantsTable extends Entity\DataManager
             new Entity\IntegerField('DELIVERY_TIME_END', [
                 'default_value' => 0,
             ]),
+            // Время работы ресторана (формат HH:MM).
+            new Entity\StringField('WORK_TIME_START', [
+                'required' => false,
+                'default_value' => '',
+                'validation' => function() {
+                    return [new Entity\Validator\Length(null, 5)];
+                }
+            ]),
+            new Entity\StringField('WORK_TIME_END', [
+                'required' => false,
+                'default_value' => '',
+                'validation' => function() {
+                    return [new Entity\Validator\Length(null, 5)];
+                }
+            ]),
         ];
     }
 

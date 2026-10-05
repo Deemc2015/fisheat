@@ -85,11 +85,14 @@ class Ldo_deliverymap extends CModule
     {
         global $DB;
 
-        // ldo_delivery_restaurants: время доставки (по аналогии с зонами).
+        // ldo_delivery_restaurants: время доставки (по аналогии с зонами)
+        // и время работы (формат HH:MM).
         // Высокая нагрузка — общая настройка сайта (ldo_delivery_settings).
         $restaurantColumns = [
             'DELIVERY_TIME_START' => "int(11) NOT NULL DEFAULT '0'",
             'DELIVERY_TIME_END' => "int(11) NOT NULL DEFAULT '0'",
+            'WORK_TIME_START' => "varchar(5) NOT NULL DEFAULT ''",
+            'WORK_TIME_END' => "varchar(5) NOT NULL DEFAULT ''",
         ];
         foreach ($restaurantColumns as $column => $definition) {
             $exists = $DB->Query(
@@ -242,6 +245,8 @@ class Ldo_deliverymap extends CModule
                 `XML_ID` varchar(255) NOT NULL DEFAULT '',
                 `DELIVERY_TIME_START` int(11) NOT NULL DEFAULT '0',
                 `DELIVERY_TIME_END` int(11) NOT NULL DEFAULT '0',
+                `WORK_TIME_START` varchar(5) NOT NULL DEFAULT '',
+                `WORK_TIME_END` varchar(5) NOT NULL DEFAULT '',
                 PRIMARY KEY (`ID`),
                 KEY `IX_ACTIVE` (`ACTIVE`),
                 KEY `IX_SITE_ID` (`SITE_ID`),
