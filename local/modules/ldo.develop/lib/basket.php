@@ -370,6 +370,23 @@ class Basket
                     ? round(($paidQty * $basePrice) / $totalQty, 2)
                     : 0.0;
 
+                // ВРЕМЕННАЯ диагностика (удалить после отладки цен).
+                @file_put_contents(
+                    ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/upload/ldo_free_debug.log',
+                    date('c') . ' ' . json_encode([
+                        'freeProductId' => (int)$freeProductId,
+                        'freeCount'     => (float)$freeCount,
+                        'desiredQty'    => $desiredQty,
+                        'totalQty'      => $totalQty,
+                        'paidQty'       => $paidQty,
+                        'basePrice'     => $basePrice,
+                        'unitPrice'     => $unitPrice,
+                        'priceBefore'   => (float)$item->getPrice(),
+                        'baseBefore'    => (float)$item->getField('BASE_PRICE'),
+                    ], JSON_UNESCAPED_UNICODE) . "\n",
+                    FILE_APPEND
+                );
+
                 $isCustom = ((string)$item->getField('CUSTOM_PRICE') === 'Y');
                 $priceMatches = (abs((float)$item->getPrice() - $unitPrice) <= 0.001
                     && abs((float)$item->getField('BASE_PRICE') - $unitPrice) <= 0.001);

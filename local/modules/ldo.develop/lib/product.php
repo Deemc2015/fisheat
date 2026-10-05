@@ -577,29 +577,30 @@ class Product
 
         \CModule::IncludeModule('catalog');
 
+        // Цена товара так, как её считает сам Bitrix для покупателя
+        // (группа «Все пользователи») — то же значение, что показывается в каталоге.
+        try {
+            $optimal = \CCatalogProduct::GetOptimalPrice($productId, 1, [2], 'N');
+        } catch (\Throwable $e) {
+            $optimal = false;
+        }
+        if (is_array($optimal)) {
+            if (isset($optimal['PRICE']) && (float)$optimal['PRICE'] > 0) {
+                return (float)$optimal['PRICE'];
+            }
+            if (isset($optimal['BASE_PRICE']) && (float)$optimal['BASE_PRICE'] > 0) {
+                return (float)$optimal['BASE_PRICE'];
+            }
+        }
+
+        // Резерв — цена из прайс-листа товара.
         try {
             $price = \CPrice::GetBasePrice($productId, 1, $currency !== '' ? $currency : false);
         } catch (\Throwable $e) {
             $price = false;
         }
-
         if (is_array($price) && isset($price['PRICE'])) {
             return (float)$price['PRICE'];
-        }
-
-        // Фолбэк: оптимальная цена (для товаров без явной базовой цены).
-        try {
-            $optimal = \CCatalogProduct::GetOptimalPrice($productId, 1, []);
-        } catch (\Throwable $e) {
-            $optimal = false;
-        }
-        if (is_array($optimal)) {
-            if (isset($optimal['BASE_PRICE'])) {
-                return (float)$optimal['BASE_PRICE'];
-            }
-            if (isset($optimal['PRICE'])) {
-                return (float)$optimal['PRICE'];
-            }
         }
 
         return 0.0;
