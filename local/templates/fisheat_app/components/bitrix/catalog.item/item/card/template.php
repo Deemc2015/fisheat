@@ -308,7 +308,8 @@ if(!$actualItem['CAN_BUY']){
 				case 'quantity':
 					if (!$haveOffers)
 					{
-						if ($actualItem['CAN_BUY'] && $arParams['USE_PRODUCT_QUANTITY'])
+						// Строго 'Y': строка 'N' в PHP truthy и включала блок количества.
+						if ($actualItem['CAN_BUY'] && $arParams['USE_PRODUCT_QUANTITY'] === 'Y')
 						{
 							?>
 							<div class="product-item-info-container product-item-hidden" data-entity="quantity-block">
@@ -331,7 +332,7 @@ if(!$actualItem['CAN_BUY']){
 					}
 					elseif ($arParams['PRODUCT_DISPLAY_MODE'] === 'Y')
 					{
-						if ($arParams['USE_PRODUCT_QUANTITY'])
+						if ($arParams['USE_PRODUCT_QUANTITY'] === 'Y')
 						{
 							?>
 							<div class="product-item-info-container product-item-hidden" data-entity="quantity-block">
