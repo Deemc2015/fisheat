@@ -60,47 +60,58 @@ $(document).ready(function(){
 
     $(".mycustom-scroll").mCustomScrollbar();
 
-    // Единый обработчик добавления в корзину.
-    // Вынесен из компонентов (catalog.section/category-index, catalog.item, listing-catalog),
-    // чтобы при нескольких одинаковых компонентах на странице добавление уходило ОДИН раз.
-    $(document).on('click', '.addCart', function(e) {
-        e.preventDefault();
+    // Единый обработчик добавления в корзину (capture-фаза).
+    // Регистрируется ОДИН раз и перехватывает клик ДО обработчиков компонентов
+    // (JCCatalogItem, listing-catalog и т.п.), поэтому запрос всегда один —
+    // даже если компонент выведен на странице несколько раз и/или закэширован.
+    if (!window.__ldoAddCartBound) {
+        window.__ldoAddCartBound = true;
 
-        var btn = this;
-
-        // Защита от повторной отправки (двойной обработчик/быстрый клик)
-        if (btn.dataset.adding === 'Y') {
-            return;
-        }
-        btn.dataset.adding = 'Y';
-
-        var id = btn.getAttribute('data-id');
-        if (!id || typeof BX === 'undefined' || !BX.ajax) {
-            btn.dataset.adding = 'N';
-            return;
-        }
-
-        BX.ajax({
-            method: 'POST',
-            dataType: 'json',
-            url: '/?action=ADD2BASKET&id=' + encodeURIComponent(id),
-            data: {
-                ajax_basket: 'Y',
-                sessid: BX.bitrix_sessid()
-            },
-            onsuccess: function(data) {
-                if (data && data.STATUS === 'OK') {
-                    $(btn).addClass('in_cart');
-                    if (typeof updateBasketCount === 'function') {
-                        updateBasketCount();
-                    }
-                }
-            },
-            oncomplete: function() {
-                btn.dataset.adding = 'N';
+        document.addEventListener('click', function(e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.addCart') : null;
+            if (!btn) {
+                return;
             }
-        });
-    })
+
+            // Гасим любые другие обработчики добавления на этой кнопке
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            if (btn.dataset.adding === 'Y') {
+                return;
+            }
+            btn.dataset.adding = 'Y';
+
+            var id = btn.getAttribute('data-id');
+            if (!id || typeof BX === 'undefined' || !BX.ajax) {
+                btn.dataset.adding = 'N';
+                return;
+            }
+
+            BX.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: '/?action=ADD2BASKET&id=' + encodeURIComponent(id),
+                data: {
+                    ajax_basket: 'Y',
+                    sessid: BX.bitrix_sessid()
+                },
+                onsuccess: function(data) {
+                    if (data && data.STATUS === 'OK') {
+                        if (typeof BX !== 'undefined' && BX.addClass) {
+                            BX.addClass(btn, 'in_cart');
+                        }
+                        if (typeof updateBasketCount === 'function') {
+                            updateBasketCount();
+                        }
+                    }
+                },
+                oncomplete: function() {
+                    btn.dataset.adding = 'N';
+                }
+            });
+        }, true);
+    }
 
 
     $('.filter-change').click(function(){
