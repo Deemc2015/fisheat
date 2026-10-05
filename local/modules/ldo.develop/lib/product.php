@@ -6,6 +6,17 @@ use Ldo\Develop\Iblock;
 
 class Product
 {
+    /** Кэш правил бесплатных позиций на время запроса: SITE_ID => строки. */
+    private static $freePositionRulesCache = [];
+
+    /** Кэш развёрнутых ID разделов: ключ из ID => список разделов с подразделами. */
+    private static $expandedSectionsCache = [];
+
+    /** Кэш ID инфоблока каталога. */
+    private static $catalogIblockId = null;
+
+    /** Кэш ID родительского товара для SKU: productId => parentId. */
+    private static $skuParentCache = [];
 
     public static function getImageById($id)
     {
@@ -122,17 +133,14 @@ class Product
      */
     public static function getFreePositionRulesBySite(string $siteId): array
     {
-        // Модуль ldo.marketing: подключаем с фолбэком на прямой require класса.
-        if (!Loader::includeModule('ldo.marketing')
-            && !class_exists('\Ldo\Marketing\FreePositionsTable')) {
-            $file = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/local/modules/ldo.marketing/lib/FreePositionsTable.php';
-            if (is_file($file)) {
-                require_once $file;
-            }
+        if (array_key_exists($siteId, self::$freePositionRulesCache)) {
+            return self::$freePositionRulesCache[$siteId];
         }
 
+        self::includeMarketingModule();
+
         if (!class_exists('\Ldo\Marketing\FreePositionsTable')) {
-            return [];
+            return self::$freePositionRulesCache[$siteId] = [];
         }
 
         try {
@@ -141,10 +149,59 @@ class Product
                 'order'  => ['ID' => 'ASC'],
             ])->fetchAll();
         } catch (\Throwable $e) {
-            return [];
+            return self::$freePositionRulesCache[$siteId] = [];
         }
 
-        return $rows ?: [];
+        return self::$freePositionRulesCache[$siteId] = ($rows ?: []);
+    }
+
+    /**
+     * Подключение модуля маркетинга с фолбэком на прямое подключение классов.
+     *
+     * @return void
+     */
+    public static function includeMarketingModule(): void
+    {
+        if (Loader::includeModule('ldo.marketing')) {
+            return;
+        }
+
+        $root = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        foreach (['FreePositionsTable', 'GiftsTable', 'Settings'] as $class) {
+            $fqcn = '\\Ldo\\Marketing\\' . $class;
+            if (class_exists($fqcn)) {
+                continue;
+            }
+            $file = $root . '/local/modules/ldo.marketing/lib/' . $class . '.php';
+            if (is_file($file)) {
+                require_once $file;
+            }
+        }
+    }
+
+    /**
+     * ID инфоблока каталога из настроек модуля ldo.marketing (фолбэк — 4).
+     *
+     * @return int
+     */
+    public static function getCatalogIblockId(): int
+    {
+        if (self::$catalogIblockId !== null) {
+            return self::$catalogIblockId;
+        }
+
+        self::includeMarketingModule();
+
+        $id = 0;
+        if (class_exists('\Ldo\Marketing\Settings')) {
+            try {
+                $id = (int)\Ldo\Marketing\Settings::getCatalogIblockId();
+            } catch (\Throwable $e) {
+                $id = 0;
+            }
+        }
+
+        return self::$catalogIblockId = ($id > 0 ? $id : 4);
     }
 
     /**
@@ -198,8 +255,17 @@ class Product
     public static function expandSectionIds(array $sectionIds): array
     {
         $sectionIds = array_values(array_unique(array_map('intval', $sectionIds)));
-        if (empty($sectionIds) || !Loader::includeModule('iblock')) {
+        if (empty($sectionIds)) {
             return $sectionIds;
+        }
+
+        $cacheKey = implode(',', $sectionIds);
+        if (isset(self::$expandedSectionsCache[$cacheKey])) {
+            return self::$expandedSectionsCache[$cacheKey];
+        }
+
+        if (!Loader::includeModule('iblock')) {
+            return self::$expandedSectionsCache[$cacheKey] = $sectionIds;
         }
 
         $result = $sectionIds;
@@ -223,6 +289,274 @@ class Product
                     $queue[] = $id;
                 }
             }
+        }
+
+        return self::$expandedSectionsCache[$cacheKey] = $result;
+    }
+
+    /**
+     * Пакетно возвращает разделы товаров: сначала собственные разделы, а для
+     * торговых предложений (SKU) — дополнительно разделы родительского товара.
+     * Это нужно, чтобы правила, заданные по разделу каталога, срабатывали и для
+     * товаров, у которых этот раздел не является основным, и для SKU.
+     *
+     * @param array $productIds
+     * @return array productId => [sectionId, ...]
+     */
+    public static function getElementsSectionsMap(array $productIds): array
+    {
+        $ids = [];
+        foreach ($productIds as $id) {
+            $id = (int)$id;
+            if ($id > 0) {
+                $ids[$id] = $id;
+            }
+        }
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        $ids = array_values($ids);
+        $map = self::loadSectionsForElements($ids);
+
+        // Для SKU добавляем разделы родительского товара.
+        $parentOf = [];
+        $parentIds = [];
+        foreach ($ids as $id) {
+            $parentId = self::getSkuParentId($id);
+            if ($parentId > 0 && $parentId !== $id) {
+                $parentOf[$id] = $parentId;
+                $parentIds[$parentId] = $parentId;
+            }
+        }
+
+        if (!empty($parentIds)) {
+            $parentMap = self::loadSectionsForElements(array_values($parentIds));
+            foreach ($parentOf as $id => $parentId) {
+                if (empty($parentMap[$parentId])) {
+                    continue;
+                }
+                foreach ($parentMap[$parentId] as $sectionId) {
+                    $map[$id][$sectionId] = $sectionId;
+                }
+            }
+        }
+
+        $result = [];
+        foreach ($map as $id => $sections) {
+            $result[$id] = array_values($sections);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Разделы элементов одним-двумя запросами (основной раздел + все привязки).
+     *
+     * @param array $ids
+     * @return array elementId => [sectionId => sectionId]
+     */
+    private static function loadSectionsForElements(array $ids): array
+    {
+        $result = [];
+        foreach ($ids as $id) {
+            $result[(int)$id] = [];
+        }
+
+        if (empty($ids)) {
+            return $result;
+        }
+
+        \CModule::IncludeModule('iblock');
+
+        if (class_exists('\Bitrix\Iblock\ElementTable')) {
+            try {
+                $rs = \Bitrix\Iblock\ElementTable::getList([
+                    'filter' => ['=ID' => array_values($ids)],
+                    'select' => ['ID', 'IBLOCK_SECTION_ID'],
+                ]);
+                while ($row = $rs->fetch()) {
+                    $id = (int)$row['ID'];
+                    $sectionId = (int)$row['IBLOCK_SECTION_ID'];
+                    if ($sectionId > 0 && isset($result[$id])) {
+                        $result[$id][$sectionId] = $sectionId;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // игнорируем — ниже попробуем через SectionElementTable
+            }
+        }
+
+        if (class_exists('\Bitrix\Iblock\SectionElementTable')) {
+            try {
+                $rs = \Bitrix\Iblock\SectionElementTable::getList([
+                    'filter' => ['=IBLOCK_ELEMENT_ID' => array_values($ids)],
+                    'select' => ['IBLOCK_ELEMENT_ID', 'IBLOCK_SECTION_ID', 'ADDITIONAL_PROPERTY_ID'],
+                ]);
+                while ($row = $rs->fetch()) {
+                    // служебные секции, используемые для хранения свойств, пропускаем
+                    if (!empty($row['ADDITIONAL_PROPERTY_ID'])) {
+                        continue;
+                    }
+                    $id = (int)$row['IBLOCK_ELEMENT_ID'];
+                    $sectionId = (int)$row['IBLOCK_SECTION_ID'];
+                    if ($sectionId > 0 && isset($result[$id])) {
+                        $result[$id][$sectionId] = $sectionId;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // разделы элемента могут отсутствовать — не критично
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * ID родительского товара для торгового предложения (0 — если не SKU).
+     *
+     * @param int $productId
+     * @return int
+     */
+    private static function getSkuParentId(int $productId): int
+    {
+        if ($productId <= 0) {
+            return 0;
+        }
+
+        if (array_key_exists($productId, self::$skuParentCache)) {
+            return self::$skuParentCache[$productId];
+        }
+
+        if (!Loader::includeModule('catalog')) {
+            return self::$skuParentCache[$productId] = 0;
+        }
+
+        $parentId = 0;
+        try {
+            $info = \CCatalogSku::GetProductInfo($productId);
+            if (is_array($info) && !empty($info['ID'])) {
+                $parentId = (int)$info['ID'];
+            }
+        } catch (\Throwable $e) {
+            $parentId = 0;
+        }
+
+        return self::$skuParentCache[$productId] = $parentId;
+    }
+
+    /**
+     * Пакетно возвращает значения свойства для списка товаров.
+     * Для SKU, если у самого предложения значения нет, берётся значение родителя.
+     *
+     * @param array  $productIds
+     * @param int    $iblockId
+     * @param string $propertyCode
+     * @return array productId => int
+     */
+    public static function getElementsPropertyMap(array $productIds, int $iblockId, string $propertyCode): array
+    {
+        $ids = [];
+        foreach ($productIds as $id) {
+            $id = (int)$id;
+            if ($id > 0) {
+                $ids[$id] = $id;
+            }
+        }
+
+        if (empty($ids) || $iblockId <= 0 || $propertyCode === '') {
+            return [];
+        }
+
+        $ids = array_values($ids);
+        $map = self::loadPropertyValuesForElements($ids, $iblockId, $propertyCode);
+
+        // Для SKU без собственного значения пробуем родителя.
+        $parentOf = [];
+        $parentIds = [];
+        foreach ($ids as $id) {
+            if (array_key_exists($id, $map) && $map[$id] > 0) {
+                continue;
+            }
+            $parentId = self::getSkuParentId($id);
+            if ($parentId > 0 && $parentId !== $id) {
+                $parentOf[$id] = $parentId;
+                $parentIds[$parentId] = $parentId;
+            }
+        }
+
+        if (!empty($parentIds)) {
+            $parentMap = self::loadPropertyValuesForElements(array_values($parentIds), $iblockId, $propertyCode);
+            foreach ($parentOf as $id => $parentId) {
+                if (!empty($parentMap[$parentId])) {
+                    $map[$id] = (int)$parentMap[$parentId];
+                }
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * Значения свойства элементов одним запросом.
+     *
+     * @param array  $ids
+     * @param int    $iblockId
+     * @param string $propertyCode
+     * @return array elementId => int
+     */
+    private static function loadPropertyValuesForElements(array $ids, int $iblockId, string $propertyCode): array
+    {
+        $result = [];
+        if (empty($ids)) {
+            return $result;
+        }
+
+        \CModule::IncludeModule('iblock');
+
+        $propertyIds = [];
+        try {
+            // Сначала ищем свойство в указанном инфоблоке, иначе — по коду во всех
+            // инфоблоках (важно для SKU, где свойство лежит в инфоблоке предложений).
+            $property = \CIBlockProperty::GetList([], [
+                'IBLOCK_ID' => $iblockId,
+                'CODE'      => $propertyCode,
+            ])->Fetch();
+            if ($property) {
+                $propertyIds[] = (int)$property['ID'];
+            } else {
+                $rsProps = \CIBlockProperty::GetList([], ['CODE' => $propertyCode]);
+                while ($row = $rsProps->Fetch()) {
+                    $propertyIds[] = (int)$row['ID'];
+                }
+            }
+        } catch (\Throwable $e) {
+            $propertyIds = [];
+        }
+
+        $propertyIds = array_values(array_filter(array_unique($propertyIds)));
+        if (empty($propertyIds) || !class_exists('\Bitrix\Iblock\ElementPropertyTable')) {
+            return $result;
+        }
+
+        try {
+            $rs = \Bitrix\Iblock\ElementPropertyTable::getList([
+                'filter' => [
+                    '=IBLOCK_PROPERTY_ID' => $propertyIds,
+                    '=IBLOCK_ELEMENT_ID'  => array_values($ids),
+                ],
+                'select' => ['IBLOCK_ELEMENT_ID', 'VALUE'],
+            ]);
+            while ($row = $rs->fetch()) {
+                $id = (int)$row['IBLOCK_ELEMENT_ID'];
+                $value = (int)$row['VALUE'];
+                if ($id > 0 && $value > 0) {
+                    $result[$id] = $value;
+                }
+            }
+        } catch (\Throwable $e) {
+            return [];
         }
 
         return $result;

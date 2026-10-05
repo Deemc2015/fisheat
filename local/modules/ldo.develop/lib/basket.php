@@ -102,18 +102,22 @@ class Basket
     {
         try {
             $basket = null;
+            $entity = null;
 
             if ($dataCart instanceof \Bitrix\Main\Event) {
                 $entity = $dataCart->getParameter('ENTITY');
-                if ($entity instanceof \Bitrix\Sale\Basket) {
-                    $basket = $entity;
-                } elseif ($entity instanceof \Bitrix\Sale\BasketItem) {
-                    $basket = $entity->getCollection();
-                }
-            } elseif ($dataCart instanceof \Bitrix\Sale\Basket) {
-                $basket = $dataCart;
-            } elseif ($dataCart instanceof \Bitrix\Sale\BasketItem) {
-                $basket = $dataCart->getCollection();
+            } elseif (is_array($dataCart)) {
+                // registerEventHandlerCompatible передаёт массив параметров события
+                $entity = $dataCart['ENTITY'] ?? reset($dataCart);
+            } elseif ($dataCart instanceof \Bitrix\Sale\Basket
+                || $dataCart instanceof \Bitrix\Sale\BasketItem) {
+                $entity = $dataCart;
+            }
+
+            if ($entity instanceof \Bitrix\Sale\Basket) {
+                $basket = $entity;
+            } elseif ($entity instanceof \Bitrix\Sale\BasketItem) {
+                $basket = $entity->getCollection();
             }
 
             if ($basket instanceof \Bitrix\Sale\Basket) {
@@ -162,8 +166,15 @@ class Basket
     }
 
     /**
-     * Пересчитывает бесплатные позиции по всем правилам для текущего
-     * содержимого корзины (правила — из таблицы ldo_marketing_free_positions).
+     * Пересчитывает бесплатные позиции по всем правилам для переданной корзины
+     * (правила — из таблицы ldo_marketing_free_positions).
+     *
+     * Метод вызывается из события OnSaleBasketBeforeSaved и изменяет корзину
+     * НА МЕСТЕ: дополнительные loadItemsForFUser()/save() не выполняются.
+     * Ранее вложенный save() добавлял бесплатную позицию, но внешний save()
+     * (внутри которого выполнялся обработчик) затем удалял её как «лишнюю» в
+     * getOriginalItemsValues() — из-за этого бесплатные позиции пропадали.
+     * Правка на месте также убирает двойное сохранение и лишние запросы к БД.
      *
      * @param \Bitrix\Sale\Basket $currentBasket
      * @return void
@@ -174,8 +185,17 @@ class Basket
             return;
         }
 
+        if (!is_object($currentBasket) || !($currentBasket instanceof \Bitrix\Sale\Basket)) {
+            return;
+        }
+
+        // Корзина, привязанная к заказу, не пересчитывается.
+        if (method_exists($currentBasket, 'getOrderId') && (int)$currentBasket->getOrderId() > 0) {
+            return;
+        }
+
         $siteId = '';
-        if (is_object($currentBasket) && method_exists($currentBasket, 'getSiteId')) {
+        if (method_exists($currentBasket, 'getSiteId')) {
             $siteId = (string)$currentBasket->getSiteId();
         }
         if ($siteId === '') {
@@ -218,38 +238,67 @@ class Basket
 
         // Текущее содержимое корзины (включая ещё не сохранённые позиции).
         $currentItems = [];
+        $productIds   = [];
+
         foreach ($currentBasket as $item) {
+            $productId = (int)$item->getProductId();
             $currentItems[] = [
-                'PRODUCT_ID' => (int)$item->getProductId(),
+                'PRODUCT_ID' => $productId,
                 'QUANTITY'   => (float)$item->getQuantity(),
             ];
+
+            if ($productId > 0 && !isset($freeIds[$productId])) {
+                $productIds[$productId] = $productId;
+            }
         }
 
-        // Требуемое количество каждого бесплатного товара.
+        // Пакетно получаем разделы товаров (включая родителя для SKU) и
+        // количество в упаковке — без запросов в цикле (N+1).
+        $sectionsMap = Product::getElementsSectionsMap(array_values($productIds));
+        $piecesMap   = Product::getElementsPropertyMap(
+            array_values($productIds),
+            Product::getCatalogIblockId(),
+            'ATT_COUNT_ROLL'
+        );
+
+        // Требуемое количество каждого бесплатного товара (максимум по правилам).
         $required = [];
 
         foreach ($preparedRules as $rule) {
+            if (empty($rule['SECTIONS'])) {
+                // Правило без разделов не может быть сопоставлено — пропускаем,
+                // чтобы не удалять уже добавленные бесплатные позиции.
+                continue;
+            }
+
+            $sections = array_flip($rule['SECTIONS']);
             $totalPieces = 0;
 
             foreach ($currentItems as $item) {
                 $productId = $item['PRODUCT_ID'];
-                if (isset($freeIds[$productId])) {
+                if ($productId <= 0 || isset($freeIds[$productId])) {
                     continue;
                 }
 
-                $dataProduct = Product::getDataById($productId);
-                $sectionId = (int)($dataProduct['IBLOCK_SECTION_ID'] ?? 0);
-                if (!$sectionId || !in_array($sectionId, $rule['SECTIONS'], true)) {
+                $productSections = $sectionsMap[$productId] ?? [];
+                if (empty($productSections)) {
                     continue;
                 }
 
-                $pieces = 1;
-                $dbProp = \CIBlockElement::GetProperty(4, $productId, [], ['CODE' => 'ATT_COUNT_ROLL']);
-                if ($prop = $dbProp->Fetch()) {
-                    $pieces = (int)$prop['VALUE'];
-                    if ($pieces <= 0) {
-                        $pieces = 1;
+                $matched = false;
+                foreach ($productSections as $itemSectionId) {
+                    if (isset($sections[(int)$itemSectionId])) {
+                        $matched = true;
+                        break;
                     }
+                }
+                if (!$matched) {
+                    continue;
+                }
+
+                $pieces = (int)($piecesMap[$productId] ?? 0);
+                if ($pieces <= 0) {
+                    $pieces = 1;
                 }
 
                 $totalPieces += $item['QUANTITY'] * $pieces;
@@ -258,25 +307,26 @@ class Basket
             $count = (int)floor($totalPieces / $rule['PORTION']);
 
             foreach ($rule['IDS'] as $freeProductId) {
-                $required[$freeProductId] = $count;
+                $freeProductId = (int)$freeProductId;
+                if (!isset($required[$freeProductId]) || $required[$freeProductId] < $count) {
+                    $required[$freeProductId] = $count;
+                }
             }
         }
 
-        // Применяем изменения к сохранённой корзине пользователя.
-        $userBasket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), $siteId);
-
+        // Применяем изменения прямо к переданной корзине: она будет сохранена
+        // текущим вызовом Basket::save(), внутри которого мы находимся.
         self::$freePositionsSyncing = true;
 
         try {
-            $changed = false;
+            $currency = CurrencyManager::getBaseCurrency();
 
             foreach ($required as $freeProductId => $needCount) {
-                $item = $userBasket->getExistsItem('catalog', $freeProductId);
+                $item = $currentBasket->getExistsItem('catalog', $freeProductId);
 
                 if ($needCount <= 0) {
                     if ($item) {
                         $item->delete();
-                        $changed = true;
                     }
                     continue;
                 }
@@ -284,22 +334,17 @@ class Basket
                 if ($item) {
                     if ((float)$item->getQuantity() !== (float)$needCount) {
                         $item->setField('QUANTITY', $needCount);
-                        $changed = true;
                     }
-                } else {
-                    $newItem = $userBasket->createItem('catalog', $freeProductId);
-                    $newItem->setFields([
-                        'QUANTITY' => $needCount,
-                        'CURRENCY' => CurrencyManager::getBaseCurrency(),
-                        'LID'      => $siteId,
-                        'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
-                    ]);
-                    $changed = true;
+                    continue;
                 }
-            }
 
-            if ($changed) {
-                $userBasket->save();
+                $newItem = $currentBasket->createItem('catalog', $freeProductId);
+                $newItem->setFields([
+                    'QUANTITY' => $needCount,
+                    'CURRENCY' => $currency,
+                    'LID'      => $siteId,
+                    'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
+                ]);
             }
         } finally {
             self::$freePositionsSyncing = false;
