@@ -341,6 +341,9 @@ class Basket
 
                 if (!$item) {
                     $item = $currentBasket->createItem('catalog', $freeProductId);
+                    // Сразу помечаем цену ручной — иначе провайдер подставит цену
+                    // каталога (у бесплатных позиций она может быть, напр., 1 ₽).
+                    $item->setField('CUSTOM_PRICE', 'Y');
                     $item->setFields([
                         'QUANTITY' => $totalQty,
                         'CURRENCY' => $currency,
@@ -372,12 +375,10 @@ class Basket
                     && abs((float)$item->getField('BASE_PRICE') - $unitPrice) <= 0.001);
 
                 if (!$isCustom || !$priceMatches) {
-                    $item->setFields([
-                        'CUSTOM_PRICE'   => 'Y',
-                        'BASE_PRICE'     => $unitPrice,
-                        'PRICE'          => $unitPrice,
-                        'DISCOUNT_PRICE' => 0,
-                    ]);
+                    $item->setField('CUSTOM_PRICE', 'Y');
+                    $item->setField('BASE_PRICE', $unitPrice);
+                    $item->setField('DISCOUNT_PRICE', 0);
+                    $item->setField('PRICE', $unitPrice);
                 }
             }
         } finally {
@@ -406,12 +407,12 @@ class Basket
             return;
         }
 
-        $item->setFields([
-            'CUSTOM_PRICE'   => 'Y',
-            'BASE_PRICE'     => 0,
-            'PRICE'          => 0,
-            'DISCOUNT_PRICE' => 0,
-        ]);
+        // CUSTOM_PRICE задаём первым: он помечает PRICE как «ручную цену»,
+        // и провайдер каталога уже не перезапишет её ценой товара.
+        $item->setField('CUSTOM_PRICE', 'Y');
+        $item->setField('BASE_PRICE', 0);
+        $item->setField('DISCOUNT_PRICE', 0);
+        $item->setField('PRICE', 0);
     }
 
     public function deleteItem($productId)
