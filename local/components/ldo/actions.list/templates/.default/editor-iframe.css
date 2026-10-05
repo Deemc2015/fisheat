@@ -1,0 +1,106 @@
+/* Оформление содержимого визуального редактора описания акции под тёмную
+   тему партнёрского раздела. Передаётся как текст (iframeCss) и вставляется
+   внутрь iframe редактора. */
+
+html,
+body {
+    margin: 0;
+    padding: 10px 12px;
+    background: #1B1818;
+    color: #FFFFFF;
+    font-family: 'Blogger Sans', 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+p {
+    margin: 0 0 10px;
+}
+
+a {
+    color: #F44336;
+    text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0 0 10px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #FFFFFF;
+}
+
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+h3 { font-size: 17px; }
+h4 { font-size: 15px; }
+
+ul,
+ol {
+    margin: 0 0 10px;
+    padding-left: 22px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+blockquote {
+    margin: 0 0 10px;
+    padding: 6px 12px;
+    border-left: 3px solid #F44336;
+    color: #C9C9C9;
+    background: rgba(255, 255, 255, .03);
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #868686;
+    margin: 12px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+table {
+    border-collapse: collapse;
+    max-width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #868686;
+    padding: 6px 8px;
+}
+
+th {
+    background: rgba(255, 255, 255, .04);
+}
+
+code,
+pre {
+    background: #2B2D2F;
+    border-radius: 4px;
+    font-family: Consolas, 'Courier New', monospace;
+}
+
+code {
+    padding: 1px 4px;
+}
+
+pre {
+    padding: 10px 12px;
+    overflow-x: auto;
+}
+
+::selection {
+    background: #F44336;
+    color: #FFFFFF;
+}
