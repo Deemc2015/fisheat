@@ -206,6 +206,8 @@ class OpenSourceOrderAjaxController extends Controller
         $componentClass->setOrderProperties($properties);
         $componentClass->createOrderShipment($delivery_id);
         $componentClass->createOrderPayment($pay_system_id);
+        // Зона доставки и её ID по выбранному адресу (свойства zone_name / zone_id)
+        $componentClass->applyDeliveryZoneProperties();
 
         $validationResult = $componentClass->validateOrder();
         if ($validationResult->isSuccess()) {

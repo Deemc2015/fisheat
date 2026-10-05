@@ -46,10 +46,12 @@ if ($request->getQuery('EXPORT') === 'excel') {
 Extension::load(['ui.vue3', 'ldo.orders']);
 
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+?>
 
-$APPLICATION->IncludeComponent(
-	"ldo:orders.list", 
-	"vue", 
+                <?
+                $APPLICATION->IncludeComponent(
+	"ldo:orders.list",
+	"vue",
 	array(
 		"EXPORT_ENABLED" => "Y",
 		"COMPONENT_TEMPLATE" => "vue",
@@ -67,5 +69,7 @@ $APPLICATION->IncludeComponent(
 	),
 	false
 );
+                ?>
 
+<?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");

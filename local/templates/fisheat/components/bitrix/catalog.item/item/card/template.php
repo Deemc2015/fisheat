@@ -238,7 +238,7 @@ if (mb_strlen($shortDescription) > $maxLength) {
 }
 ?>
     <?if($shortDescription ):?>
-    <div title="<?=$item['DETAIL_TEXT']?>" class=" <?=$disabledClass?> desc-product">
+    <div title="<?=htmlspecialcharsbx($shortDescription)?>" class=" <?=$disabledClass?> desc-product">
         <?=$shortDescription ?>
     </div>
     <?endif;?>

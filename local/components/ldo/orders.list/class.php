@@ -4,6 +4,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 use Bitrix\Main\Context;
 use Bitrix\Main\Engine\Contract\Controllerable;
 use Bitrix\Main\Loader;
+use Bitrix\Main\ORM\Fields\ExpressionField;
 use Bitrix\Main\ORM\Query\Query;
 use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\UI\PageNavigation;
@@ -39,6 +40,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	/** @var string Выбранный ресторан (XML_ID из свойства заказа RESTORAN_ID) */
 	protected $filterRestaurant = '';
 
+	/** @var int Выбранная зона доставки (значение свойства заказа zone_id) */
+	protected $filterZone = 0;
+
 	/** @var DateTime|null Дата "с" (начало дня) */
 	protected $dateFrom = null;
 
@@ -59,6 +63,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 
 	/** @var int[] ID заказов, отфильтрованных по ресторану (свойство RESTORAN_ID) */
 	protected $restaurantOrderIds = [];
+
+	/** @var int[] ID заказов, отфильтрованных по зоне доставки (свойство zone_id) */
+	protected $zoneOrderIds = [];
 
 	/** @var array Карта статусов: ID => название */
 	protected $statuses = [];
@@ -230,6 +237,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
 
 		$filterRestaurant = trim((string)$request->getPost('RESTAURANT'));
+		$filterZone = (int)$request->getPost('ZONE');
 
 		$this->applyFilterValues(
 			$filterStatus,
@@ -238,7 +246,8 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			(string)$request->getPost('SEARCH'),
 			$filterDelivery,
 			$filterPaySystem,
-			$filterRestaurant
+			$filterRestaurant,
+			$filterZone
 		);
 
 		// Параметры "какие способы выводить в фильтре" — при AJAX (mode=class)
@@ -305,6 +314,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			: ((int)$rawPaySystem > 0 ? [(int)$rawPaySystem] : []);
 
 		$filterRestaurant = trim((string)$request->getQuery('RESTAURANT'));
+		$filterZone = (int)$request->getQuery('ZONE');
 
 		$this->applyFilterValues(
 			$filterStatus,
@@ -313,7 +323,8 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			(string)$request->getQuery('SEARCH'),
 			$filterDelivery,
 			$filterPaySystem,
-			$filterRestaurant
+			$filterRestaurant,
+			$filterZone
 		);
 	}
 
@@ -326,13 +337,16 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	 * @param string $search
 	 * @param array  $filterDelivery
 	 * @param array  $filterPaySystem
+	 * @param string $filterRestaurant
+	 * @param int    $filterZone
 	 */
-	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search, array $filterDelivery = [], array $filterPaySystem = [], $filterRestaurant = '')
+	protected function applyFilterValues(array $filterStatus, $dateFromRaw, $dateToRaw, $search, array $filterDelivery = [], array $filterPaySystem = [], $filterRestaurant = '', $filterZone = 0)
 	{
-		$this->filterStatus = array_values(array_unique($filterStatus));
-		$this->filterDelivery = array_values(array_unique(array_map('intval', $filterDelivery)));
-		$this->filterPaySystem = array_values(array_unique(array_map('intval', $filterPaySystem)));
-		$this->filterRestaurant = trim((string)$filterRestaurant);
+	 $this->filterStatus = array_values(array_unique($filterStatus));
+	 $this->filterDelivery = array_values(array_unique(array_map('intval', $filterDelivery)));
+	 $this->filterPaySystem = array_values(array_unique(array_map('intval', $filterPaySystem)));
+	 $this->filterRestaurant = trim((string)$filterRestaurant);
+	 $this->filterZone = max(0, (int)$filterZone);
 
 		$this->dateFromRaw = trim((string)$dateFromRaw);
 		$this->dateToRaw   = trim((string)$dateToRaw);
@@ -383,6 +397,31 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		}
 
 		return $services;
+	}
+
+	/**
+	 * Карта ID службы доставки => имя класса обработчика.
+	 *
+	 * Нужна, чтобы отличать реальную доставку (ZoneDelivery) от самовывоза
+	 * и службы «без доставки».
+	 *
+	 * @return array
+	 */
+	protected function getDeliveryClassMap(): array
+	{
+		$map = [];
+		try {
+			$rs = DeliveryServicesTable::getList([
+				'select' => ['ID', 'CLASS_NAME'],
+			]);
+			while ($row = $rs->fetch()) {
+				$map[(int)$row['ID']] = (string)$row['CLASS_NAME'];
+			}
+		} catch (\Throwable $e) {
+			$map = [];
+		}
+
+		return $map;
 	}
 
 	/**
@@ -471,6 +510,33 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+		* Список зон доставки для фильтра: ID => название (активные зоны).
+		*
+		* @return array
+		*/
+	protected function getZones(): array
+	{
+		$zones = [];
+		if (!Loader::includeModule('ldo.deliverymap')) {
+			return $zones;
+		}
+		try {
+			$list = \Ldo\Deliverymap\DeliveryZoneTable::getList([
+				'filter' => ['=ACTIVE' => 'Y'],
+				'select' => ['ID', 'NAME'],
+				'order'  => ['SORT' => 'ASC', 'NAME' => 'ASC'],
+			]);
+			while ($z = $list->fetch()) {
+				$zones[(int)$z['ID']] = (string)$z['NAME'];
+			}
+		} catch (\Throwable $e) {
+			$zones = [];
+		}
+
+		return $zones;
+	}
+
+	/**
 	 * Поля выборки заказа + связанного пользователя.
 	 *
 	 * @return array
@@ -479,6 +545,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	{
 		return [
 			'ID', 'ACCOUNT_NUMBER', 'DATE_INSERT', 'PRICE', 'DISCOUNT_ALL', 'STATUS_ID', 'LID',
+			'USER_DESCRIPTION',
 			'DELIVERY_ID', 'PAY_SYSTEM_ID',
 			'USER_ID', 'USER.NAME', 'USER.LAST_NAME', 'USER.LOGIN', 'USER.EMAIL',
 		];
@@ -528,6 +595,27 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+		* ID заказов, у которых свойство заказа zone_id равно выбранной зоне доставки.
+		*/
+	protected function collectZoneOrderIds()
+	{
+		$this->zoneOrderIds = [];
+		if ($this->filterZone <= 0) {
+			return;
+		}
+
+		$rs = OrderPropsValueTable::getList([
+			'select' => ['ORDER_ID'],
+			'filter' => ['=CODE' => 'zone_id', '=VALUE' => (string)$this->filterZone],
+		]);
+		$ids = [];
+		while ($p = $rs->fetch()) {
+			$ids[(int)$p['ORDER_ID']] = true;
+		}
+		$this->zoneOrderIds = array_keys($ids);
+	}
+
+	/**
 	 * Применение фильтров к ORM-запросу (методы Битрикс: whereIn / where / whereLike / OR-логика).
 	 *
 	 * @param Query $query
@@ -550,6 +638,14 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 				$query->whereIn('ID', $this->restaurantOrderIds);
 			} else {
 				// Ресторан выбран, но заказов с ним нет — возвращаем пустой список
+				$query->where('ID', -1);
+			}
+		}
+		if ($this->filterZone > 0) {
+			if (!empty($this->zoneOrderIds)) {
+				$query->whereIn('ID', $this->zoneOrderIds);
+			} else {
+				// Зона выбрана, но заказов с ней нет — возвращаем пустой список
 				$query->where('ID', -1);
 			}
 		}
@@ -600,6 +696,39 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 	}
 
 	/**
+	 * Количество заказов по каждому пользователю (для блока «Данные покупателя»).
+	 *
+	 * @param array $userIds
+	 * @return array [userId => count]
+	 */
+	protected function loadUsersOrdersCount(array $userIds): array
+	{
+		$counts = [];
+		$userIds = array_values(array_unique(array_filter(array_map('intval', $userIds))));
+		if (empty($userIds)) {
+			return $counts;
+		}
+
+		try {
+			$rs = OrderTable::getList([
+				'select'  => ['USER_ID', 'CNT'],
+				'filter'  => ['=USER_ID' => $userIds],
+				'group'   => ['USER_ID'],
+				'runtime' => [
+					new ExpressionField('CNT', 'COUNT(*)'),
+				],
+			]);
+			while ($row = $rs->fetch()) {
+				$counts[(int)$row['USER_ID']] = (int)$row['CNT'];
+			}
+		} catch (\Throwable $e) {
+			$counts = [];
+		}
+
+		return $counts;
+	}
+
+	/**
 	 * Состав заказов (позиции корзины) — одним запросом для переданных заказов.
 	 *
 	 * @param array $orderIds
@@ -613,7 +742,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		}
 
 		$rsBasket = BasketTable::getList([
-			'select' => ['ID', 'ORDER_ID', 'NAME', 'PRICE', 'QUANTITY', 'WEIGHT', 'MEASURE_NAME', 'SUMMARY_PRICE'],
+			'select' => ['ID', 'ORDER_ID', 'NAME', 'PRICE', 'QUANTITY', 'WEIGHT', 'MEASURE_NAME', 'SUMMARY_PRICE', 'DISCOUNT_NAME', 'DISCOUNT_COUPON'],
 			'filter' => ['=ORDER_ID' => $orderIds],
 			'order'  => ['ID' => 'ASC'],
 		]);
@@ -715,6 +844,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		$this->statuses = $this->getStatuses();
 		$this->collectSearchOrderIds();
 		$this->collectRestaurantOrderIds();
+		$this->collectZoneOrderIds();
 
 		$orderSelect = $this->getOrderSelect();
 		$pageSize    = max(1, (int)($this->arParams['PAGE_SIZE'] ?? 50));
@@ -740,6 +870,8 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		$nav->setRecordCount($rsOrders->getCount());
 
 		$orders = [];
+		// Карта ID службы доставки => класс обработчика (для признака «доставка»)
+		$deliveryClasses = $this->getDeliveryClassMap();
 		while ($o = $rsOrders->fetch()) {
 			// ORM D7 возвращает ключи связей как SALE_INTERNALS_ORDER_USER_* —
 			// приводим к читаемым USER_* (используются в шаблонах)
@@ -753,6 +885,17 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			if (isset($o['DATE_INSERT']) && is_object($o['DATE_INSERT']) && method_exists($o['DATE_INSERT'], 'format')) {
 				$o['DATE_INSERT'] = $o['DATE_INSERT']->format('d.m.Y H:i');
 			}
+			// Признак «это доставка» (не самовывоз и не «без доставки») —
+			// по классу обработчика службы доставки заказа
+			$deliveryClass = (string)($deliveryClasses[(int)$o['DELIVERY_ID']] ?? '');
+			$o['IS_DELIVERY'] = (strpos($deliveryClass, 'ZoneDelivery') !== false);
+			// Признак «это самовывоз»: служба задана и не является ни доставкой,
+			// ни заглушкой «без доставки»
+			$o['IS_PICKUP'] = (
+				!$o['IS_DELIVERY']
+				&& $deliveryClass !== ''
+				&& strpos($deliveryClass, 'EmptyDeliveryService') === false
+			);
 			$orders[] = $o;
 		}
 
@@ -771,6 +914,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		}
 		if ($this->filterRestaurant !== '') {
 			$baseParams['RESTAURANT'] = $this->filterRestaurant;
+		}
+		if ($this->filterZone > 0) {
+			$baseParams['ZONE'] = $this->filterZone;
 		}
 		if ($this->dateFromRaw !== '') {
 			$baseParams['DATE_FROM'] = $this->dateFromRaw;
@@ -792,7 +938,9 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 			'FILTER_DELIVERY'  => $this->getFilterDeliveryServices(),
 			'FILTER_PAY'       => $this->getFilterPaySystems(),
 			'FILTER_RESTAURANTS' => $this->getRestaurants(),
+			'FILTER_ZONES'     => $this->getZones(),
 			'ORDER_PROPS'      => $this->loadOrderProps($orderIds),
+			'USERS_ORDERS_COUNT' => $this->loadUsersOrdersCount(array_column($orders, 'USER_ID')),
 			'BASKETS'          => $this->loadBaskets($orderIds),
 			'DELIVERY_SUM'     => $this->loadDeliverySum($orderIds),
 			'FILTER'           => [
@@ -800,6 +948,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 				'DELIVERY'   => $this->filterDelivery,
 				'PAY_SYSTEM' => $this->filterPaySystem,
 				'RESTAURANT' => $this->filterRestaurant,
+				'ZONE'       => $this->filterZone,
 				'DATE_FROM'  => $this->dateFromRaw,
 				'DATE_TO'    => $this->dateToRaw,
 				'SEARCH'     => $this->search,
@@ -826,6 +975,7 @@ class OrdersList extends \CBitrixComponent implements Controllerable
 		global $APPLICATION;
 
 		$this->collectSearchOrderIds();
+		$this->collectZoneOrderIds();
 
 		$query = OrderTable::query()
 			->setSelect($this->getOrderSelect())

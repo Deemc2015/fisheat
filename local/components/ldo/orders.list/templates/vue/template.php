@@ -19,7 +19,7 @@ try {
     $payload = '{}';
 }
 ?>
-<div id="partners-orders-vue" class="p-main"></div>
+<div id="partners-orders-vue"></div>
 <script>
     // Данные передаются двумя каналами: глобальная переменная + rootProps при createApp
     window.LDO_ORDERS_DATA = <?= $payload ?>;

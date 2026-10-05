@@ -537,6 +537,55 @@
     border-radius: 12px;
     overflow: hidden;
 }
+/* Заказы: компактнее по горизонтали, чтобы таблица помещалась в область заказов */
+#partners-orders-vue .p-users-table th,
+#partners-orders-vue .p-users-table td {
+    padding: 10px 12px;
+}
+/* Заголовки и содержимое колонок могут переноситься — таблица укладывается в ширину области */
+#partners-orders-vue .p-users-table th {
+    white-space: normal;
+}
+#partners-orders-vue .p-users-table td {
+    word-break: break-word;
+}
+/* Ничего не обрезает выпадающее меню действий (иначе оно «прячется» за областью заказов) */
+#partners-orders-vue .p-users-wrap {
+    overflow: visible;
+}
+#partners-orders-vue .p-users-wrap > div:first-child {
+    overflow: visible !important;
+}
+/* Колонка действий («Подробнее» / «Печать») закреплена справа —
+   кнопки всегда видны у правого края области заказов */
+#partners-orders-vue .p-users-table th:last-child,
+#partners-orders-vue .p-users-table td:last-child:not([colspan]) {
+    position: sticky;
+    right: 0;
+    z-index: 10;
+    background: var(--bg-black, #1B1818);
+    text-align: right;
+    white-space: nowrap;
+}
+#partners-orders-vue .p-users-table tbody tr:hover td:last-child:not([colspan]) {
+    background: #211E1E;
+}
+/* Меню действий раскрывается вниз и рисуется поверх соседних строк */
+#partners-orders-vue .p-order-menu {
+    z-index: 20;
+}
+#partners-orders-vue .p-order-menu.open {
+    z-index: 40;
+}
+#partners-orders-vue .p-order-menu__dropdown {
+    top: calc(100% + 4px);
+    bottom: auto;
+    z-index: 1000;
+}
+/* Ячейка с открытым меню поднята выше остальных строк таблицы */
+#partners-orders-vue .p-users-table tr:has(.p-order-menu.open) td:last-child {
+    z-index: 50;
+}
 .p-users-table {
     width: 100%;
     border-collapse: collapse;

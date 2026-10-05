@@ -80,26 +80,29 @@
                 </div>
             </div>
 
-            <!-- Описание раздела (редактор, появляется в режиме редактирования) -->
+            <!-- Описание раздела: визуальный редактор + SEO (в режиме редактирования) -->
             <div class="section-desc-block" style="display:none;">
-                <div class="section-desc-toolbar">
-                    <select class="section-desc-block-select" title="Формат блока">
-                        <option value="P">Абзац</option>
-                        <option value="H1">Заголовок 1</option>
-                        <option value="H2">Заголовок 2</option>
-                        <option value="H3">Заголовок 3</option>
-                        <option value="H4">Заголовок 4</option>
-                        <option value="H5">Заголовок 5</option>
-                        <option value="H6">Заголовок 6</option>
-                    </select>
-                    <button type="button" data-cmd="insertUnorderedList" title="Маркированный список">UL</button>
-                    <button type="button" data-cmd="insertOrderedList" title="Нумерованный список">OL</button>
-                    <button type="button" data-cmd="bold" title="Жирный"><b>B</b></button>
-                    <button type="button" data-cmd="italic" title="Курсив"><i>I</i></button>
+                <div class="section-tabs" role="tablist">
+                    <button type="button" class="section-tab is-active" data-section-tab="main">Описание раздела</button>
+                    <button type="button" class="section-tab" data-section-tab="seo">SEO описание</button>
                 </div>
-                <div class="section-desc-editor" contenteditable="true"><?= $section['DESCRIPTION'] ?></div>
-                <textarea class="section-desc-html" placeholder="HTML-код описания..."></textarea>
-                <textarea class="section-desc-storage" style="display:none;"><?= htmlspecialchars($section['DESCRIPTION']) ?></textarea>
+
+                <div class="section-tab-pane is-active" data-section-pane="main">
+                    <span class="section-field__label">Описание раздела</span>
+                    <div class="section-desc-wrap" data-description="<?= htmlspecialcharsbx((string)$section['DESCRIPTION']) ?>"></div>
+                </div>
+
+                <div class="section-tab-pane is-active" data-section-pane="seo" style="display:none;">
+                    <label class="section-field section-field--full">
+                        <span class="section-field__label">Заголовок раздела</span>
+                        <input type="text" class="section-seo-title" value="<?= htmlspecialcharsbx((string)($section['SEO_TITLE'] ?? '')) ?>">
+                    </label>
+
+                    <label class="section-field section-field--full">
+                        <span class="section-field__label">Описание раздела</span>
+                        <textarea class="section-seo-description" rows="4"><?= htmlspecialcharsbx((string)($section['SEO_DESCRIPTION'] ?? '')) ?></textarea>
+                    </label>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>
