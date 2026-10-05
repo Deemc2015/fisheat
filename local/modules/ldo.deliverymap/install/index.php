@@ -55,7 +55,21 @@ class Ldo_deliverymap extends CModule
     {
         global $DB, $APPLICATION;
 
-        $this->UnInstallDB();
+        $step = (int)($_REQUEST['step'] ?? 1);
+
+        // Шаг 1: стандартная форма удаления с чекбоксом "Сохранить таблицы".
+        // IncludeAdminFile() выводит страницу и завершает запрос (die).
+        if ($step < 2) {
+            $APPLICATION->IncludeAdminFile(
+                GetMessage('LDO_DELIVERYMAP_UNINSTALL_TITLE') ?: 'Удаление модуля «Зоны доставки на карте»',
+                $_SERVER['DOCUMENT_ROOT'] . '/local/modules/' . $this->MODULE_ID . '/install/unstep1.php'
+            );
+        }
+
+        // Шаг 2: фактическое удаление. savedata = Y — таблицы и настройки сохраняются.
+        $this->UnInstallDB([
+            'savedata' => (isset($_REQUEST['savedata']) && $_REQUEST['savedata'] === 'Y') ? 'Y' : 'N',
+        ]);
         $this->UnInstallFiles();
 
         ModuleManager::unRegisterModule($this->MODULE_ID);
@@ -108,9 +122,22 @@ class Ldo_deliverymap extends CModule
         }
     }
 
-    public function UnInstallDB()
+    /**
+     * Удаление БД модуля.
+     *
+     * Если на шаге удаления отмечен чекбокс «Сохранить таблицы»
+     * ($arParams['savedata'] === 'Y') — таблицы и настройки не удаляются.
+     *
+     * @param array $arParams
+     * @return bool
+     */
+    public function UnInstallDB($arParams = [])
     {
         global $DB;
+
+        if (is_array($arParams) && isset($arParams['savedata']) && $arParams['savedata'] === 'Y') {
+            return true;
+        }
 
         $this->dropTables();
         Option::delete($this->MODULE_ID);
