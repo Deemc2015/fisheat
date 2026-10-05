@@ -101,6 +101,10 @@ $(document).ready(function(){
                         if (typeof BX !== 'undefined' && BX.addClass) {
                             BX.addClass(btn, 'in_cart');
                         }
+                        // Обновляем компонент корзины (счётчик/мини-корзина)
+                        if (typeof BX !== 'undefined') {
+                            BX.onCustomEvent('OnBasketChange');
+                        }
                         if (typeof updateBasketCount === 'function') {
                             updateBasketCount();
                         }
