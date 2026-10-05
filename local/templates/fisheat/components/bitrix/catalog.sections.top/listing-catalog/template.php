@@ -153,56 +153,9 @@ $signedParams = $signer->sign(base64_encode(serialize($arParams)), 'catalog.sect
     </div>
 </div>
 
-<script>
-    // Кастомная обработка добавления в корзину.
-    // ВАЖНО: обработчик навешивается ТОЛЬКО на кнопки внутри этого блока
-    // (data-catalog-listing), иначе он перехватывал бы все .addCart на странице
-    // (например, кнопки catalog.item) и добавление уходило бы дважды.
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('[data-catalog-listing]').forEach(function(scope) {
-            scope.querySelectorAll('.addCart').forEach(function(button) {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    // Защита от повторной отправки при быстром клике
-                    if (button.dataset.adding === 'Y') {
-                        return;
-                    }
-                    button.dataset.adding = 'Y';
-
-                    var productId = this.getAttribute('data-id');
-                    var quantity = this.getAttribute('data-quantity') || 1;
-
-                    if (typeof BX !== 'undefined' && BX.ajax) {
-                        BX.ajax({
-                            url: '<?=$arParams["~ADD_URL_TEMPLATE"]?>',
-                            method: 'POST',
-                            data: {
-                                'action': 'ADD2BASKET',
-                                'id': productId,
-                                'quantity': quantity
-                            },
-                            dataType: 'json',
-                            onsuccess: function(data) {
-                                if (data && data.STATUS === 'OK') {
-                                    if (typeof updateBasketCount === 'function') {
-                                        updateBasketCount();
-                                    }
-                                    alert('Товар добавлен в корзину');
-                                }
-                            },
-                            onfailure: function() {
-                                alert('Ошибка при добавлении в корзину');
-                            },
-                            oncomplete: function() {
-                                button.dataset.adding = 'N';
-                            }
-                        });
-                    } else {
-                        button.dataset.adding = 'N';
-                    }
-                });
-            });
-        });
-    });
-</script>
+<?/*
+   Добавление в корзину обрабатывается единым обработчиком в шаблоне сайта
+   (local/templates/fisheat/assets/js/main.js, делегирование по .addCart).
+   Здесь собственный AJAX-обработчик убран, чтобы при нескольких одинаковых
+   компонентах на странице добавление не отправлялось несколько раз.
+*/?>

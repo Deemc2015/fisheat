@@ -60,8 +60,46 @@ $(document).ready(function(){
 
     $(".mycustom-scroll").mCustomScrollbar();
 
-    $('.addCart').click(function(){
-        $(this).addClass('in_cart');
+    // Единый обработчик добавления в корзину.
+    // Вынесен из компонентов (catalog.section/category-index, catalog.item, listing-catalog),
+    // чтобы при нескольких одинаковых компонентах на странице добавление уходило ОДИН раз.
+    $(document).on('click', '.addCart', function(e) {
+        e.preventDefault();
+
+        var btn = this;
+
+        // Защита от повторной отправки (двойной обработчик/быстрый клик)
+        if (btn.dataset.adding === 'Y') {
+            return;
+        }
+        btn.dataset.adding = 'Y';
+
+        var id = btn.getAttribute('data-id');
+        if (!id || typeof BX === 'undefined' || !BX.ajax) {
+            btn.dataset.adding = 'N';
+            return;
+        }
+
+        BX.ajax({
+            method: 'POST',
+            dataType: 'json',
+            url: '/?action=ADD2BASKET&id=' + encodeURIComponent(id),
+            data: {
+                ajax_basket: 'Y',
+                sessid: BX.bitrix_sessid()
+            },
+            onsuccess: function(data) {
+                if (data && data.STATUS === 'OK') {
+                    $(btn).addClass('in_cart');
+                    if (typeof updateBasketCount === 'function') {
+                        updateBasketCount();
+                    }
+                }
+            },
+            oncomplete: function() {
+                btn.dataset.adding = 'N';
+            }
+        });
     })
 
 

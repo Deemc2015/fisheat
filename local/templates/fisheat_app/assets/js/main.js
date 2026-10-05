@@ -40,8 +40,43 @@ $(document).on('click', '.sort-block-product div', function(event) {
 $(document).ready(function(){
     $(".mycustom-scroll").mCustomScrollbar();
 
-    $(document).on('click', '.addCart', function(){
-        $(this).addClass('in_cart');
+    // Единый обработчик добавления в корзину (вынесен из компонентов).
+    $(document).on('click', '.addCart', function(e) {
+        e.preventDefault();
+
+        var btn = this;
+
+        if (btn.dataset.adding === 'Y') {
+            return;
+        }
+        btn.dataset.adding = 'Y';
+
+        var id = btn.getAttribute('data-id');
+        if (!id || typeof BX === 'undefined' || !BX.ajax) {
+            btn.dataset.adding = 'N';
+            return;
+        }
+
+        BX.ajax({
+            method: 'POST',
+            dataType: 'json',
+            url: '/?action=ADD2BASKET&id=' + encodeURIComponent(id),
+            data: {
+                ajax_basket: 'Y',
+                sessid: BX.bitrix_sessid()
+            },
+            onsuccess: function(data) {
+                if (data && data.STATUS === 'OK') {
+                    $(btn).addClass('in_cart');
+                    if (typeof updateBasketCount === 'function') {
+                        updateBasketCount();
+                    }
+                }
+            },
+            oncomplete: function() {
+                btn.dataset.adding = 'N';
+            }
+        });
     })
 
 
