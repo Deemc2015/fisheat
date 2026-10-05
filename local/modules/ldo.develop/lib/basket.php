@@ -122,8 +122,8 @@ class Basket
 
             foreach (array_unique(array_filter($productIds)) as $productId) {
                 // Проверяем, не является ли добавляемый товар сам бесплатным
-                $freeProductsList = Product::checkInFreeCategoryProducts($productId);
-                if ($freeProductsList !== false) {
+
+                if (Product::isFreeProduct($productId)) {
                     // Это бесплатный товар, не обрабатываем
                     continue;
                 }
@@ -132,9 +132,9 @@ class Basket
                 $productSectionId = $dataProduct['IBLOCK_SECTION_ID'] ?? 0;
 
                 if ($productSectionId) {
-                    $addFreeDopProduct = Product::checkInFreeCategoryProducts($productSectionId);
-                    if ($addFreeDopProduct) {
-                        self::addFreePosition($addFreeDopProduct, $productSectionId);
+                    $freeRules = Product::checkInFreeCategoryProducts($productSectionId);
+                    foreach ($freeRules as $freeRule) {
+                        self::addFreePosition($freeRule, $productSectionId);
                     }
                 }
             }

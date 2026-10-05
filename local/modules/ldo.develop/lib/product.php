@@ -51,27 +51,148 @@ class Product
         }
     }
 
-    public static function checkInFreeCategoryProducts($sectionProduct){
+    /**
+     * Правила бесплатных позиций, применимые к разделу каталога.
+     * Данные берутся из таблицы ldo_marketing_free_positions (модуль ldo.marketing).
+     *
+     * @param int $sectionProduct ID раздела каталога
+     * @return array список правил: [['IDS' => [id, ...], 'PORTION' => int], ...]
+     */
+    public static function checkInFreeCategoryProducts($sectionProduct)
+    {
+        $sectionProduct = (int)$sectionProduct;
+        if ($sectionProduct <= 0) {
+            return [];
+        }
 
-        $dataFreePosition = Iblock::getList('free', ['ID','NAME', 'ATT_RAZDEL_' => 'ATT_RAZDEL.VALUE','FREE_POSITION' => 'ATT_FREE_PRODUCT.VALUE','COUNT' =>'ATT_COUNT_PRODUCT.VALUE']);
+        $rules = [];
 
-        $freeProductsId = [];
-
-
-        if($dataFreePosition){
-            foreach($dataFreePosition as $categoryInfo){
-                if($sectionProduct == (int)$categoryInfo['ATT_RAZDEL_']){
-                    $freeProductsId['IDS'][] = (int)$categoryInfo['FREE_POSITION'];
-                    $freeProductsId['PORTION'] = (int)$categoryInfo['COUNT'];
-                }
+        foreach (self::getFreePositionRules() as $row) {
+            $sectionIds = self::decodeFreePositionIds($row['SECTION_IDS'] ?? '');
+            if (!in_array($sectionProduct, $sectionIds, true)) {
+                continue;
             }
 
-            if(!empty($freeProductsId)){
-                return $freeProductsId;
+            $productIds = self::decodeFreePositionIds($row['PRODUCT_IDS'] ?? '');
+            if (empty($productIds)) {
+                continue;
+            }
+
+            $portion = (int)($row['PORTIONS'] ?? 0);
+            if ($portion <= 0) {
+                $portion = 1;
+            }
+
+            $rules[] = [
+                'IDS'     => $productIds,
+                'PORTION' => $portion,
+            ];
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Является ли товар бесплатной позицией (есть в PRODUCT_IDS любого правила).
+     *
+     * @param int $productId
+     * @return bool
+     */
+    public static function isFreeProduct($productId): bool
+    {
+        $productId = (int)$productId;
+        if ($productId <= 0) {
+            return false;
+        }
+
+        foreach (self::getFreePositionRules() as $row) {
+            if (in_array($productId, self::decodeFreePositionIds($row['PRODUCT_IDS'] ?? ''), true)) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Все правила бесплатных позиций для текущего сайта.
+     *
+     * @return array
+     */
+    private static function getFreePositionRules(): array
+    {
+        // Модуль ldo.marketing: подключаем с фолбэком на прямой require класса.
+        if (!Loader::includeModule('ldo.marketing')
+            && !class_exists('\Ldo\Marketing\FreePositionsTable')) {
+            $file = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/local/modules/ldo.marketing/lib/FreePositionsTable.php';
+            if (is_file($file)) {
+                require_once $file;
+            }
+        }
+
+        if (!class_exists('\Ldo\Marketing\FreePositionsTable')) {
+            return [];
+        }
+
+        try {
+            $rows = \Ldo\Marketing\FreePositionsTable::getList([
+                'filter' => ['=SITE_ID' => self::getCurrentSiteId()],
+                'order'  => ['ID' => 'ASC'],
+            ])->fetchAll();
+        } catch (\Throwable $e) {
+            return [];
+        }
+
+        return $rows ?: [];
+    }
+
+    /**
+     * Декодирование JSON-массива ID из таблицы.
+     *
+     * @param mixed $raw
+     * @return array
+     */
+    private static function decodeFreePositionIds($raw): array
+    {
+        if (is_array($raw)) {
+            $data = $raw;
+        } else {
+            $raw = trim((string)$raw);
+            if ($raw === '') {
+                return [];
+            }
+            $data = json_decode($raw, true);
+            if (!is_array($data)) {
+                return [];
+            }
+        }
+
+        $ids = [];
+        foreach ($data as $value) {
+            $value = (int)$value;
+            if ($value > 0) {
+                $ids[$value] = $value;
+            }
+        }
+
+        return array_values($ids);
+    }
+
+    /**
+     * ID текущего сайта (фолбэк s1).
+     *
+     * @return string
+     */
+    private static function getCurrentSiteId(): string
+    {
+        $siteId = '';
+        try {
+            $siteId = (string)\Bitrix\Main\Context::getCurrent()->getSite();
+        } catch (\Throwable $e) {
+            $siteId = '';
+        }
+
+        return $siteId !== '' ? $siteId : 's1';
     }
 
 
