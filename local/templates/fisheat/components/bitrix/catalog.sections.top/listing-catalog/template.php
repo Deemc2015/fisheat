@@ -127,7 +127,7 @@ $signedParams = $signer->sign(base64_encode(serialize($arParams)), 'catalog.sect
                                             <div class="product-item-button-container">
                                                 <button class="btn btn-primary addCart btn-md"
                                                         data-id="<?=$arElement['ID']?>"
-                                                        data-quantity="<?=$measureRatio?>"
+                                                        data-quantity="1"
                                                         href="javascript:void(0)"
                                                         rel="nofollow"
                                                         tabindex="0">
