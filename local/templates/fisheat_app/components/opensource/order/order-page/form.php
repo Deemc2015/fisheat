@@ -91,12 +91,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
         </div>
         <?php if (!empty($arResult['GIFTS'])): ?>
         <div class="gifts-block">
-            <?php if ($arResult['NEAREST_GIFT']): ?>
-            <div class="gifts-block__top">
+            <?/* Верхний блок всегда в разметке: JS обновляет и показывает его при изменении корзины */?>
+            <div class="gifts-block__top"<?= empty($arResult['NEAREST_GIFT']) ? ' style="display:none;"' : '' ?>>
                 <i></i>
-                <p>До подарка <?= $arResult['NEAREST_GIFT']['LEVEL'] ?>  осталось еще <span><?= $arResult['NEAREST_GIFT']['SUM_FREE'] ?> ₽</span></p>
+                <p>До подарка <span class="gifts-block__level"><?= htmlspecialchars($arResult['NEAREST_GIFT']['LEVEL'] ?? '') ?></span>  осталось еще <span class="gifts-block__sum"><?= (int)($arResult['NEAREST_GIFT']['SUM_FREE'] ?? 0) ?> ₽</span></p>
             </div>
-            <?php endif; ?>
             <div class="gifts-block__items">
 
                     <!-- Список всех подарков (уже отсортирован) -->
@@ -104,7 +103,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>
-                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>" data-sum-level="<?=(int)$gift['SUM_LEVEL']?>">
+                            <div class="gifts-list__item <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'disabled';}?>" data-sum-level="<?=(int)$gift['SUM_LEVEL']?>" data-sum-level-name="<?=htmlspecialchars($level)?>">
                                 <div class="gifts-list__item-img">
                                     <picture>
                                         <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
