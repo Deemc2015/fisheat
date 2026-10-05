@@ -1,0 +1,392 @@
+/* ============================================================
+   Доска заказов ресторана (/kds/) — отдельный интерфейс кухни.
+   Стили самодостаточные: страница не использует шаблон сайта
+   и партнёрские стили (без бокового меню).
+   ============================================================ */
+
+:root {
+    --kds-bg: #141212;
+    --kds-panel: #1B1818;
+    --kds-card: #2B2D2F;
+    --kds-text: #FFFFFF;
+    --kds-muted: #969696;
+    --kds-accent: #F44336;
+    --kds-green: #2ecc71;
+    --kds-blue: #3498db;
+    --kds-yellow: #f1c40f;
+    --kds-border: rgba(255, 255, 255, 0.19);
+    --kds-font: 'Blogger Sans', 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body.kds-body {
+    background: var(--kds-bg);
+    color: var(--kds-text);
+    font-family: var(--kds-font);
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Каркас страницы ---------- */
+.kds-page {
+    min-height: 100vh;
+    padding: 20px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.kds-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--kds-border);
+}
+
+.kds-head__title {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.kds-head__tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.kds-time {
+    font-size: 13px;
+    color: var(--kds-muted);
+}
+
+.kds-auto {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--kds-muted);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ---------- Кнопки ---------- */
+.kds-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--kds-font);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.kds-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.kds-btn--ghost {
+    background: transparent;
+    color: var(--kds-text);
+    border: 1px solid var(--kds-border);
+}
+
+.kds-btn--ghost:hover:not(:disabled) {
+    border-color: var(--kds-accent);
+    color: var(--kds-accent);
+}
+
+.kds-btn--primary {
+    background: var(--kds-accent);
+    color: #FFFFFF;
+}
+
+.kds-btn--primary:hover:not(:disabled) {
+    background: #d32f2f;
+}
+
+/* ---------- Сообщения ---------- */
+.kds-error {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(231, 76, 60, 0.14);
+    color: #e74c3c;
+    font-size: 14px;
+}
+
+.kds-empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--kds-muted);
+    font-size: 14px;
+}
+
+/* ---------- Экран выбора ресторана ---------- */
+.kds-select {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    padding: 40px 0;
+}
+
+.kds-select__hint {
+    margin: 0;
+    color: var(--kds-muted);
+    font-size: 16px;
+    text-align: center;
+}
+
+.kds-select__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.kds-select__item {
+    padding: 28px 20px;
+    border: 1px solid var(--kds-border);
+    border-radius: 14px;
+    background: var(--kds-panel);
+    color: var(--kds-text);
+    font-size: 18px;
+    font-family: var(--kds-font);
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kds-select__item:hover {
+    border-color: var(--kds-accent);
+    background: rgba(244, 67, 54, 0.08);
+}
+
+/* ---------- Колонки доски по статусам ---------- */
+.kds-board {
+    flex: 1;
+}
+
+.kds-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.kds-column {
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    background: var(--kds-panel);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Колонка — цель перетаскивания */
+.kds-column--over {
+    border-color: var(--kds-accent);
+    background: rgba(244, 67, 54, 0.06);
+}
+
+.kds-column__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--kds-border);
+}
+
+.kds-column__title {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.kds-column__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 13px;
+    background: var(--kds-accent);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kds-column__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    max-height: 72vh;
+    overflow-y: auto;
+}
+
+.kds-column__empty {
+    padding: 24px 12px;
+    text-align: center;
+    color: var(--kds-muted);
+    font-size: 13px;
+}
+
+/* ---------- Карточка заказа ---------- */
+.kds-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--kds-card);
+    cursor: grab;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.kds-card:active {
+    cursor: grabbing;
+}
+
+.kds-card--dragging {
+    opacity: 0.45;
+    transform: scale(0.98);
+}
+
+.kds-card__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.kds-card__num {
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.kds-card__time {
+    font-size: 13px;
+    color: var(--kds-muted);
+}
+
+.kds-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.kds-badge {
+    display: inline-flex;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.kds-badge--delivery { background: rgba(52, 152, 219, 0.18); color: var(--kds-blue); }
+.kds-badge--pickup { background: rgba(46, 204, 113, 0.18); color: var(--kds-green); }
+.kds-badge--none { background: rgba(150, 150, 150, 0.18); color: var(--kds-muted); }
+
+.kds-card__persons {
+    font-size: 13px;
+    color: var(--kds-muted);
+}
+
+.kds-card__addr {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.kds-card__wish {
+    font-size: 12px;
+    color: var(--kds-muted);
+}
+
+.kds-card__items {
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    border-top: 1px solid var(--kds-border);
+    border-bottom: 1px solid var(--kds-border);
+}
+
+.kds-card__items b {
+    color: var(--kds-accent);
+}
+
+.kds-card__items-empty {
+    font-size: 12px;
+    color: var(--kds-muted);
+}
+
+.kds-card__comment {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--kds-yellow);
+}
+
+.kds-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.kds-card__sum {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.kds-card__next {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 900px) {
+    .kds-page {
+        padding: 14px 14px 30px;
+    }
+    .kds-head__title {
+        font-size: 20px;
+    }
+    .kds-column__body {
+        max-height: none;
+    }
+}

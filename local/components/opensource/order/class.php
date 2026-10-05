@@ -383,6 +383,51 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * Заполняет свойства заказа «Зона доставки» (zone_name) и «ID зоны доставки» (zone_id)
+     * по выбранному адресу доставки (ADDRESS_ID → зона адреса).
+     *
+     * Данные берутся из адреса пользователя (Ldo\Iiko\UserAddress::ZONE_ID)
+     * и справочника зон (Ldo\Deliverymap\DeliveryZoneTable::NAME).
+     *
+     * @return void
+     */
+    public function applyDeliveryZoneProperties()
+    {
+        if (!$this->order) {
+            return;
+        }
+
+        // Выбранный адрес доставки (служебное свойство ADDRESS_ID)
+        $addressId = (int)$this->getOrderPropertyValue('ADDRESS_ID');
+        if ($addressId <= 0) {
+            return;
+        }
+
+        if (!Loader::includeModule('ldo.iiko') || !Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        $address = \Ldo\Iiko\UserAddress::getById($addressId);
+        $zoneId = (int)($address['ZONE_ID'] ?? 0);
+        if ($zoneId <= 0) {
+            return;
+        }
+
+        $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById($zoneId);
+        $zoneName = (string)($zone['NAME'] ?? '');
+
+        foreach ($this->order->getPropertyCollection() as $prop) {
+            /** @var PropertyValue $prop */
+            $code = $prop->getField('CODE');
+            if ($code === 'zone_id') {
+                $prop->setValue((string)$zoneId);
+            } elseif ($code === 'zone_name') {
+                $prop->setValue($zoneName);
+            }
+        }
+    }
+
+    /**
      * Возвращает значение свойства заказа по коду.
      *
      * @param string $code
@@ -802,6 +847,8 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 // Самовывоз: подставляем дату/время готовности из времени готовки
                 // выбранного ресторана (конец окна + надбавка высокой нагрузки)
                 $this->applyAsapPickupDeliveryDateTime();
+                // Зона доставки и её ID по выбранному адресу (свойства zone_name / zone_id)
+                $this->applyDeliveryZoneProperties();
 
                 $validationResult = $this->validateOrder();
 

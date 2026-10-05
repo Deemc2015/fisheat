@@ -15,9 +15,35 @@ if ($request->getQuery('logout') === 'yes') {
     LocalRedirect('/partners/');
 }
 
+// Ассеты визуального редактора (модуль fileman, JS/CSS-расширение html_editor)
+// должны подключиться в <head>, поэтому инициализируем редактор до header.php.
+// Скелет редактора здесь не нужен — только регистрация и загрузка ассетов,
+// поэтому вывод буферизуем и отбрасываем.
+\Bitrix\Main\Loader::includeModule('fileman');
+if (class_exists('\CHTMLEditor')) {
+    ob_start();
+    $editorAssetsInit = new \CHTMLEditor();
+    $editorAssetsInit->Show([
+        'id'                        => 'pd-assets-init',
+        'display'                   => false,
+        'inputName'                 => 'pd_assets_init',
+        'content'                   => '',
+        'arTemplates'               => [],
+        'useFileDialogs'            => false,
+        'showTaskbars'              => false,
+        'showComponents'            => false,
+        'showSnippets'              => false,
+        'bAllowPhp'                 => false,
+        'allowPhp'                  => false,
+        'askBeforeUnloadPage'       => false,
+        'uploadImagesFromClipboard' => false,
+    ]);
+    ob_end_clean();
+    unset($editorAssetsInit);
+}
+
 $partnersActivePage  = 'menu';
 $partnersPageTitle   = 'Меню';
-$partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 

@@ -65,7 +65,6 @@ $saved = $request->getQuery('settings_saved') === '1';
 
 $partnersActivePage  = 'settings';
 $partnersPageTitle   = 'Настройки';
-$partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 ?>
 

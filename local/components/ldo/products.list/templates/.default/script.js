@@ -98,12 +98,18 @@
 
             if (replace) {
                 if (typeof data.html === 'string' && data.html !== '') {
-                    list.innerHTML = data.html;
+                    insertHtml(list, data.html, true);
                 } else {
                     list.innerHTML = '<p class="products-empty">Ничего не найдено</p>';
                 }
             } else if (typeof data.html === 'string' && data.html !== '') {
-                list.insertAdjacentHTML('beforeend', data.html);
+                insertHtml(list, data.html, false);
+            }
+
+            // После подгрузки/перезагрузки списка заново блокируем кнопки
+            // "Изменить", если какая-то карточка уже открыта на редактирование.
+            if (activeEditItem) {
+                lockOtherEditButtons(activeEditItem);
             }
 
             setHasMore(!!data.hasMore);
@@ -137,8 +143,32 @@
         if (!list) {
             return;
         }
+        // Список будет перерисован — снимаем блокировку кнопок "Изменить".
+        unlockEditButtons();
         nextPage = 2;
         requestItems(1, true);
+    }
+
+    // Вставка HTML списка с выполнением инлайн-скриптов.
+    // Скелеты редакторов описания приходят вместе с html и содержат
+    // <script> с BXHtmlEditor.SaveConfig(config) — innerHTML их не выполняет.
+    function insertHtml(node, html, replace) {
+        if (window.BX && BX.processHTML) {
+            var ob = BX.processHTML(html);
+            if (replace) {
+                node.innerHTML = ob.HTML;
+            } else {
+                node.insertAdjacentHTML('beforeend', ob.HTML);
+            }
+            if (ob.STYLE && ob.STYLE.length && BX.loadCSS) {
+                BX.loadCSS(ob.STYLE);
+            }
+            BX.ajax.processScripts(ob.SCRIPT);
+        } else if (replace) {
+            node.innerHTML = html;
+        } else {
+            node.insertAdjacentHTML('beforeend', html);
+        }
     }
 
     // ===== Режим редактирования карточки =====
@@ -155,8 +185,165 @@
             belki: item.querySelector('.product-belki'),
             giry: item.querySelector('.product-giry'),
             yglevody: item.querySelector('.product-yglevody'),
+            seoTitle: item.querySelector('.product-seo-title'),
+            seoDescription: item.querySelector('.product-seo-description'),
             detailPicture: item.querySelector('.product-detail-picture')
         };
+    }
+
+    // ===== Визуальный редактор описания (Bitrix CHTMLEditor) =====
+    // Скелет редактора рендерится сервером скрытым (display=false), а сам
+    // редактор создаётся по кнопке "Изменить" через BXHtmlEditor.Show(id).
+    var activeEditItem = null;
+
+    function getEditorId(item) {
+        return 'pd' + item.getAttribute('data-id');
+    }
+
+    function getEditor(item) {
+        if (!window.BXHtmlEditor || !BXHtmlEditor.Get) {
+            return null;
+        }
+        return BXHtmlEditor.Get(getEditorId(item)) || null;
+    }
+
+    // Текущее HTML описания: редактор -> fallback textarea -> data-атрибут.
+    function getDetailHtml(item) {
+        var ed = getEditor(item);
+        if (ed) {
+            try { return ed.GetContent(); } catch (e) {}
+        }
+        var ta = item.querySelector('.product-detail');
+        if (ta) {
+            return ta.value;
+        }
+        var wrap = item.querySelector('.product-detail-wrap');
+        return wrap ? (wrap.getAttribute('data-detail') || '') : '';
+    }
+
+    function setDetailHtml(item, html) {
+        html = html || '';
+        var wrap = item.querySelector('.product-detail-wrap');
+        if (wrap) {
+            wrap.setAttribute('data-detail', html);
+        }
+        var ed = getEditor(item);
+        if (ed) {
+            try { ed.SetContent(html); return; } catch (e) {}
+        }
+        var ta = item.querySelector('.product-detail');
+        if (ta) {
+            ta.value = html;
+        }
+    }
+
+    // Поднять редактор для карточки. Разметку редактора (~25КБ на инстанс)
+    // грузим по AJAX в момент открытия и вставляем в .product-detail-wrap —
+    // чтобы не раздувать исходную страницу списка товаров.
+    function openEditor(item) {
+        var wrap = item.querySelector('.product-detail-wrap');
+        if (!wrap) {
+            return;
+        }
+        var id = getEditorId(item);
+
+        var hasInstance = false;
+        if (window.BXHtmlEditor && BXHtmlEditor.Get) {
+            hasInstance = !!BXHtmlEditor.Get(id);
+        }
+
+        // Редактор уже создан или скелет уже вставлен — просто показываем.
+        if (window.BXHtmlEditor && BXHtmlEditor.Show && (hasInstance || wrap.querySelector('.bx-html-editor'))) {
+            BXHtmlEditor.Show(null, id);
+            setDetailHtml(item, item.getAttribute('data-state-detail') || '');
+            return;
+        }
+
+        if (wrap.getAttribute('data-editor-loading') === '1') {
+            return;
+        }
+        wrap.setAttribute('data-editor-loading', '1');
+
+        var formData = new FormData();
+        formData.append('id', item.getAttribute('data-id'));
+        formData.append('sessid', BX.bitrix_sessid());
+
+        BX.ajax.runComponentAction('ldo:products.list', 'getEditor', {
+            mode: 'class',
+            data: formData
+        }).then(function (response) {
+            wrap.removeAttribute('data-editor-loading');
+
+            var data = response && response.data ? response.data : null;
+            if (!data || !data.html) {
+                alert((data && data.error) ? data.error : 'Не удалось открыть редактор описания');
+                return;
+            }
+
+            insertHtml(wrap, data.html, true);
+
+            if (window.BXHtmlEditor && BXHtmlEditor.Show) {
+                BXHtmlEditor.Show(null, id);
+                setDetailHtml(item, item.getAttribute('data-state-detail') || '');
+            }
+        }).catch(function () {
+            wrap.removeAttribute('data-editor-loading');
+            alert('Ошибка соединения с сервером');
+        });
+    }
+
+    // Пока одна карточка открыта на редактирование — блокируем кнопки
+    // "Изменить" у всех остальных.
+    function lockOtherEditButtons(currentItem) {
+        activeEditItem = currentItem;
+        var items = document.querySelectorAll('.product-item');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i] === currentItem) {
+                continue;
+            }
+            var btn = items[i].querySelector('[data-action="edit"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.setAttribute('title', 'Сначала завершите редактирование другого товара');
+            }
+        }
+    }
+
+    function unlockEditButtons() {
+        activeEditItem = null;
+        var btns = document.querySelectorAll('.product-item [data-action="edit"]');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].disabled = false;
+            btns[i].removeAttribute('title');
+        }
+    }
+
+    // Переключение табов карточки: "Описание товара" / "SEO описание".
+    function switchProductTab(tabBtn) {
+        var item = tabBtn.closest('.product-item');
+        if (!item) {
+            return;
+        }
+        var name = tabBtn.getAttribute('data-product-tab');
+
+        var tabs = item.querySelectorAll('[data-product-tab]');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('is-active', tabs[i] === tabBtn);
+        }
+
+        var panes = item.querySelectorAll('[data-product-pane]');
+        for (var j = 0; j < panes.length; j++) {
+            panes[j].style.display = (panes[j].getAttribute('data-product-pane') === name) ? '' : 'none';
+        }
+
+        // Редактор описания находится в скрытой панели — при возврате
+        // пересчитываем его размеры.
+        if (name === 'main') {
+            var editor = getEditor(item);
+            if (editor) {
+                try { editor.ResizeSceleton(); } catch (e) {}
+            }
+        }
     }
 
     function setEditMode(item, editing) {
@@ -192,7 +379,9 @@
         item.setAttribute('data-state-price', inputs.price ? inputs.price.value : '0');
         item.setAttribute('data-state-quantity', inputs.quantity ? inputs.quantity.value : '0');
         item.setAttribute('data-state-weight', inputs.weight ? inputs.weight.value : '0');
-        item.setAttribute('data-state-detail', inputs.detail ? inputs.detail.value : '');
+        item.setAttribute('data-state-detail', getDetailHtml(item));
+        item.setAttribute('data-state-seo-title', inputs.seoTitle ? inputs.seoTitle.value : '');
+        item.setAttribute('data-state-seo-description', inputs.seoDescription ? inputs.seoDescription.value : '');
         item.setAttribute('data-state-kallory', inputs.kallory ? inputs.kallory.value : '');
         item.setAttribute('data-state-belki', inputs.belki ? inputs.belki.value : '');
         item.setAttribute('data-state-giry', inputs.giry ? inputs.giry.value : '');
@@ -207,7 +396,9 @@
         if (inputs.price) inputs.price.value = item.getAttribute('data-state-price') || '0';
         if (inputs.quantity) inputs.quantity.value = item.getAttribute('data-state-quantity') || '0';
         if (inputs.weight) inputs.weight.value = item.getAttribute('data-state-weight') || '0';
-        if (inputs.detail) inputs.detail.value = item.getAttribute('data-state-detail') || '';
+        setDetailHtml(item, item.getAttribute('data-state-detail') || '');
+        if (inputs.seoTitle) inputs.seoTitle.value = item.getAttribute('data-state-seo-title') || '';
+        if (inputs.seoDescription) inputs.seoDescription.value = item.getAttribute('data-state-seo-description') || '';
         if (inputs.kallory) inputs.kallory.value = item.getAttribute('data-state-kallory') || '';
         if (inputs.belki) inputs.belki.value = item.getAttribute('data-state-belki') || '';
         if (inputs.giry) inputs.giry.value = item.getAttribute('data-state-giry') || '';
@@ -229,11 +420,13 @@
         formData.append('price', inputs.price ? inputs.price.value : '0');
         formData.append('quantity', inputs.quantity ? inputs.quantity.value : '0');
         formData.append('weight', inputs.weight ? inputs.weight.value : '0');
-        formData.append('detail', inputs.detail ? inputs.detail.value : '');
+        formData.append('detail', getDetailHtml(item));
         formData.append('kallory', inputs.kallory ? inputs.kallory.value : '0');
         formData.append('belki', inputs.belki ? inputs.belki.value : '0');
         formData.append('giry', inputs.giry ? inputs.giry.value : '0');
         formData.append('yglevody', inputs.yglevody ? inputs.yglevody.value : '0');
+        formData.append('seoTitle', inputs.seoTitle ? inputs.seoTitle.value : '');
+        formData.append('seoDescription', inputs.seoDescription ? inputs.seoDescription.value : '');
         if (inputs.detailPicture && inputs.detailPicture.files && inputs.detailPicture.files[0]) {
             formData.append('detailPicture', inputs.detailPicture.files[0]);
         }
@@ -250,8 +443,12 @@
             btn.textContent = 'Сохранить';
 
             if (response && response.data && response.data.success) {
+                // Сервер возвращает очищенный HTML — синхронизируем редактор,
+                // чтобы повторное открытие показало актуальное описание.
+                setDetailHtml(item, response.data.detail || '');
                 rememberState(item);
                 setEditMode(item, false);
+                unlockEditButtons();
             } else {
                 var msg = (response && response.data && response.data.error)
                     ? response.data.error
@@ -341,6 +538,13 @@
             return;
         }
 
+        // Табы карточки (Описание товара / SEO описание)
+        var tabBtn = e.target.closest('[data-product-tab]');
+        if (tabBtn) {
+            switchProductTab(tabBtn);
+            return;
+        }
+
         var btn = e.target.closest('[data-action]');
         if (!btn) return;
 
@@ -354,8 +558,12 @@
         } else if (action === 'edit') {
             rememberState(item);
             setEditMode(item, true);
+            lockOtherEditButtons(item);
+            // Поднимаем редактор описания только для этой карточки.
+            openEditor(item);
         } else if (action === 'cancel') {
             restoreState(item);
+            unlockEditButtons();
         } else if (action === 'save') {
             saveProduct(item, btn);
         }

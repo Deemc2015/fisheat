@@ -23,6 +23,9 @@ if (!empty($arResult['CATEGORIES']) && $arResult['CATEGORIES_ITEMS_EXISTS']):?>
                 else{
                     $dataProduct = GetIBlockElement($arItem['ITEM_ID']);
 
+                    $arrImage = '';
+                    $arrDesc = '';
+
                     if($dataProduct['PREVIEW_PICTURE']){
                         $productImage = $dataProduct['PREVIEW_PICTURE'];
                     }
@@ -32,9 +35,11 @@ if (!empty($arResult['CATEGORIES']) && $arResult['CATEGORIES_ITEMS_EXISTS']):?>
 
                     if($productImage){
                         $arrImage = CFile::ResizeImageGet($productImage, array('width'=>70, 'height'=>70), BX_RESIZE_IMAGE_PROPORTIONAL, true);
-                        $arrImage = $arrImage['src'];
+                        $arrImage = is_array($arrImage) ? $arrImage['src'] : '';
 
-                        $arrDesc = $dataProduct['DETAIL_TEXT'];
+                        // Описание может содержать HTML (визуальный редактор) —
+                        // в подсказке поиска выводим только текст.
+                        $arrDesc = htmlspecialcharsbx(strip_tags((string)$dataProduct['DETAIL_TEXT']));
                     }
 
                     unset($productImage);
@@ -42,14 +47,14 @@ if (!empty($arResult['CATEGORIES']) && $arResult['CATEGORIES_ITEMS_EXISTS']):?>
 
                 ?>
 			<a href="<?=$arItem['URL']?>" class="title-search-result__item">
-                <div class="icon-product">
-                    <img src="<?=$arrImage?>" alt="<?=$arItem['NAME']?>">
-                </div>
-                <div class="right-block-product">
+			             <div class="icon-product">
+			                 <img src="<?=htmlspecialcharsbx($arrImage)?>" alt="<?=htmlspecialcharsbx($arItem['NAME'])?>">
+			             </div>
+			             <div class="right-block-product">
 
-                   <div class="name"><?=$arItem['NAME']?></div>
-                    <div class="description"><?=$arrDesc?></div>
-                </div>
+			                <div class="name"><?=htmlspecialcharsbx($arItem['NAME'])?></div>
+			                 <div class="description"><?=$arrDesc?></div>
+			             </div>
 			</a>
 
 			<?php unset($dataProduct,$arrImage,$arrDesc);  endforeach;?>

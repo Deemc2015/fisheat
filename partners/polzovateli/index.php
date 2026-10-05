@@ -92,7 +92,6 @@ if ($request->isPost() && $request->getPost('ajax_users') === 'Y') {
 
 $partnersActivePage  = 'polzovateli';
 $partnersPageTitle   = 'Пользователи';
-$partnersHeaderStyle = 'padding-bottom:0; border-bottom:none;';
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 
 // ============================================================
@@ -108,6 +107,7 @@ while ($site = $rsSites->Fetch()) {
 
 // Параметры фильтра: поиск (имя/телефон) и статус пользователя
 $search     = trim((string)$request->getQuery('SEARCH'));
+$userId     = (int)$request->getQuery('ID');
 $userStatus = trim((string)$request->getQuery('USER_STATUS'));
 if (!in_array($userStatus, ['active', 'inactive', 'blocked'], true)) {
     $userStatus = '';
@@ -117,6 +117,10 @@ $nav = new PageNavigation('users');
 $nav->allowAllRecords(false)->setPageSize(50)->initFromUri();
 
 $filter = ['!=ID' => 0];
+// Переход к конкретному пользователю (ссылка из заказов: ?ID=<USER_ID>)
+if ($userId > 0) {
+    $filter['=ID'] = $userId;
+}
 if ($userStatus === 'active') {
     $filter['=ACTIVE']  = 'Y';
     $filter['=BLOCKED'] = 'N';
@@ -202,6 +206,7 @@ $pageParam  = 'PAGEN_users';
 $baseParams = [];
 if ($search !== '')     $baseParams['SEARCH'] = $search;
 if ($userStatus !== '') $baseParams['USER_STATUS'] = $userStatus;
+if ($userId > 0)        $baseParams['ID'] = $userId;
 
 $makeUrl = function (array $extra = []) use ($baseParams) {
     $params = array_merge($baseParams, $extra);
@@ -311,10 +316,20 @@ for ($p = $start; $p <= $end; $p++) {
             <div class="p-section">
                 <div class="p-section__header">
                     <h2 class="p-section__title">Пользователи сайта</h2>
-                    <span style="font-size:13px; color:var(--color-muted);">Всего: <?= $totalCount ?></span>
+                    <?php if ($userId > 0): ?>
+                        <span style="font-size:13px; color:var(--color-muted);">
+                            Пользователь #<?= $userId ?> ·
+                            <a href="./" style="color:var(--bg-button, #F44336);">показать всех</a>
+                        </span>
+                    <?php else: ?>
+                        <span style="font-size:13px; color:var(--color-muted);">Всего: <?= $totalCount ?></span>
+                    <?php endif; ?>
                 </div>
 
                 <form class="p-users-filter" method="get" action="">
+                    <?php if ($userId > 0): ?>
+                        <input type="hidden" name="ID" value="<?= $userId ?>">
+                    <?php endif; ?>
                     <div class="p-users-filter__row">
                         <div class="p-users-filter__group p-users-filter__group--grow">
                             <label for="p-users-search">Поиск</label>

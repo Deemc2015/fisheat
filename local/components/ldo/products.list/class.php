@@ -214,10 +214,45 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             $item['ATT_BELKI']    = (string)($item['PROPERTY_ATT_BELKI_VALUE'] ?? '');
             $item['ATT_GIRY']     = (string)($item['PROPERTY_ATT_GIRY_VALUE'] ?? '');
             $item['ATT_YGLEVODY'] = (string)($item['PROPERTY_ATT_YGLEVODY_VALUE'] ?? '');
+
+            // SEO-данные элемента (meta title/description/keywords)
+            $seo = $this->getSeoParams($id);
+            $item['SEO_TITLE']       = $seo['title'];
+            $item['SEO_DESCRIPTION'] = $seo['description'];
+            $item['SEO_KEYWORDS']    = $seo['keywords'];
         }
         unset($item);
 
         return array_values($items);
+    }
+
+    /**
+     * SEO-параметры элемента инфоблока (meta title/description/keywords).
+     * Данные берутся из класса Prokhorov\Api\Helpers\Seo (модуль ldo.develop).
+     *
+     * @param int $elementId
+     * @return array{title: string, description: string, keywords: string}
+     */
+    private function getSeoParams(int $elementId): array
+    {
+        if (
+            !Loader::includeModule('ldo.develop')
+            || !class_exists('\\Prokhorov\\Api\\Helpers\\Seo')
+        ) {
+            return ['title' => '', 'description' => '', 'keywords' => ''];
+        }
+
+        try {
+            $params = \Prokhorov\Api\Helpers\Seo::getParams(self::IBLOCK_ID, $elementId);
+        } catch (\Throwable $e) {
+            return ['title' => '', 'description' => '', 'keywords' => ''];
+        }
+
+        return [
+            'title'       => (string)($params['title'] ?? ''),
+            'description' => (string)($params['description'] ?? ''),
+            'keywords'    => (string)($params['keywords'] ?? ''),
+        ];
     }
 
     /**
@@ -402,11 +437,14 @@ class ProductsList extends \CBitrixComponent implements Controllerable
 
         $checkAttr = $active ? ' checked' : '';
 
-        $detailText = htmlspecialcharsbx((string)($item['DETAIL_TEXT'] ?? ''), true);
+        // Сырой HTML описания — попадает в конфиг визуального редактора.
+        $detailRaw = (string)($item['DETAIL_TEXT'] ?? '');
         $kallory = htmlspecialcharsbx((string)($item['ATT_KALLORY'] ?? ''));
         $belki = htmlspecialcharsbx((string)($item['ATT_BELKI'] ?? ''));
         $giry = htmlspecialcharsbx((string)($item['ATT_GIRY'] ?? ''));
         $yglevody = htmlspecialcharsbx((string)($item['ATT_YGLEVODY'] ?? ''));
+        $seoTitle = htmlspecialcharsbx((string)($item['SEO_TITLE'] ?? ''));
+        $seoDescription = htmlspecialcharsbx((string)($item['SEO_DESCRIPTION'] ?? ''));
 
         // Текущее детальное фото (для предпросмотра при загрузке нового)
         $detailSrc = '';
@@ -442,55 +480,74 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             </div>
 
             <div class="product-extra" style="display:none;">
-                <label class="product-field">
-                    <span class="product-field__label">Раздел</span>
-                    <select class="product-section" disabled>
-                        ' . $sectionsHtml . '
-                    </select>
-                </label>
+                <div class="product-tabs" role="tablist">
+                    <button type="button" class="product-tab is-active" data-product-tab="main">Описание товара</button>
+                    <button type="button" class="product-tab" data-product-tab="seo">SEO описание</button>
+                </div>
 
-                <label class="product-field">
-                    <span class="product-field__label">Кол-во</span>
-                    <input type="number" step="0.001" class="product-quantity" value="' . number_format($quantity, 3, '.', '') . '" disabled>
-                </label>
+                <div class="product-tab-pane is-active" data-product-pane="main">
+                    <label class="product-field">
+                        <span class="product-field__label">Раздел</span>
+                        <select class="product-section" disabled>
+                            ' . $sectionsHtml . '
+                        </select>
+                    </label>
 
-                <label class="product-field">
-                    <span class="product-field__label">Вес, г</span>
-                    <input type="number" step="1" class="product-weight" value="' . $weight . '" disabled>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Кол-во</span>
+                        <input type="number" step="0.001" class="product-quantity" value="' . number_format($quantity, 3, '.', '') . '" disabled>
+                    </label>
 
-                <label class="product-field product-field--full">
-                    <span class="product-field__label">Детальное описание</span>
-                    <textarea class="product-detail" rows="4" disabled>' . $detailText . '</textarea>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Вес, г</span>
+                        <input type="number" step="1" class="product-weight" value="' . $weight . '" disabled>
+                    </label>
 
-                <label class="product-field">
-                    <span class="product-field__label">Калории</span>
-                    <input type="number" step="0.01" class="product-kallory" value="' . $kallory . '" disabled>
-                </label>
+                    <label class="product-field product-field--full">
+                        <span class="product-field__label">Детальное описание</span>
+                        <div class="product-detail-wrap" data-detail="' . htmlspecialcharsbx($detailRaw) . '"></div>
+                    </label>
 
-                <label class="product-field">
-                    <span class="product-field__label">Белки</span>
-                    <input type="number" step="0.01" class="product-belki" value="' . $belki . '" disabled>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Калории</span>
+                        <input type="number" step="0.01" class="product-kallory" value="' . $kallory . '" disabled>
+                    </label>
 
-                <label class="product-field">
-                    <span class="product-field__label">Жиры</span>
-                    <input type="number" step="0.01" class="product-giry" value="' . $giry . '" disabled>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Белки</span>
+                        <input type="number" step="0.01" class="product-belki" value="' . $belki . '" disabled>
+                    </label>
 
-                <label class="product-field">
-                    <span class="product-field__label">Углеводы</span>
-                    <input type="number" step="0.01" class="product-yglevody" value="' . $yglevody . '" disabled>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Жиры</span>
+                        <input type="number" step="0.01" class="product-giry" value="' . $giry . '" disabled>
+                    </label>
 
-                <label class="product-field product-field--full">
-                    <span class="product-field__label">Детальное фото</span>
-                    <span class="product-photo-block">
-                        ' . ($detailSrc ? '<img class="product-detail-photo" src="' . htmlspecialcharsbx($detailSrc) . '" alt="">' : '') . '
-                        <input type="file" class="product-detail-picture" accept="image/*" disabled>
-                    </span>
-                </label>
+                    <label class="product-field">
+                        <span class="product-field__label">Углеводы</span>
+                        <input type="number" step="0.01" class="product-yglevody" value="' . $yglevody . '" disabled>
+                    </label>
+
+                    <label class="product-field product-field--full">
+                        <span class="product-field__label">Детальное фото</span>
+                        <span class="product-photo-block">
+                            ' . ($detailSrc ? '<img class="product-detail-photo" src="' . htmlspecialcharsbx($detailSrc) . '" alt="">' : '') . '
+                            <input type="file" class="product-detail-picture" accept="image/*" disabled>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="product-tab-pane is-active" data-product-pane="seo" style="display:none;">
+                    <label class="product-field product-field--full">
+                        <span class="product-field__label">Заголовок товара</span>
+                        <input type="text" class="product-seo-title" value="' . $seoTitle . '">
+                    </label>
+
+                    <label class="product-field product-field--full">
+                        <span class="product-field__label">Описание товара</span>
+                        <textarea class="product-seo-description" rows="4">' . $seoDescription . '</textarea>
+                    </label>
+                </div>
             </div>
 
             <div class="product-item__actions">
@@ -503,6 +560,96 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             </div>
             <span class="product-item__section-name" title="Раздел: ' . $sectionName . '">' . $sectionName . '</span>
         </div>';
+    }
+
+    /**
+     * Разметка визуального HTML-редактора описания (Bitrix CHTMLEditor).
+     * Скелет выводится скрытым (display=false) и лишь сохраняет конфиг —
+     * сам редактор создаётся на клиенте в момент вставки (BXHtmlEditor.Show).
+     * HTML редактора отдаётся по AJAX (getEditorAction), чтобы не включать
+     * ~25КБ разметки на каждый товар в исходную страницу.
+     * Если модуль fileman недоступен — фолбэк на обычный textarea.
+     *
+     * @param int $id
+     * @param string $content
+     * @return string
+     */
+    private function renderDetailEditor(int $id, string $content): string
+    {
+        if (!Loader::includeModule('fileman') || !class_exists('\CHTMLEditor')) {
+            return '<textarea class="product-detail" rows="4" disabled>' . htmlspecialcharsbx($content) . '</textarea>';
+        }
+
+        ob_start();
+        $editor = new \CHTMLEditor();
+        $editor->Show([
+            'id'                        => 'pd' . $id,
+            'inputName'                 => 'detail_' . $id,
+            'inputId'                   => 'detail_' . $id,
+            'content'                   => $content,
+            'display'                   => false,
+            // height — целое число (пиксели): JS-редактор использует его в
+            // арифметике, строка '260px' приводит к NaN и схлопыванию области.
+            'width'                     => '100%',
+            'height'                    => 280,
+            'showNodeNavi'              => false,
+            'arTemplates'               => [],
+            'useFileDialogs'            => false,
+            'showTaskbars'              => false,
+            'showComponents'            => false,
+            'showSnippets'              => false,
+            'bAllowPhp'                 => false,
+            'allowPhp'                  => false,
+            'askBeforeUnloadPage'       => false,
+            'uploadImagesFromClipboard' => false,
+            'setFocusAfterShow'         => false,
+            'placeholder'               => 'Описание товара',
+            'fontSize'                  => '14px',
+            'iframeCss'                 => $this->getIframeCss(),
+        ]);
+
+        return (string)ob_get_clean();
+    }
+
+    /**
+     * CSS для содержимого iframe редактора (папка визуального редактора
+     * изолирована, поэтому стили темы нужно передавать текстом отдельно).
+     *
+     * @return string
+     */
+    private function getIframeCss(): string
+    {
+        static $css = null;
+        if ($css !== null) {
+            return $css;
+        }
+
+        $path = $_SERVER['DOCUMENT_ROOT']
+            . '/local/components/ldo/products.list/templates/.default/editor-iframe.css';
+
+        $css = is_file($path) ? (string)file_get_contents($path) : '';
+
+        return $css;
+    }
+
+    /**
+     * Очистка пользовательского HTML описания (защита от XSS).
+     * Уровень SECURE_LEVEL_LOW убирает script/iframe/embed и on*-атрибуты,
+     * но сохраняет форматирование редактора (div/span/style/class).
+     *
+     * @param string $html
+     * @return string
+     */
+    private function sanitizeDetailHtml(string $html): string
+    {
+        if ($html === '' || !class_exists('\CBXSanitizer')) {
+            return $html;
+        }
+
+        $sanitizer = new \CBXSanitizer();
+        $sanitizer->SetLevel(\CBXSanitizer::SECURE_LEVEL_LOW);
+
+        return (string)$sanitizer->SanitizeHtml($html);
     }
 
     /**
@@ -528,6 +675,63 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             'toggleActive' => [
                 'prefilters' => [],
             ],
+            'getEditor' => [
+                'prefilters' => [],
+            ],
+        ];
+    }
+
+    /**
+     * AJAX-действие: разметка визуального редактора описания для товара.
+     * Отдаётся по запросу (по кнопке "Изменить"), чтобы не включать тяжёлую
+     * разметку редактора в исходную страницу для каждого товара.
+     *
+     * @return array{html: string, error?: string}
+     */
+    public function getEditorAction(): array
+    {
+        if (!check_bitrix_sessid()) {
+            return [
+                'html'  => '',
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.',
+            ];
+        }
+
+        if (!Loader::includeModule('iblock')) {
+            return [
+                'html'  => '',
+                'error' => 'Модуль iblock не найден.',
+            ];
+        }
+
+        $request = \Bitrix\Main\Context::getCurrent()->getRequest();
+
+        $id = (int)$request->getPost('id');
+        if ($id <= 0) {
+            return [
+                'html'  => '',
+                'error' => 'Не передан ID товара.',
+            ];
+        }
+
+        $rs = \CIBlockElement::GetList(
+            [],
+            ['ID' => $id, 'IBLOCK_ID' => self::IBLOCK_ID],
+            false,
+            false,
+            ['ID', 'DETAIL_TEXT']
+        );
+
+        $row = $rs->Fetch();
+        if (!$row) {
+            return [
+                'html'  => '',
+                'error' => 'Товар не найден.',
+            ];
+        }
+
+        return [
+            'html' => $this->renderDetailEditor($id, (string)$row['DETAIL_TEXT']),
         ];
     }
 
@@ -655,11 +859,16 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         }
 
         // 1. Элемент инфоблока
+        // Описание приходит из визуального редактора — очищаем HTML и
+        // сохраняем как HTML (у элементов инфоблока по умолчанию type=text).
+        $detailHtml = $this->sanitizeDetailHtml((string)$request->getPost('detail'));
+
         $fields = [
             'ACTIVE'            => $request->getPost('active') === 'Y' ? 'Y' : 'N',
             'IBLOCK_SECTION_ID' => (int)$request->getPost('sectionId'),
             'SORT'              => (int)$request->getPost('sort'),
-            'DETAIL_TEXT'       => (string)$request->getPost('detail'),
+            'DETAIL_TEXT'       => $detailHtml,
+            'DETAIL_TEXT_TYPE'  => 'html',
             'PROPERTY_VALUES'   => [
                 'ATT_KALLORY'  => (float)$request->getPost('kallory'),
                 'ATT_BELKI'    => (float)$request->getPost('belki'),
@@ -676,6 +885,23 @@ class ProductsList extends \CBitrixComponent implements Controllerable
             && (int)($detailPicture['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK
         ) {
             $fields['DETAIL_PICTURE'] = $detailPicture;
+        }
+
+        // SEO-данные элемента (inherited properties) — meta title/description/keywords.
+        // Пустое значение означает отказ от собственного значения (наследуется
+        // с раздела/инфоблока), как в админке при снятом "Переопределить".
+        $seoFields = [];
+        if ($request->getPost('seoTitle') !== null) {
+            $seoFields['ELEMENT_META_TITLE'] = trim((string)$request->getPost('seoTitle'));
+        }
+        if ($request->getPost('seoDescription') !== null) {
+            $seoFields['ELEMENT_META_DESCRIPTION'] = trim((string)$request->getPost('seoDescription'));
+        }
+        if ($request->getPost('seoKeywords') !== null) {
+            $seoFields['ELEMENT_META_KEYWORDS'] = trim((string)$request->getPost('seoKeywords'));
+        }
+        if (!empty($seoFields)) {
+            $fields['IPROPERTY_TEMPLATES'] = $seoFields;
         }
 
         $element = new \CIBlockElement();
@@ -710,9 +936,46 @@ class ProductsList extends \CBitrixComponent implements Controllerable
         // 4. Сброс кеша компонента
         BXClearCache(true, self::CACHE_DIR);
 
+        // 5. Сброс кеша SEO-параметров (класс Prokhorov\Api\Helpers\Seo)
+        $this->clearSeoCache($id);
+
         return [
             'success' => true,
+            'detail'  => $detailHtml,
+            'seo'     => [
+                'title'       => $seoFields['ELEMENT_META_TITLE'] ?? null,
+                'description' => $seoFields['ELEMENT_META_DESCRIPTION'] ?? null,
+                'keywords'    => $seoFields['ELEMENT_META_KEYWORDS'] ?? null,
+            ],
         ];
+    }
+
+    /**
+     * Сброс кеша SEO-параметров элемента (см. Prokhorov\Api\Helpers\Seo).
+     * Кеш класса Seo хранит значения под своим id/папкой и тегом element_<ID>.
+     *
+     * @param int $elementId
+     * @return void
+     */
+    private function clearSeoCache(int $elementId): void
+    {
+        try {
+            // Очищаем папку кеша SEO-параметров целиком: Seo кеширует
+            // значения в своём каталоге, точечная очистка ненадёжна.
+            \Bitrix\Main\Data\Cache::createInstance()->cleanDir('/prokhorov/api/seo/');
+
+            \Bitrix\Main\Application::getInstance()
+                ->getTaggedCache()
+                ->clearByTag('element_' . $elementId);
+
+            // Сбрасываем кешированные значения inherited properties элемента.
+            if (Loader::includeModule('iblock')) {
+                (new \Bitrix\Iblock\InheritedProperty\ElementValues(self::IBLOCK_ID, $elementId))
+                    ->clearValues();
+            }
+        } catch (\Throwable $e) {
+            // Кеш не критичен — не прерываем сохранение.
+        }
     }
 
     /**

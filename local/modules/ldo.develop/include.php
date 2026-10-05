@@ -9,6 +9,8 @@ Loader::registerAutoLoadClasses(
         'Ldo\\Develop\\Sections' => 'lib/sections.php',
         'Ldo\\Develop\\Property' => 'lib/property.php',
         'Ldo\\Develop\\Agents' => 'lib/agents.php',
+        // Работа с SEO-данными элемента инфоблока (meta title/description/keywords)
+        'Prokhorov\\Api\\Helpers\\Seo' => 'lib/helpers/seo.php',
     ]
 );
 

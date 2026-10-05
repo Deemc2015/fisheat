@@ -179,14 +179,49 @@
 /* ===== Скрытый блок (показывается при редактировании) ===== */
 .product-extra {
     flex-basis: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px 16px;
+    display: block;
     margin: 0;
     padding: 14px;
     border: 1px dashed var(--color-border, #868686);
     border-radius: 8px;
     background: rgba(255,255,255,0.02);
+}
+
+/* ===== Табы панели редактирования (Описание / SEO) ===== */
+.product-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border, #868686);
+}
+
+.product-tab {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--color-muted, #969696);
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto');
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+
+.product-tab:hover {
+    color: var(--bg-white, #FFFFFF);
+    background: rgba(255, 255, 255, .05);
+}
+
+.product-tab.is-active {
+    color: var(--bg-white, #FFFFFF);
+    background: var(--bg-button, #F44336);
+}
+
+.product-tab-pane {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px 16px;
 }
 
 .product-section,
@@ -198,6 +233,8 @@
 .product-belki,
 .product-giry,
 .product-yglevody,
+.product-seo-title,
+.product-seo-description,
 .product-detail {
     padding: 7px 10px;
     background: var(--bg-black, #1B1818);
@@ -215,6 +252,59 @@
     resize: vertical;
     min-height: 70px;
     line-height: 1.5;
+}
+
+/* ===== Контейнер визуального редактора описания ===== */
+.product-detail-wrap {
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+.product-detail-wrap .bx-html-editor {
+    width: 100% !important;
+    background: var(--bg-black, #1B1818);
+    border: 1px solid var(--color-border, #868686);
+    border-radius: 6px;
+}
+
+.product-detail-wrap .bxhtmled-toolbar-cnt {
+    background: var(--bg-gray, #2B2D2F);
+    border-bottom: 1px solid var(--color-border, #868686);
+}
+
+.product-detail-wrap .bxhtmled-toolbar {
+    background: transparent;
+}
+
+.product-detail-wrap .bxhtmled-area-cnt {
+    background: var(--bg-black, #1B1818);
+}
+
+.product-detail-wrap .bxhtmled-iframe-cnt,
+.product-detail-wrap .bxhtmled-textarea-cnt {
+    max-width: 100%;
+}
+
+.product-detail-wrap .bxhtmled-iframe-cnt {
+    background: var(--bg-black, #1B1818) !important;
+}
+
+/* У .bxhtmled-textarea все свойства заданы с !important — переопределяем
+   так же, иначе фон/цвет остаются дефолтными (белый фон, чёрный текст). */
+.product-detail-wrap .bxhtmled-textarea {
+    background-color: var(--bg-black, #1B1818) !important;
+    color: var(--bg-white, #FFFFFF) !important;
+    font-family: var(--font-family, 'Blogger Sans', 'Roboto') !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    padding: 10px 12px !important;
+    caret-color: var(--bg-white, #FFFFFF) !important;
+}
+
+.product-detail-wrap .bxhtmled-textarea::selection {
+    background: var(--bg-button, #F44336) !important;
+    color: var(--bg-white, #FFFFFF) !important;
 }
 
 .product-section:disabled,
