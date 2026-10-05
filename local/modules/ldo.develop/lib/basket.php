@@ -335,6 +335,9 @@ class Basket
                     if ((float)$item->getQuantity() !== (float)$needCount) {
                         $item->setField('QUANTITY', $needCount);
                     }
+
+                    // Бесплатная позиция всегда идёт с ручной нулевой ценой.
+                    self::markItemAsFree($item);
                     continue;
                 }
 
@@ -345,6 +348,8 @@ class Basket
                     'LID'      => $siteId,
                     'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
                 ]);
+                // Цена 0 задаётся как «ручная», иначе провайдер пересчитает её из каталога.
+                self::markItemAsFree($newItem);
             }
         } finally {
             self::$freePositionsSyncing = false;
@@ -352,6 +357,33 @@ class Basket
     }
 
 
+
+    /**
+     * Помечает позицию корзины как бесплатную: цена задаётся вручную и равна 0,
+     * чтобы провайдер каталога не подставил цену товара.
+     *
+     * @param \Bitrix\Sale\BasketItem $item
+     * @return void
+     */
+    private static function markItemAsFree($item): void
+    {
+        if (!is_object($item) || !method_exists($item, 'setFields')) {
+            return;
+        }
+
+        if ((string)$item->getField('CUSTOM_PRICE') === 'Y'
+            && (float)$item->getPrice() === 0.0
+            && (float)$item->getField('BASE_PRICE') === 0.0) {
+            return;
+        }
+
+        $item->setFields([
+            'CUSTOM_PRICE'   => 'Y',
+            'BASE_PRICE'     => 0,
+            'PRICE'          => 0,
+            'DISCOUNT_PRICE' => 0,
+        ]);
+    }
 
     public function deleteItem($productId)
     {
