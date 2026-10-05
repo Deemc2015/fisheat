@@ -328,7 +328,7 @@ if (!empty($arrProducts['GIFTS'])) {
                 ['IBLOCK_ID' => $catalogIblockId, '=ID' => $productIds],
                 false,
                 false,
-                ['ID', 'NAME', 'PREVIEW_PICTURE']
+                ['ID', 'NAME', 'PREVIEW_PICTURE', 'DETAIL_PICTURE']
             );
             while ($productRow = $rsProducts->Fetch()) {
                 $products[] = $productRow;
@@ -345,8 +345,12 @@ if (!empty($arrProducts['GIFTS'])) {
 
             foreach ($products as $product) {
 
-                $arrImg = CFile::ResizeImageGet($product['PREVIEW_PICTURE'], array('width'=>150, 'height'=>150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
-                $img = $arrImg['src'];
+                $pictureId = (int)$product['PREVIEW_PICTURE'] > 0 ? (int)$product['PREVIEW_PICTURE'] : (int)$product['DETAIL_PICTURE'];
+                $img = '';
+                if ($pictureId > 0) {
+                    $arrImg = CFile::ResizeImageGet($pictureId, array('width'=>150, 'height'=>150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+                    $img = is_array($arrImg) ? $arrImg['src'] : '';
+                }
 
                 $dataProducts[$key][] = [
                     'ID' => $product['ID'],

@@ -222,14 +222,19 @@ class FreePositionsList extends \CBitrixComponent implements Controllerable
             ['IBLOCK_ID' => $catalogIblockId, '=ID' => $ids],
             false,
             false,
-            ['ID', 'NAME', 'PREVIEW_PICTURE']
+            ['ID', 'NAME', 'PREVIEW_PICTURE', 'DETAIL_PICTURE']
         );
 
         while ($p = $rs->Fetch()) {
+            // Фото: PREVIEW_PICTURE, при отсутствии — DETAIL_PICTURE
+            $pictureId = (int)$p['PREVIEW_PICTURE'] > 0
+                ? (int)$p['PREVIEW_PICTURE']
+                : (int)$p['DETAIL_PICTURE'];
+
             $img = '';
-            if ((int)$p['PREVIEW_PICTURE'] > 0) {
+            if ($pictureId > 0) {
                 $resized = \CFile::ResizeImageGet(
-                    (int)$p['PREVIEW_PICTURE'],
+                    $pictureId,
                     ['width' => 80, 'height' => 80],
                     BX_RESIZE_IMAGE_PROPORTIONAL,
                     true
