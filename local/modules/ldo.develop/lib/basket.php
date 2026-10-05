@@ -21,6 +21,13 @@ class Basket
     /** Защита от рекурсивного пересчёта бесплатных позиций. */
     private static $freePositionsSyncing = false;
 
+    /**
+     * Добавление бесплатных позиций разрешено только при переходе на страницу
+     * оформления заказа. По умолчанию выключено, чтобы позиции не появлялись
+     * при обычном добавлении товара в корзину из каталога.
+     */
+    private static $freePositionsEnabled = false;
+
     public function __construct()
     {
         $this->basket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), Context::getCurrent()->getSite());
@@ -120,12 +127,56 @@ class Basket
                 $basket = $entity->getCollection();
             }
 
-            if ($basket instanceof \Bitrix\Sale\Basket) {
+            // Бесплатные позиции добавляем ТОЛЬКО когда это явно разрешено —
+            // на странице оформления заказа (см. applyFreePositionsToCurrentBasket()).
+            // При обычном добавлении товара в корзину ничего не делаем.
+            if ($basket instanceof \Bitrix\Sale\Basket && self::$freePositionsEnabled) {
                 self::syncFreePositions($basket);
             }
         } catch (\Throwable $e) {
             // Обработчик не должен ломать сохранение корзины
             AddMessage2Log('ldo.develop basket getData: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Применяет правила бесплатных позиций к текущей корзине пользователя
+     * и сохраняет её. Вызывается при построении заказа на странице оформления.
+     *
+     * @return void
+     */
+    public static function applyFreePositionsToCurrentBasket(): void
+    {
+        if (!Loader::includeModule('sale')) {
+            return;
+        }
+
+        try {
+            $siteId = Context::getCurrent()->getSite();
+            $basket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), $siteId);
+
+            if (!$basket instanceof \Bitrix\Sale\Basket || $basket->count() === 0) {
+                return;
+            }
+
+            // Разрешаем добавление бесплатных позиций для этого прохода.
+            self::$freePositionsEnabled = true;
+
+            self::syncFreePositions($basket);
+
+            // Сохраняем корзину, но блокируем повторный пересчёт из события
+            // OnSaleBasketBeforeSaved (иначе — лишний проход).
+            self::$freePositionsSyncing = true;
+            try {
+                $basket->save();
+            } finally {
+                self::$freePositionsSyncing = false;
+                self::$freePositionsEnabled = false;
+            }
+        } catch (\Throwable $e) {
+            self::$freePositionsEnabled = false;
+            self::$freePositionsSyncing = false;
+            AddMessage2Log('ldo.develop applyFreePositions: ' . $e->getMessage());
         }
     }
 
