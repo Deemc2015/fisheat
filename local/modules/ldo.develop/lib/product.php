@@ -295,10 +295,9 @@ class Product
     }
 
     /**
-     * Пакетно возвращает разделы товаров: сначала собственные разделы, а для
-     * торговых предложений (SKU) — дополнительно разделы родительского товара.
-     * Это нужно, чтобы правила, заданные по разделу каталога, срабатывали и для
-     * товаров, у которых этот раздел не является основным, и для SKU.
+     * Пакетно возвращает СОБСТВЕННЫЕ разделы товаров (основной + дополнительные
+     * привязки). Никакие родительские разделы и подразделы не подмешиваются:
+     * разделы задаются в настройках явно, и сопоставление идёт строго с ними.
      *
      * @param array $productIds
      * @return array productId => [sectionId, ...]
@@ -317,31 +316,7 @@ class Product
             return [];
         }
 
-        $ids = array_values($ids);
-        $map = self::loadSectionsForElements($ids);
-
-        // Для SKU добавляем разделы родительского товара.
-        $parentOf = [];
-        $parentIds = [];
-        foreach ($ids as $id) {
-            $parentId = self::getSkuParentId($id);
-            if ($parentId > 0 && $parentId !== $id) {
-                $parentOf[$id] = $parentId;
-                $parentIds[$parentId] = $parentId;
-            }
-        }
-
-        if (!empty($parentIds)) {
-            $parentMap = self::loadSectionsForElements(array_values($parentIds));
-            foreach ($parentOf as $id => $parentId) {
-                if (empty($parentMap[$parentId])) {
-                    continue;
-                }
-                foreach ($parentMap[$parentId] as $sectionId) {
-                    $map[$id][$sectionId] = $sectionId;
-                }
-            }
-        }
+        $map = self::loadSectionsForElements(array_values($ids));
 
         $result = [];
         foreach ($map as $id => $sections) {

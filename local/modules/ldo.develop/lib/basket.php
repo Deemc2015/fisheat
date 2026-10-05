@@ -224,10 +224,14 @@ class Basket
                 $freeIds[$pid] = $pid;
             }
 
+            // Сопоставляем СТРОГО с указанными в настройках разделами (без
+            // разворачивания в подразделы), иначе правило, заданное для
+            // родительского раздела, ошибочно срабатывает на все подкатегории
+            // (например «Блины»).
             $sectionIds = Product::decodeFreePositionIds($rule['SECTION_IDS'] ?? '');
             $preparedRules[] = [
                 'IDS'      => $productIds,
-                'SECTIONS' => Product::expandSectionIds($sectionIds),
+                'SECTIONS' => $sectionIds,
                 'PORTION'  => max(1, (int)($rule['PORTIONS'] ?? 1)),
             ];
         }
