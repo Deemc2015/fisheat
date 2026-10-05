@@ -18,6 +18,9 @@ class Basket
     private $basket;
     private $arBasketItems = array();
 
+    /** Защита от рекурсивного пересчёта бесплатных позиций. */
+    private static $freePositionsSyncing = false;
+
     public function __construct()
     {
         $this->basket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), Context::getCurrent()->getSite());
@@ -98,45 +101,23 @@ class Basket
     public static function getData($dataCart)
     {
         try {
-            $productIds = [];
+            $basket = null;
 
             if ($dataCart instanceof \Bitrix\Main\Event) {
-                $values = (array)$dataCart->getParameter('VALUES');
-                if (!empty($values['PRODUCT']['ID'])) {
-                    $productIds[] = (int)$values['PRODUCT']['ID'];
-                }
-
                 $entity = $dataCart->getParameter('ENTITY');
-                if ($entity instanceof \Bitrix\Sale\BasketItem) {
-                    $productIds[] = (int)$entity->getProductId();
-                } elseif ($entity instanceof \Bitrix\Sale\Basket) {
-                    $productIds = array_merge($productIds, self::getNewProductIds($entity));
+                if ($entity instanceof \Bitrix\Sale\Basket) {
+                    $basket = $entity;
+                } elseif ($entity instanceof \Bitrix\Sale\BasketItem) {
+                    $basket = $entity->getCollection();
                 }
-            } elseif ($dataCart instanceof \Bitrix\Sale\BasketItem) {
-                $productIds[] = (int)$dataCart->getProductId();
             } elseif ($dataCart instanceof \Bitrix\Sale\Basket) {
-                // Событие OnSaleBasketBeforeSaved передаёт корзину целиком,
-                // поэтому берём только новые позиции (ещё без ID).
-                $productIds = self::getNewProductIds($dataCart);
+                $basket = $dataCart;
+            } elseif ($dataCart instanceof \Bitrix\Sale\BasketItem) {
+                $basket = $dataCart->getCollection();
             }
 
-            foreach (array_unique(array_filter($productIds)) as $productId) {
-                // Проверяем, не является ли добавляемый товар сам бесплатным
-
-                if (Product::isFreeProduct($productId)) {
-                    // Это бесплатный товар, не обрабатываем
-                    continue;
-                }
-
-                $dataProduct = Product::getDataById($productId);
-                $productSectionId = $dataProduct['IBLOCK_SECTION_ID'] ?? 0;
-
-                if ($productSectionId) {
-                    $freeRules = Product::checkInFreeCategoryProducts($productSectionId);
-                    foreach ($freeRules as $freeRule) {
-                        self::addFreePosition($freeRule, $productSectionId);
-                    }
-                }
+            if ($basket instanceof \Bitrix\Sale\Basket) {
+                self::syncFreePositions($basket);
             }
         } catch (\Throwable $e) {
             // Обработчик не должен ломать сохранение корзины
@@ -180,52 +161,148 @@ class Basket
         }
     }
 
-    public static function addFreePosition($freeProductsData, $categoryId)
+    /**
+     * Пересчитывает бесплатные позиции по всем правилам для текущего
+     * содержимого корзины (правила — из таблицы ldo_marketing_free_positions).
+     *
+     * @param \Bitrix\Sale\Basket $currentBasket
+     * @return void
+     */
+    public static function syncFreePositions($currentBasket)
     {
-        $userBasket = new Basket();
-        $basketItems = $userBasket->getBasketItems(true);
+        if (self::$freePositionsSyncing) {
+            return;
+        }
 
-        // 1. Считаем общее количество ШТУК в корзине по нужной категории
-        $totalPieces = 0;
+        $siteId = '';
+        if (is_object($currentBasket) && method_exists($currentBasket, 'getSiteId')) {
+            $siteId = (string)$currentBasket->getSiteId();
+        }
+        if ($siteId === '') {
+            $siteId = (string)Context::getCurrent()->getSite();
+        }
+        if ($siteId === '') {
+            $siteId = 's1';
+        }
 
-        foreach ($basketItems as $productId => $item) {
-            // Пропускаем сами бесплатные товары при подсчёте!
-            if (in_array($productId, $freeProductsData['IDS'])) {
+        $rules = Product::getFreePositionRulesBySite($siteId);
+        if (empty($rules)) {
+            return;
+        }
+
+        // Множество всех бесплатных товаров (их не учитываем при подсчёте).
+        $freeIds = [];
+        $preparedRules = [];
+
+        foreach ($rules as $rule) {
+            $productIds = Product::decodeFreePositionIds($rule['PRODUCT_IDS'] ?? '');
+            if (empty($productIds)) {
                 continue;
             }
 
-            $productData = Product::getDataById($productId);
-            $productCategoryId = $productData['IBLOCK_SECTION_ID'] ?? 0;
+            foreach ($productIds as $pid) {
+                $freeIds[$pid] = $pid;
+            }
 
-            if ($productCategoryId == $categoryId) {
+            $sectionIds = Product::decodeFreePositionIds($rule['SECTION_IDS'] ?? '');
+            $preparedRules[] = [
+                'IDS'      => $productIds,
+                'SECTIONS' => Product::expandSectionIds($sectionIds),
+                'PORTION'  => max(1, (int)($rule['PORTIONS'] ?? 1)),
+            ];
+        }
+
+        if (empty($preparedRules)) {
+            return;
+        }
+
+        // Текущее содержимое корзины (включая ещё не сохранённые позиции).
+        $currentItems = [];
+        foreach ($currentBasket as $item) {
+            $currentItems[] = [
+                'PRODUCT_ID' => (int)$item->getProductId(),
+                'QUANTITY'   => (float)$item->getQuantity(),
+            ];
+        }
+
+        // Требуемое количество каждого бесплатного товара.
+        $required = [];
+
+        foreach ($preparedRules as $rule) {
+            $totalPieces = 0;
+
+            foreach ($currentItems as $item) {
+                $productId = $item['PRODUCT_ID'];
+                if (isset($freeIds[$productId])) {
+                    continue;
+                }
+
+                $dataProduct = Product::getDataById($productId);
+                $sectionId = (int)($dataProduct['IBLOCK_SECTION_ID'] ?? 0);
+                if (!$sectionId || !in_array($sectionId, $rule['SECTIONS'], true)) {
+                    continue;
+                }
+
                 $pieces = 1;
                 $dbProp = \CIBlockElement::GetProperty(4, $productId, [], ['CODE' => 'ATT_COUNT_ROLL']);
                 if ($prop = $dbProp->Fetch()) {
                     $pieces = (int)$prop['VALUE'];
-                    if ($pieces <= 0) $pieces = 1;
+                    if ($pieces <= 0) {
+                        $pieces = 1;
+                    }
                 }
+
                 $totalPieces += $item['QUANTITY'] * $pieces;
+            }
+
+            $count = (int)floor($totalPieces / $rule['PORTION']);
+
+            foreach ($rule['IDS'] as $freeProductId) {
+                $required[$freeProductId] = $count;
             }
         }
 
-        $portion = $freeProductsData['PORTION'];
-        $requiredCount = floor($totalPieces / $portion);
+        // Применяем изменения к сохранённой корзине пользователя.
+        $userBasket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), $siteId);
 
-        // 2. Синхронизируем бесплатные товары
-        foreach ($freeProductsData['IDS'] as $freeProductId) {
-            $currentCount = $basketItems[$freeProductId]['QUANTITY'] ?? 0;
+        self::$freePositionsSyncing = true;
 
-            if ($requiredCount > $currentCount) {
-                $needToAdd = $requiredCount - $currentCount;
-                for ($i = 0; $i < $needToAdd; $i++) {
-                    $userBasket->add($freeProductId, 1);
+        try {
+            $changed = false;
+
+            foreach ($required as $freeProductId => $needCount) {
+                $item = $userBasket->getExistsItem('catalog', $freeProductId);
+
+                if ($needCount <= 0) {
+                    if ($item) {
+                        $item->delete();
+                        $changed = true;
+                    }
+                    continue;
                 }
-            } elseif ($requiredCount < $currentCount) {
-                $needToRemove = $currentCount - $requiredCount;
-                for ($i = 0; $i < $needToRemove; $i++) {
-                    $userBasket->removeOne($freeProductId);
+
+                if ($item) {
+                    if ((float)$item->getQuantity() !== (float)$needCount) {
+                        $item->setField('QUANTITY', $needCount);
+                        $changed = true;
+                    }
+                } else {
+                    $newItem = $userBasket->createItem('catalog', $freeProductId);
+                    $newItem->setFields([
+                        'QUANTITY' => $needCount,
+                        'CURRENCY' => CurrencyManager::getBaseCurrency(),
+                        'LID'      => $siteId,
+                        'PRODUCT_PROVIDER_CLASS' => 'CCatalogProductProvider',
+                    ]);
+                    $changed = true;
                 }
             }
+
+            if ($changed) {
+                $userBasket->save();
+            }
+        } finally {
+            self::$freePositionsSyncing = false;
         }
     }
 
