@@ -1411,6 +1411,18 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         // Получаем цены со скидками
         $pricesWithDiscount = $applyResult['PRICES']['BASKET'] ?? [];
 
+        // Данные товаров (ссылка/фото/доступное количество) нужны, чтобы
+        // добавлять новые бесплатные позиции в список товаров без перезагрузки
+        // страницы (они появляются при увеличении количества основного товара).
+        $productIdsForInfo = [];
+        foreach ($basket as $item) {
+            $pid = (int)$item->getProductId();
+            if ($pid > 0) {
+                $productIdsForInfo[$pid] = $pid;
+            }
+        }
+        $productsInfo = $this->getBasketProductsInfo(array_values($productIdsForInfo));
+
         $itemsData = [];
         $totalPrice = 0;
         $baseTotalPrice = 0;
@@ -1439,6 +1451,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'id' => $basketId,
                 'basketId' => $basketId,
                 'productId' => $productId,
+                'name' => (string)$item->getField('NAME'),
+                'link' => (string)($productsInfo[$productId]['LINK'] ?? ''),
+                'image' => (string)($productsInfo[$productId]['IMAGE'] ?? ''),
+                'available' => (float)($productsInfo[$productId]['AVAILABLE'] ?? 0),
                 'quantity' => $quantity,
                 'price' => $itemTotalPrice,
                 'unitPrice' => $unitPrice,
@@ -1469,6 +1485,90 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         ];
 
         return $response;
+    }
+
+    /**
+     * Данные товаров для отрисовки позиций корзины в списке: ссылка, фото
+     * и доступное количество. Используется AJAX-ответами, чтобы новые
+     * бесплатные позиции появлялись в списке без перезагрузки страницы.
+     *
+     * @param array $ids ID товаров
+     * @return array productId => ['LINK' => string, 'IMAGE' => string, 'AVAILABLE' => float]
+     */
+    private function getBasketProductsInfo(array $ids): array
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        $result = [];
+        if (empty($ids)) {
+            return $result;
+        }
+
+        $catalogIblockId = 0;
+        Loader::includeModule('ldo.marketing');
+        if (class_exists('\Ldo\Marketing\Settings')) {
+            try {
+                $catalogIblockId = (int)\Ldo\Marketing\Settings::getCatalogIblockId();
+            } catch (\Throwable $e) {
+                $catalogIblockId = 0;
+            }
+        }
+        if ($catalogIblockId <= 0) {
+            $catalogIblockId = 4;
+        }
+
+        if (Loader::includeModule('iblock')) {
+            try {
+                $rs = \CIBlockElement::GetList(
+                    [],
+                    ['IBLOCK_ID' => $catalogIblockId, '=ID' => $ids],
+                    false,
+                    false,
+                    ['ID', 'DETAIL_PAGE_URL', 'PREVIEW_PICTURE', 'DETAIL_PICTURE']
+                );
+                while ($row = $rs->Fetch()) {
+                    $pictureId = (int)$row['PREVIEW_PICTURE'] > 0
+                        ? (int)$row['PREVIEW_PICTURE']
+                        : (int)$row['DETAIL_PICTURE'];
+
+                    $image = '';
+                    if ($pictureId > 0) {
+                        $img = \CFile::ResizeImageGet(
+                            $pictureId,
+                            ['width' => 100, 'height' => 100],
+                            BX_RESIZE_IMAGE_PROPORTIONAL,
+                            true
+                        );
+                        if (is_array($img)) {
+                            $image = (string)$img['src'];
+                        }
+                    }
+
+                    $result[(int)$row['ID']] = [
+                        'LINK'  => (string)$row['DETAIL_PAGE_URL'],
+                        'IMAGE' => $image,
+                    ];
+                }
+            } catch (\Throwable $e) {
+                // не ломаем ответ корзины
+            }
+        }
+
+        if (Loader::includeModule('catalog') && class_exists('\Bitrix\Catalog\ProductTable')) {
+            try {
+                $rs = \Bitrix\Catalog\ProductTable::getList([
+                    'filter' => ['=ID' => $ids],
+                    'select' => ['ID', 'QUANTITY'],
+                ]);
+                while ($row = $rs->fetch()) {
+                    $id = (int)$row['ID'];
+                    $result[$id]['AVAILABLE'] = (float)$row['QUANTITY'];
+                }
+            } catch (\Throwable $e) {
+                // не ломаем ответ корзины
+            }
+        }
+
+        return $result;
     }
 
     /**

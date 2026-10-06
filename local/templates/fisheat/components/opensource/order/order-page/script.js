@@ -1641,6 +1641,114 @@
             }
         },
 
+        /**
+         * Приводит список товаров в DOM в соответствие с данными сервера:
+         * добавляет новые позиции (например, бесплатные, появившиеся после
+         * увеличения количества основного товара) и удаляет исчезнувшие.
+         * @param {Object} itemsData - данные позиций: productId => {...}
+         */
+        syncBasketItemsDom: function(itemsData) {
+            if (!itemsData) return;
+
+            var list = document.querySelector('.product-list');
+            if (!list) return;
+
+            var anchor = list.querySelector('.count-people-block');
+            var changed = false;
+
+            // Удаляем позиции, которых больше нет в корзине
+            for (var domId in this.basketItems) {
+                if (!this.basketItems.hasOwnProperty(domId)) continue;
+                if (!itemsData[domId] && !itemsData[parseInt(domId, 10)]) {
+                    var oldNode = this.basketItems[domId].node;
+                    if (oldNode && oldNode.parentNode) {
+                        oldNode.parentNode.removeChild(oldNode);
+                    }
+                    changed = true;
+                }
+            }
+
+            // Добавляем новые позиции
+            for (var key in itemsData) {
+                if (!itemsData.hasOwnProperty(key)) continue;
+                var data = itemsData[key];
+                var pid = String(data.productId != null ? data.productId : key);
+
+                if (this.basketItems[pid]) continue;
+
+                var node = this.createBasketItemNode(data);
+                if (anchor) {
+                    list.insertBefore(node, anchor);
+                } else {
+                    list.appendChild(node);
+                }
+                changed = true;
+            }
+
+            if (changed) {
+                this.basketItems = {};
+                this.initializeBasketItems();
+            }
+        },
+
+        /**
+         * Создаёт DOM-элемент позиции корзины по данным сервера
+         * @param {Object} data
+         * @returns {HTMLElement}
+         */
+        createBasketItemNode: function(data) {
+            var node = document.createElement('div');
+            node.className = 'product-list__item';
+            node.setAttribute('data-id', data.productId);
+
+            var name = this.escapeHtml(data.name || '');
+            var html = '';
+
+            if (data.image) {
+                html += '<div class="image-product"><img src="' + this.escapeHtml(data.image) + '" alt="' + name + '"></div>';
+            }
+            if (data.link) {
+                html += '<a href="' + this.escapeHtml(data.link) + '" class="name-product">' + name + '</a>';
+            } else {
+                html += '<span class="name-product">' + name + '</span>';
+            }
+
+            var priceText = data.priceFormatted || this.formatPrice(data.price || 0);
+            html += '<div class="price-product"><div class="price-product__sum">' + priceText + '</div>';
+            if (data.unitWeight) {
+                html += '<div class="weight">' + data.unitWeight + ' г</div>';
+            }
+            html += '</div>';
+
+            var qty = parseInt(data.quantity, 10) || 1;
+            var maxQty = parseInt(data.available, 10);
+            if (isNaN(maxQty) || maxQty <= 0) {
+                maxQty = 999;
+            }
+
+            html += '<div class="amount-product-block">'
+                + '<span class="minus"></span>'
+                + '<span data-max-quantity="' + maxQty + '" class="quantity-product">' + qty + '</span>'
+                + '<span class="plus"></span>'
+                + '</div>';
+
+            node.innerHTML = html;
+            return node;
+        },
+
+        /**
+         * Экранирование HTML-спецсимволов
+         * @param {string} value
+         * @returns {string}
+         */
+        escapeHtml: function(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&')
+                .replace(/</g, '<')
+                .replace(/>/g, '>')
+                .replace(/"/g, '"');
+        },
+
         // ==============================================
         // МЕТОДЫ РАБОТЫ С КОЛИЧЕСТВОМ ПЕРСОН
         // ==============================================
@@ -2896,6 +3004,9 @@
                         }
 
                         if (response.data.items) {
+                            // Синхронизируем список: добавляем/удаляем позиции
+                            // (новые бесплатные позиции появляются без перезагрузки)
+                            self.syncBasketItemsDom(response.data.items);
                             self.updateAllItemsPrices(response.data.items);
                         }
 
