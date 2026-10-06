@@ -594,7 +594,7 @@ if (Loader::includeModule('ldo.deliverymap')) {
             $workTimeEnd = trim((string)($restaurant['WORK_TIME_END'] ?? ''));
             $workTime = '';
             if ($workTimeStart !== '' && $workTimeEnd !== '') {
-                $workTime = $workTimeStart . '–' . $workTimeEnd;
+                $workTime = $workTimeStart . ' - ' . $workTimeEnd;
             } elseif ($workTimeStart !== '') {
                 $workTime = 'с ' . $workTimeStart;
             } elseif ($workTimeEnd !== '') {

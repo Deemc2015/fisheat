@@ -440,10 +440,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             <label for="restorans-list__item-name-<?=$restoran['ID']?>">
                                 <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" data-min-order="<?=(int)($restoran['MIN_ORDER_PRICE'] ?? 0)?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
                                 <span></span>
-                                <div class="restorans-list__info">
-                                    <div class="restorans-list__name"><?=$restoran['NAME']?></div>
+                                <div class="restorans-list__text">
+                                    <?=$restoran['NAME']?>
                                     <?if(!empty($restoran['WORK_TIME'])):?>
-                                        <div class="restorans-list__time"><?=htmlspecialchars($restoran['WORK_TIME'])?></div>
+                                        <div class="restorans-list__time">Время работы: <?=htmlspecialchars($restoran['WORK_TIME'])?></div>
                                     <?endif?>
                                 </div>
                             </label>

@@ -2104,16 +2104,14 @@ footer .copyright{
 .restorans-list__item label{
     align-items: flex-start;
 }
-.restorans-list__info{
-    display: flex;
-    flex-direction: column;
-}
-.restorans-list__name{
+.restorans-list__text{
+    flex: 1;
+    min-width: 0;
     line-height: 1.2;
 }
 .restorans-list__time{
-    margin-top: 4px;
-    font-size: 14px;
+    margin-top: 2px;
+    font-size: 12px;
     color: var(--color-muted);
     line-height: 1.2;
 }
