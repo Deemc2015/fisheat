@@ -104,7 +104,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                         <img src="<?=$gift['PREVIEW_PICTURE']?>" />
                                     </picture>
                                 </div>
-                                <div class="gifts-list__item-title"><?=$gift['NAME']?></div>
+                                <div class="gifts-list__item-title" title="<?=htmlspecialchars($gift['NAME'])?>"><?=$gift['NAME']?></div>
                                 <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
                                     <div class="gifts-list__item-actions">
                                         <div class="not-avaliable-text">Выбор недоступен</div>
@@ -202,6 +202,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                            data-domofon="<?= htmlspecialchars($adress['DOMOFON'] ?? '') ?>"
                                            data-lat="<?= htmlspecialchars($adress['SHIRINA'] ?? '') ?>"
                                            data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
+                                           data-min-order="<?=(int)($adress['ZONE_MIN_ORDER_PRICE'] ?? 0)?>"
                                            <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
@@ -416,6 +417,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                            data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
                                            data-rest-xml="<?= htmlspecialchars($adress['RESTORAN_XML_ID'] ?? '') ?>"
                                            data-rest-name="<?= htmlspecialchars($adress['RESTORAN_NAME'] ?? '') ?>"
+                                           data-min-order="<?=(int)($adress['ZONE_MIN_ORDER_PRICE'] ?? 0)?>"
                                            <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
@@ -436,9 +438,14 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?foreach($arResult['RESTORAN_ADRESS'] as $restoran):?>
                         <div class="restorans-list__item">
                             <label for="restorans-list__item-name-<?=$restoran['ID']?>">
-                                <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
+                                <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" data-min-order="<?=(int)($restoran['MIN_ORDER_PRICE'] ?? 0)?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
                                 <span></span>
-                                <?=$restoran['NAME']?>
+                                <div class="restorans-list__info">
+                                    <div class="restorans-list__name"><?=$restoran['NAME']?></div>
+                                    <?if(!empty($restoran['WORK_TIME'])):?>
+                                        <div class="restorans-list__time"><?=htmlspecialchars($restoran['WORK_TIME'])?></div>
+                                    <?endif?>
+                                </div>
                             </label>
                         </div>
                         <?endforeach?>
@@ -496,6 +503,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 </label>
                 <input type="hidden" name="person_type_id" value="<?=$arParams['PERSON_TYPE_ID']?>">
                 <button type="submit" class="send_open_source_order_submit"><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_MAKE_ORDER_BUTTON')?></button>
+                <div class="min-order-sum"<?= empty($arResult['MIN_ORDER_VISIBLE']) ? ' style="display:none;"' : '' ?>>
+                    <div class="min-order-sum__label">Минимальная сумма заказа:</div>
+                    <div class="min-order-sum__value"><?=number_format((int)($arResult['MIN_ORDER_PRICE'] ?? 0), 0, '.', ' ')?> ₽</div>
+                </div>
             </div>
 
 

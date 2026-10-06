@@ -2364,7 +2364,7 @@ footer .copyright{
 .gifts-list__item-img img{
     border-radius:6px;
     width: 140px;
-    height: 140px;
+    height: 115px;
     object-fit: cover;
     display: block;
 }
@@ -2374,6 +2374,8 @@ footer .copyright{
 .gifts-list__item-title{
     margin-top: 12px;
     min-height:34px;
+    height: 34px;
+    overflow: hidden;
     margin-bottom: 12px;
 }
 .gifts-list__item{

@@ -2048,6 +2048,45 @@
                     this.totalBlock.addressValueNode.textContent = 'Не выбран адрес';
                 }
             }
+
+            // Минимальная сумма заказа для текущего выбора (адрес/ресторан)
+            this.updateMinOrderSum();
+        },
+
+        /**
+         * Обновляет вывод минимальной суммы заказа под кнопкой оформления.
+         * Для доставки берётся зона выбранного адреса, для самовывоза — выбранный ресторан.
+         */
+        updateMinOrderSum: function() {
+            var node = document.querySelector('.min-order-sum');
+            if (!node) return;
+
+            var valueNode = node.querySelector('.min-order-sum__value');
+
+            // Определяем, выбран ли самовывоз
+            var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
+            var isPickup = false;
+            if (selectedDelivery) {
+                var label = selectedDelivery.closest('label');
+                var nameElement = label ? label.querySelector('.delivery-name') : null;
+                var deliveryName = nameElement ? nameElement.textContent.trim().toLowerCase() : '';
+                isPickup = (deliveryName === 'самовывоз');
+            }
+
+            var source = isPickup
+                ? document.querySelector('.restorans-list input[name="restoran_id"]:checked')
+                : document.querySelector('.adress-user-list input[name="address_id"]:checked');
+
+            if (!source) {
+                node.style.display = 'none';
+                return;
+            }
+
+            var minOrder = parseFloat(source.getAttribute('data-min-order')) || 0;
+            if (valueNode) {
+                valueNode.textContent = this.formatPrice(minOrder);
+            }
+            node.style.display = '';
         },
 
         /**

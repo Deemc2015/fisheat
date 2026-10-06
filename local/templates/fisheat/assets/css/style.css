@@ -2101,6 +2101,22 @@ footer .copyright{
 .adress-user-list__item,.restorans-list__item{
     margin-bottom: 20px;
 }
+.restorans-list__item label{
+    align-items: flex-start;
+}
+.restorans-list__info{
+    display: flex;
+    flex-direction: column;
+}
+.restorans-list__name{
+    line-height: 1.2;
+}
+.restorans-list__time{
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--color-muted);
+    line-height: 1.2;
+}
  .addAdress-user,.view-map-restotans{
       color: #ffffff;
       background: var(--bg-button);
@@ -2246,6 +2262,17 @@ footer .copyright{
 }
 .right-order-page .total-order-block-btn label{
     display: flex;
+}
+.right-order-page .min-order-sum{
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--color-muted);
+    text-align: center;
+}
+.right-order-page .min-order-sum__value{
+    margin-top: 2px;
+    font-size: 16px;
+    color: #ffffff;
 }
 .left-order-page .payment-block{
     background: var(--bg-gray);
@@ -2659,7 +2686,7 @@ footer .copyright{
 .gifts-list__item-img img{
     border-radius:6px;
     width: 140px;
-    height: 140px;
+    height: 115px;
     object-fit: cover;
     display: block;
 }
@@ -2669,6 +2696,8 @@ footer .copyright{
 .gifts-list__item-title{
     margin-top: 12px;
     min-height:34px;
+    height: 34px;
+    overflow: hidden;
     margin-bottom: 12px;
 }
 .gifts-list__item{

@@ -110,7 +110,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                         <img src="<?=$gift['PREVIEW_PICTURE']?>" />
                                     </picture>
                                 </div>
-                                <div class="gifts-list__item-title"><?=$gift['NAME']?></div>
+                                <div class="gifts-list__item-title" title="<?=htmlspecialchars($gift['NAME'])?>"><?=$gift['NAME']?></div>
                                 <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
                                     <div class="gifts-list__item-actions">
                                         <div class="not-avaliable-text">Выбор недоступен</div>

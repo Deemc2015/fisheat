@@ -113,6 +113,8 @@ if(Loader::includeModule('ldo.iiko')){
             $zoneId = (int)($adr['ZONE_ID'] ?? 0);
             $adr['RESTORAN_XML_ID'] = '';
             $adr['RESTORAN_NAME'] = '';
+            // Минимальная сумма заказа зоны выбранного адреса (для вывода под кнопкой оформления)
+            $adr['ZONE_MIN_ORDER_PRICE'] = 0;
 
             if ($zoneId > 0) {
                 $dbZone = \Ldo\Deliverymap\DeliveryZoneTable::getList([
@@ -120,6 +122,9 @@ if(Loader::includeModule('ldo.iiko')){
                     'limit' => 1
                 ]);
                 $zone = $dbZone->fetch();
+                if ($zone) {
+                    $adr['ZONE_MIN_ORDER_PRICE'] = (int)($zone['MIN_ORDER_PRICE'] ?? 0);
+                }
                 if ($zone && (int)$zone['RESTAURANT_ID'] > 0) {
                     $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById((int)$zone['RESTAURANT_ID']);
                     if ($restaurant) {
@@ -560,6 +565,20 @@ if (!empty($selectedAddressId)) {
 /*Рестораны для самовывоза*/
 $arResult['RESTORAN_ADRESS'] = [];
 if (Loader::includeModule('ldo.deliverymap')) {
+    // Минимальная сумма заказа по ресторану берётся из привязанных к нему зон доставки
+    $minOrderByRestaurant = [];
+    $zoneIterator = \Ldo\Deliverymap\DeliveryZoneTable::getList([
+        'select' => ['RESTAURANT_ID', 'MIN_ORDER_PRICE'],
+        'filter' => ['=ACTIVE' => 'Y'],
+    ]);
+    while ($zoneRow = $zoneIterator->fetch()) {
+        $restId = (int)$zoneRow['RESTAURANT_ID'];
+        $minPrice = (int)$zoneRow['MIN_ORDER_PRICE'];
+        if ($restId > 0 && $minPrice > ($minOrderByRestaurant[$restId] ?? 0)) {
+            $minOrderByRestaurant[$restId] = $minPrice;
+        }
+    }
+
     // Выводим только рестораны с заполненным XML_ID
     $restaurants = array_filter(
         \Ldo\Deliverymap\RestaurantsTable::getActiveList(),
@@ -570,15 +589,65 @@ if (Loader::includeModule('ldo.deliverymap')) {
     if (!empty($restaurants)) {
         $checked = false;
         foreach ($restaurants as $restaurant) {
+            // Время работы (выводится под названием ресторана)
+            $workTimeStart = trim((string)($restaurant['WORK_TIME_START'] ?? ''));
+            $workTimeEnd = trim((string)($restaurant['WORK_TIME_END'] ?? ''));
+            $workTime = '';
+            if ($workTimeStart !== '' && $workTimeEnd !== '') {
+                $workTime = $workTimeStart . '–' . $workTimeEnd;
+            } elseif ($workTimeStart !== '') {
+                $workTime = 'с ' . $workTimeStart;
+            } elseif ($workTimeEnd !== '') {
+                $workTime = 'до ' . $workTimeEnd;
+            }
+
+            $restaurantId = (int)$restaurant['ID'];
             $arResult['RESTORAN_ADRESS'][] = [
-                'ID' => (int)$restaurant['ID'],
+                'ID' => $restaurantId,
                 'XML_ID' => $restaurant['XML_ID'],
                 'NAME' => $restaurant['NAME'],
+                'WORK_TIME' => $workTime,
+                'MIN_ORDER_PRICE' => (int)($minOrderByRestaurant[$restaurantId] ?? 0),
                 'CHECKED' => !$checked ? 'Y' : 'N',
             ];
             if (!$checked) {
                 $checked = true;
             }
+        }
+    }
+}
+
+/**
+ * Минимальная сумма заказа для текущего выбора:
+ * доставка — по зоне выбранного адреса, самовывоз — по выбранному ресторану.
+ * Используется для вывода под кнопкой «Оформить заказ» при первой загрузке.
+ */
+$arResult['MIN_ORDER_PRICE'] = 0;
+$arResult['MIN_ORDER_VISIBLE'] = false;
+
+$isPickupDelivery = false;
+foreach ($arResult['DELIVERY_LIST'] as $deliveryItem) {
+    if (!empty($deliveryItem['CHECKED'])
+        && mb_strtolower((string)$deliveryItem['NAME']) === 'самовывоз') {
+        $isPickupDelivery = true;
+        break;
+    }
+}
+
+if ($isPickupDelivery) {
+    foreach ($arResult['RESTORAN_ADRESS'] as $restoran) {
+        if (!empty($restoran['CHECKED'])) {
+            $arResult['MIN_ORDER_PRICE'] = (int)$restoran['MIN_ORDER_PRICE'];
+            $arResult['MIN_ORDER_VISIBLE'] = true;
+            break;
+        }
+    }
+} elseif (!empty($selectedAddressId)) {
+    foreach ((array)($arResult['USER_ADRESS'] ?? []) as $userAddress) {
+        if ((int)$userAddress['ID'] === (int)$selectedAddressId) {
+            $arResult['MIN_ORDER_PRICE'] = (int)($userAddress['ZONE_MIN_ORDER_PRICE'] ?? 0);
+            $arResult['MIN_ORDER_VISIBLE'] = true;
+            break;
         }
     }
 }
