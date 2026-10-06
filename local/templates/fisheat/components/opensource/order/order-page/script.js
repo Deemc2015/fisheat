@@ -2038,6 +2038,11 @@
                 // Скрываем цену доставки
                 this.hideDeliveryPrice();
 
+                // Самовывоз: времени доставки быть не должно — прячем и строку
+                // в «Стоимости заказа», и блок выбора времени доставки
+                this.updateDeliveryTime('', '');
+                this.toggleTimeDeliveryBlock(false);
+
                 // Меняем заголовок блока времени
                 this.updateTimeDeliveryTitle('самовывоза');
 
@@ -2053,12 +2058,21 @@
                 // Показываем цену доставки
                 this.showDeliveryPrice();
 
+                // Показываем блок выбора времени доставки
+                this.toggleTimeDeliveryBlock(true);
+
                 // Меняем заголовок блока времени
                 this.updateTimeDeliveryTitle('доставки');
             }
 
             // Обновляем итоговый блок (цену доставки, адрес и т.д.)
-            this.updateTotalsByDelivery(deliveryId);
+            var selectedAddressForTime = document.querySelector('input[name="address_id"]:checked');
+            if (!isPickup && selectedAddressForTime) {
+                // Для доставки пересчёт по адресу вернёт и время доставки по зоне
+                this.updateTotalsByAddress(selectedAddressForTime.getAttribute('data-id'));
+            } else {
+                this.updateTotalsByDelivery(deliveryId);
+            }
 
             // Обновляем отображение адреса/ресторана в итоговом блоке
             this.updateSelectedInfoDisplay();
