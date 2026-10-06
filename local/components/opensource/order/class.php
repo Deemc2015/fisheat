@@ -1742,6 +1742,21 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
             }
 
+            // Пересчёт бесплатных позиций.
+            // Без этого при увеличении количества дополнительного (бесплатного)
+            // товара его цена оставалась 0: количество менялось, но цена за
+            // платные единицы (сверх бесплатной нормы) не пересчитывалась.
+            // Здесь же пересчитываются и нормы при изменении количества основного
+            // товара (бесплатные позиции добавляются/убираются).
+            if (\Bitrix\Main\Loader::includeModule('ldo.develop')
+                && class_exists('\Ldo\Develop\Basket')) {
+                \Ldo\Develop\Basket::applyFreePositionsToCurrentBasket();
+
+                // Перечитываем корзину: пересчёт мог изменить количество и цены
+                // бесплатных позиций, а ответ должен содержать актуальные данные.
+                $basket = $this->getBasket();
+            }
+
             // Возвращаем единый формат ответа
             return $this->prepareBasketResponse($basket, 'Количество успешно изменено');
 
