@@ -115,6 +115,10 @@ if(Loader::includeModule('ldo.iiko')){
             $adr['RESTORAN_NAME'] = '';
             // Минимальная сумма заказа зоны выбранного адреса (для вывода под кнопкой оформления)
             $adr['ZONE_MIN_ORDER_PRICE'] = 0;
+            // Доступность адреса: зона активна и ресторан зоны активен
+            $adr['ZONE_ACTIVE'] = false;
+            $adr['RESTAURANT_ACTIVE'] = false;
+            $adr['AVAILABLE'] = false;
 
             if ($zoneId > 0) {
                 $dbZone = \Ldo\Deliverymap\DeliveryZoneTable::getList([
@@ -123,15 +127,44 @@ if(Loader::includeModule('ldo.iiko')){
                 ]);
                 $zone = $dbZone->fetch();
                 if ($zone) {
-                    $adr['ZONE_MIN_ORDER_PRICE'] = (int)($zone['MIN_ORDER_PRICE'] ?? 0);
-                }
-                if ($zone && (int)$zone['RESTAURANT_ID'] > 0) {
-                    $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById((int)$zone['RESTAURANT_ID']);
-                    if ($restaurant) {
-                        $adr['RESTORAN_XML_ID'] = (string)($restaurant['XML_ID'] ?? '');
-                        $adr['RESTORAN_NAME'] = (string)($restaurant['NAME'] ?? '');
+                    $adr['ZONE_ACTIVE'] = (($zone['ACTIVE'] ?? 'N') === 'Y');
+                    $restaurantId = (int)($zone['RESTAURANT_ID'] ?? 0);
+                    if ($adr['ZONE_ACTIVE']) {
+                        if ($restaurantId > 0) {
+                            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById($restaurantId);
+                            if ($restaurant) {
+                                $adr['RESTAURANT_ACTIVE'] = (($restaurant['ACTIVE'] ?? 'N') === 'Y');
+                                $adr['RESTORAN_XML_ID'] = (string)($restaurant['XML_ID'] ?? '');
+                                $adr['RESTORAN_NAME'] = (string)($restaurant['NAME'] ?? '');
+                            }
+                        } else {
+                            // У зоны нет привязанного ресторана — считаем ресторан доступным
+                            $adr['RESTAURANT_ACTIVE'] = true;
+                        }
+                    }
+
+                    $adr['AVAILABLE'] = $adr['ZONE_ACTIVE'] && $adr['RESTAURANT_ACTIVE'];
+
+                    if ($adr['AVAILABLE']) {
+                        $adr['ZONE_MIN_ORDER_PRICE'] = (int)($zone['MIN_ORDER_PRICE'] ?? 0);
+                    } else {
+                        // Недоступный адрес: не подставляем минимальную сумму и ресторан
+                        $adr['ZONE_MIN_ORDER_PRICE'] = 0;
+                        $adr['RESTORAN_XML_ID'] = '';
+                        $adr['RESTORAN_NAME'] = '';
                     }
                 }
+            }
+        }
+        unset($adr);
+
+        // Предвыбранным делаем первый доступный адрес
+        $checkedAssigned = false;
+        foreach ($adressList as &$adr) {
+            $isAvailable = !empty($adr['AVAILABLE']);
+            $adr['CHECKED'] = ($isAvailable && !$checkedAssigned);
+            if ($adr['CHECKED']) {
+                $checkedAssigned = true;
             }
         }
         unset($adr);
@@ -565,27 +598,19 @@ if (!empty($selectedAddressId)) {
 /*Рестораны для самовывоза*/
 $arResult['RESTORAN_ADRESS'] = [];
 if (Loader::includeModule('ldo.deliverymap')) {
-    // Минимальная сумма заказа по ресторану берётся из привязанных к нему зон доставки
-    $minOrderByRestaurant = [];
-    $zoneIterator = \Ldo\Deliverymap\DeliveryZoneTable::getList([
-        'select' => ['RESTAURANT_ID', 'MIN_ORDER_PRICE'],
-        'filter' => ['=ACTIVE' => 'Y'],
+    // Минимальная сумма заказа хранится в самом ресторане (поле MIN_ORDER_PRICE).
+    // Выводим все рестораны с заполненным XML_ID: неактивные показываем как закрытые
+    // (выбрать их нельзя), чтобы пользователь видел, что ресторан временно не работает.
+    $restaurantsIterator = \Ldo\Deliverymap\RestaurantsTable::getList([
+        'order' => ['ACTIVE' => 'DESC', 'ID' => 'ASC'],
     ]);
-    while ($zoneRow = $zoneIterator->fetch()) {
-        $restId = (int)$zoneRow['RESTAURANT_ID'];
-        $minPrice = (int)$zoneRow['MIN_ORDER_PRICE'];
-        if ($restId > 0 && $minPrice > ($minOrderByRestaurant[$restId] ?? 0)) {
-            $minOrderByRestaurant[$restId] = $minPrice;
+    $restaurants = [];
+    while ($restaurant = $restaurantsIterator->fetch()) {
+        if (empty($restaurant['XML_ID'])) {
+            continue;
         }
+        $restaurants[] = $restaurant;
     }
-
-    // Выводим только рестораны с заполненным XML_ID
-    $restaurants = array_filter(
-        \Ldo\Deliverymap\RestaurantsTable::getActiveList(),
-        static function ($restaurant) {
-            return !empty($restaurant['XML_ID']);
-        }
-    );
     if (!empty($restaurants)) {
         $checked = false;
         foreach ($restaurants as $restaurant) {
@@ -602,15 +627,18 @@ if (Loader::includeModule('ldo.deliverymap')) {
             }
 
             $restaurantId = (int)$restaurant['ID'];
+            $isActive = (($restaurant['ACTIVE'] ?? 'N') === 'Y');
             $arResult['RESTORAN_ADRESS'][] = [
                 'ID' => $restaurantId,
                 'XML_ID' => $restaurant['XML_ID'],
                 'NAME' => $restaurant['NAME'],
                 'WORK_TIME' => $workTime,
-                'MIN_ORDER_PRICE' => (int)($minOrderByRestaurant[$restaurantId] ?? 0),
-                'CHECKED' => !$checked ? 'Y' : 'N',
+                'ACTIVE' => $isActive,
+                // Минимальную сумму учитываем только для активного ресторана
+                'MIN_ORDER_PRICE' => $isActive ? (int)($restaurant['MIN_ORDER_PRICE'] ?? 0) : 0,
+                'CHECKED' => ($isActive && !$checked),
             ];
-            if (!$checked) {
+            if ($isActive && !$checked) {
                 $checked = true;
             }
         }
@@ -624,6 +652,7 @@ if (Loader::includeModule('ldo.deliverymap')) {
  */
 $arResult['MIN_ORDER_PRICE'] = 0;
 $arResult['MIN_ORDER_VISIBLE'] = false;
+$arResult['MIN_ORDER_LOCK'] = false;
 
 $isPickupDelivery = false;
 foreach ($arResult['DELIVERY_LIST'] as $deliveryItem) {
@@ -645,11 +674,32 @@ if ($isPickupDelivery) {
 } elseif (!empty($selectedAddressId)) {
     foreach ((array)($arResult['USER_ADRESS'] ?? []) as $userAddress) {
         if ((int)$userAddress['ID'] === (int)$selectedAddressId) {
-            $arResult['MIN_ORDER_PRICE'] = (int)($userAddress['ZONE_MIN_ORDER_PRICE'] ?? 0);
-            $arResult['MIN_ORDER_VISIBLE'] = true;
+            // Минимальную сумму учитываем только для доступного адреса
+            if (!empty($userAddress['AVAILABLE'])) {
+                $arResult['MIN_ORDER_PRICE'] = (int)($userAddress['ZONE_MIN_ORDER_PRICE'] ?? 0);
+                $arResult['MIN_ORDER_VISIBLE'] = true;
+            }
             break;
         }
     }
+}
+
+/**
+ * Оформление доступно только если сумма корзины без учёта скидок
+ * (стоимость товаров без скидок) больше или равна минимальной сумме заказа.
+ * Если суммы достаточно — надпись о минимальной сумме не выводим,
+ * если не хватает — блокируем кнопку и показываем минимальную сумму.
+ */
+if ($arResult['MIN_ORDER_VISIBLE'] && $arResult['MIN_ORDER_PRICE'] > 0) {
+    $cartBaseSum = (float)($arResult['PRODUCTS_BASE_PRICE'] ?? 0);
+
+    if ($cartBaseSum >= $arResult['MIN_ORDER_PRICE']) {
+        $arResult['MIN_ORDER_VISIBLE'] = false;
+    } else {
+        $arResult['MIN_ORDER_LOCK'] = true;
+    }
+} else {
+    $arResult['MIN_ORDER_VISIBLE'] = false;
 }
 
 /* Настройки Яндекс.Карт для модального окна добавления адреса */

@@ -66,6 +66,13 @@
             this.totalPriceNode = document.querySelector('.basket-total-price'); // Общая сумма корзины
             this.currency = 'RUB';
 
+            // Сумма корзины без учёта скидок (стоимость товаров без скидок),
+            // используется для контроля минимальной суммы заказа
+            var orderFormNode = document.getElementById('os-order-form');
+            this.cartBaseSum = orderFormNode
+                ? (parseFloat(orderFormNode.getAttribute('data-cart-base-sum')) || 0)
+                : 0;
+
             // Последовательная инициализация всех частей компонента
             this.initTotalBlock();                 // Инициализация блока итогов
             this.initializeBasketItems();          // Сбор данных о товарах
@@ -311,6 +318,13 @@
             if (form) {
                 BX.unbindAll(form);
                 BX.bind(form, 'submit', BX.proxy(function(event) {
+                    // Блокируем оформление, если сумма корзины меньше минимальной
+                    var submitBtn = form.querySelector('.send_open_source_order_submit');
+                    if (submitBtn && submitBtn.disabled) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
                     // Блокируем оформление заказа, если не заполнены дата и время
                     if (!this.validateTimeDelivery()) {
                         event.preventDefault();
@@ -1603,6 +1617,8 @@
             }
 
             if (data.baseSum !== undefined) {
+                // baseSum из AJAX — стоимость товаров без скидок (без доставки)
+                this.cartBaseSum = parseFloat(data.baseSum) || 0;
                 this.updateBaseSum(data.baseSum);
             }
 
@@ -1613,6 +1629,9 @@
             if (data.total !== undefined) {
                 this.updateTotal(data.total);
             }
+
+            // Пересчитываем доступность оформления по минимальной сумме заказа
+            this.updateMinOrderSum();
         },
 
         /**
@@ -2038,12 +2057,12 @@
                 // Скрываем цену доставки
                 this.hideDeliveryPrice();
 
-                // Самовывоз: времени доставки быть не должно — прячем и строку
-                // в «Стоимости заказа», и блок выбора времени доставки
+                // Самовывоз: строку «Время доставки» в «Стоимости заказа» скрываем,
+                // но блок выбора времени оставляем видимым — меняется только заголовок
                 this.updateDeliveryTime('', '');
-                this.toggleTimeDeliveryBlock(false);
+                this.toggleTimeDeliveryBlock(true);
 
-                // Меняем заголовок блока времени
+                // Меняем заголовок блока времени на «Время самовывоза»
                 this.updateTimeDeliveryTitle('самовывоза');
 
             } else {
@@ -2181,9 +2200,7 @@
          */
         updateMinOrderSum: function() {
             var node = document.querySelector('.min-order-sum');
-            if (!node) return;
-
-            var valueNode = node.querySelector('.min-order-sum__value');
+            var submitBtn = document.querySelector('.send_open_source_order_submit');
 
             // Определяем, выбран ли самовывоз
             var selectedDelivery = document.querySelector('input[name="delivery_id"]:checked');
@@ -2199,16 +2216,41 @@
                 ? document.querySelector('.restorans-list input[name="restoran_id"]:checked')
                 : document.querySelector('.adress-user-list input[name="address_id"]:checked');
 
-            if (!source) {
-                node.style.display = 'none';
-                return;
+            var minOrder = 0;
+            // Источник не выбран (нет адреса доставки / ресторана самовывоза) — оформление недоступно
+            var sourceUnavailable = true;
+            if (source) {
+                minOrder = parseFloat(source.getAttribute('data-min-order')) || 0;
+                // Доступность выбранного адреса доставки или ресторана самовывоза
+                sourceUnavailable = (source.getAttribute('data-available') === 'N');
             }
 
-            var minOrder = parseFloat(source.getAttribute('data-min-order')) || 0;
-            if (valueNode) {
-                valueNode.textContent = this.formatPrice(minOrder);
+            // Сумма корзины без учёта скидок
+            var cartBaseSum = parseFloat(this.cartBaseSum) || 0;
+
+            // Недостаток минимальной суммы (при доступном источнике)
+            var isMinOrderShort = (!sourceUnavailable && minOrder > 0 && cartBaseSum < minOrder);
+
+            // Оформление недоступно при недоступном источнике или недостатке минимальной суммы
+            var isLocked = (sourceUnavailable || isMinOrderShort);
+
+            // Надпись о минимальной сумме выводим только при недостаточной сумме
+            if (node) {
+                if (isMinOrderShort) {
+                    var valueNode = node.querySelector('.min-order-sum__value');
+                    if (valueNode) {
+                        valueNode.textContent = this.formatPrice(minOrder);
+                    }
+                    node.style.display = '';
+                } else {
+                    node.style.display = 'none';
+                }
             }
-            node.style.display = '';
+
+            // Блокируем/разблокируем кнопку оформления заказа
+            if (submitBtn) {
+                submitBtn.disabled = isLocked;
+            }
         },
 
         /**

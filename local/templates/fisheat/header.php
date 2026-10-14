@@ -344,7 +344,7 @@ use \Ldo\Develop\Pages;
     <?if(!$isMobile):?>
 
     <div class="top-page">
-        <h1 class="title-page"><?$APPLICATION->ShowTitle()?></h1>
+        <h1 class="title-page"><?$APPLICATION->ShowTitle(false)?></h1>
         <div class="bread-link"><div class="bread-toggle"></div>   <?$APPLICATION->IncludeComponent(
 	"bitrix:breadcrumb", 
 	"breadcrumb", 

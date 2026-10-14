@@ -30,6 +30,22 @@ $defaultLat   = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'def
 $defaultLng   = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_lng', '55.9587') : '55.9587';
 $defaultZoom  = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_zoom', '11') : '11';
 $defaultCity  = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'default_city', '') : '';
+$timeZone     = $deliveryModuleLoaded ? DeliverySettingsTable::get($siteId, 'timezone', '') : '';
+
+// Поддерживаемые часовые пояса (для корректной передачи времени в заказ)
+$timeZoneOptions = [
+    'Europe/Kaliningrad' => 'Калининград (UTC+2)',
+    'Europe/Moscow'      => 'Москва (UTC+3)',
+    'Europe/Samara'      => 'Самара (UTC+4)',
+    'Asia/Yekaterinburg' => 'Екатеринбург (UTC+5)',
+    'Asia/Omsk'          => 'Омск (UTC+6)',
+    'Asia/Krasnoyarsk'   => 'Красноярск (UTC+7)',
+    'Asia/Irkutsk'       => 'Иркутск (UTC+8)',
+    'Asia/Yakutsk'       => 'Якутск (UTC+9)',
+    'Asia/Vladivostok'   => 'Владивосток (UTC+10)',
+    'Asia/Magadan'       => 'Магадан (UTC+11)',
+    'Asia/Kamchatka'     => 'Камчатка (UTC+12)',
+];
 
 $saveError = '';
 
@@ -40,6 +56,10 @@ if ($request->isPost() && $request->getPost('save_settings') === 'Y' && $deliver
     $lng  = trim((string)$request->getPost('default_lng'));
     $zoom = trim((string)$request->getPost('default_zoom'));
     $city = trim((string)$request->getPost('default_city'));
+    $tz   = trim((string)$request->getPost('timezone'));
+    if ($tz !== '' && !array_key_exists($tz, $timeZoneOptions)) {
+        $tz = '';
+    }
 
     // Город — обязательное поле
     if ($city === '') {
@@ -50,12 +70,14 @@ if ($request->isPost() && $request->getPost('save_settings') === 'Y' && $deliver
         $defaultLng   = $lng;
         $defaultZoom  = $zoom;
         $defaultCity  = $city;
+        $timeZone     = $tz;
     } else {
         DeliverySettingsTable::set($siteId, 'yandex_api_key', $key);
         DeliverySettingsTable::set($siteId, 'default_lat', $lat);
         DeliverySettingsTable::set($siteId, 'default_lng', $lng);
         DeliverySettingsTable::set($siteId, 'default_zoom', $zoom);
         DeliverySettingsTable::set($siteId, 'default_city', $city);
+        DeliverySettingsTable::set($siteId, 'timezone', $tz);
 
         LocalRedirect('/partners/settings/dostavka/?settings_saved=1');
     }
@@ -126,6 +148,18 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                    value="<?= (int)$defaultZoom ?>" min="1" max="19"
                                    style="max-width:70px;">
                         </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="timezone">Часовой пояс сайта</label>
+                        <select id="timezone" name="timezone">
+                            <?php foreach ($timeZoneOptions as $tzValue => $tzLabel): ?>
+                                <option value="<?= htmlspecialchars($tzValue) ?>"<?= $timeZone === $tzValue ? ' selected' : '' ?>><?= htmlspecialchars($tzLabel) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span class="settings-hint">
+                            У каждого сайта свой часовой пояс — используется для корректной передачи времени в заказ.
+                        </span>
                     </div>
 
                 <?php if (!empty($yandexApiKey)): ?>

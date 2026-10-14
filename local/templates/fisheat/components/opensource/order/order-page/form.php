@@ -22,9 +22,18 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 
 ?>
+<?
+// Есть ли хотя бы один доступный адрес доставки (активная зона и активный ресторан)
+$hasAvailableAddresses = false;
+foreach ((array)($arResult['USER_ADRESS'] ?? []) as $__addr) {
+    if (!array_key_exists('AVAILABLE', $__addr) || !empty($__addr['AVAILABLE'])) {
+        $hasAvailableAddresses = true;
+        break;
+    }
+}
+?>
 
-
-<form action="" method="post" name="os-order-form" id="os-order-form">
+<form action="" method="post" name="os-order-form" id="os-order-form" data-cart-base-sum="<?=(float)($arResult['PRODUCTS_BASE_PRICE'] ?? 0)?>">
 <div class="order-page">
     <div class="left-order-page">
         <div class="product-list">
@@ -192,7 +201,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
                             <?//print_r($adress);?>
-                            <div class="adress-user-list__item">
+                            <?$addrAvailable = !array_key_exists('AVAILABLE', $adress) || !empty($adress['AVAILABLE']);?>
+                            <div class="adress-user-list__item<?=$addrAvailable ? '' : ' adress-user-list__item--unavailable'?>">
                                 <label for="adress-user-list__item-name-<?=$adress['ID']?>">
                                     <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>"
                                            data-city="<?= htmlspecialchars($adress['CITY'] ?? '') ?>"
@@ -202,10 +212,12 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                            data-domofon="<?= htmlspecialchars($adress['DOMOFON'] ?? '') ?>"
                                            data-lat="<?= htmlspecialchars($adress['SHIRINA'] ?? '') ?>"
                                            data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
+                                           data-available="<?=$addrAvailable ? 'Y' : 'N'?>"
                                            data-min-order="<?=(int)($adress['ZONE_MIN_ORDER_PRICE'] ?? 0)?>"
-                                           <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                           <?if($adress['CHECKED']){echo 'checked';}?> <?if(!$addrAvailable){echo 'disabled';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
+                                    <?if(!$addrAvailable):?><small class="adress-unavailable-note">Адрес больше не обслуживается</small><?endif;?>
                                 </label>
                                 <div class="adress-user-list__item-btn">
                                     <div class="adress-user-list__item-btn-edit"></div>
@@ -214,6 +226,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                             </div>
                         <?endforeach?>
                     </div>
+                <?endif?>
+                <?if($arResult['USER_ADRESS'] && !$hasAvailableAddresses):?>
+                    <div class="adress-empty-note">Ни один сохранённый адрес больше не обслуживается. Пожалуйста, добавьте новый адрес.</div>
                 <?endif?>
                 <div class="addAdress-user">Добавить адрес</div>
             </div>
@@ -405,7 +420,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                 <?if($arResult['USER_ADRESS']):?>
                     <div class="adress-user-list">
                         <?foreach($arResult['USER_ADRESS'] as $adress):?>
-                            <div class="adress-user-list__item">
+                            <?$addrAvailable = !array_key_exists('AVAILABLE', $adress) || !empty($adress['AVAILABLE']);?>
+                            <div class="adress-user-list__item<?=$addrAvailable ? '' : ' adress-user-list__item--unavailable'?>">
                                 <label for="adress-user-list__item-name-<?=$adress['ID']?>">
                                     <input data-id="<?=$adress['ID']?>" data-price="<?=$adress['PRICE']?>"
                                            data-city="<?= htmlspecialchars($adress['CITY'] ?? '') ?>"
@@ -417,10 +433,12 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                                            data-lon="<?= htmlspecialchars($adress['DOLGOTA'] ?? '') ?>"
                                            data-rest-xml="<?= htmlspecialchars($adress['RESTORAN_XML_ID'] ?? '') ?>"
                                            data-rest-name="<?= htmlspecialchars($adress['RESTORAN_NAME'] ?? '') ?>"
+                                           data-available="<?=$addrAvailable ? 'Y' : 'N'?>"
                                            data-min-order="<?=(int)($adress['ZONE_MIN_ORDER_PRICE'] ?? 0)?>"
-                                           <?if($adress['CHECKED']){echo 'checked';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
+                                           <?if($adress['CHECKED']){echo 'checked';}?> <?if(!$addrAvailable){echo 'disabled';}?> name="address_id" type="radio" id="adress-user-list__item-name-<?=$adress['ID']?>" value="<?=$adress['ADRESS_NAME']?>">
                                     <span></span>
                                     <?=$adress['ADRESS_NAME']?>
+                                    <?if(!$addrAvailable):?><small class="adress-unavailable-note">Адрес больше не обслуживается</small><?endif;?>
                                 </label>
                                 <div class="adress-user-list__item-btn">
                                     <div class="adress-user-list__item-btn-edit"></div>
@@ -430,17 +448,21 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?endforeach?>
                     </div>
                 <?endif?>
+                <?if($arResult['USER_ADRESS'] && !$hasAvailableAddresses):?>
+                    <div class="adress-empty-note">Ни один сохранённый адрес больше не обслуживается. Пожалуйста, добавьте новый адрес.</div>
+                <?endif?>
                 <div class="addAdress-user">Добавить адрес</div>
             </div>
             <div class="samovivoz-block">
                 <div class="restorans-list">
                 <?if($arResult['RESTORAN_ADRESS']):?>
                         <?foreach($arResult['RESTORAN_ADRESS'] as $restoran):?>
-                        <div class="restorans-list__item">
+                        <?$restoranActive = !array_key_exists('ACTIVE', $restoran) || !empty($restoran['ACTIVE']);?>
+                        <div class="restorans-list__item<?=$restoranActive ? '' : ' restorans-list__item--closed'?>">
                             <label for="restorans-list__item-name-<?=$restoran['ID']?>">
-                                <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" data-min-order="<?=(int)($restoran['MIN_ORDER_PRICE'] ?? 0)?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?>  type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
+                                <input data-id="<?=$restoran['ID']?>" data-xml="<?=htmlspecialchars($restoran['XML_ID'] ?? '')?>" data-available="<?=$restoranActive ? 'Y' : 'N'?>" data-min-order="<?=(int)($restoran['MIN_ORDER_PRICE'] ?? 0)?>" name="restoran_id" <?if($restoran['CHECKED']){echo 'checked';}?> <?if(!$restoranActive){echo 'disabled';}?> type="radio" id="restorans-list__item-name-<?=$restoran['ID']?>" value="<?=$restoran['NAME']?>">
                                 <span></span>
-                                <p class="restorans-list__text"><?=$restoran['NAME']?><?if(!empty($restoran['WORK_TIME'])):?><small class="restorans-list__time">Время работы: <?=htmlspecialchars($restoran['WORK_TIME'])?></small><?endif?></p>
+                                <p class="restorans-list__text"><?=$restoran['NAME']?><?if(!$restoranActive):?><small class="restorans-list__closed">Закрыт</small><?endif?><?if(!empty($restoran['WORK_TIME'])):?><small class="restorans-list__time">Время работы: <?=htmlspecialchars($restoran['WORK_TIME'])?></small><?endif?></p>
                             </label>
                         </div>
                         <?endforeach?>
@@ -497,7 +519,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                     <div class="politika-link" >Я даю <a href="#">согласие</a> на обработку моих персональных данных, в соответствии с Федеральным законом от 27.07.2006 г. №152-ФЗ "О персональных данных", на условиях, определенных политикой в области обработки и обеспечения безопасности персональных данных</div>
                 </label>
                 <input type="hidden" name="person_type_id" value="<?=$arParams['PERSON_TYPE_ID']?>">
-                <button type="submit" class="send_open_source_order_submit"><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_MAKE_ORDER_BUTTON')?></button>
+                <button type="submit" class="send_open_source_order_submit"<?= !empty($arResult['MIN_ORDER_LOCK']) ? ' disabled' : '' ?>><?=Loc::getMessage('OPEN_SOURCE_ORDER_TEMPLATE_MAKE_ORDER_BUTTON')?></button>
                 <div class="min-order-sum"<?= empty($arResult['MIN_ORDER_VISIBLE']) ? ' style="display:none;"' : '' ?>>
                     <div class="min-order-sum__label">Минимальная сумма заказа:</div>
                     <div class="min-order-sum__value"><?=number_format((int)($arResult['MIN_ORDER_PRICE'] ?? 0), 0, '.', ' ')?> ₽</div>

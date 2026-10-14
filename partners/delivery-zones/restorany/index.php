@@ -71,6 +71,7 @@ if ($request->isPost() && $request->getPost('ajax_restaurant') && $moduleLoaded)
                 'DELIVERY_TIME_END' => (int)$request->getPost('DELIVERY_TIME_END'),
                 'WORK_TIME_START' => $workTimeStart,
                 'WORK_TIME_END' => $workTimeEnd,
+                'MIN_ORDER_PRICE' => max(0, (int)$request->getPost('MIN_ORDER_PRICE')),
                 'ACTIVE' => $request->getPost('ACTIVE') === 'Y' ? 'Y' : 'N',
             ];
 
@@ -135,6 +136,9 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
 }
 .rest-item--no-xml:hover {
     background: rgba(231,76,60,.14);
+}
+.rest-item--inactive {
+    opacity: .6;
 }
 .rest-xml-warning {
     margin-top: 10px;
@@ -204,16 +208,17 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                     </div>
                     <div id="restaurants-list">
                         <?php foreach ($restaurants as $r): ?>
-                            <div class="rest-item<?= empty($r['XML_ID']) ? ' rest-item--no-xml' : '' ?>" data-id="<?= $r['ID'] ?>">
+                            <div class="rest-item<?= empty($r['XML_ID']) ? ' rest-item--no-xml' : '' ?><?= ($r['ACTIVE'] ?? 'Y') !== 'Y' ? ' rest-item--inactive' : '' ?>" data-id="<?= $r['ID'] ?>">
                                 <div class="rest-item__main">
                                     <div class="rest-item__info">
-                                        <div class="rest-item__name"><?= htmlspecialchars($r['NAME']) ?></div>
+                                        <div class="rest-item__name"><?= htmlspecialchars($r['NAME']) ?><?php if (($r['ACTIVE'] ?? 'Y') !== 'Y'): ?> <span style="font-size:12px;color:#e74c3c;">Выключен</span><?php endif; ?></div>
                                         <div class="rest-item__meta">
                                             <?php if ($r['PHONE']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M6.62 10.79C8.06 13.62 10.38 15.94 13.21 17.38L15.41 15.18C15.68 14.91 16.08 14.82 16.43 14.94C17.55 15.31 18.76 15.51 20 15.51C20.55 15.51 21 15.96 21 16.51V20C21 20.55 20.55 21 20 21C10.61 21 3 13.39 3 4C3 3.45 3.45 3 4 3H7.5C8.05 3 8.5 3.45 8.5 4C8.5 5.25 8.7 6.45 9.07 7.57C9.18 7.92 9.1 8.31 8.82 8.59L6.62 10.79Z" fill="currentColor"/></svg><?= htmlspecialchars($r['PHONE']) ?><?php endif; ?>
                                             <?php if ($r['PHONE'] && $r['EMAIL']): ?> · <?php endif; ?>
                                             <?php if ($r['EMAIL']): ?><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/></svg><?= htmlspecialchars($r['EMAIL']) ?><?php endif; ?>
                                             <?php if ((int)$r['DELIVERY_TIME_START'] > 0 && (int)$r['DELIVERY_TIME_END'] > 0): ?> · ⏱ Время доставки: <?= (int)$r['DELIVERY_TIME_START'] ?>–<?= (int)$r['DELIVERY_TIME_END'] ?> мин<?php endif; ?>
                                             <?php if (!empty($r['WORK_TIME_START']) || !empty($r['WORK_TIME_END'])): ?> · 🕐 Время работы: <?= htmlspecialchars(($r['WORK_TIME_START'] ?? '') ?: '—') ?>–<?= htmlspecialchars(($r['WORK_TIME_END'] ?? '') ?: '—') ?><?php endif; ?>
+                                            <?php if ((int)($r['MIN_ORDER_PRICE'] ?? 0) > 0): ?> · <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M21 7.5V6C21 4.9 20.1 4 19 4H5C3.9 4 3 4.9 3 6V18C3 19.1 3.9 20 5 20H19C20.1 20 21 19.1 21 18V16.5H14C12.9 16.5 12 15.6 12 14.5V9.5C12 8.4 12.9 7.5 14 7.5H21ZM19 9.5H14V14.5H19V9.5ZM16.5 13C15.67 13 15 12.33 15 11.5C15 10.67 15.67 10 16.5 10C17.33 10 18 10.67 18 11.5C18 12.33 17.33 13 16.5 13Z" fill="currentColor"/></svg>Мин. заказ: <?= (int)$r['MIN_ORDER_PRICE'] ?> ₽<?php endif; ?>
                                             <?php if ($highLoadEnabled === 'Y' && $highLoadAddTime > 0): ?>
                                                 <span class="zone-highload-badge">+<?= $highLoadAddTime ?> мин. выс.нагр.</span>
                                             <?php endif; ?>
@@ -269,6 +274,17 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                                                     <input type="time" class="rest-edit-work-end" value="<?= htmlspecialchars($r['WORK_TIME_END'] ?? '') ?>">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="rest-edit-field">
+                                            <label>Минимальная сумма заказа (руб)</label>
+                                            <input type="number" class="rest-edit-min-order" min="0" step="1" value="<?= (int)($r['MIN_ORDER_PRICE'] ?? 0) ?>">
+                                        </div>
+                                        <div class="rest-edit-field">
+                                            <label>Активность</label>
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" class="rest-edit-active" value="Y" <?= ($r['ACTIVE'] ?? 'Y') === 'Y' ? 'checked' : '' ?>>
+                                                <span class="toggle-switch__slider"></span>
+                                            </label>
                                         </div>
                                         <div class="rest-edit-row">
                                             <div class="rest-edit-field">
@@ -352,6 +368,17 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                     </div>
                 </div>
             </div>
+            <div class="dz-form-group">
+                <label>Минимальная сумма заказа (руб)</label>
+                <input type="number" id="rest-min-order" min="0" step="1" value="0">
+            </div>
+            <div class="dz-form-group">
+                <label>Активность</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="rest-active" value="Y" checked>
+                    <span class="toggle-switch__slider"></span>
+                </label>
+            </div>
             <div class="dz-form-actions">
                 <button type="submit" class="dz-btn dz-btn--primary">Сохранить</button>
                 <button type="button" class="dz-btn dz-btn--secondary" onclick="closeRestForm()">Отмена</button>
@@ -425,7 +452,8 @@ function saveRestaurant(e) {
     formData.append('DELIVERY_TIME_END', document.getElementById('rest-time-end').value);
     formData.append('WORK_TIME_START', document.getElementById('rest-work-start').value);
     formData.append('WORK_TIME_END', document.getElementById('rest-work-end').value);
-    formData.append('ACTIVE', 'Y');
+    formData.append('MIN_ORDER_PRICE', document.getElementById('rest-min-order').value);
+    formData.append('ACTIVE', document.getElementById('rest-active').checked ? 'Y' : 'N');
 
     fetch(window.location.href, {
         method: 'POST',
@@ -489,7 +517,8 @@ function saveRestaurantEdit(id) {
     formData.append('DELIVERY_TIME_END', el.querySelector('.rest-edit-time-end').value);
     formData.append('WORK_TIME_START', el.querySelector('.rest-edit-work-start').value);
     formData.append('WORK_TIME_END', el.querySelector('.rest-edit-work-end').value);
-    formData.append('ACTIVE', 'Y');
+    formData.append('MIN_ORDER_PRICE', el.querySelector('.rest-edit-min-order').value);
+    formData.append('ACTIVE', el.querySelector('.rest-edit-active').checked ? 'Y' : 'N');
 
     fetch(window.location.href, {
         method: 'POST',
@@ -624,6 +653,7 @@ document.getElementById('rest-form-overlay').addEventListener('click', function(
                     document.getElementById('rest-time-end').value = '0';
                     document.getElementById('rest-work-start').value = '';
                     document.getElementById('rest-work-end').value = '';
+                    document.getElementById('rest-min-order').value = '0';
                     document.getElementById('rest-form-overlay').classList.add('open');
                     cancelAddRestaurant();
                 });
@@ -641,3 +671,42 @@ document.addEventListener('DOMContentLoaded', function() {
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
 ?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+
+
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+
+
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+<?
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");
+?>
+
+
+

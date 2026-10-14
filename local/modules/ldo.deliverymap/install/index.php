@@ -107,6 +107,7 @@ class Ldo_deliverymap extends CModule
             'DELIVERY_TIME_END' => "int(11) NOT NULL DEFAULT '0'",
             'WORK_TIME_START' => "varchar(5) NOT NULL DEFAULT ''",
             'WORK_TIME_END' => "varchar(5) NOT NULL DEFAULT ''",
+            'MIN_ORDER_PRICE' => "int(11) NOT NULL DEFAULT '0'",
         ];
         foreach ($restaurantColumns as $column => $definition) {
             $exists = $DB->Query(
@@ -274,6 +275,7 @@ class Ldo_deliverymap extends CModule
                 `DELIVERY_TIME_END` int(11) NOT NULL DEFAULT '0',
                 `WORK_TIME_START` varchar(5) NOT NULL DEFAULT '',
                 `WORK_TIME_END` varchar(5) NOT NULL DEFAULT '',
+                `MIN_ORDER_PRICE` int(11) NOT NULL DEFAULT '0',
                 PRIMARY KEY (`ID`),
                 KEY `IX_ACTIVE` (`ACTIVE`),
                 KEY `IX_SITE_ID` (`SITE_ID`),

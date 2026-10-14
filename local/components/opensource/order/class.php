@@ -264,6 +264,27 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * Устанавливает часовой пояс сайта (настройка timezone модуля ldo.deliverymap)
+     * до формирования даты/времени заказа. На одной админке может быть несколько
+     * сайтов со своими часовыми поясами — время в заказ должно попадать корректно.
+     *
+     * @return void
+     */
+    private function applySiteTimeZone(): void
+    {
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return;
+        }
+
+        $siteId = Context::getCurrent()->getSite();
+        $timeZone = trim((string)\Ldo\Deliverymap\SettingsTable::get($siteId, 'timezone', ''));
+
+        if ($timeZone !== '' && in_array($timeZone, timezone_identifiers_list(), true)) {
+            date_default_timezone_set($timeZone);
+        }
+    }
+
+    /**
      * В режиме «Как можно скорее» подставляет дату/время доставки из окна
      * доставки зоны выбранного адреса (конец окна = сейчас + DELIVERY_TIME_END).
      * Учитывает надбавку «высокой нагрузки» (как в модуле ldo.deliverymap).
@@ -276,6 +297,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         if ($this->getOrderPropertyValue('DEFAULT_TIME') !== 'Y') {
             return;
         }
+
+        // Часовой пояс сайта — чтобы время доставки было в местном времени сайта
+        $this->applySiteTimeZone();
 
         // Нужен выбранный адрес и его зона
         $addressId = (int)$this->getOrderPropertyValue('ADDRESS_ID');
@@ -337,6 +361,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             return;
         }
 
+        // Часовой пояс сайта — чтобы время готовности было в местном времени сайта
+        $this->applySiteTimeZone();
+
         // Определяем выбранную службу доставки — метод применим только к «Самовывозу»
         $shipment = OrderHelper::getFirstNonSystemShipment($this->order);
         if ($shipment === null) {
@@ -362,7 +389,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         $restaurant = \Ldo\Deliverymap\RestaurantsTable::getByXmlId($restaurantXmlId);
-        if (!$restaurant) {
+        if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
             return;
         }
 
@@ -740,6 +767,159 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * Проверяет доступность выбранного способа получения:
+     *  - доставка: активная зона выбранного адреса и активный ресторан этой зоны;
+     *  - самовывоз: активный выбранный ресторан.
+     *
+     * @return Result
+     * @throws Exception
+     */
+    public function validateDeliveryAvailability()
+    {
+        $result = new Result();
+
+        $shipment = OrderHelper::getFirstNonSystemShipment($this->order);
+        if ($shipment === null) {
+            return $result;
+        }
+
+        $delivery = $shipment->getDelivery();
+        if (!$delivery instanceof Delivery\Services\Base) {
+            return $result;
+        }
+
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return $result;
+        }
+
+        $isPickup = (mb_strtolower((string)$delivery->getName()) === 'самовывоз');
+
+        if ($isPickup) {
+            $restaurantXmlId = (string)$this->getOrderPropertyValue('RESTORAN_ID');
+            if ($restaurantXmlId === '') {
+                return $result;
+            }
+            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getByXmlId($restaurantXmlId);
+            if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
+                $result->addError(new Error(
+                    'Выбранный ресторан недоступен для самовывоза',
+                    'delivery',
+                    ['type' => 'unavailable']
+                ));
+            }
+
+            return $result;
+        }
+
+        // Доставка: проверяем зону адреса и ресторан зоны
+        $addressId = (int)$this->getOrderPropertyValue('ADDRESS_ID');
+        if ($addressId <= 0 || !Loader::includeModule('ldo.iiko')) {
+            return $result;
+        }
+
+        $address = \Ldo\Iiko\UserAddress::getById($addressId);
+        $zoneId = (int)($address['ZONE_ID'] ?? 0);
+        if ($zoneId <= 0) {
+            $result->addError(new Error(
+                'Адрес больше не обслуживается',
+                'delivery',
+                ['type' => 'unavailable']
+            ));
+            return $result;
+        }
+
+        $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById($zoneId);
+        if (!$zone || ($zone['ACTIVE'] ?? 'N') !== 'Y') {
+            $result->addError(new Error(
+                'Адрес больше не обслуживается',
+                'delivery',
+                ['type' => 'unavailable']
+            ));
+            return $result;
+        }
+
+        $restaurantId = (int)($zone['RESTAURANT_ID'] ?? 0);
+        if ($restaurantId > 0) {
+            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById($restaurantId);
+            if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
+                $result->addError(new Error(
+                    'Ресторан по вашему адресу временно не принимает заказы',
+                    'delivery',
+                    ['type' => 'unavailable']
+                ));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Проверяет минимальную сумму заказа: стоимость товаров без учёта скидок
+     * должна быть не меньше минимальной суммы зоны (доставка) или ресторана
+     * (самовывоз).
+     *
+     * @return Result
+     * @throws Exception
+     */
+    public function validateMinOrderSum()
+    {
+        $result = new Result();
+
+        if (!Loader::includeModule('ldo.deliverymap')) {
+            return $result;
+        }
+
+        $shipment = OrderHelper::getFirstNonSystemShipment($this->order);
+        $isPickup = false;
+        if ($shipment !== null && $shipment->getDelivery() instanceof Delivery\Services\Base) {
+            $isPickup = (mb_strtolower((string)$shipment->getDelivery()->getName()) === 'самовывоз');
+        }
+
+        $minOrder = 0;
+
+        if ($isPickup) {
+            $restaurantXmlId = (string)$this->getOrderPropertyValue('RESTORAN_ID');
+            if ($restaurantXmlId !== '') {
+                $restaurant = \Ldo\Deliverymap\RestaurantsTable::getByXmlId($restaurantXmlId);
+                $minOrder = (int)($restaurant['MIN_ORDER_PRICE'] ?? 0);
+            }
+        } else {
+            $addressId = (int)$this->getOrderPropertyValue('ADDRESS_ID');
+            if ($addressId > 0 && Loader::includeModule('ldo.iiko')) {
+                $address = \Ldo\Iiko\UserAddress::getById($addressId);
+                $zoneId = (int)($address['ZONE_ID'] ?? 0);
+                if ($zoneId > 0) {
+                    $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById($zoneId);
+                    $minOrder = (int)($zone['MIN_ORDER_PRICE'] ?? 0);
+                }
+            }
+        }
+
+        if ($minOrder <= 0) {
+            return $result;
+        }
+
+        // Стоимость товаров без учёта скидок
+        $itemsSum = 0;
+        $basket = $this->getBasket();
+        if ($basket) {
+            foreach ($basket as $basketItem) {
+                $itemsSum += (float)$basketItem->getBasePrice() * (float)$basketItem->getQuantity();
+            }
+        }
+
+        if ($itemsSum < $minOrder) {
+            $result->addError(new Error(
+                'Минимальная сумма заказа — ' . $minOrder . ' ₽',
+                'basket',
+                ['type' => 'minOrder']
+            ));
+        }
+
+        return $result;
+    }
+
+    /**
      * @return Result
      * @throws Exception
      */
@@ -812,6 +992,16 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $paymentValidationResult = $this->validatePayment();
         if (!$paymentValidationResult->isSuccess()) {
             $result->addErrors($paymentValidationResult->getErrors());
+        }
+
+        $availabilityValidationResult = $this->validateDeliveryAvailability();
+        if (!$availabilityValidationResult->isSuccess()) {
+            $result->addErrors($availabilityValidationResult->getErrors());
+        }
+
+        $minOrderValidationResult = $this->validateMinOrderSum();
+        if (!$minOrderValidationResult->isSuccess()) {
+            $result->addErrors($minOrderValidationResult->getErrors());
         }
 
         return $result;
@@ -963,6 +1153,15 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                     }
                 }
 
+                // Проверяем доступность адреса доставки (активная зона и активный ресторан)
+                if (!$isPickup && $addressId > 0 && !$this->isAddressAvailable($addressId)) {
+                    return [
+                        'success' => false,
+                        'error' => 'Адрес больше не обслуживается',
+                        'available' => false,
+                    ];
+                }
+
                 // Пересчёт скидок/правил корзины в контексте заказа с выбранной службой
                 // доставки — чтобы правила, зависящие от типа доставки (например,
                 // «−10% при Самовывозе»), учитывались и при предпросмотре.
@@ -1067,6 +1266,15 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $discount = 0;
         $totalPrice = 0;
 
+        // Проверяем доступность адреса доставки (активная зона и активный ресторан)
+        if ($addressId > 0 && !$this->isAddressAvailable($addressId)) {
+            return [
+                'success' => false,
+                'error' => 'Адрес больше не обслуживается',
+                'available' => false,
+            ];
+        }
+
         try {
             $basket = $this->getBasket();
             if ($basket && $basket->count() > 0) {
@@ -1118,6 +1326,19 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
      */
     public function updateRestaurantPriceAction($dataRestaurant)
     {
+        // Проверяем активность выбранного ресторана самовывоза
+        $restaurantId = (int)($dataRestaurant['restaurantId'] ?? 0);
+        if ($restaurantId > 0 && Loader::includeModule('ldo.deliverymap')) {
+            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById($restaurantId);
+            if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
+                return [
+                    'success' => false,
+                    'error' => 'Выбранный ресторан недоступен для самовывоза',
+                    'available' => false,
+                ];
+            }
+        }
+
         $baseSum = 0;
         $discount = 0;
         $totalPrice = 0;
@@ -1185,6 +1406,40 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         return 0;
+    }
+
+    /**
+     * Проверяет доступность адреса доставки: активная зона и активный ресторан зоны.
+     *
+     * @param int $addressId ID адреса пользователя
+     * @return bool
+     */
+    private function isAddressAvailable(int $addressId): bool
+    {
+        if ($addressId <= 0 || !Loader::includeModule('ldo.iiko') || !Loader::includeModule('ldo.deliverymap')) {
+            return false;
+        }
+
+        $address = \Ldo\Iiko\UserAddress::getById($addressId);
+        $zoneId = (int)($address['ZONE_ID'] ?? 0);
+        if ($zoneId <= 0) {
+            return false;
+        }
+
+        $zone = \Ldo\Deliverymap\DeliveryZoneTable::getRowById($zoneId);
+        if (!$zone || ($zone['ACTIVE'] ?? 'N') !== 'Y') {
+            return false;
+        }
+
+        $restaurantId = (int)($zone['RESTAURANT_ID'] ?? 0);
+        if ($restaurantId > 0) {
+            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById($restaurantId);
+            if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -2040,6 +2295,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $address = $this->normalizeAddress((string)($dataAddress['address'] ?? ''));
         $address = $this->stripCityFromAddress($address, $city);
 
+        // Новые координаты (если пользователь изменил точку адреса)
+        $lat = trim((string)($dataAddress['lat'] ?? ''));
+        $lon = trim((string)($dataAddress['lon'] ?? ''));
+
         if (!Loader::includeModule('ldo.iiko')) {
             return [
                 'success' => false,
@@ -2047,16 +2306,45 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             ];
         }
 
-        // Частичное обновление: UserAddress::update меняет только переданные поля,
-        // поэтому USER_ID, координаты и зона существующего адреса не затираются.
-        $updateResult = \Ldo\Iiko\UserAddress::update($addressId, [
+        $updateData = [
             'ADDRESS' => $address,
             'CITY' => $city,
             'KVARTIRA' => trim((string)($dataAddress['apartment'] ?? '')),
             'PODEZD' => trim((string)($dataAddress['entrance'] ?? '')),
             'ETAG' => trim((string)($dataAddress['floor'] ?? '')),
             'DOMOFON' => trim((string)($dataAddress['intercom'] ?? '')),
-        ]);
+        ];
+
+        // Если пользователь перенёс точку адреса — обновляем координаты и заново
+        // определяем зону доставки. Если координаты не менялись (правится только
+        // текст адреса/квартира), зону не трогаем, чтобы можно было отредактировать
+        // адрес, находящийся в уже неактивной зоне.
+        if ($lat !== '' && $lon !== '') {
+            $currentAddress = \Ldo\Iiko\UserAddress::getById($addressId);
+            $coordsChanged = true;
+            if ($currentAddress) {
+                $coordsChanged = ((string)$currentAddress['LAT'] !== $lat
+                    || (string)$currentAddress['LON'] !== $lon);
+            }
+
+            if ($coordsChanged) {
+                $updateData['LAT'] = $lat;
+                $updateData['LON'] = $lon;
+                if (Loader::includeModule('ldo.deliverymap') && Loader::includeModule('ldo.develop')) {
+                    $zoneId = Hlblock::findZoneIdByCoordinates((float)$lat, (float)$lon);
+                    if ($zoneId <= 0) {
+                        return [
+                            'success' => false,
+                            'error' => 'Адрес не входит в зону доставки'
+                        ];
+                    }
+                    $updateData['ZONE_ID'] = $zoneId;
+                }
+            }
+        }
+
+        // Частичное обновление: UserAddress::update меняет только переданные поля
+        $updateResult = \Ldo\Iiko\UserAddress::update($addressId, $updateData);
 
         if ($updateResult) {
             return [

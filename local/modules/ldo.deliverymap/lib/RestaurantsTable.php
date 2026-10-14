@@ -88,6 +88,11 @@ class RestaurantsTable extends Entity\DataManager
                     return [new Entity\Validator\Length(null, 5)];
                 }
             ]),
+            // Минимальная сумма заказа для самовывоза (руб).
+            new Entity\IntegerField('MIN_ORDER_PRICE', [
+                'required' => false,
+                'default_value' => 0,
+            ]),
         ];
     }
 

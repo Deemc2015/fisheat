@@ -102,6 +102,15 @@ class ZoneDelivery extends Base
             return null;
         }
 
+        // Ресторан, привязанный к зоне, должен быть активен — иначе доставка недоступна
+        $restaurantId = (int)($zone['RESTAURANT_ID'] ?? 0);
+        if ($restaurantId > 0) {
+            $restaurant = \Ldo\Deliverymap\RestaurantsTable::getById($restaurantId);
+            if (!$restaurant || ($restaurant['ACTIVE'] ?? 'N') !== 'Y') {
+                return null;
+            }
+        }
+
         return $zone;
     }
 
