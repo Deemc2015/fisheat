@@ -942,6 +942,9 @@
     .category-top-info__name{
         font-size:24px;
     }
+    .container-detail-page h1{
+        font-size:20px;
+    }
     /*Товары*/
     #image-product-block {
         height: 155px;
@@ -960,7 +963,7 @@
 @media (max-width:400px) {
     /*Товары*/
     #image-product-block {
-        height: 145px;
+        height: 130px;
     }
     /**/
     /*Фильтр*/
@@ -1001,7 +1004,7 @@
 
     /*Товары*/
     #image-product-block {
-        height: 140px;
+        height: 130px;
     }
     /**/
 
