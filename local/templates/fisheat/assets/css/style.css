@@ -273,70 +273,76 @@ section{
 .gifts-list .slick-slide{
     height: 217px;
 }
-/*Слайдер на главной*/
-#slider-index .slick-slide{
-    height: 248px;
+/*Слайдер на главной (scroll-snap, без slick)*/
+#slider-index{
+    margin: 24px 0 0;
+    padding: 0;
+    background: transparent;
+    position: relative;
 }
-#slider-index img{
+#slider-index .slider-index__track{
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+#slider-index .slider-index__track::-webkit-scrollbar{
+    display: none;
+}
+#slider-index .slider-index__item{
+    flex: 0 0 calc((100% - 36px) / 3);
+    max-width: calc((100% - 36px) / 3);
+    scroll-snap-align: start;
+}
+#slider-index .slider-index__item a,
+#slider-index .slider-index__item picture{
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+#slider-index .slider-index__item img{
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-#slider-index  .slick-slide {
-    padding: 0 9px;
-}
-#slider-index{
-    margin: 0 -9px;
-}
-section#slider-index{
-    padding: 0;
-    background: transparent;
-    margin-top: 24px;
-    height: 287px;
-    position:relative;
-    overflow:hidden;
-}
-section#slider-index.disabled:before{
-    content:'';
-    background: url('../images/preloader.svg') no-repeat;
-    width: 40px;
-    height: 40px;
     display: block;
-    position: absolute;
-    z-index: 5;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    top: calc(50% - 49px);
 }
-section#slider-index.disabled:after{
-    content: '';
-    width: auto;
-    height: 100%;
-    background: var(--bg-black);
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 9px;
-    right: 9px;
-}
-#slider-index .slick-dots button:before{
-    content:none;
-}
-#slider-index .slick-dots li{
-    width: 10px;
-    height: 10px;
-    background: var(--color-dot);
-    border-radius: 50px;
-}
-#slider-index .slick-dots{
-    bottom: 0px;
-    position: relative;
+/*Точки слайдеров (акции и товары)*/
+.slider-dots{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
     margin-top: 22px;
 }
-#slider-index .slick-dots li.slick-active{
+.slider-dot{
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50px;
+    background: var(--color-dot);
+    cursor: pointer;
+    transition: width .3s ease, background .3s ease;
+}
+.slider-dot.is-active{
     width: 20px;
     background: var(--bg-button);
+}
+@media (max-width:1200px){
+    #slider-index .slider-index__item{
+        flex-basis: calc((100% - 18px) / 2);
+        max-width: calc((100% - 18px) / 2);
+    }
+}
+@media (max-width:768px){
+    #slider-index .slider-index__item{
+        flex-basis: 100%;
+        max-width: 100%;
+    }
 }
 /*Раздел акций*/
 .akciya-list{
@@ -1014,10 +1020,44 @@ h1.title-page{
     display:flex;
     align-items:center;
 }
-.slider-index-product .slick-slide {padding: 0 12px;}
+/*Слайдер товаров на главной (scroll-snap, без slick)*/
 .slider-index-product{
-    margin: 0 -12px;
-    height: 415px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 24px;
+    margin-bottom: 0;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+}
+.slider-index-product::-webkit-scrollbar{
+    display: none;
+}
+.slider-index-product > .product-item-container{
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+.slider-index-product,
+.slider-index-product *{
+    -webkit-user-select: none;
+    user-select: none;
+}
+.slider-index-product img,
+.slider-index-product a{
+    -webkit-user-drag: none;
+}
+.slider-index-product.is-grabbing{
+    cursor: grabbing;
+}
+.slider-index-product.is-dragging{
+    scroll-snap-type: none;
+    cursor: grabbing;
 }
 .title-section-wish{
     font-size: 42px;
@@ -2746,9 +2786,10 @@ footer .copyright{
     filter:grayscale(1);
 }
 .slider-index__item{
-    height: 248px;
+    aspect-ratio: 500 / 250;
     border-radius:20px;
     overflow:hidden;
+    background: var(--bg-black);
 }
 #image-product-block{
     height: 228px;

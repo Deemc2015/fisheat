@@ -1,4 +1,265 @@
 
+/*Слайдер акций на главной — scroll-snap + точки + автопрокрутка (без slick).
+  Инициализируется независимо от jQuery/slick (на DOMContentLoaded),
+  чтобы ошибка в других скриптах не «убивала» слайдер.*/
+(function () {
+    function initSliders() {
+        var tracks = document.querySelectorAll('[data-slider-track]');
+        if (!tracks.length) {
+            return;
+        }
+
+        var AUTOPLAY_DELAY = 5000;
+
+        function build(track) {
+            var root = track.parentNode;
+            var dotsWrap = track.nextElementSibling;
+            if (!dotsWrap || !dotsWrap.hasAttribute('data-slider-dots')) {
+                dotsWrap = root ? root.querySelector('[data-slider-dots]') : null;
+            }
+
+            var items = Array.prototype.slice.call(track.children);
+            if (!items.length) {
+                return;
+            }
+
+            var timer = null;
+            var dotTimer = null;
+            var resizeTimer = null;
+
+            function perView() {
+                var itemWidth = items[0] ? items[0].getBoundingClientRect().width : 0;
+                if (itemWidth <= 0) {
+                    return 1;
+                }
+                var gap = gapSize();
+                var count = Math.round((track.clientWidth + gap) / (itemWidth + gap));
+                return Math.max(1, Math.min(count, items.length));
+            }
+
+            function pageCount() {
+                return Math.max(1, Math.ceil(items.length / perView()));
+            }
+
+            function gapSize() {
+                var styles = window.getComputedStyle(track);
+                var gap = parseFloat(styles.columnGap || styles.gap);
+                return isNaN(gap) ? 0 : gap;
+            }
+
+            function currentPage() {
+                var step = items[0].getBoundingClientRect().width + gapSize();
+                if (step <= 0) {
+                    return 0;
+                }
+                return Math.round(track.scrollLeft / (step * perView()));
+            }
+
+            function renderDots() {
+                if (!dotsWrap) {
+                    return;
+                }
+                var pages = pageCount();
+                dotsWrap.innerHTML = '';
+                for (var i = 0; i < pages; i++) {
+                    var dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'slider-dot';
+                    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+                    dot.addEventListener('click', function (index) {
+                        return function () {
+                            goToPage(index, true);
+                        };
+                    }(i));
+                    dotsWrap.appendChild(dot);
+                }
+                syncDots();
+            }
+
+            function syncDots() {
+                if (!dotsWrap) {
+                    return;
+                }
+                var active = currentPage();
+                var dots = dotsWrap.children;
+                for (var i = 0; i < dots.length; i++) {
+                    dots[i].classList.toggle('is-active', i === active);
+                }
+            }
+
+            function goToPage(page, userAction) {
+                var pages = pageCount();
+                var target = Math.max(0, Math.min(page, pages - 1));
+                var index = Math.min(target * perView(), items.length - 1);
+                var delta = items[index].getBoundingClientRect().left - track.getBoundingClientRect().left;
+
+                if ('scrollBehavior' in document.documentElement.style) {
+                    track.scrollBy({ left: delta, behavior: 'smooth' });
+                } else {
+                    track.scrollLeft += delta;
+                }
+
+                if (userAction) {
+                    restartAuto();
+                }
+            }
+
+            function nextPage() {
+                var pages = pageCount();
+                var next = currentPage() + 1;
+                goToPage(next >= pages ? 0 : next, false);
+            }
+
+            function stopAuto() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            function startAuto() {
+                stopAuto();
+                // Автопрокрутка только у слайдеров с точками (акции)
+                if (dotsWrap && pageCount() > 1) {
+                    timer = setInterval(nextPage, AUTOPLAY_DELAY);
+                }
+            }
+
+            function restartAuto() {
+                stopAuto();
+                startAuto();
+            }
+
+            track.addEventListener('scroll', function () {
+                window.clearTimeout(dotTimer);
+                dotTimer = window.setTimeout(syncDots, 80);
+            });
+
+            root.addEventListener('mouseenter', stopAuto);
+            root.addEventListener('mouseleave', startAuto);
+            track.addEventListener('touchstart', stopAuto, { passive: true });
+            track.addEventListener('touchend', restartAuto, { passive: true });
+
+            /*Перетаскивание мышью — для треков с data-slider-drag (товары).
+              Колесо мыши и вертикальный жест НЕ перехватываем, чтобы не ломать скролл страницы.*/
+            if (track.hasAttribute('data-slider-drag')) {
+                (function enableDragScroll() {
+                    var pointerId = null;
+                    var dragging = false;
+                    var moved = false;
+                    var startX = 0;
+                    var startY = 0;
+                    var startScroll = 0;
+
+                    function release() {
+                        if (pointerId !== null && track.releasePointerCapture) {
+                            try { track.releasePointerCapture(pointerId); } catch (err) {}
+                        }
+                        pointerId = null;
+                        dragging = false;
+                        track.classList.remove('is-grabbing');
+                        track.classList.remove('is-dragging');
+                    }
+
+                    // Нативный drag ссылок/картинок мешает: mouseup не приходит и слайдер «залипает»
+                    track.addEventListener('dragstart', function (e) {
+                        e.preventDefault();
+                    });
+
+                    track.addEventListener('pointerdown', function (e) {
+                        // Только мышь, только ЛКМ; тач и перо обрабатываются нативно
+                        if (e.pointerType !== 'mouse' || e.button !== 0) {
+                            return;
+                        }
+                        // Захват указателя здесь не берём: иначе click уйдёт на трек и ссылка не откроется
+                        pointerId = e.pointerId;
+                        dragging = false;
+                        moved = false;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startScroll = track.scrollLeft;
+                        track.classList.add('is-grabbing');
+                        stopAuto();
+                    });
+
+                    window.addEventListener('pointermove', function (e) {
+                        if (pointerId === null || e.pointerId !== pointerId) {
+                            return;
+                        }
+                        var dx = e.clientX - startX;
+                        var dy = e.clientY - startY;
+
+                        if (!dragging) {
+                            // Жест вверх/вниз — это скролл страницы: слайдер не трогаем и не мешаем
+                            if (Math.abs(dy) > Math.abs(dx)) {
+                                release();
+                                return;
+                            }
+                            // Пока сдвиг мал — считаем это кликом, а не перетаскиванием
+                            if (Math.abs(dx) < 5) {
+                                return;
+                            }
+                            dragging = true;
+                            moved = true;
+                            track.classList.add('is-dragging');
+                            if (track.setPointerCapture) {
+                                try { track.setPointerCapture(e.pointerId); } catch (err) {}
+                            }
+                        }
+
+                        track.scrollLeft = startScroll - dx;
+                    });
+
+                    window.addEventListener('pointerup', function (e) {
+                        if (pointerId !== null && e.pointerId === pointerId) {
+                            track.scrollLeft = track.scrollLeft; // пересчёт scroll-snap
+                            release();
+                            startAuto();
+                        }
+                    });
+                    window.addEventListener('pointercancel', function (e) {
+                        if (pointerId !== null && e.pointerId === pointerId) {
+                            release();
+                        }
+                    });
+                    track.addEventListener('lostpointercapture', release);
+                    window.addEventListener('blur', release);
+
+                    // После перетаскивания подавляем click по ссылке; обычный клик проходит
+                    track.addEventListener('click', function (e) {
+                        if (moved) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            moved = false;
+                        }
+                    }, true);
+                })();
+            }
+
+            window.addEventListener('resize', function () {
+                window.clearTimeout(resizeTimer);
+                resizeTimer = window.setTimeout(function () {
+                    renderDots();
+                    startAuto();
+                }, 200);
+            });
+
+            renderDots();
+            startAuto();
+        }
+
+        for (var i = 0; i < tracks.length; i++) {
+            build(tracks[i]);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSliders);
+    } else {
+        initSliders();
+    }
+})();
+
 $.fn.setCursorPosition = function(pos) {
     var el = this[0];
     if (el) {
@@ -171,7 +432,7 @@ $(document).ready(function(){
         }
     });
 
-    $('.gifts-list').slick({
+    if ($.fn.slick) $('.gifts-list').slick({
         slidesToShow: 7,
         slidesToScroll: 1,
         arrows:false,
@@ -204,58 +465,6 @@ $(document).ready(function(){
     })
 
 
-    $('#slider-index').on('init', function(event, slick) {
-
-        $(this).removeClass('disabled');
-    }).slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        arrows:false,
-        dots:true,
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    infinite: true,
-                    dots: true
-                }
-            },
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    infinite: true,
-                    dots: true
-                }
-            },
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    infinite: true,
-                    dots: true
-                }
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 576,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ],
-    });
 
     $(document).on('click', '.product-item-container .wish-add', function(e) {
         e.preventDefault();
@@ -308,64 +517,6 @@ $(document).ready(function(){
 
 
 
-    $('.slider-index-product').slick({
-        infinite: true,
-        slidesToShow: 5,
-        slidesToScroll: 1,
-        dots:false,
-        arrows:false,
-        responsive: [
-            {
-                breakpoint: 1680,
-                settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 1,
-                    infinite: true,
-
-                }
-            },
-            {
-                breakpoint: 1440,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    infinite: true,
-
-                }
-            },
-
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    infinite: true,
-
-                }
-            },
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 576,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1
-                }
-            }
-        ],
-    })
 
     window.LDOInitBasket = function(options) {
         BX.ready(function() {
