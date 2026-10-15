@@ -1041,6 +1041,7 @@ h1.title-page{
 }
 .slider-index-product > .product-item-container{
     flex: 0 0 auto;
+    min-width: 160px;
     scroll-snap-align: start;
 }
 .slider-index-product,
@@ -1080,6 +1081,7 @@ h1.title-page{
 }
 .slider-viewed__item{
     flex: 0 0 auto;
+    min-width: 160px;
     scroll-snap-align: start;
 }
 .slider-viewed__item,
