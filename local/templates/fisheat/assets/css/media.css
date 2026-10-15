@@ -896,9 +896,16 @@
         padding-right: 6px;
         margin-top: 12px;
     }
+    .product-item-container .bottom-line{
+        padding-left: 6px;
+        padding-right: 6px;
+    }
     .product-item-container .product-item-title a{
         font-size:18px;
         height: auto;
+    }
+    .product-item-container .product-item-price-current{
+        font-size:18px;
     }
 }
 
