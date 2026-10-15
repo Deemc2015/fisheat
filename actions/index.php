@@ -1,5 +1,7 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetPageProperty("description", "Акции и скидки от ресторана «Рыба Закусывала» в Уфе. Выгодные предложения на доставку пиццы, роллов, стрит фуда и десертов. Заказывайте со скидкой!");
+$APPLICATION->SetPageProperty("title", "Акции и скидки ресторана «Рыба Закусывала» в Уфе — выгодные предложения");
 $APPLICATION->SetTitle("Акции");
 use Bitrix\Main\Loader;
 ?>

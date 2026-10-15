@@ -1,5 +1,7 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetPageProperty("description", "Ресторан Рыба закусывала - это не просто доставка еды (роллов, суши, пиццы), а ваш надежный помощник для организации вечеринок с друзьями, веселых посиделок, перекусов, корпоративов и праздников.");
+$APPLICATION->SetPageProperty("title", "О ресторане Рыба Закусывала в Уфе");
 $APPLICATION->SetTitle("О ресторане");
 ?>
  <?$APPLICATION->IncludeComponent(

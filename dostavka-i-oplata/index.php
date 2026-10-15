@@ -1,5 +1,7 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+$APPLICATION->SetPageProperty("description", "Условия доставки и способы оплаты в ресторане «Рыба Закусывала» в Уфе. Доставка от 30 минут, оплата наличными, картой или онлайн. Подробности на сайте.");
+$APPLICATION->SetPageProperty("title", "Доставка и оплата — ресторан «Рыба Закусывала» в Уфе | Условия и способы");
 $APPLICATION->SetTitle("Доставка и оплата");
 use Bitrix\Main\Loader;
 use Ldo\Iiko\Product;
