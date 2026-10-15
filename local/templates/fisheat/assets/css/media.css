@@ -683,6 +683,19 @@
         left: 10px;
         bottom: -12px;
     }
+    .mobile-footer .search-footer-link{
+        position: relative;
+    }
+    .mobile-footer .search-footer-link.active:after{
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: #FF1616;
+        border-radius: 50%;
+        position: absolute;
+        left: 10px;
+        bottom: -12px;
+    }
     .search-mobile{
         padding: 0 24px;
         margin-top: 12px;

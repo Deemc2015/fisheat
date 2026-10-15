@@ -305,12 +305,20 @@
             }
         }
 
+        // «Активность» иконки поиска в футере — та же точка, что у активного пункта меню
+        function setSearchActive(on) {
+            if (link) {
+                link.classList.toggle('active', !!on);
+            }
+        }
+
         function openHeaderSearch() {
             if (!headerSearch) {
                 return;
             }
             positionHeaderSearch();
             headerSearch.classList.add('open');
+            setSearchActive(true);
             scrollToHeader();
             focusField(headerSearch.querySelector('input'));
         }
@@ -319,6 +327,7 @@
             if (headerSearch) {
                 headerSearch.classList.remove('open');
             }
+            setSearchActive(false);
         }
 
         link.addEventListener('click', function (e) {
@@ -326,7 +335,8 @@
             e.stopPropagation();
 
             if (isHome) {
-                // На главной поле поиска уже есть на странице: скролл к шапке + фокус
+                // На главной поле поиска уже есть на странице: скролл к шапке + фокус.
+                // Красную точку активности на главной не показываем.
                 scrollToHeader();
                 var homeInput = document.getElementById('title-search-input');
                 if (homeInput) {
