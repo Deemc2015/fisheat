@@ -260,6 +260,104 @@
     }
 })();
 
+/*Иконка поиска в мобильном футере.
+  На главной — фокус на поле поиска на странице;
+  на остальных страницах — показ поля поиска под шапкой (повторный клик/клик вне — скрыть).*/
+(function () {
+    function initFooterSearch() {
+        var link = document.querySelector('.search-footer-link');
+        if (!link) {
+            return;
+        }
+        var headerSearch = document.querySelector('.search-mobile-header');
+        var isHome = window.location.pathname === '/' || window.location.pathname === '/index.php';
+
+        var headerEl = document.querySelector('header');
+
+        function positionHeaderSearch() {
+            if (!headerEl || !headerSearch) {
+                return;
+            }
+            var rect = headerEl.getBoundingClientRect();
+            headerSearch.style.top = (rect.bottom + (window.pageYOffset || 0)) + 'px';
+        }
+
+        function openHeaderSearch() {
+            if (!headerSearch) {
+                return;
+            }
+            positionHeaderSearch();
+            headerSearch.classList.add('open');
+            var input = headerSearch.querySelector('input');
+            if (input) {
+                window.setTimeout(function () {
+                    input.focus();
+                }, 0);
+            }
+        }
+
+        function closeHeaderSearch() {
+            if (headerSearch) {
+                headerSearch.classList.remove('open');
+            }
+        }
+
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (isHome) {
+                var input = document.getElementById('title-search-input');
+                if (input) {
+                    var wrap = input.closest('.search-mobile');
+                    if (wrap) {
+                        wrap.classList.add('open');
+                    }
+                    input.focus();
+                    try {
+                        input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    } catch (err) {
+                        input.scrollIntoView();
+                    }
+                }
+                return;
+            }
+
+            if (!headerSearch) {
+                return;
+            }
+            if (headerSearch.classList.contains('open')) {
+                closeHeaderSearch();
+            } else {
+                openHeaderSearch();
+            }
+        });
+
+        // Клик вне поля поиска — скрыть
+        document.addEventListener('click', function (e) {
+            if (!headerSearch || !headerSearch.classList.contains('open')) {
+                return;
+            }
+            if (headerSearch.contains(e.target)) {
+                return;
+            }
+            if (e.target.closest && e.target.closest('.search-footer-link')) {
+                return;
+            }
+            closeHeaderSearch();
+        });
+
+        window.addEventListener('scroll', positionHeaderSearch, { passive: true });
+        window.addEventListener('resize', positionHeaderSearch);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFooterSearch);
+    } else {
+        initFooterSearch();
+    }
+})();
+
 $.fn.setCursorPosition = function(pos) {
     var el = this[0];
     if (el) {

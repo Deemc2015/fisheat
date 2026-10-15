@@ -224,6 +224,36 @@ use \Ldo\Develop\Pages;
 
         </div>
     </div>
+<?if($isMobile):?>
+<div class="search-mobile-header" id="search-mobile-header">
+    <?
+    $APPLICATION->IncludeComponent(
+        "bitrix:search.title",
+        "top-search-mobile",
+        array(
+            "COMPONENT_TEMPLATE" => "top-search-mobile",
+            "NUM_CATEGORIES" => "1",
+            "TOP_COUNT" => "10",
+            "ORDER" => "date",
+            "USE_LANGUAGE_GUESS" => "Y",
+            "CHECK_DATES" => "N",
+            "SHOW_OTHERS" => "N",
+            "PAGE" => "#SITE_DIR#search/index.php",
+            "SHOW_INPUT" => "Y",
+            "INPUT_ID" => "search-mobile-header-input",
+            "CONTAINER_ID" => "search-mobile-header-container",
+            "CATEGORY_0_TITLE" => "",
+            "CATEGORY_0" => array(
+                0 => "iblock_catalog",
+            ),
+            "CATEGORY_0_iblock_catalog" => array(
+                0 => "4",
+            )
+        ),
+        false
+    );?>
+</div>
+<?endif?>
 </header>
 <?if($isMobile):?>
     <div class="menu-view-mobile">

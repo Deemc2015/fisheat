@@ -479,6 +479,8 @@ h1.title-page{
     overflow: hidden;
     padding-bottom: 11px;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
 }
 .product-item-container:hover{
     box-shadow: 0 2px 23px rgb(149 145 145 / 25%);
@@ -542,7 +544,8 @@ h1.title-page{
     padding-left: 12px;
     padding-right: 12px;
     justify-content: space-between;
-    margin-top: 16px;
+    margin-top: auto;
+    padding-top: 16px;
     align-items: center;
     height: 40px;
 }
@@ -1084,6 +1087,9 @@ h1.title-page{
     min-width: 160px;
     scroll-snap-align: start;
 }
+.slider-viewed__item .product-item-container{
+    height: 100%;
+}
 .slider-viewed__item,
 .slider-viewed__item *{
     -webkit-user-select: none;
@@ -1099,6 +1105,18 @@ h1.title-page{
 .slider-viewed.is-dragging{
     scroll-snap-type: none;
     cursor: grabbing;
+}
+/*Поиск под шапкой (моб.) — абсолютный, скрыт по умолчанию, открывается иконкой в футере*/
+.search-mobile-header{
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background: var(--bg-black);
+}
+.search-mobile-header.open{
+    display: block;
 }
 .title-section-wish{
     font-size: 42px;
