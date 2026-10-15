@@ -1113,7 +1113,8 @@ h1.title-page{
     left: 0;
     right: 0;
     z-index: 40;
-    background: var(--bg-black);
+    background: var(--bg-gray);
+    padding: 12px;
 }
 .search-mobile-header.open{
     display: block;

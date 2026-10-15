@@ -242,13 +242,13 @@
         height: 44px;
         border-radius: 6px;
         border: none;
-        background: var(--bg-gray);
-        color: #ffffff;
+        background: #ffffff;
+        color: #2B2D2F;
         padding: 0 44px 0 12px;
-        font-size: 14px;
+        font-size: 16px;
     }
     .search-mobile-header input::placeholder{
-        color: rgba(255, 255, 255, .7);
+        color: rgba(0, 0, 0, .5);
     }
     /*Раздел Доставка и оплата*/
     #page-delivery.delivery-block{

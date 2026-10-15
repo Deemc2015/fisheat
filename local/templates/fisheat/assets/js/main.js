@@ -282,18 +282,37 @@
             headerSearch.style.top = (rect.bottom + (window.pageYOffset || 0)) + 'px';
         }
 
+        // Фокус ставим после скролла к шапке, preventScroll — чтобы не было второго прыжка
+        function focusField(input) {
+            if (!input) {
+                return;
+            }
+            window.setTimeout(function () {
+                try {
+                    input.focus({ preventScroll: true });
+                } catch (err) {
+                    input.focus();
+                }
+            }, 350);
+        }
+
+        // Скролл к шапке сайта
+        function scrollToHeader() {
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                window.scrollTo(0, 0);
+            }
+        }
+
         function openHeaderSearch() {
             if (!headerSearch) {
                 return;
             }
             positionHeaderSearch();
             headerSearch.classList.add('open');
-            var input = headerSearch.querySelector('input');
-            if (input) {
-                window.setTimeout(function () {
-                    input.focus();
-                }, 0);
-            }
+            scrollToHeader();
+            focusField(headerSearch.querySelector('input'));
         }
 
         function closeHeaderSearch() {
@@ -307,18 +326,15 @@
             e.stopPropagation();
 
             if (isHome) {
-                var input = document.getElementById('title-search-input');
-                if (input) {
-                    var wrap = input.closest('.search-mobile');
+                // На главной поле поиска уже есть на странице: скролл к шапке + фокус
+                scrollToHeader();
+                var homeInput = document.getElementById('title-search-input');
+                if (homeInput) {
+                    var wrap = homeInput.closest('.search-mobile');
                     if (wrap) {
                         wrap.classList.add('open');
                     }
-                    input.focus();
-                    try {
-                        input.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                    } catch (err) {
-                        input.scrollIntoView();
-                    }
+                    focusField(homeInput);
                 }
                 return;
             }
@@ -327,6 +343,7 @@
                 return;
             }
             if (headerSearch.classList.contains('open')) {
+                // Повторный клик — скрыть
                 closeHeaderSearch();
             } else {
                 openHeaderSearch();
