@@ -892,10 +892,12 @@
         height: 180px;
     }
     .product-item-container .product-item-title{
-        padding-left: 12px;
+        padding-left: 6px;
+        padding-right: 6px;
+        margin-top: 12px;
     }
     .product-item-container .product-item-title a{
-        font-size:16px;
+        font-size:18px;
         height: auto;
     }
 }
