@@ -200,7 +200,7 @@ if($arResult['CATEGORY_INFO']['PODRAZDEL']):?>
         {
             $rowItems = array_splice($arResult['ITEMS'], 0, count($arResult['ITEMS'])); // Берем все оставшиеся элементы
             ?>
-            <div class="product-line slider-index-product <?=$arResult['CATEGORY_INFO']['CODE']?>" data-slider="<?=$arResult['CATEGORY_INFO']['CODE']?>" data-entity="items-row">
+            <div class="product-line slider-index-product <?=$arResult['CATEGORY_INFO']['CODE']?>" data-slider="<?=$arResult['CATEGORY_INFO']['CODE']?>" data-slider-track data-slider-drag data-entity="items-row">
                     <?
                     
                     foreach ($rowItems as $item)
