@@ -197,9 +197,21 @@
         flex: 0 0 calc((100% - 12px) / 2.3);
         width: calc((100% - 12px) / 2.3);
     }
-    .slider-index-product > .product-item-container a .image-product{
+    .slider-index-product > .product-item-container a .image-product,
+    .slider-viewed__item .product-item-container a .image-product{
         height: auto;
         aspect-ratio: 1 / 1;
+    }
+    /*Слайдер просмотренных: 2 полных + часть третьей*/
+    .slider-viewed{
+        gap: 12px;
+    }
+    .slider-viewed__item{
+        flex: 0 0 calc((100% - 12px) / 2.3);
+        width: calc((100% - 12px) / 2.3);
+    }
+    .slider-viewed__item .product-item-container{
+        width: 100%;
     }
     /*Раздел Доставка и оплата*/
     #page-delivery.delivery-block{

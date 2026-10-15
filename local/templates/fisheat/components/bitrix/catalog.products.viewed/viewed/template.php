@@ -115,23 +115,6 @@ $containerName = 'catalog-products-viewed-container';
 ?>
 <?if(count($arResult['ITEMS']) > 0):?>
 
-<?if(count($arResult['ITEMS']) > 5):?>
-        <script>
-            $(document).ready(function(){
-                $('.slider-viewed').slick({
-                    infinite: true,
-                    slidesToShow: 5,
-                    slidesToScroll: 1,
-                    dots:false,
-                    arrows:false
-                })
-            })
-
-        </script>
-
-<?endif?>
-
-
 <section id="viewed">
     <p class="title-section-wish">
         Недавно смотрели
@@ -158,12 +141,12 @@ $containerName = 'catalog-products-viewed-container';
 			?>
 			<div class="row <?=$rowData['CLASS']?>" data-entity="items-row">
 						<div class="col-xs-12 product-item-small-card">
-							<div class="product-line slider-viewed">
+							<div class="product-line slider-viewed" data-slider-track data-slider-drag>
 								<?
 								foreach ($rowItems as $item)
 								{
 									?>
-									<div class="col-xs-6 col-sm-4 col-md-2">
+									<div class="slider-viewed__item">
 										<?
 										$APPLICATION->IncludeComponent(
 											'bitrix:catalog.item',

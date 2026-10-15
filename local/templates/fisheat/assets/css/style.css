@@ -1059,6 +1059,45 @@ h1.title-page{
     scroll-snap-type: none;
     cursor: grabbing;
 }
+/*Слайдер просмотренных товаров (scroll-snap, без slick)*/
+.slider-viewed{
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 24px;
+    margin-bottom: 0;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+}
+.slider-viewed::-webkit-scrollbar{
+    display: none;
+}
+.slider-viewed__item{
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+.slider-viewed__item,
+.slider-viewed__item *{
+    -webkit-user-select: none;
+    user-select: none;
+}
+.slider-viewed__item img,
+.slider-viewed__item a{
+    -webkit-user-drag: none;
+}
+.slider-viewed.is-grabbing{
+    cursor: grabbing;
+}
+.slider-viewed.is-dragging{
+    scroll-snap-type: none;
+    cursor: grabbing;
+}
 .title-section-wish{
     font-size: 42px;
     margin-top: 11px;
@@ -2003,8 +2042,8 @@ footer{
     border-radius: 20px;
     padding-left: 15px;
     padding-right: 24px;
-    padding-top: 48px;
-    padding-bottom: 10px;
+    padding-top: 24px;
+    padding-bottom: 24px;
 
 }
 .footer-logo{
@@ -2016,6 +2055,10 @@ footer{
 footer .top-line,footer .bottom-line{
     display: flex;
     justify-content: space-between;
+    align-items:center;
+}
+footer .bottom-line{
+    margin-top: 24px;
 }
 footer a{
     color:#ffffff;
