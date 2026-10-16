@@ -561,7 +561,6 @@ h1.title-page{
     margin-top: auto;
     padding-top: 16px;
     align-items: center;
-    height: 40px;
 }
 .product-item-container .product-item-price-current{
     font-family: var(--font-bold);

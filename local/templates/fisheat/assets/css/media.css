@@ -831,6 +831,9 @@
     .title-section-wish{
         font-size:32px;
     }
+    .product-item-container .bottom-line{
+        height: 40px;
+    }
     /*Товары*/
     .product-item-container{
         flex: 0 0 calc(50% - 10px);
