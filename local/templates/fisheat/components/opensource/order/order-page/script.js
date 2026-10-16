@@ -1754,20 +1754,6 @@
             node.innerHTML = html;
             return node;
         },
-
-        /**
-         * Экранирование HTML-спецсимволов
-         * @param {string} value
-         * @returns {string}
-         */
-        escapeHtml: function(value) {
-            return String(value == null ? '' : value)
-                .replace(/&/g, '&')
-                .replace(/</g, '<')
-                .replace(/>/g, '>')
-                .replace(/"/g, '"');
-        },
-
         // ==============================================
         // МЕТОДЫ РАБОТЫ С КОЛИЧЕСТВОМ ПЕРСОН
         // ==============================================
