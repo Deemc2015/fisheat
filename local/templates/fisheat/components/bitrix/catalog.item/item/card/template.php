@@ -212,7 +212,7 @@ $topInfo = $item['PROPERTIES']['ATT_PLASHKA']['VALUE'];
 	<? endif; ?>
 	</h3>
 <?
-$maxLength = 105;
+$maxLength = 100;
 
 // 1. Раскодируем HTML-сущности (если есть &lt;br /&gt;)
 $shortDescription = html_entity_decode($item['DETAIL_TEXT'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -238,7 +238,7 @@ if (mb_strlen($shortDescription) > $maxLength) {
 }
 ?>
     <?if($shortDescription ):?>
-    <div title="<?=htmlspecialcharsbx($shortDescription)?>" class=" <?=$disabledClass?> desc-product">
+    <div title="<?=htmlspecialcharsbx($item['DETAIL_TEXT'])?>" class=" <?=$disabledClass?> desc-product">
         <?=$shortDescription ?>
     </div>
     <?endif;?>
