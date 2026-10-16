@@ -95,14 +95,18 @@ foreach ((array)($arResult['USER_ADRESS'] ?? []) as $__addr) {
         <?php if (!empty($arResult['GIFTS'])): ?>
         <div class="gifts-block">
             <?/* Верхний блок всегда в разметке: JS обновляет и показывает его при изменении корзины */?>
-            <div class="gifts-block__top"<?= empty($arResult['NEAREST_GIFT']) ? ' style="display:none;"' : '' ?>>
+            <div class="gifts-block__top">
                 <i></i>
-                <p>До подарка <span class="gifts-block__level"><?= htmlspecialchars($arResult['NEAREST_GIFT']['LEVEL'] ?? '') ?></span>  осталось еще <span class="gifts-block__sum"><?= (int)($arResult['NEAREST_GIFT']['SUM_FREE'] ?? 0) ?> ₽</span></p>
+                <?if (!empty($arResult['NEAREST_GIFT'])):?>
+                    <p>До подарка <span class="gifts-block__level"><?= htmlspecialchars($arResult['NEAREST_GIFT']['LEVEL'] ?? '') ?></span>  осталось еще <span class="gifts-block__sum"><?= (int)($arResult['NEAREST_GIFT']['SUM_FREE'] ?? 0) ?> ₽</span></p>
+                <?else:?>
+                    <p>Доступные подарки</p>
+                <?endif?>
             </div>
             <div class="gifts-block__items <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'block';}?>">
 
                     <!-- Список всех подарков (уже отсортирован) -->
-                    <div class="gifts-list">
+                    <div class="gifts-list" data-slider-track data-slider-drag>
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>

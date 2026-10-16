@@ -283,9 +283,43 @@ section{
     overflow: hidden;
 }
 
-/**/
-.gifts-list .slick-slide{
-    height: 217px;
+/*Слайдер подарков (scroll-snap, без slick)*/
+.gifts-list{
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    cursor: grab;
+    padding-bottom: 4px;
+}
+.gifts-list::-webkit-scrollbar{
+    display: none;
+}
+.gifts-list__item{
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+.gifts-list__item,
+.gifts-list__item *{
+    -webkit-user-select: none;
+    user-select: none;
+}
+.gifts-list__item img,
+.gifts-list__item a{
+    -webkit-user-drag: none;
+}
+.gifts-list.is-grabbing{
+    cursor: grabbing;
+}
+.gifts-list.is-dragging{
+    scroll-snap-type: none;
+    cursor: grabbing;
 }
 /*Слайдер на главной (scroll-snap, без slick)*/
 #slider-index{

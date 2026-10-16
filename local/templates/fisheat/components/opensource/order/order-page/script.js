@@ -3396,15 +3396,28 @@
             var block = document.querySelector('.gifts-block__top');
             if (!block) return;
 
+            // Блок всегда виден — меняем только текст
+            block.style.display = '';
+
+            var p = block.querySelector('p');
+            if (!p) return;
+
+            // Все подарки открыты — просто текст
             if (!nearest) {
-                block.style.display = 'none';
+                p.innerHTML = 'Доступные подарки';
                 return;
             }
 
-            block.style.display = '';
+            var levelNode = p.querySelector('.gifts-block__level');
+            var sumNode = p.querySelector('.gifts-block__sum');
 
-            var levelNode = block.querySelector('.gifts-block__level');
-            var sumNode = block.querySelector('.gifts-block__sum');
+            // Если раньше был текст «Доступные подарки» — восстанавливаем структуру
+            if (!levelNode || !sumNode) {
+                p.innerHTML = 'До подарка <span class="gifts-block__level"></span>  осталось еще <span class="gifts-block__sum"></span>';
+                levelNode = p.querySelector('.gifts-block__level');
+                sumNode = p.querySelector('.gifts-block__sum');
+            }
+
             var free = Math.max(0, Math.ceil(nearest.free));
 
             if (levelNode) {
