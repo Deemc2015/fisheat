@@ -89,6 +89,9 @@ if (0 < $arResult["SECTIONS_COUNT"])
 						'ALT' => $altValue,
 						'TITLE' => $titleValue,
 					);
+
+                    print_r($arSection['PICTURE']);
+
 					unset($titleValue, $altValue);
 				}
 				?><li id="<? echo $this->GetEditAreaId($arSection['ID']); ?>">

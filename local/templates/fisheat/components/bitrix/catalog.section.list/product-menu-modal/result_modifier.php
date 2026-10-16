@@ -82,7 +82,7 @@ if (0 < $arResult['SECTIONS_COUNT'])
 			if ($boolPicture)
 			{
 				$arSection['PICTURE'] = intval($arSection['PICTURE']);
-				$arSection['PICTURE'] = (0 < $arSection['PICTURE'] ? CFile::GetFileArray($arSection['PICTURE']) : false);
+				$arSection['PICTURE'] = (0 < $arSection['PICTURE'] ? CFile::ResizeImageGet($arSection['PICTURE'], array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true)  : false);
 				$arResult['SECTIONS'][$key]['PICTURE'] = $arSection['PICTURE'];
 				$arResult['SECTIONS'][$key]['~PICTURE'] = $arSection['~PICTURE'];
 			}

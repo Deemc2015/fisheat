@@ -193,6 +193,12 @@
     .slider-index-product{
         gap: 12px;
     }
+    .category-top-info__more-link{
+        font-size:0;
+    }
+    .category-top-info__more-link:after{
+        margin-top: -5px;
+    }
     .slider-index-product > .product-item-container{
         flex: 0 0 calc((100% - 12px) / 2.3);
         width: calc((100% - 12px) / 2.3);

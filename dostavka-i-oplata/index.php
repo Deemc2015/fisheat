@@ -31,12 +31,12 @@ Loader::includeModule("ldo.iiko");
 );?>
 
 <?php
-
+/*
 $result = new Product();
 echo "<pre>";
 
 print_r($result->getItems());
-echo "</pre>"
+echo "</pre>"*/
 ?>
 
 
