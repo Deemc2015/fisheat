@@ -90,16 +90,33 @@ if (0 < $arResult["SECTIONS_COUNT"])
 						'TITLE' => $titleValue,
 					);
 
-                    print_r($arSection['PICTURE']);
-
 					unset($titleValue, $altValue);
+				}
+
+				// Страховка: PICTURE может прийти как ID файла (например, при
+				// VIEW_MODE = LIST/TEXT или если компонент отдал сырые данные).
+				// Тогда уменьшаем картинку здесь — так же, как в шаблоне product-menu.
+				if (is_numeric($arSection['PICTURE']) && (int)$arSection['PICTURE'] > 0)
+				{
+					$arResize = CFile::ResizeImageGet(
+						(int)$arSection['PICTURE'],
+						array('width' => 120, 'height' => 120),
+						BX_RESIZE_IMAGE_PROPORTIONAL,
+						true
+					);
+					$arSection['PICTURE'] = array(
+						'SRC'   => $arResize['src'],
+						'ALT'   => $arSection['NAME'],
+						'TITLE' => $arSection['NAME'],
+					);
+					unset($arResize);
 				}
 				?><li id="<? echo $this->GetEditAreaId($arSection['ID']); ?>">
 				<a
 					href="<? echo $arSection['SECTION_PAGE_URL']; ?>"
 					class="menu_img"
-					style="background-image: url('<? echo $arSection['PICTURE']['SRC']; ?>');"
-					title="<? echo $arSection['PICTURE']['TITLE']; ?>"
+					style="background-image: url('<? echo htmlspecialcharsbx($arSection['PICTURE']['SRC']); ?>');"
+					title="<? echo htmlspecialcharsbx($arSection['PICTURE']['TITLE']); ?>"
 				></a>
 				<a class="menu_title" href="<? echo $arSection['SECTION_PAGE_URL']; ?>"><? echo $arSection['NAME']; ?></a>
                 <?

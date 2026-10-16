@@ -45,55 +45,53 @@ if (0 < $arResult['SECTIONS_COUNT'])
 	}
 }
 
+/*
+ * Уменьшаем картинки разделов до размеров, в которых они реально выводятся.
+ *
+ * ВАЖНО, почему «обычные» способы не работали:
+ * компонент bitrix:catalog.section.list уже сам вызывает
+ * \Bitrix\Iblock\Component\Tools::getFieldImageData($arSection, array('PICTURE'), ...)
+ * (см. bitrix/components/bitrix/catalog.section.list/component.php:471-479),
+ * поэтому в $arResult['SECTIONS'][..]['PICTURE'] лежит НЕ ID файла, а уже готовый
+ * МАССИВ от CFile::GetFileArray() с ключами ID, SRC (полный размер!), WIDTH, HEIGHT и т.д.
+ *
+ * Из-за этого:
+ *  - проверка `!isset($arCurrent['PICTURE'])` всегда ложна -> старый блок ресайза не выполнялся;
+ *  - `intval($arSection['PICTURE'])` от массива даёт 1, поэтому ресайз «по привычке» не срабатывал;
+ *  - в шаблон уходил $arSection['PICTURE']['SRC'] — ссылка на ОРИГИНАЛ картинки.
+ *
+ * Здесь берём ID файла из готового массива и подменяем PICTURE на уменьшенную версию.
+ * Результат (готовые файлы ресайза) кешируется на диске, поэтому повторных генераций не будет.
+ */
 if (0 < $arResult['SECTIONS_COUNT'])
 {
-	$boolPicture = false;
-	$boolDescr = false;
-	$arSelect = array('ID');
-	$arMap = array();
-	if ('LINE' == $arParams['VIEW_MODE'] || 'TILE' == $arParams['VIEW_MODE'])
+	foreach ($arResult['SECTIONS'] as $key => $arSection)
 	{
-		reset($arResult['SECTIONS']);
-		$arCurrent = current($arResult['SECTIONS']);
-		if (!isset($arCurrent['PICTURE']))
+		if (empty($arSection['PICTURE']) || !is_array($arSection['PICTURE']))
 		{
-			$boolPicture = true;
-			$arSelect[] = 'PICTURE';
+			continue;
 		}
-		if ('LINE' == $arParams['VIEW_MODE'] && !array_key_exists('DESCRIPTION', $arCurrent))
+
+		$fileId = (int)($arSection['PICTURE']['ID'] ?? 0);
+		if ($fileId <= 0)
 		{
-			$boolDescr = true;
-			$arSelect[] = 'DESCRIPTION';
-			$arSelect[] = 'DESCRIPTION_TYPE';
+			continue;
+		}
+
+		$arResize = CFile::ResizeImageGet(
+			$fileId,
+			array('width' => 120, 'height' => 120),
+			BX_RESIZE_IMAGE_PROPORTIONAL,
+			true
+		);
+
+		if (!empty($arResize['src']))
+		{
+			$arResult['SECTIONS'][$key]['PICTURE']['SRC']    = $arResize['src'];
+			$arResult['SECTIONS'][$key]['PICTURE']['WIDTH']  = (int)$arResize['width'];
+			$arResult['SECTIONS'][$key]['PICTURE']['HEIGHT'] = (int)$arResize['height'];
 		}
 	}
-	if ($boolPicture || $boolDescr)
-	{
-		foreach ($arResult['SECTIONS'] as $key => $arSection)
-		{
-			$arMap[$arSection['ID']] = $key;
-		}
-		$rsSections = CIBlockSection::GetList(array(), array('ID' => array_keys($arMap)), false, $arSelect);
-		while ($arSection = $rsSections->GetNext())
-		{
-			if (!isset($arMap[$arSection['ID']]))
-				continue;
-			$key = $arMap[$arSection['ID']];
-			if ($boolPicture)
-			{
-				$arSection['PICTURE'] = intval($arSection['PICTURE']);
-				$arSection['PICTURE'] = (0 < $arSection['PICTURE'] ? CFile::ResizeImageGet($arSection['PICTURE'], array('width'=>100, 'height'=>100), BX_RESIZE_IMAGE_PROPORTIONAL, true)  : false);
-				$arResult['SECTIONS'][$key]['PICTURE'] = $arSection['PICTURE'];
-				$arResult['SECTIONS'][$key]['~PICTURE'] = $arSection['~PICTURE'];
-			}
-			if ($boolDescr)
-			{
-				$arResult['SECTIONS'][$key]['DESCRIPTION'] = $arSection['DESCRIPTION'];
-				$arResult['SECTIONS'][$key]['~DESCRIPTION'] = $arSection['~DESCRIPTION'];
-				$arResult['SECTIONS'][$key]['DESCRIPTION_TYPE'] = $arSection['DESCRIPTION_TYPE'];
-				$arResult['SECTIONS'][$key]['~DESCRIPTION_TYPE'] = $arSection['~DESCRIPTION_TYPE'];
-			}
-		}
-	}
+	unset($key, $arSection, $arResize, $fileId);
 }
 ?>
