@@ -1042,7 +1042,7 @@ h1.title-page{
     display: flex;
     flex-wrap: nowrap;
     gap: 24px;
-    margin-bottom: 0;
+    margin-bottom: 15px;
     padding-bottom: 4px;
     overflow-x: auto;
     overflow-y: hidden;
