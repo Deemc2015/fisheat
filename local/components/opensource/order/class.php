@@ -1024,6 +1024,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 $this->setOrderProperties($propertiesList);
             }
 
+            // Выбранный подарок (служебное свойство GIFT) — берём из сессии
+            $this->applyGiftPropertyFromSession();
+
             // «Комментарий кухне» из формы (поле ORDER_DESCRIPTION) сохраняем
             // в стандартное поле заказа USER_DESCRIPTION, чтобы он был виден в админке.
             $orderDescription = $this->request['ORDER_DESCRIPTION'] ?? $this->request['USER_DESCRIPTION'] ?? '';
@@ -1054,7 +1057,10 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                     $this->calculateShipmentDelivery();
 
                     $saveResult = $this->order->save();
-                    if (!$saveResult->isSuccess()) {
+                    if ($saveResult->isSuccess()) {
+                        // Заказ успешно оформлен — сбрасываем выбранный подарок из сессии
+                        unset($_SESSION['LDO_GIFT_ID']);
+                    } else {
                         $this->errorCollection->add($saveResult->getErrors());
                     }
                 } else {
@@ -1066,6 +1072,56 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         $this->includeComponentTemplate();
+    }
+
+    /**
+     * Применяет выбранный подарок (из сессии) к служебному свойству заказа GIFT.
+     * @return void
+     */
+    private function applyGiftPropertyFromSession(): void
+    {
+        if (!$this->order) {
+            return;
+        }
+
+        $giftId = (int)($_SESSION['LDO_GIFT_ID'] ?? 0);
+
+        foreach ($this->order->getPropertyCollection() as $prop) {
+            if ($prop->getField('CODE') === 'GIFT') {
+                $prop->setValue($giftId > 0 ? (string)$giftId : '');
+                break;
+            }
+        }
+    }
+
+    /**
+     * Выбор/отмена подарка к заказу.
+     * ID подарка сохраняется в сессии и попадает в служебное свойство заказа GIFT.
+     *
+     * @param array $dataGift Данные: giftId (0 — отмена)
+     * @return array
+     */
+    public function setGiftAction($dataGift)
+    {
+        if (!check_bitrix_sessid()) {
+            return [
+                'success' => false,
+                'error' => 'Ошибка сессии. Пожалуйста, обновите страницу.'
+            ];
+        }
+
+        $giftId = (int)($dataGift['giftId'] ?? 0);
+
+        if ($giftId > 0) {
+            $_SESSION['LDO_GIFT_ID'] = $giftId;
+        } else {
+            unset($_SESSION['LDO_GIFT_ID']);
+        }
+
+        return [
+            'success' => true,
+            'giftId' => $giftId
+        ];
     }
 
     public function configureActions()
@@ -1084,6 +1140,9 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 'prefilters' => [],
             ],
             'clearPromo' => [
+                'prefilters' => [],
+            ],
+            'setGift' => [
                 'prefilters' => [],
             ],
             'deleteAddress' => [

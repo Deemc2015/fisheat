@@ -106,11 +106,13 @@ foreach ((array)($arResult['USER_ADRESS'] ?? []) as $__addr) {
             <div class="gifts-block__items <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'block';}?>">
 
                     <!-- Список всех подарков (уже отсортирован) -->
-                    <div class="gifts-list" data-slider-track data-slider-drag>
+                    <? $selectedGiftId = (int)($_SESSION['LDO_GIFT_ID'] ?? 0); ?>
+                    <div class="gifts-list" data-slider-track data-slider-drag data-selected-gift="<?=$selectedGiftId?>">
                         <?php foreach ($arResult['GIFTS'] as $level => $gifts): ?>
 
                         <?foreach($gifts as $gift):?>
-                            <div class="gifts-list__item" data-sum-level="<?=(int)$gift['SUM_LEVEL']?>" data-sum-level-name="<?=htmlspecialchars($level)?>">
+                            <? $isGiftSelected = $selectedGiftId > 0 && $selectedGiftId === (int)$gift['ID']; ?>
+                            <div class="gifts-list__item<?= $isGiftSelected ? ' selected' : '' ?>" data-sum-level="<?=(int)$gift['SUM_LEVEL']?>" data-sum-level-name="<?=htmlspecialchars($level)?>">
                                 <div class="gifts-list__item-img">
                                     <picture>
                                         <source srcset="<?=$gift['PREVIEW_PICTURE']?>" />
@@ -124,7 +126,7 @@ foreach ((array)($arResult['USER_ADRESS'] ?? []) as $__addr) {
                                     </div>
                                 <?else:?>
                                     <div class="gifts-list__item-actions">
-                                        <div class="addCartGift" id-product="<?=$gift['ID']?>"<?= $gift['AVAILABLE'] ? '' : ' style="display:none;"' ?>>Выбрать</div>
+                                        <div class="addCartGift" id-product="<?=$gift['ID']?>"<?= $gift['AVAILABLE'] ? '' : ' style="display:none;"' ?>><?= $isGiftSelected ? 'Отменить' : 'Выбрать' ?></div>
                                         <div class="not-avaliable-text"<?= $gift['AVAILABLE'] ? ' style="display:none;"' : '' ?>>Доступно при заказе от<br> <?=(int)$gift['SUM_LEVEL']?> ₽</div>
                                     </div>
                                 <?endif?>

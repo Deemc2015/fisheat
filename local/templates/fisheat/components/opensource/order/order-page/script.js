@@ -95,6 +95,45 @@
             // привязка отправки формы
             this.bindFormSubmit();
             this.initCommentToggle();
+            this.initGiftSelection();       // Восстановление ранее выбранного подарка
+        },
+
+        /**
+         * Восстанавливает выбранный ранее подарок (ID приходит из PHP через data-selected-gift).
+         * Блокирует промокод, если подарок уже выбран.
+         */
+        initGiftSelection: function() {
+            var list = document.querySelector('.gifts-list[data-selected-gift]');
+            if (!list) {
+                return;
+            }
+
+            var giftId = parseInt(list.getAttribute('data-selected-gift'), 10) || 0;
+            if (!giftId) {
+                return;
+            }
+
+            var button = list.querySelector('.addCartGift[id-product="' + giftId + '"]');
+            if (!button) {
+                return;
+            }
+
+            var giftItem = button.closest('.gifts-list__item');
+            if (!giftItem) {
+                return;
+            }
+
+            giftItem.classList.add('selected');
+            button.textContent = 'Отменить';
+
+            this.selectedGiftId = String(giftId);
+            this.selectedGiftNode = giftItem;
+
+            // Пока выбран подарок — промокод/бонусы заблокированы
+            var promoBlock = document.querySelector('.promo-block');
+            if (promoBlock) {
+                BX.addClass(promoBlock, 'block');
+            }
         },
 
         /**
@@ -2760,8 +2799,13 @@
                 var productId = target.getAttribute('id-product');
 
                 if (giftItem && productId) {
-                    // Используем BX.proxy для вызова метода с правильным контекстом
-                    BX.proxy(this.selectGift, this)(productId, giftItem);
+                    // Повторный клик по выбранному подарку — отмена выбора
+                    if (giftItem.classList.contains('selected') || this.selectedGiftId === productId) {
+                        BX.proxy(this.clearGift, this)();
+                    } else {
+                        // Используем BX.proxy для вызова метода с правильным контекстом
+                        BX.proxy(this.selectGift, this)(productId, giftItem);
+                    }
                 }
                 return;
             }
@@ -3357,6 +3401,13 @@
                         if (this.selectedGiftNode === item) {
                             this.selectedGiftId = null;
                             this.selectedGiftNode = null;
+
+                            // Подарок стал недоступен — разблокируем промокод и чистим GIFT
+                            var promoBlockForItem = document.querySelector('.promo-block');
+                            if (promoBlockForItem) {
+                                BX.removeClass(promoBlockForItem, 'block');
+                            }
+                            this.sendGiftRequest(0);
                         }
                     }
 
@@ -3657,20 +3708,72 @@
             giftItem.classList.add('selected');
             var addButton = giftItem.querySelector('.addCartGift');
             if (addButton) {
-                addButton.textContent = 'Выбрано';
+                addButton.textContent = 'Отменить';
             }
 
             // Сохраняем выбранный подарок
             this.selectedGiftId = productId;
             this.selectedGiftNode = giftItem;
 
-            // ДОБАВИТЬ: присваиваем блоку подарков класс block
+            // Блокируем промокод/бонусы, пока выбран подарок
             var promoBlock = document.querySelector('.promo-block');
             if (promoBlock) {
                 BX.addClass(promoBlock, 'block');
             }
 
-            // TODO: Отправка на сервер
+            // Пишем ID подарка в служебное свойство заказа GIFT
+            this.sendGiftRequest(productId);
+        },
+
+        /**
+         * Сохраняет выбранный подарок на сервере (служебное свойство заказа GIFT).
+         * @param {number|string} productId ID подарка (0 — очистить)
+         */
+        sendGiftRequest: function(productId) {
+            var giftId = parseInt(productId, 10) || 0;
+
+            BX.ajax.runComponentAction('opensource:order', 'setGift', {
+                mode: 'class',
+                dataType: 'json',
+                data: {
+                    dataGift: {
+                        giftId: giftId,
+                        sessid: BX.bitrix_sessid()
+                    }
+                }
+            }).then(function(response) {
+                if (response.data && response.data.success) {
+                    console.log('Подарок сохранён: GIFT =', response.data.giftId);
+                }
+            }).catch(function(error) {
+                console.error('Ошибка сохранения подарка', error);
+            });
+        },
+
+        /**
+         * Отмена выбранного подарка: разблокирует промокод/бонусы и очищает GIFT.
+         */
+        clearGift: function() {
+            var giftItem = this.selectedGiftNode;
+            if (giftItem) {
+                giftItem.classList.remove('selected');
+                var button = giftItem.querySelector('.addCartGift');
+                if (button) {
+                    button.textContent = 'Выбрать';
+                }
+            }
+
+            this.selectedGiftId = null;
+            this.selectedGiftNode = null;
+
+            // Разблокируем блок промокода
+            var promoBlock = document.querySelector('.promo-block');
+            if (promoBlock) {
+                BX.removeClass(promoBlock, 'block');
+            }
+
+            // Очищаем свойство GIFT на сервере (giftId = 0)
+            this.sendGiftRequest(0);
         },
 
         /** Применяет промокод - отправляет запрос на сервер */
