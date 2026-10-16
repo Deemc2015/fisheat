@@ -444,7 +444,63 @@ $(document).ready(function(){
 
 
 
-    $(".mycustom-scroll").mCustomScrollbar();
+    // ===== Боковое меню каталога: mCustomScrollbar =====
+    // «Прерывистое» листание у плагина по умолчанию вызвано двумя причинами:
+    //   1) scrollInertia = 950 — каждое событие колеса ЗАПУСКАЕТ НОВУЮ анимацию,
+    //      пока предыдущая не доиграла, поэтому прокрутка «дёргается»;
+    //   2) deltaFactor/normalizeDelta — в Chrome/Edge/Firefox величина delta
+    //      разная (пиксели/строки), поэтому шаг прокрутки получается неравномерным.
+    // Задаём явные параметры и пересчитываем размеры после полной загрузки страницы,
+    // чтобы высота контента не «уезжала» после подгрузки шрифтов и фоновых картинок.
+    var $customScroll = $(".mycustom-scroll");
+
+    if ($customScroll.length && $.fn.mCustomScrollbar) {
+        $customScroll.mCustomScrollbar({
+            axis: "y",
+            theme: "minimal",
+            // 0 = без «догоняющей» анимации: колесо двигает контент сразу, как нативный скролл
+            scrollInertia: 0,
+            autoDraggerLength: true,
+            autoHideScrollbar: false,
+            mouseWheel: {
+                enable: true,
+                axis: "y",
+                preventDefault: true,
+                // одинаковый шаг прокрутки во всех браузерах
+                normalizeDelta: true,
+                deltaFactor: 100
+            },
+            touchScroll: {
+                enable: true,
+                swipeEasing: false
+            },
+            advanced: {
+                updateOnContentResize: true,
+                updateOnImageLoad: true,
+                autoExpandHorizontalScroll: false
+            },
+            callbacks: {
+                onInit: function () {
+                    // пересчёт высоты сразу после инициализации
+                    $(this).mCustomScrollbar("update");
+                }
+            }
+        });
+
+        // Пересчёт после полной загрузки окна (веб-шрифты, background-image и т.п.)
+        $(window).on("load", function () {
+            $customScroll.mCustomScrollbar("update");
+        });
+
+        // Пересчёт при изменении размера окна (с небольшим debounce, без «дребезга»)
+        var customScrollResizeTimer = null;
+        $(window).on("resize", function () {
+            clearTimeout(customScrollResizeTimer);
+            customScrollResizeTimer = setTimeout(function () {
+                $customScroll.mCustomScrollbar("update");
+            }, 200);
+        });
+    }
 
     // Единый обработчик добавления в корзину (capture-фаза).
     // Регистрируется ОДИН раз и перехватывает клик ДО обработчиков компонентов
