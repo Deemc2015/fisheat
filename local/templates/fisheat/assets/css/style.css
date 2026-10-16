@@ -2332,7 +2332,7 @@ footer .copyright{
      top: 0;
      background-size: 130px;
      background-position: center;
-     z-index: 99;
+     z-index: 9;
  }
 .hidden-pk{
     display: none !important;
