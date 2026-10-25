@@ -194,6 +194,11 @@
                 var item = items[i];
                 var productId = item.getAttribute('data-id');
 
+                // Товар по промокоду: без количества и цены, в расчётах не участвует.
+                if (item.classList.contains('product-list__item--promo')) {
+                    continue;
+                }
+
                 if (productId) {
                     this.basketItems[productId] = {
                         node: item,                                      // DOM-элемент товара
@@ -1229,7 +1234,14 @@
                 BX.bind(promoButton, 'click', BX.proxy(function(event) {
                     event.preventDefault();
                     event.stopPropagation();
-                    this.applyPromoCode();
+
+                    // Кнопка работает в двух режимах: применить новый промокод
+                    // или снять уже применённый (data-promo-action).
+                    if (promoButton.getAttribute('data-promo-action') === 'clear') {
+                        this.clearPromoCode();
+                    } else {
+                        this.applyPromoCode();
+                    }
                 }, this));
             }
 
@@ -1439,16 +1451,120 @@
                             total: response.data.totalPrice
                         });
 
-                        this.showSuccessMessage('Промокод успешно применен');
+                        // Переводим поле и кнопку в состояние «применён»:
+                        // поле становится нередактируемым.
+                        var promoInputNode = document.getElementById('promocode');
+                        if (promoInputNode) {
+                            if (response.data.promo && response.data.promo.code) {
+                                promoInputNode.value = response.data.promo.code;
+                            }
+                            promoInputNode.readOnly = true;
+                            promoInputNode.setAttribute('readonly', 'readonly');
+                            promoInputNode.classList.add('is-locked');
+                        }
+
+                        var promoButtonNode = document.querySelector('.promoChange button[type="button"]');
+                        if (promoButtonNode) {
+                            promoButtonNode.textContent = 'Отменить';
+                            promoButtonNode.setAttribute('data-promo-action', 'clear');
+                        }
+
+                        var giftsBlockNode = document.querySelector('.gifts-block');
+                        if (giftsBlockNode) {
+                            BX.addClass(giftsBlockNode, 'block');
+                        }
+
+                        this.showSuccessMessage('Промокод применён');
                     } else {
                         var errorMsg = response.data && response.data.error
                             ? response.data.error
                             : 'Не удалось применить промокод';
                         this.showErrorMessage(errorMsg);
+
+                        // Неверный промокод: очищаем поле и возвращаем кнопку
+                        // в исходное состояние «Применить».
+                        var failedInput = document.getElementById('promocode');
+                        if (failedInput) {
+                            failedInput.value = '';
+                            failedInput.readOnly = false;
+                            failedInput.removeAttribute('readonly');
+                            failedInput.classList.remove('is-locked');
+                        }
+
+                        var failedButton = document.querySelector('.promoChange button[type="button"]');
+                        if (failedButton) {
+                            failedButton.textContent = 'Применить';
+                            failedButton.setAttribute('data-promo-action', 'apply');
+                        }
+
+                        // Отмечаем именно «Промокод», а не все radio подряд
+                        // (иначе последний пункт «Оплата бонусами» перехватывает выбор).
+                        var promoRadio = document.getElementById('promo-1');
+                        if (promoRadio) {
+                            promoRadio.checked = true;
+                        }
+
                     }
                 }.bind(this))
                 .catch(function(error) {
                     console.error('AJAX ошибка:', error);
+                    this.showErrorMessage('Ошибка соединения с сервером');
+                }.bind(this));
+        },
+
+        /** Снимает применённый промокод */
+        clearPromoCode: function() {
+            BX.ajax.runComponentAction('opensource:order', 'clearPromo', {
+                mode: 'class',
+                dataType: 'json',
+                data: { dataPromo: { sessid: BX.bitrix_sessid() } }
+            })
+                .then(function(response) {
+                    if (!response.data || !response.data.success) {
+                        var message = response.data && response.data.error
+                            ? response.data.error
+                            : 'Не удалось снять промокод';
+                        this.showErrorMessage(message);
+                        return;
+                    }
+
+                    var promoInput = document.getElementById('promocode');
+                    if (promoInput) {
+                        promoInput.value = '';
+                        promoInput.readOnly = false;
+                        promoInput.removeAttribute('readonly');
+                        promoInput.classList.remove('is-locked');
+                    }
+
+                    var promoButton = document.querySelector('.promoChange button[type="button"]');
+                    if (promoButton) {
+                        promoButton.textContent = 'Применить';
+                        promoButton.setAttribute('data-promo-action', 'apply');
+                    }
+
+                    document.querySelectorAll('input[name="promo_id"]').forEach(function(radio) {
+                        radio.checked = false;
+                    });
+
+                    var giftsBlock = document.querySelector('.gifts-block');
+                    if (giftsBlock) {
+                        BX.removeClass(giftsBlock, 'block');
+                    }
+
+                    if (response.data.items) {
+                        this.updateAllItemsPrices(response.data.items);
+                    }
+
+                    this.updateAllTotals({
+                        deliveryPrice: response.data.deliveryPrice,
+                        baseSum: response.data.baseSum,
+                        discount: response.data.discount,
+                        total: response.data.totalPrice
+                    });
+
+                    this.showSuccessMessage('Промокод снят');
+                }.bind(this))
+                .catch(function() {
                     this.showErrorMessage('Ошибка соединения с сервером');
                 }.bind(this));
         },

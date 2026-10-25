@@ -291,6 +291,19 @@ foreach ($order->getBasket() as $basketItem) {
         }
     endforeach;
 
+    // Товар, выданный по промокоду: в списке отображается без количества
+    // и цены, с подписью «Товар по промокоду».
+    $arBasketItem['IS_PROMO_GIFT'] = false;
+    $arBasketItem['PROMO_COUPON'] = '';
+    if (Loader::includeModule('ldo.marketing')
+        && class_exists('\\Ldo\\Marketing\\PromoGiftService')
+    ) {
+        $arBasketItem['IS_PROMO_GIFT'] = \Ldo\Marketing\PromoGiftService::isPromoGiftItem($basketItem);
+        if ($arBasketItem['IS_PROMO_GIFT']) {
+            $arBasketItem['PROMO_COUPON'] = \Ldo\Marketing\PromoGiftService::getItemCoupon($basketItem);
+        }
+    }
+
     $arBasketItem['WEIGHT'] = (int)$basketItem->getWeight();
 
     $arBasketItem['QUANTITY'] = $basketItem->getQuantity();

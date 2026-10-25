@@ -1112,6 +1112,16 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
         $giftId = (int)($dataGift['giftId'] ?? 0);
 
+        // Подарок по сумме и промокод не совмещаются: проверяем на сервере,
+        // чтобы подарок нельзя было добавить подменой разметки блока подарков.
+        if ($giftId > 0 && $this->hasAppliedCoupon()) {
+            return [
+                'success' => false,
+                'giftId' => 0,
+                'error' => 'Подарок недоступен, пока применён промокод. Сначала отмените промокод.'
+            ];
+        }
+
         if ($giftId > 0) {
             $_SESSION['LDO_GIFT_ID'] = $giftId;
         } else {
@@ -1122,6 +1132,35 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             'success' => true,
             'giftId' => $giftId
         ];
+    }
+
+    /**
+     * Применён ли хотя бы один промокод (купон).
+     *
+     * @return bool
+     */
+    private function hasAppliedCoupon(): bool
+    {
+        if (!empty($_SESSION['CATALOG_USER_COUPONS'])) {
+            return true;
+        }
+
+        if (!Loader::includeModule('sale')) {
+            return false;
+        }
+
+        $list = Sale\DiscountCouponsManager::get(true);
+        if (!is_array($list)) {
+            return false;
+        }
+
+        foreach ($list as $coupon) {
+            if (is_array($coupon) && (string)($coupon['APPLY'] ?? 'N') === 'Y') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function configureActions()
@@ -1708,6 +1747,30 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
     }
 
     /**
+     * Данные применённого промокода для интерфейса оформления заказа.
+     *
+     * @param array $promo Запись промокода из PromoAdminService::getById()
+     * @return array
+     */
+    private function preparePromoInfo(array $promo): array
+    {
+        $type = (string)($promo['TYPE'] ?? '');
+
+        return [
+            'code'        => (string)($promo['CODE'] ?? ''),
+            'type'        => $type,
+            'typeName'    => (string)($promo['TYPE_NAME'] ?? ''),
+            'value'       => (float)($promo['VALUE'] ?? 0),
+            'isPercent'   => (bool)($promo['IS_PERCENT'] ?? false),
+            'productId'   => (int)($promo['PRODUCT_ID'] ?? 0),
+            'productName' => (string)($promo['PRODUCT']['NAME'] ?? ''),
+            'isProduct'   => ($type === 'product'),
+            'isDelivery'  => ($type === 'delivery'),
+            'isOrder'     => ($type === 'order'),
+        ];
+    }
+
+    /**
      * Единый метод формирования ответа с данными корзины
      */
     private function prepareBasketResponse($basket = null, $message = '')
@@ -1750,6 +1813,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             $unitWeight = (int)$item->getWeight() * (int)$quantity;
 
 
+
             // Цена за ЕДИНИЦУ со скидкой
             $unitPrice = $pricesWithDiscount[$basketId]['PRICE'] ?? $item->getPrice();
 
@@ -1760,6 +1824,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             $totalPrice += $itemTotalPrice;
             $baseTotalPrice += $itemBaseTotalPrice;
             $discountSum += ($basePrice - $unitPrice) * $quantity;
+
 
             $itemsData[$productId] = [
                 'id' => $basketId,
@@ -1786,10 +1851,12 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         $deliveryPrice = $this->getDeliveryPrice();
         $totalWithDelivery = $totalPrice + $deliveryPrice;
 
+        // totalPrice — итоговая сумма заказа (товары + доставка), как в
+        // updateDeliveryPriceAction/updateAddressPriceAction/updateRestaurantPriceAction.
         $response = [
             'success' => true,
             'items' => $itemsData,
-            'totalPrice' => $totalPrice,
+            'totalPrice' => $totalWithDelivery,
             'baseSum' => $baseTotalPrice,
             'discount' => $discountSum,
             'deliveryPrice' => $deliveryPrice,
@@ -1904,7 +1971,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
         }
 
         try {
-            // Очищаем купоны при удалении корзины
+            // Очищаем купоны и подарок по сумме при удалении корзины
             Sale\DiscountCouponsManager::clear(true);
 
             $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
@@ -2523,7 +2590,7 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 ];
             }
 
-            // Очищаем предыдущие купоны перед применением нового
+            // Один промокод на заказ: перед применением снимаем предыдущие
             Sale\DiscountCouponsManager::clear(true);
 
             // Применяем купон
@@ -2537,9 +2604,75 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             }
 
             $basket = $this->getBasket();
+            $couponCode = mb_strtoupper(trim($promokod));
+
+            // Промокод и подарок по сумме корзины взаимоисключающие.
+            $giftCleared = false;
+            if (!empty($_SESSION['LDO_GIFT_ID'])) {
+                unset($_SESSION['LDO_GIFT_ID']);
+                $giftCleared = true;
+            }
+
+            // Товар по промокоду: материализуем позицию с нулевой ценой.
+            $promoGiftAdded = false;
+            $promoInfo = null;
+            if (\Bitrix\Main\Loader::includeModule('ldo.marketing')
+                && class_exists('\Ldo\Marketing\PromoGiftService')
+            ) {
+                $promoGiftAdded = \Ldo\Marketing\PromoGiftService::sync($basket, [$couponCode]);
+
+                $discountId = \Ldo\Marketing\PromoAdminService::findDiscountIdByCoupon($couponCode);
+                if ($discountId > 0) {
+                    $promo = \Ldo\Marketing\PromoAdminService::getById($discountId);
+                    if ($promo) {
+                        $promoInfo = $this->preparePromoInfo($promo);
+                    }
+                }
+            }
 
             // Обновляем поля в корзине с учетом купонов
             $basket->refreshData(['PRICE', 'COUPONS']);
+
+            // Расчёт скидок штатным API: DiscountCouponsManager::add() проверяет
+            // только сам купон, а условия правила — при расчёте скидок.
+            // Признак применения купона берём из COUPON_LIST результата расчёта.
+            $fuser = new Sale\Discount\Context\Fuser($basket->getFUserId(true));
+            $discounts = Sale\Discount::buildFromBasket($basket, $fuser);
+            $discounts->calculate();
+            $applyResult = $discounts->getApplyResult(true);
+
+            $couponApplied = false;
+            foreach ((array)($applyResult['COUPON_LIST'] ?? []) as $couponItem) {
+                if (!is_array($couponItem)) {
+                    continue;
+                }
+
+                if (mb_strtoupper(trim((string)($couponItem['COUPON'] ?? ''))) === $couponCode
+                    && (string)($couponItem['APPLY'] ?? 'N') === 'Y'
+                ) {
+                    $couponApplied = true;
+                    break;
+                }
+            }
+
+            if (!$couponApplied) {
+                Sale\DiscountCouponsManager::clear(true);
+
+                if ($promoGiftAdded
+                    && \Bitrix\Main\Loader::includeModule('ldo.marketing')
+                    && class_exists('\Ldo\Marketing\PromoGiftService')
+                ) {
+                    \Ldo\Marketing\PromoGiftService::removeAll($basket);
+                }
+
+                $basket->refreshData(['PRICE', 'COUPONS']);
+                $basket->save();
+
+                return [
+                    'success' => false,
+                    'error'   => 'Промокод не подходит для текущего заказа. Проверьте условия акции.',
+                ];
+            }
 
             // Сохраняем корзину
             if ($basket->getOrderId() > 0) {
@@ -2554,8 +2687,15 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
                 throw new \Exception(implode(', ', $saveResult->getErrorMessages()));
             }
 
-            // Возвращаем единый формат ответа
-            return $this->prepareBasketResponse($basket, 'Промокод успешно применен');
+            // Возвращаем единый формат ответа с данными промокода
+            $response = $this->prepareBasketResponse($basket, 'Промокод успешно применён');
+            $response['promo'] = $promoInfo;
+            $response['promoGiftAdded'] = $promoGiftAdded;
+            $response['giftCleared'] = $giftCleared;
+            $response['promoCleared'] = false;
+            $response['giftAvailable'] = false;
+
+            return $response;
 
         } catch (\Exception $e) {
             addMessage2Log($e->getMessage(), 'changePromoAction - ошибка в методе');
@@ -2582,6 +2722,14 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
 
             $basket = $this->getBasket();
 
+            // Снимаем товар, выданный по промокоду.
+            $promoGiftRemoved = false;
+            if (\Bitrix\Main\Loader::includeModule('ldo.marketing')
+                && class_exists('\Ldo\Marketing\PromoGiftService')
+            ) {
+                $promoGiftRemoved = \Ldo\Marketing\PromoGiftService::removeAll($basket);
+            }
+
             // Обновляем корзину без купонов
             $basket->refreshData(['PRICE', 'COUPONS']);
 
@@ -2599,7 +2747,13 @@ class OpenSourceOrderComponent extends CBitrixComponent implements  Controllerab
             }
 
             // Возвращаем единый формат ответа
-            return $this->prepareBasketResponse($basket, 'Промокод сброшен');
+            $response = $this->prepareBasketResponse($basket, 'Промокод сброшен');
+            $response['promo'] = null;
+            $response['promoGiftAdded'] = false;
+            $response['promoGiftRemoved'] = $promoGiftRemoved;
+            $response['giftAvailable'] = true;
+
+            return $response;
 
         } catch (\Exception $e) {
             return [

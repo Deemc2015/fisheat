@@ -8,5 +8,7 @@ Loader::registerAutoLoadClasses(
         'Ldo\\Marketing\\FreePositionsTable' => 'lib/FreePositionsTable.php',
         'Ldo\\Marketing\\GiftsTable'         => 'lib/GiftsTable.php',
         'Ldo\\Marketing\\Settings'           => 'lib/Settings.php',
+        'Ldo\\Marketing\\PromoAdminService'  => 'lib/PromoAdminService.php',
+        'Ldo\\Marketing\\PromoGiftService'   => 'lib/PromoGiftService.php',
     ]
 );

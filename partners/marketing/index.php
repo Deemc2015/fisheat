@@ -43,7 +43,7 @@ if (class_exists('\CHTMLEditor')) {
 
 // Активный таб: ?tab=... либо #hash (обрабатывается на клиенте).
 $activeTab = (string)$request->getQuery('tab');
-$allowedTabs = ['actions', 'gifts', 'free'];
+$allowedTabs = ['actions', 'gifts', 'free', 'promo'];
 if (!in_array($activeTab, $allowedTabs, true)) {
     $activeTab = 'actions';
 }
@@ -61,6 +61,8 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                         data-tab="gifts" role="tab">Подарки к заказу</button>
                 <button type="button" class="p-marketing-tab<?= $activeTab === 'free' ? ' is-active' : '' ?>"
                         data-tab="free" role="tab">Бесплатные позиции к товарам</button>
+                <button type="button" class="p-marketing-tab<?= $activeTab === 'promo' ? ' is-active' : '' ?>"
+                        data-tab="promo" role="tab">Промокоды</button>
             </div>
 
             <!-- Таб: Раздел акций -->
@@ -106,6 +108,21 @@ require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
                 <?
                 $APPLICATION->IncludeComponent(
                     "ldo:freepositions.list",
+                    "",
+                    array(
+                        "CACHE_TIME" => "0"
+                    ),
+                    false
+                );
+                ?>
+            </div>
+
+            <!-- Таб: Промокоды -->
+            <div class="p-section p-marketing-pane<?= $activeTab === 'promo' ? ' is-active' : '' ?>"
+                 data-tab-pane="promo"<?= $activeTab === 'promo' ? '' : ' style="display:none;"' ?>>
+                <?
+                $APPLICATION->IncludeComponent(
+                    "ldo:promocodes.list",
                     "",
                     array(
                         "CACHE_TIME" => "0"

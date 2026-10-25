@@ -35,7 +35,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <?
 
             foreach ($arResult['BASKET'] as $arBasketItem):?>
-                <div class="product-list__item" data-id="<?=$arBasketItem['PRODUCT_ID']?>">
+                <?
+                $isPromoGift = !empty($arBasketItem['IS_PROMO_GIFT']);
+                ?>
+                <div class="product-list__item<?=$isPromoGift ? ' product-list__item--promo' : ''?>" data-id="<?=$arBasketItem['PRODUCT_ID']?>">
                     <?if($arBasketItem['IMAGE']):?>
                     <div class="image-product">
                         <img src="<?=$arBasketItem['IMAGE']?>" alt="<?=$arBasketItem['NAME']?>">
@@ -48,18 +51,28 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?endif;?>
 
                     <div class="price-product">
-                        <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
-                        <?if($arBasketItem['VES']):?>
+                        <?if($isPromoGift):?>
+                            <div class="price-product__sum price-product__sum--promo">Бесплатно</div>
+                        <?else:?>
+                            <div class="price-product__sum"><?=$arBasketItem['SUM_DISPLAY']?></div>
+                        <?endif;?>
+                        <?if($arBasketItem['VES'] && !$isPromoGift):?>
                             <div class="weight"><?=$arBasketItem['VES']?></div>
                         <?endif;?>
                     </div>
                     <?if($isMobile):?></div><?endif?>
 
-                    <div class="amount-product-block">
-                            <span class="minus"></span>
-                            <span data-max-quantity="<?=$arBasketItem['COUNT_AVALIABLE']?>" class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
-                        <span class="plus"></span>
-                    </div>
+                    <?if($isPromoGift):?>
+                        <div class="promo-gift-label">
+                            Товар по промокоду<?if($arBasketItem['PROMO_COUPON'] !== ''):?> <span class="promo-gift-label__code"><?=htmlspecialchars($arBasketItem['PROMO_COUPON'])?></span><?endif;?>
+                        </div>
+                    <?else:?>
+                        <div class="amount-product-block">
+                                <span class="minus"></span>
+                                <span data-max-quantity="<?=$arBasketItem['COUNT_AVALIABLE']?>" class="quantity-product"><?=$arBasketItem['QUANTITY']?></span>
+                            <span class="plus"></span>
+                        </div>
+                    <?endif;?>
                 </div>
             <?endforeach?>
 
@@ -139,12 +152,16 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
             <div class="promo-block__line">
                 <div class="promo-block__left">
                     <label for="promo-1">
-                        <input <?if($_SESSION["CATALOG_USER_COUPONS"]){echo 'checked';}?> type="radio" id="promo-1" name="promo_id" value="promokod" >
+                        <input checked type="radio" id="promo-1" name="promo_id" value="promokod">
                         <span></span>
                         Промокод
                     </label>
-                    <label for="promo-2">
-                        <input  type="radio" id="promo-2" name="promo_id" value="bonus" >
+                    <?
+                    // При применённом промокоде оплата бонусами недоступна.
+                    $isBonusDisabled = !empty($_SESSION['CATALOG_USER_COUPONS']);
+                    ?>
+                    <label for="promo-2"<?=$isBonusDisabled ? ' class="disabled"' : ''?>>
+                        <input type="radio" id="promo-2" name="promo_id" value="bonus"<?=$isBonusDisabled ? ' disabled' : ''?>>
                         <span></span>
                         Оплата бонусами
                     </label>
@@ -154,15 +171,15 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
                         <?if($_SESSION["CATALOG_USER_COUPONS"]):?>
                     <div class="promo-block__left-promokod">
                         <div class="promoChange">
-                            <input type="text" name="promokod" readonly  id="promocode" value="<?=$_SESSION["CATALOG_USER_COUPONS"][0]?>"/>
-                            <button type="button">Отменить</button>
+                            <input type="text" name="promokod" readonly class="is-locked" id="promocode" value="<?=$_SESSION["CATALOG_USER_COUPONS"][0]?>"/>
+                            <button type="button" data-promo-action="clear">Отменить</button>
                         </div>
                     </div>
                             <?else:?>
-                    <div class="promo-block__left-promokod" style="display:none;">
+                    <div class="promo-block__left-promokod">
                             <div class="promoChange" >
                                 <input type="text" name="promokod"  id="promocode" />
-                                <button type="button">Применить</button>
+                                <button type="button" data-promo-action="apply">Применить</button>
                             </div>
                     </div>
                             <?endif?>
